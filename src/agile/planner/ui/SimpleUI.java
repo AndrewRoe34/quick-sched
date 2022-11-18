@@ -19,9 +19,9 @@ public class SimpleUI {
     /** Singleton of SimpleUI */
     private static SimpleUI singleton;
     /** Manages all scheduling for AGILE Planner */
-    private ScheduleManager scheduleManager;
+    private final ScheduleManager scheduleManager;
     /** Holds the manual for all possible commands */
-    private HashMap<String, String> commandManual;
+    private final HashMap<String, String> commandManual;
 
     private SimpleUI() {
         scheduleManager = ScheduleManager.getSingleton();

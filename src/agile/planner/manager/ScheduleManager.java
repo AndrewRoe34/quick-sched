@@ -1,6 +1,5 @@
 package agile.planner.manager;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.LinkedList;
@@ -28,7 +27,6 @@ public class ScheduleManager {
 
     /**
      * Private constructor of ScheduleManager
-     *
      * Initially performs task processing as well as schedule generation
      */
     private ScheduleManager() {
@@ -119,7 +117,6 @@ public class ScheduleManager {
 
     /**
      * Resets all the tasks as well as the entire schedule for it to be regenerated
-     *
      * TODO will need to update to include the generate() methods
      * TODO will need to sync the client configuration settings to determine the type of scheduling
      */
@@ -170,7 +167,7 @@ public class ScheduleManager {
     }
 
     /**
-     * Generates an entire schedule following a cram approach
+     * Generates an entire schedule following the rushed approach
      */
     private void generateCrammedSchedule() {
         //TODO will be implemented in v0.9.0
@@ -181,7 +178,7 @@ public class ScheduleManager {
      */
     public void outputCurrentDayToConsole() {
         if(schedule.isEmpty()) {
-            System.out.println("Schedule is emtpy");
+            System.out.println("Schedule is empty");
         } else {
             IOProcessing.writeDay(schedule.getFirst(), errorCount, null);
         }
@@ -192,7 +189,7 @@ public class ScheduleManager {
      */
     public void outputScheduleToConsole() {
         if(schedule.isEmpty()) {
-            System.out.println("Schedule is emtpy");
+            System.out.println("Schedule is empty");
         } else {
             IOProcessing.writeSchedule(schedule, errorCount, null);
         }
@@ -205,7 +202,7 @@ public class ScheduleManager {
      */
     public void outputScheduleToFile(String filename) {
         try {
-            PrintStream output = new PrintStream(new File(filename));
+            PrintStream output = new PrintStream(filename);
             IOProcessing.writeSchedule(schedule, errorCount, output);
             output.close();
         } catch (FileNotFoundException e) {
