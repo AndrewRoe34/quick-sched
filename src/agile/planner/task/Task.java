@@ -75,7 +75,7 @@ public class Task implements Comparable<Task> {
         long timeDiff = this.dueDate.compareTo(o.dueDate);
         if(timeDiff < 0 || timeDiff == 0 && this.getSubTotalHoursRemaining() > o.getSubTotalHoursRemaining()) {
             return -1;
-        } else if(timeDiff > 0 || timeDiff == 0 && this.getSubTotalHoursRemaining() < o.getSubTotalHoursRemaining()) {
+        } else if(timeDiff > 0 || this.getSubTotalHoursRemaining() < o.getSubTotalHoursRemaining()) {
             return 1;
         } else {
             return 0;
@@ -165,7 +165,6 @@ public class Task implements Comparable<Task> {
 
     /**
      * The individual component of a parent Task in the form of a SubTask
-     *
      * TODO will need to include a markComplete() method
      *
      * @author Andrew Roe
@@ -173,11 +172,11 @@ public class Task implements Comparable<Task> {
     public class SubTask implements Comparable<SubTask> {
 
         /** Parent Task of the SubTask */
-        private Task parentTask;
+        private final Task parentTask;
         /** Number of hours for the SubTask */
-        private int hours;
+        private final int hours;
         /** Number of overflow hours due to scheduling */
-        private boolean overflowStatus;
+        private final boolean overflowStatus;
 
         /**
          * Primary constructor for SubTask
