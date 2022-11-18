@@ -22,7 +22,7 @@ public class Day {
     /** Number of hours filled for a given Day */
     private int size;
     /** TreeSet of all SubTasks */
-    private LinkedList<SubTask> subtaskManager;
+    private final LinkedList<SubTask> subtaskManager;
 
     /**
      * Primary constructor for Day
@@ -82,8 +82,8 @@ public class Day {
             task.setAverageNumHours(this.date);
         }
         int hours = task.getAverageNumHours();
-        //Handles the case where we actually have less hours available due to scheduling
-        hours = hours > task.getSubTotalHoursRemaining() ? task.getSubTotalHoursRemaining() : hours;
+        //Handles the case where we actually have fewer hours available due to scheduling
+        hours = Math.min(hours, task.getSubTotalHoursRemaining());
         //Fixes the number of hours according to what the Day has available
         hours = hours + size > capacity ? capacity - size : hours;
 
@@ -149,10 +149,10 @@ public class Day {
         StringBuilder sb = new StringBuilder(sdf.format(this.date.getTime()) + "\n");
         int count = 1;
         for(SubTask st : subtaskManager) {
-            sb.append(count + ". ");
+            sb.append(count).append(". ");
             count++;
-            sb.append(st.getParentTask().getName() + ", ");
-            sb.append(st.getSubTaskHours() + "hr, Due ");
+            sb.append(st.getParentTask().getName()).append(", ");
+            sb.append(st.getSubTaskHours()).append("hr, Due ");
             sb.append(sdf.format(st.getParentTask().getDueDate().getTime()));
             if(st.getOverflowStatus()) {
                 sb.append(" OVERFLOW");
