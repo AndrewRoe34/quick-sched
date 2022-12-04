@@ -1,5 +1,6 @@
 package agile.planner.ui;
 
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -23,12 +24,12 @@ public class SimpleUI {
     /** Holds the manual for all possible commands */
     private final HashMap<String, String> commandManual;
 
-    private SimpleUI() {
+    private SimpleUI() throws FileNotFoundException {
         scheduleManager = ScheduleManager.getSingleton();
         commandManual = CommandManual.getSingleton().getCommandManual();
     }
 
-    public static SimpleUI getSingleton() {
+    public static SimpleUI getSingleton() throws FileNotFoundException {
         if(singleton == null) {
             singleton = new SimpleUI();
         }
@@ -117,8 +118,13 @@ public class SimpleUI {
      */
     public static void main(String[] args) {
 
-        SimpleUI commandLine = SimpleUI.getSingleton();
-        commandLine.execute();
+        SimpleUI commandLine = null;
+        try {
+            commandLine = SimpleUI.getSingleton();
+            commandLine.execute();
+        } catch (FileNotFoundException e) {
+            System.out.println("Could not create ScheduleManager");
+        }
     }
 
 }

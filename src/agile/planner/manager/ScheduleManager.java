@@ -7,6 +7,7 @@ import java.util.*;
 import agile.planner.io.IOProcessing;
 import agile.planner.manager.day.Day;
 import agile.planner.task.Task;
+import agile.planner.util.EventLog;
 
 /**
  * Handles the generation and management of the overall schedule
@@ -21,6 +22,8 @@ public class ScheduleManager {
     private PriorityQueue<Task> taskManager;
     /** Singleton for ScheduleManager */
     private static ScheduleManager singleton;
+    /** Logs all actions performed by user */
+    private static EventLog eventLog;
     /** Standard number of hours for the week */
     private int[] week;
     /** Stores custom hours for future days */
@@ -33,14 +36,16 @@ public class ScheduleManager {
     /**
      * Private constructor of ScheduleManager
      * Initially performs task processing as well as schedule generation
+     *
+     * @throws FileNotFoundException if event log file does not exist
      */
-    private ScheduleManager() {
+    private ScheduleManager() throws FileNotFoundException {
         taskManager = new PriorityQueue<>();
         schedule = new LinkedList<>();
         customHours = new HashMap<>();
         taskManager = new PriorityQueue<>();
+        eventLog = EventLog.getEventLog();
         processSettingsCfg();
-        processGeneratedSchedule();
     }
 
     /**
@@ -58,12 +63,42 @@ public class ScheduleManager {
      * Gets a singleton of ScheduleManager
      *
      * @return singleton of ScheduleManager
+     * @throws FileNotFoundException if event log file does not exist
      */
-    public static ScheduleManager getSingleton() {
+    public static ScheduleManager getSingleton() throws FileNotFoundException {
         if(singleton == null) {
             singleton = new ScheduleManager();
         }
         return singleton;
+    }
+
+    /**
+     * Sets standard hours for a day
+     *
+     * @param day day to be modified
+     * @param hours number of hours to be set
+     */
+    public void setGlobalHours(int day, int hours) {
+        if(day >= 0 && day < 7 && hours >= 0 && hours <= 24) {
+            week[day] = hours;
+        } else {
+            throw new IllegalArgumentException("Invalid data for standard days of week");
+        }
+    }
+
+    /**
+     * Sets custom hours for a single instance of a day
+     *
+     * @param day day to be modified
+     * @param hours number of hours to be set
+     */
+    public void setCustomHours(int day, int hours) {
+        if(day >= 0 && hours >= 0 && hours <= 24) {
+            customHours.put(day, hours);
+        } else {
+            throw new IllegalArgumentException("Invalid data for custom days of week");
+        }
+
     }
 
     /**
@@ -83,13 +118,6 @@ public class ScheduleManager {
     }
 
     /**
-     * Handles the processing of an already generated schedule via its tasks and subtasks
-     */
-    private void processGeneratedSchedule() {
-        //Automatically called when scheduler system begins
-    }
-
-    /**
      * Adds a task to the schedule
      *
      * @param task the task to be added to schedule
@@ -97,7 +125,7 @@ public class ScheduleManager {
     public void addTask(Task task) {
         resetSchedule();
         taskManager.add(task);
-        generateDistributiveSchedule();
+        generateSchedule();
     }
 
     /**
@@ -120,7 +148,7 @@ public class ScheduleManager {
         Task task = day.getParentTask(taskIndex);
         taskManager.remove(task);
         resetSchedule();
-        generateDistributiveSchedule();
+        generateSchedule();
         return task;
     }
 
@@ -139,7 +167,7 @@ public class ScheduleManager {
      * TODO will need to update to include the generate() methods
      * TODO will need to sync the client configuration settings to determine the type of scheduling
      */
-    private void resetSchedule() {
+    public void resetSchedule() {
         schedule = new LinkedList<>();
         PriorityQueue<Task> copy = new PriorityQueue<>();
         while(taskManager.size() > 0) {
@@ -155,46 +183,41 @@ public class ScheduleManager {
      * Generates an entire schedule following a distributive approach
      */
     private void generateSchedule() {
-        generateScheduleDays(lastDueDate);
         PriorityQueue<Task> copy = new PriorityQueue<>();
         PriorityQueue<Task> processed = new PriorityQueue<>();
+
+        schedule = new ArrayList<>(14);
+        Calendar today = Calendar.getInstance();
+        int idx = today.get(Calendar.DAY_OF_WEEK) - 1;
         int dayIdx = 0;
+
         while(taskManager.size() > 0) {
-            Day day = schedule.get(dayIdx);
-            while(day.hasSpareHours() && taskManager.size() > 0) {
-                Task task = taskManager.remove();
-                boolean validTaskStatus = day.addSubTask(task);
-                if(task.getSubTotalHoursRemaining() > 0) {
-                    processed.add(task);
-                } else {
-                    copy.add(task);
-                    errorCount += validTaskStatus ? 0 : 1;
-                    if(!validTaskStatus || !day.hasSpareHours()) {
-                        while(taskManager.size() > 0 && taskManager.peek().getDueDate().equals(day.getDate())) {
-                            copy.add(taskManager.peek());
-                            day.addSubTask(taskManager.remove());
-                            errorCount++;
-                        }
-                    }
-                }
-            }
-            while(processed.size() > 0) {
-                taskManager.add(processed.remove());
-            }
+            Day day = null; //TODO              // schedule.add(new Day(week[idx % 7], i));
+            assignDay(day, copy, processed);
         }
         this.taskManager = copy;
     }
 
-    /**
-     * Adds all the standardized days to the schedule
-     *
-     */
-    private void generateScheduleDays() {
-        schedule = new ArrayList<>(lastDueDate);
-        Calendar today = Calendar.getInstance();
-        int idx = today.get(Calendar.DAY_OF_WEEK) - 1;
-        for(int i = 0; i < lastDueDate; i++, idx++) {
-            schedule.add(new Day(week[idx % 7], i));
+    private void assignDay(Day day, PriorityQueue<Task> copy, PriorityQueue<Task> processed) {
+        while(day.hasSpareHours() && taskManager.size() > 0) {
+            Task task = taskManager.remove();
+            boolean validTaskStatus = day.addSubTask(task);
+            if(task.getSubTotalHoursRemaining() > 0) {
+                processed.add(task);
+            } else {
+                copy.add(task);
+                errorCount += validTaskStatus ? 0 : 1;
+                if(!validTaskStatus || !day.hasSpareHours()) {
+                    while(taskManager.size() > 0 && taskManager.peek().getDueDate().equals(day.getDate())) {
+                        copy.add(taskManager.peek());
+                        day.addSubTask(taskManager.remove());
+                        errorCount++;
+                    }
+                }
+            }
+        }
+        while(processed.size() > 0) {
+            taskManager.add(processed.remove());
         }
     }
 
@@ -212,7 +235,7 @@ public class ScheduleManager {
         if(schedule.isEmpty()) {
             System.out.println("Schedule is empty");
         } else {
-            IOProcessing.writeDay(schedule.getFirst(), errorCount, null);
+            IOProcessing.writeDay(schedule.get(0), errorCount, null);
         }
     }
 

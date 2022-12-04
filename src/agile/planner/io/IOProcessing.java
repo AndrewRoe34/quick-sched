@@ -3,7 +3,7 @@ package agile.planner.io;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
@@ -42,7 +42,7 @@ public class IOProcessing {
      * @param errorCount number of errors with the schedule
      * @param output PrintStream for where output is directed
      */
-    public static void writeSchedule(LinkedList<Day> list, int errorCount, PrintStream output) {
+    public static void writeSchedule(List<Day> list, int errorCount, PrintStream output) {
         if(output == null) {
             output = System.out;
         }
@@ -61,7 +61,7 @@ public class IOProcessing {
      * Processes the specified file for the list of all specified Tasks
      *
      * @param filename file to be processed
-     * @return PriorityQueue of all Tasks from the file
+     * @return last due date for Task
      * @throws FileNotFoundException if file does not exist
      */
     public static int readTasks(String filename, PriorityQueue<Task> pq) throws FileNotFoundException {

@@ -19,7 +19,7 @@ public class EventLog {
     /** Singleton instance for EventLog */
     private static EventLog instance;
     /** PrintStream for outputting to log */
-    private PrintStream output;
+    private final PrintStream output;
 
     /**
      * Primary private constructor for EventLog
