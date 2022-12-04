@@ -64,18 +64,32 @@ public class IOProcessing {
      * @return PriorityQueue of all Tasks from the file
      * @throws FileNotFoundException if file does not exist
      */
-    public static PriorityQueue<Task> readSchedule(String filename) throws FileNotFoundException {
-        PriorityQueue<Task> pq = new PriorityQueue<>();
+    public static int readTasks(String filename, PriorityQueue<Task> pq) throws FileNotFoundException {
         Scanner fileScanner = new Scanner(new File(filename));
         fileScanner.useDelimiter(",|\\r\\n|\\n");
+        int maxDate = 0;
         while(fileScanner.hasNextLine()) {
             String name = fileScanner.next();
             int hours = fileScanner.nextInt();
             int date = fileScanner.nextInt();
             pq.add(new Task(name, hours, date));
+            maxDate = Math.max(maxDate, date);
         }
         fileScanner.close();
-        return pq;
+        return maxDate;
     }
 
+    /**
+     * Processes the cfg file for the contents of the week
+     *
+     * @return int array for number of hours for each day
+     */
+    public static int[] readCfg() throws FileNotFoundException {
+        Scanner cfgScanner = new Scanner(new File("week.cfg"));
+        int[] week = new int[7];
+        for(int i = 0; i < week.length; i++) {
+            week[i] = cfgScanner.nextInt();
+        }
+        return week;
+    }
 }

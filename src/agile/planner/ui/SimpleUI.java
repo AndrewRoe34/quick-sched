@@ -95,7 +95,7 @@ public class SimpleUI {
                 scheduleManager.outputScheduleToFile("output/" + filename);
             } else if("read".equals(input)) {
                 String filename = strScanner.next();
-                scheduleManager.processTasks(filename);
+                scheduleManager.processSchedule(filename);
             } else if("quit".equals(input)) {
                 break;
             } else if("man".equals(input)) {

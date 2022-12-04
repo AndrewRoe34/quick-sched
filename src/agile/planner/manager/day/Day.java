@@ -46,7 +46,7 @@ public class Day {
     }
 
     /**
-     * Sets the Date for the Day
+     * Sets the due date for the Day
      *
      * @param incrementation number of days from present for the Date to be set
      */

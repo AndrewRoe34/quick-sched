@@ -2,8 +2,7 @@ package agile.planner.manager;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.LinkedList;
-import java.util.PriorityQueue;
+import java.util.*;
 
 import agile.planner.io.IOProcessing;
 import agile.planner.manager.day.Day;
@@ -17,13 +16,19 @@ import agile.planner.task.Task;
 public class ScheduleManager {
 
     /** LinkedList of Days representing a single schedule */
-    private LinkedList<Day> schedule;
+    private List<Day> schedule;
     /** PriorityQueue of all Tasks in sorted order */
     private PriorityQueue<Task> taskManager;
     /** Singleton for ScheduleManager */
     private static ScheduleManager singleton;
+    /** Standard number of hours for the week */
+    private int[] week;
+    /** Stores custom hours for future days */
+    private Map<Integer, Integer> customHours;
     /** Total count for the number of errors that occurred in schedule generation */
     private int errorCount;
+    /** Last day Task is due */
+    private int lastDueDate;
 
     /**
      * Private constructor of ScheduleManager
@@ -32,7 +37,21 @@ public class ScheduleManager {
     private ScheduleManager() {
         taskManager = new PriorityQueue<>();
         schedule = new LinkedList<>();
+        customHours = new HashMap<>();
+        taskManager = new PriorityQueue<>();
+        processSettingsCfg();
         processGeneratedSchedule();
+    }
+
+    /**
+     * Processes all the settings configurations to be used
+     */
+    private void processSettingsCfg() {
+        try {
+            week = IOProcessing.readCfg();
+        } catch (FileNotFoundException e) {
+            System.out.println("Could not process settings cfg");
+        }
     }
 
     /**
@@ -52,12 +71,12 @@ public class ScheduleManager {
      *
      * @param filename file to be processed
      */
-    public void processTasks(String filename) {
+    public void processSchedule(String filename) {
         try {
-            taskManager = IOProcessing.readSchedule("data/" + filename);
-            schedule = new LinkedList<>();
+            lastDueDate = IOProcessing.readTasks("data/" + filename, taskManager);
+            schedule = new ArrayList<>();
             errorCount = 0;
-            generateDistributiveSchedule();
+            generateSchedule();
         } catch (FileNotFoundException e) {
             System.out.println("File could not be located");
         }
@@ -135,12 +154,13 @@ public class ScheduleManager {
     /**
      * Generates an entire schedule following a distributive approach
      */
-    private void generateDistributiveSchedule() {
+    private void generateSchedule() {
+        generateScheduleDays(lastDueDate);
         PriorityQueue<Task> copy = new PriorityQueue<>();
         PriorityQueue<Task> processed = new PriorityQueue<>();
-        int dayCount = 0;
+        int dayIdx = 0;
         while(taskManager.size() > 0) {
-            Day day = new Day(8, dayCount++);
+            Day day = schedule.get(dayIdx);
             while(day.hasSpareHours() && taskManager.size() > 0) {
                 Task task = taskManager.remove();
                 boolean validTaskStatus = day.addSubTask(task);
@@ -161,9 +181,21 @@ public class ScheduleManager {
             while(processed.size() > 0) {
                 taskManager.add(processed.remove());
             }
-            schedule.addLast(day);
         }
         this.taskManager = copy;
+    }
+
+    /**
+     * Adds all the standardized days to the schedule
+     *
+     */
+    private void generateScheduleDays() {
+        schedule = new ArrayList<>(lastDueDate);
+        Calendar today = Calendar.getInstance();
+        int idx = today.get(Calendar.DAY_OF_WEEK) - 1;
+        for(int i = 0; i < lastDueDate; i++, idx++) {
+            schedule.add(new Day(week[idx % 7], i));
+        }
     }
 
     /**

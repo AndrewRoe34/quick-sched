@@ -45,7 +45,7 @@ public class IOProcessingTest {
     @Test
     public void testReadSchedule() {
         try {
-            PriorityQueue<Task> pq = IOProcessing.readSchedule("data/break.txt");
+            PriorityQueue<Task> pq = IOProcessing.readTasks("data/break.txt");
             assertEquals("A", pq.remove().getName());
             assertEquals("B", pq.remove().getName());
             assertEquals("C", pq.remove().getName());
