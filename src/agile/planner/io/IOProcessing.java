@@ -68,12 +68,14 @@ public class IOProcessing {
         Scanner fileScanner = new Scanner(new File(filename));
         fileScanner.useDelimiter(",|\\r\\n|\\n");
         int maxDate = 0;
+        int id = 0;
         while(fileScanner.hasNextLine()) {
             String name = fileScanner.next();
             int hours = fileScanner.nextInt();
             int date = fileScanner.nextInt();
-            pq.add(new Task(name, hours, date));
+            pq.add(new Task(id, name, hours, date));
             maxDate = Math.max(maxDate, date);
+            id++;
         }
         fileScanner.close();
         return maxDate;

@@ -13,6 +13,8 @@ import agile.planner.util.Time;
  */
 public class Task implements Comparable<Task> {
 
+    /** ID of the Task */
+    private int id;
     /** Name of the Task */
     private String name;
     /** Due date of the Task */
@@ -31,10 +33,20 @@ public class Task implements Comparable<Task> {
      * @param hours number of hours for Task
      * @param incrementation number of days till due date for Task
      */
-    public Task(String name, int hours, int incrementation) {
+    public Task(int id, String name, int hours, int incrementation) {
+        setId(id);
         setName(name);
         setTotalHours(hours);
         setDueDate(incrementation);
+    }
+
+    /**
+     * Sets the ID for a Task
+     *
+     * @param id ID for Task
+     */
+    private void setId(int id) { //TODO need exception for case where ID is negative
+        this.id = id;
     }
 
     /**
@@ -81,6 +93,8 @@ public class Task implements Comparable<Task> {
             return 0;
         }
     }
+
+    //TODO need an equals method
 
     /**
      * Gets the name of the Task
@@ -160,6 +174,10 @@ public class Task implements Comparable<Task> {
     @Override
     public String toString() {
         return "Task [name=" + name + ", total=" + totalHours + "]";
+    }
+
+    public int getId() { //TODO need to add id to every task
+        return 0;
     }
 
 

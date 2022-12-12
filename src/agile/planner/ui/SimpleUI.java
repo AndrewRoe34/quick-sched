@@ -78,7 +78,7 @@ public class SimpleUI {
                 String name = strScanner.next();
                 int hours = strScanner.nextInt();
                 int dueDate = strScanner.nextInt();
-                scheduleManager.addTask(new Task(name, hours, dueDate));
+                scheduleManager.addTask(new Task(0, name, hours, dueDate));
             } else if("remove".equals(input)) {
                 int dayIndex = strScanner.nextInt();
                 int taskIndex = strScanner.nextInt();

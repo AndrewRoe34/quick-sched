@@ -46,6 +46,13 @@ public class Day {
     }
 
     /**
+     * Gets the total capacity for the Day
+     *
+     * @return total capacity for Day
+     */
+    public int getCapacity() { return this.capacity; }
+
+    /**
      * Sets the due date for the Day
      *
      * @param incrementation number of days from present for the Date to be set
@@ -131,7 +138,16 @@ public class Day {
      * @return number of free hours available for scheduling
      */
     public int getSpareHours() {
-        return capacity - size;
+        return Math.max(capacity - size, 0);
+    }
+
+    /**
+     * Gets the number of hours assigned for a given day
+     *
+     * @return number of hours assigned for day
+     */
+    public int getHoursFilled() {
+        return -this.size;
     }
 
     /**

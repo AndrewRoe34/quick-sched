@@ -8,6 +8,7 @@ import agile.planner.io.IOProcessing;
 import agile.planner.manager.day.Day;
 import agile.planner.task.Task;
 import agile.planner.util.EventLog;
+import agile.planner.util.Time;
 
 /**
  * Handles the generation and management of the overall schedule
@@ -45,6 +46,7 @@ public class ScheduleManager {
         customHours = new HashMap<>();
         taskManager = new PriorityQueue<>();
         eventLog = EventLog.getEventLog();
+        eventLog.reportUserLogin();
         processSettingsCfg();
     }
 
@@ -55,6 +57,7 @@ public class ScheduleManager {
         try {
             week = IOProcessing.readCfg();
         } catch (FileNotFoundException e) {
+            eventLog.reportException(e);
             System.out.println("Could not process settings cfg");
         }
     }
@@ -81,6 +84,7 @@ public class ScheduleManager {
     public void setGlobalHours(int day, int hours) {
         if(day >= 0 && day < 7 && hours >= 0 && hours <= 24) {
             week[day] = hours;
+            eventLog.reportWeekEdit(Time.getFormattedCalendarInstance(day), hours, true);
         } else {
             throw new IllegalArgumentException("Invalid data for standard days of week");
         }
@@ -95,6 +99,7 @@ public class ScheduleManager {
     public void setCustomHours(int day, int hours) {
         if(day >= 0 && hours >= 0 && hours <= 24) {
             customHours.put(day, hours);
+            eventLog.reportWeekEdit(Time.getFormattedCalendarInstance(day), hours, false);
         } else {
             throw new IllegalArgumentException("Invalid data for custom days of week");
         }
@@ -113,6 +118,7 @@ public class ScheduleManager {
             errorCount = 0;
             generateSchedule();
         } catch (FileNotFoundException e) {
+            eventLog.reportException(e);
             System.out.println("File could not be located");
         }
     }
@@ -123,9 +129,8 @@ public class ScheduleManager {
      * @param task the task to be added to schedule
      */
     public void addTask(Task task) {
-        resetSchedule();
         taskManager.add(task);
-        generateSchedule();
+        eventLog.reportTaskAction(task, 0);
     }
 
     /**
@@ -147,8 +152,7 @@ public class ScheduleManager {
         }
         Task task = day.getParentTask(taskIndex);
         taskManager.remove(task);
-        resetSchedule();
-        generateSchedule();
+        eventLog.reportTaskAction(task, 1);
         return task;
     }
 
@@ -158,16 +162,17 @@ public class ScheduleManager {
      * @param dayIndex day that the task exists
      * @param taskIndex index of the task to be removed
      */
-    public void editTask(int dayIndex, int taskIndex) {
+    public void editTask(int dayIndex, int taskIndex, String name, int hours, int incrementation) {
+        Task t1 = removeTask(dayIndex, taskIndex);
 
+        //TODO need to finish rest of code as well as add more parameters for customization
     }
 
     /**
      * Resets all the tasks as well as the entire schedule for it to be regenerated
      * TODO will need to update to include the generate() methods
-     * TODO will need to sync the client configuration settings to determine the type of scheduling
      */
-    public void resetSchedule() {
+    private void resetSchedule() {
         schedule = new LinkedList<>();
         PriorityQueue<Task> copy = new PriorityQueue<>();
         while(taskManager.size() > 0) {
@@ -182,9 +187,12 @@ public class ScheduleManager {
     /**
      * Generates an entire schedule following a distributive approach
      */
-    private void generateSchedule() {
-        PriorityQueue<Task> copy = new PriorityQueue<>();
-        PriorityQueue<Task> processed = new PriorityQueue<>();
+    public void generateSchedule() {
+        resetSchedule();
+        //Tasks that are "finished scheduling" are added here
+        PriorityQueue<Task> complete = new PriorityQueue<>();
+        //Tasks that are incomplete and need to be scheduled for later days
+        PriorityQueue<Task> incomplete = new PriorityQueue<>();
 
         schedule = new ArrayList<>(14);
         Calendar today = Calendar.getInstance();
@@ -193,31 +201,38 @@ public class ScheduleManager {
 
         while(taskManager.size() > 0) {
             Day day = null; //TODO              // schedule.add(new Day(week[idx % 7], i));
-            assignDay(day, copy, processed);
+            assignDay(day, complete, incomplete);
         }
-        this.taskManager = copy;
+        this.taskManager = complete;
     }
 
-    private void assignDay(Day day, PriorityQueue<Task> copy, PriorityQueue<Task> processed) {
+    /**
+     * Assigns each day a set of SubTasks
+     *
+     * @param day Day being processed
+     * @param complete Tasks that are "finished scheduling" are added here
+     * @param incomplete Tasks that are incomplete and need to be scheduled for later days
+     */
+    private void assignDay(Day day, PriorityQueue<Task> complete, PriorityQueue<Task> incomplete) {
         while(day.hasSpareHours() && taskManager.size() > 0) {
             Task task = taskManager.remove();
             boolean validTaskStatus = day.addSubTask(task);
             if(task.getSubTotalHoursRemaining() > 0) {
-                processed.add(task);
+                incomplete.add(task);
             } else {
-                copy.add(task);
+                complete.add(task);
                 errorCount += validTaskStatus ? 0 : 1;
                 if(!validTaskStatus || !day.hasSpareHours()) {
                     while(taskManager.size() > 0 && taskManager.peek().getDueDate().equals(day.getDate())) {
-                        copy.add(taskManager.peek());
+                        complete.add(taskManager.peek());
                         day.addSubTask(taskManager.remove());
                         errorCount++;
                     }
                 }
             }
         }
-        while(processed.size() > 0) {
-            taskManager.add(processed.remove());
+        while(incomplete.size() > 0) {
+            taskManager.add(incomplete.remove());
         }
     }
 
@@ -225,7 +240,7 @@ public class ScheduleManager {
      * Generates an entire schedule following the rushed approach
      */
     private void generateCrammedSchedule() {
-        //TODO will be implemented in v0.9.0
+        //TODO will be implemented in v0.4.0
     }
 
     /**
@@ -261,6 +276,7 @@ public class ScheduleManager {
             IOProcessing.writeSchedule(schedule, errorCount, output);
             output.close();
         } catch (FileNotFoundException e) {
+            eventLog.reportException(e);
             System.out.println("Error with processing file");
         }
     }
@@ -271,7 +287,16 @@ public class ScheduleManager {
      * @return boolean value for whether schedule is empty
      */
     public boolean scheduleIsEmpty() {
+
         return schedule.isEmpty();
+    }
+
+    /**
+     * Shuts down the system
+     */
+    public void quit() {
+        eventLog.reportExitSession();
+        System.exit(0);
     }
 
 }

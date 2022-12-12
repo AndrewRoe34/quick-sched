@@ -45,11 +45,13 @@ public class IOProcessingTest {
     @Test
     public void testReadSchedule() {
         try {
-            PriorityQueue<Task> pq = IOProcessing.readTasks("data/break.txt");
+            PriorityQueue<Task> pq = new PriorityQueue<>();
+            int lastDueInDays = IOProcessing.readTasks("data/break.txt", pq);
             assertEquals("A", pq.remove().getName());
             assertEquals("B", pq.remove().getName());
             assertEquals("C", pq.remove().getName());
             assertEquals("D", pq.remove().getName());
+            assertEquals(2, lastDueInDays);
             assertTrue(pq.isEmpty());
         } catch (FileNotFoundException e) {
             fail();
