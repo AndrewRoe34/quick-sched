@@ -33,8 +33,8 @@ public class Task implements Comparable<Task> {
      * @param hours number of hours for Task
      * @param incrementation number of days till due date for Task
      */
-    public Task(int id, String name, int hours, int incrementation) {
-        setId(id);
+    public Task(String name, int hours, int incrementation) {
+        //setId(id);
         setName(name);
         setTotalHours(hours);
         setDueDate(incrementation);

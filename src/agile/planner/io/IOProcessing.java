@@ -73,7 +73,7 @@ public class IOProcessing {
             String name = fileScanner.next();
             int hours = fileScanner.nextInt();
             int date = fileScanner.nextInt();
-            pq.add(new Task(id, name, hours, date));
+            pq.add(new Task(name, hours, date));
             maxDate = Math.max(maxDate, date);
             id++;
         }
