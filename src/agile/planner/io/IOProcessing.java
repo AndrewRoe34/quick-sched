@@ -61,21 +61,20 @@ public class IOProcessing {
      * Processes the specified file for the list of all specified Tasks
      *
      * @param filename file to be processed
+     * @param taskId
      * @return last due date for Task
      * @throws FileNotFoundException if file does not exist
      */
-    public static int readTasks(String filename, PriorityQueue<Task> pq) throws FileNotFoundException {
+    public static int readTasks(String filename, PriorityQueue<Task> pq, int taskId) throws FileNotFoundException {
         Scanner fileScanner = new Scanner(new File(filename));
         fileScanner.useDelimiter(",|\\r\\n|\\n");
         int maxDate = 0;
-        int id = 0;
         while(fileScanner.hasNextLine()) {
             String name = fileScanner.next();
             int hours = fileScanner.nextInt();
             int date = fileScanner.nextInt();
-            pq.add(new Task(name, hours, date));
+            pq.add(new Task(taskId++, name, hours, date));
             maxDate = Math.max(maxDate, date);
-            id++;
         }
         fileScanner.close();
         return maxDate;

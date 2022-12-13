@@ -31,6 +31,8 @@ public class ScheduleManager {
     private Map<Integer, Integer> customHours;
     /** Total count for the number of errors that occurred in schedule generation */
     private int errorCount;
+    /** ID counter for Tasks */
+    private int taskId;
     /** Last day Task is due */
     private int lastDueDate;
 
@@ -112,7 +114,9 @@ public class ScheduleManager {
      */
     public void processTasks(String filename) {
         try {
-            lastDueDate = IOProcessing.readTasks("data/" + filename, taskManager);
+            int pqSize = taskManager.size();
+            lastDueDate = IOProcessing.readTasks("data/" + filename, taskManager, taskId);
+            taskId += taskManager.size() - pqSize;
             schedule = new ArrayList<>();
             errorCount = 0;
             generateSchedule();
@@ -125,9 +129,12 @@ public class ScheduleManager {
     /**
      * Adds a task to the schedule
      *
-     * @param task the task to be added to schedule
+     * @param name name of Task
+     * @param hours number of hours for Task
+     * @param incrementation number of days till due date for Task
      */
-    public void addTask(Task task) {
+    public void addTask(String name, int hours, int incrementation) {
+        Task task = new Task(taskId++, name, hours, incrementation);
         taskManager.add(task);
         eventLog.reportTaskAction(task, 0);
     }
@@ -201,7 +208,7 @@ public class ScheduleManager {
         Day currDay;
 
         while(taskManager.size() > 0) {
-            currDay = new Day(week[idx++ % 7], dayCount);
+            currDay = new Day(week[idx++ % 7], dayCount++);
             schedule.add(currDay);
             // TODO need to make hours more customizable
             assignDay(currDay, complete, incomplete);
@@ -226,6 +233,7 @@ public class ScheduleManager {
                 incomplete.add(task);
             } else {
                 complete.add(task);
+                eventLog.reportDayAction(day, task, validTaskStatus); //TODO test to see if works
                 errorCount += validTaskStatus ? 0 : 1;
                 if(!validTaskStatus || !day.hasSpareHours()) {
                     while(taskManager.size() > 0 && taskManager.peek().getDueDate().equals(day.getDate())) {

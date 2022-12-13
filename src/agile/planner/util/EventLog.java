@@ -67,7 +67,8 @@ public class EventLog {
         output.print(" ID=" + task.getId());
         output.print(", NAME=" + task.getName());
         output.print(", HOURS=" + task.getTotalHours());
-        output.println(", DUE_DATE=" + task.getDueDate()); //TODO need to format it with sdf
+        SimpleDateFormat sdf2 = new SimpleDateFormat("MM-dd-yyyy");
+        output.println(", DUE_DATE=" + sdf2.format(task.getDueDate().getTime())); //TODO need to format it with sdf
     }
 
     /**
@@ -94,8 +95,8 @@ public class EventLog {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
         output.print(" CAPACITY=" + day.getCapacity());
-        output.print(", HOURS REMAINING=" + day.getSpareHours());
-        output.print(", HOURS FILLED=" + day.getHoursFilled());
+        output.print(", HOURS_REMAINING=" + day.getSpareHours());
+        output.print(", HOURS_FILLED=" + day.getHoursFilled());
         output.print(", TASK ADDED=" + task.getId());
         output.println(", OVERFLOW=" + !nonOverflow);
     }
@@ -106,7 +107,7 @@ public class EventLog {
     public void reportSchedulingStart() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.println("Scheduling has begun...");
+        output.println(" Scheduling has begun...");
     }
 
     /**
@@ -115,7 +116,7 @@ public class EventLog {
     public void reportSchedulingFinish() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.println("Scheduling has finished...");
+        output.println(" Scheduling has finished...");
     }
 
     /**

@@ -147,7 +147,7 @@ public class Day {
      * @return number of hours assigned for day
      */
     public int getHoursFilled() {
-        return -this.size;
+        return this.size;
     }
 
     /**

@@ -46,7 +46,7 @@ public class IOProcessingTest {
     public void testReadSchedule() {
         try {
             PriorityQueue<Task> pq = new PriorityQueue<>();
-            int lastDueInDays = IOProcessing.readTasks("data/break.txt", pq);
+            int lastDueInDays = IOProcessing.readTasks("data/break.txt", pq, 0);
             assertEquals("A", pq.remove().getName());
             assertEquals("B", pq.remove().getName());
             assertEquals("C", pq.remove().getName());

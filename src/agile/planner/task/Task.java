@@ -29,12 +29,13 @@ public class Task implements Comparable<Task> {
     /**
      * Primary constructor for Task
      *
+     * @param id ID of Task
      * @param name name of Task
      * @param hours number of hours for Task
      * @param incrementation number of days till due date for Task
      */
-    public Task(String name, int hours, int incrementation) {
-        //setId(id);
+    public Task(int id, String name, int hours, int incrementation) {
+        setId(id);
         setName(name);
         setTotalHours(hours);
         setDueDate(incrementation);
@@ -177,7 +178,7 @@ public class Task implements Comparable<Task> {
     }
 
     public int getId() { //TODO need to add id to every task
-        return 0;
+        return id;
     }
 
 
