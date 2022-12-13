@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"agile.planner.io"},{"l":"agile.planner.manager"},{"l":"agile.planner.manager.day"},{"l":"agile.planner.task"},{"l":"agile.planner.ui"},{"l":"agile.planner.util"},{"l":"All Packages","url":"allpackages-index.html"}]

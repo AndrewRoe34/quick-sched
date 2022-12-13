@@ -75,7 +75,7 @@ public class DayTest {
         Day d1 = new Day(8, days);
         d1.addSubTask(new Task("Future", 10, days));
         String expected = "01-01-3000\n"
-                + "1. Future, 10hr, Due 01-01-3000 OVERFLOW\n";
+                + "-Future, 10hr, Due 01-01-3000 OVERFLOW\n";
         assertEquals(expected, d1.toString());
     }
 

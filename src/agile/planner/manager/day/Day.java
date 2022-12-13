@@ -163,10 +163,8 @@ public class Day {
     public String toString() {
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
         StringBuilder sb = new StringBuilder(sdf.format(this.date.getTime()) + "\n");
-        int count = 1;
         for(SubTask st : subtaskManager) {
-            sb.append(count).append(". ");
-            count++;
+            sb.append("-");
             sb.append(st.getParentTask().getName()).append(", ");
             sb.append(st.getSubTaskHours()).append("hr, Due ");
             sb.append(sdf.format(st.getParentTask().getDueDate().getTime()));

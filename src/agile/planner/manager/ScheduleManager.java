@@ -40,12 +40,12 @@ public class ScheduleManager {
      *
      * @throws FileNotFoundException if event log file does not exist
      */
-    private ScheduleManager() throws FileNotFoundException {
+    private ScheduleManager(boolean debug) throws FileNotFoundException {
         taskManager = new PriorityQueue<>();
         schedule = new LinkedList<>();
         customHours = new HashMap<>();
         taskManager = new PriorityQueue<>();
-        eventLog = EventLog.getEventLog();
+        eventLog = EventLog.getEventLog(debug);
         eventLog.reportUserLogin();
         processSettingsCfg();
     }
@@ -58,7 +58,6 @@ public class ScheduleManager {
             week = IOProcessing.readCfg();
         } catch (FileNotFoundException e) {
             eventLog.reportException(e);
-            System.out.println("Could not process settings cfg");
         }
     }
 
@@ -68,9 +67,9 @@ public class ScheduleManager {
      * @return singleton of ScheduleManager
      * @throws FileNotFoundException if event log file does not exist
      */
-    public static ScheduleManager getSingleton() throws FileNotFoundException {
+    public static ScheduleManager getSingleton(boolean debug) throws FileNotFoundException {
         if(singleton == null) {
-            singleton = new ScheduleManager();
+            singleton = new ScheduleManager(debug);
         }
         return singleton;
     }
@@ -111,7 +110,7 @@ public class ScheduleManager {
      *
      * @param filename file to be processed
      */
-    public void processSchedule(String filename) {
+    public void processTasks(String filename) {
         try {
             lastDueDate = IOProcessing.readTasks("data/" + filename, taskManager);
             schedule = new ArrayList<>();
@@ -188,6 +187,7 @@ public class ScheduleManager {
      * Generates an entire schedule following a distributive approach
      */
     public void generateSchedule() {
+        eventLog.reportSchedulingStart();
         resetSchedule();
         //Tasks that are "finished scheduling" are added here
         PriorityQueue<Task> complete = new PriorityQueue<>();
@@ -197,13 +197,17 @@ public class ScheduleManager {
         schedule = new ArrayList<>(14);
         Calendar today = Calendar.getInstance();
         int idx = today.get(Calendar.DAY_OF_WEEK) - 1;
-        int dayIdx = 0;
+        int dayCount = 0;
+        Day currDay;
 
         while(taskManager.size() > 0) {
-            Day day = null; //TODO              // schedule.add(new Day(week[idx % 7], i));
-            assignDay(day, complete, incomplete);
+            currDay = new Day(week[idx++ % 7], dayCount);
+            schedule.add(currDay);
+            // TODO need to make hours more customizable
+            assignDay(currDay, complete, incomplete);
         }
         this.taskManager = complete;
+        eventLog.reportSchedulingFinish();
     }
 
     /**
@@ -218,14 +222,17 @@ public class ScheduleManager {
             Task task = taskManager.remove();
             boolean validTaskStatus = day.addSubTask(task);
             if(task.getSubTotalHoursRemaining() > 0) {
+                eventLog.reportDayAction(day, task, validTaskStatus);
                 incomplete.add(task);
             } else {
                 complete.add(task);
                 errorCount += validTaskStatus ? 0 : 1;
                 if(!validTaskStatus || !day.hasSpareHours()) {
                     while(taskManager.size() > 0 && taskManager.peek().getDueDate().equals(day.getDate())) {
-                        complete.add(taskManager.peek());
-                        day.addSubTask(taskManager.remove());
+                        Task dueTask = taskManager.remove();
+                        complete.add(dueTask);
+                        validTaskStatus = day.addSubTask(dueTask);
+                        eventLog.reportDayAction(day, dueTask, validTaskStatus);
                         errorCount++;
                     }
                 }

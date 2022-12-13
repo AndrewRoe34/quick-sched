@@ -27,7 +27,7 @@ public class EventLog {
      */
     private EventLog(boolean debug) throws FileNotFoundException {
         if(debug) {
-            output = new PrintStream(new FileOutputStream(FileDescriptor.out));
+            output = new PrintStream("system.log");
         } else {
             output = new PrintStream("C:\\Users\\" + System.getProperty("user.name") + "\\Documents\\AGILE Systems\\log.txt");
         }
@@ -67,7 +67,7 @@ public class EventLog {
         output.print(" ID=" + task.getId());
         output.print(", NAME=" + task.getName());
         output.print(", HOURS=" + task.getTotalHours());
-        output.println(", DUE_DATE=" + task.getDueDate());
+        output.println(", DUE_DATE=" + task.getDueDate()); //TODO need to format it with sdf
     }
 
     /**
@@ -80,7 +80,7 @@ public class EventLog {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
         output.print(" EDIT(DAY): GLOBAL=" + global);
-        output.print(", HOURS=" + hours);
+        output.println(", HOURS=" + hours);
     }
 
     /**
@@ -88,16 +88,34 @@ public class EventLog {
      *
      * @param day Day being utilized
      * @param task Task being added
-     * @param overflow overflow status for Day
+     * @param nonOverflow overflow status for Day
      */
-    public void reportDayAction(Day day, Task task, boolean overflow) {
+    public void reportDayAction(Day day, Task task, boolean nonOverflow) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
         output.print(" CAPACITY=" + day.getCapacity());
         output.print(", HOURS REMAINING=" + day.getSpareHours());
         output.print(", HOURS FILLED=" + day.getHoursFilled());
         output.print(", TASK ADDED=" + task.getId());
-        output.println(", OVERFLOW=" + overflow);
+        output.println(", OVERFLOW=" + !nonOverflow);
+    }
+
+    /**
+     * Reports the start of scheduling
+     */
+    public void reportSchedulingStart() {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.println("Scheduling has begun...");
+    }
+
+    /**
+     * Reports the end of scheduling
+     */
+    public void reportSchedulingFinish() {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.println("Scheduling has finished...");
     }
 
     /**

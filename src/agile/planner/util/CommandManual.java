@@ -1,4 +1,4 @@
-package agile.planner.io;
+package agile.planner.util;
 
 import java.util.HashMap;
 

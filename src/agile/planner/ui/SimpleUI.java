@@ -6,7 +6,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import agile.planner.io.CommandManual;
+import agile.planner.util.CommandManual;
 import agile.planner.manager.ScheduleManager;
 import agile.planner.task.Task;
 
@@ -25,7 +25,7 @@ public class SimpleUI {
     private final HashMap<String, String> commandManual;
 
     private SimpleUI() throws FileNotFoundException {
-        scheduleManager = ScheduleManager.getSingleton();
+        scheduleManager = ScheduleManager.getSingleton(false);
         commandManual = CommandManual.getSingleton().getCommandManual();
     }
 
@@ -72,7 +72,7 @@ public class SimpleUI {
                 System.out.println("list\nschedule\ntime\nadd\nremove\nedit\nday\nlog\nprint\nread\nquit");
             } else if("time".equals(input)) {
                 System.out.println(sdf.format(Calendar.getInstance().getTime()));
-            } else if("schedule".equals(input)) {
+            } else if("v_week".equals(input)) {
                 scheduleManager.outputScheduleToConsole();
             } else if("add".equals(input)) {
                 String name = strScanner.next();
@@ -87,31 +87,34 @@ public class SimpleUI {
                 }
             } else if("edit".equals(input)) {
 
-            } else if("day".equals(input)) {
+            } else if("v_day".equals(input)) {
                 scheduleManager.outputCurrentDayToConsole();
-            } else if("log".equals(input)) {
-
+            } else if("build".equals(input)) {
+                scheduleManager.generateSchedule();
             } else if("print".equals(input)) {
                 String filename = strScanner.next();
                 scheduleManager.outputScheduleToFile("output/" + filename);
             } else if("read".equals(input)) {
                 String filename = strScanner.next();
-                scheduleManager.processSchedule(filename);
+                scheduleManager.processTasks(filename);
             } else if("quit".equals(input)) {
-                break;
+                scheduleManager.quit();
             } else if("man".equals(input)) {
                 String command = strScanner.next();
                 if(commandManual.containsKey(command)) {
                     System.out.println(commandManual.get(command));
                 }
+            } else if("custom".equals(input)) {
+                scheduleManager.setCustomHours(0, 8);
+            } else if("global".equals(input)) {
+                scheduleManager.setGlobalHours(0, 8);
             } else {
                 System.out.println("Invalid command");
             }
         }
-        strScanner.close();
     }
 
-    /**
+    /**r
      * Starting point of the application from a terminal perspective
      *
      * @param args command line arguments (none used)

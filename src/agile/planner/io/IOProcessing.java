@@ -87,7 +87,7 @@ public class IOProcessing {
      * @return int array for number of hours for each day
      */
     public static int[] readCfg() throws FileNotFoundException {
-        Scanner cfgScanner = new Scanner(new File("week.cfg"));
+        Scanner cfgScanner = new Scanner(new File("settings/week.cfg"));
         int[] week = new int[7];
         for(int i = 0; i < week.length; i++) {
             week[i] = cfgScanner.nextInt();
