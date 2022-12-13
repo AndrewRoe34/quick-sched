@@ -8,7 +8,6 @@ import java.util.Scanner;
 
 import agile.planner.util.CommandManual;
 import agile.planner.manager.ScheduleManager;
-import agile.planner.task.Task;
 
 /**
  * Basic Command Line UI
