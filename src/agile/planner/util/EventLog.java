@@ -94,7 +94,8 @@ public class EventLog {
     public void reportDayAction(Day day, Task task, boolean nonOverflow) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" CAPACITY=" + day.getCapacity());
+        output.print(" DAY_ID=" + day.getId());
+        output.print(", CAPACITY=" + day.getCapacity());
         output.print(", HOURS_REMAINING=" + day.getSpareHours());
         output.print(", HOURS_FILLED=" + day.getHoursFilled());
         output.print(", TASK ADDED=" + task.getId());
@@ -117,6 +118,21 @@ public class EventLog {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
         output.println(" Scheduling has finished...");
+    }
+
+    /**
+     * Reports the display of a schedule either to a file or to standard output
+     *
+     * @param days number of Days in schedule
+     * @param numTasks number of Tasks in schedule
+     * @param status whether output is directed to STDOUT or not
+     */
+    public void reportDisplaySchedule(int days, int numTasks, boolean status) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" Display Schedule: DAYS=" + days);
+        output.print(", NUM_TASKS=" + numTasks);
+        output.println(", STDOUT=" + status);
     }
 
     /**

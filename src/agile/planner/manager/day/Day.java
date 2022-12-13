@@ -23,14 +23,18 @@ public class Day {
     private int size;
     /** TreeSet of all SubTasks */
     private final LinkedList<SubTask> subtaskManager;
+    /** ID for the specific Day */
+    private int id;
 
     /**
      * Primary constructor for Day
      *
+     * @param id ID specifier for Day
      * @param capacity total capacity for the day
      * @param incrementation number of days from present day (0=today, 1=tomorrow, ...)
      */
-    public Day(int capacity, int incrementation) {
+    public Day(int id, int capacity, int incrementation) {
+        setId(id);
         setCapacity(capacity);
         setDate(incrementation);
         subtaskManager = new LinkedList<>();
@@ -132,6 +136,14 @@ public class Day {
         return subtaskManager.size();
     }
 
+    private void setId(int id) {
+        this.id = id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
     /**
      * Gets spare hours from the Day
      *
@@ -175,5 +187,4 @@ public class Day {
         }
         return sb.toString();
     }
-
 }

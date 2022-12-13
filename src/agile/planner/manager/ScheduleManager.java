@@ -33,6 +33,8 @@ public class ScheduleManager {
     private int errorCount;
     /** ID counter for Tasks */
     private int taskId;
+    /** ID specifier for each Day */
+    private int dayId;
     /** Last day Task is due */
     private int lastDueDate;
 
@@ -188,6 +190,7 @@ public class ScheduleManager {
         }
         taskManager = copy;
         errorCount = 0;
+        dayId = 0;
     }
 
     /**
@@ -208,7 +211,7 @@ public class ScheduleManager {
         Day currDay;
 
         while(taskManager.size() > 0) {
-            currDay = new Day(week[idx++ % 7], dayCount++);
+            currDay = new Day(dayId++, week[idx++ % 7], dayCount++);
             schedule.add(currDay);
             // TODO need to make hours more customizable
             assignDay(currDay, complete, incomplete);
@@ -277,6 +280,7 @@ public class ScheduleManager {
             System.out.println("Schedule is empty");
         } else {
             IOProcessing.writeSchedule(schedule, errorCount, null);
+            eventLog.reportDisplaySchedule(schedule.size(), taskManager.size(), true);
         }
     }
 
@@ -290,6 +294,7 @@ public class ScheduleManager {
             PrintStream output = new PrintStream(filename);
             IOProcessing.writeSchedule(schedule, errorCount, output);
             output.close();
+            eventLog.reportDisplaySchedule(schedule.size(), taskManager.size(), false);
         } catch (FileNotFoundException e) {
             eventLog.reportException(e);
             System.out.println("Error with processing file");
