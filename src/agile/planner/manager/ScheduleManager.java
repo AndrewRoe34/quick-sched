@@ -270,6 +270,7 @@ public class ScheduleManager {
             System.out.println("Schedule is empty");
         } else {
             IOProcessing.writeDay(schedule.get(0), errorCount, null);
+            eventLog.reportDaySchedule(schedule.get(0));
         }
     }
 

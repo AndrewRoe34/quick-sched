@@ -121,6 +121,21 @@ public class EventLog {
     }
 
     /**
+     * Reports the display of the schedule for the current d ay
+     *
+     * @param day Day being displayed to STDOUT
+     */
+    public void reportDaySchedule(Day day) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" Display Day_Schedule: ");
+        output.print("CAPACITY=" + day.getCapacity());
+        output.print(", HOURS_FILLED=" + day.getHoursFilled());
+        output.println(", NUM_TASKS=" + day.getNumSubTasks());
+
+    }
+
+    /**
      * Reports the display of a schedule either to a file or to standard output
      *
      * @param days number of Days in schedule
