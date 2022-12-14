@@ -147,6 +147,17 @@ public class EventLog {
     }
 
     /**
+     * Reports the processing of tasks from a file
+     *
+     * @param filename name of file that contains list of Tasks
+     */
+    public void reportProcessTasks(String filename) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.println(" Reading Tasks: FILE=" + filename);
+    }
+
+    /**
      * Reports the User's most recent login
      */
     public void reportUserLogin() {
@@ -164,5 +175,4 @@ public class EventLog {
         output.println(" Current session has ended...");
         output.close();
     }
-
 }

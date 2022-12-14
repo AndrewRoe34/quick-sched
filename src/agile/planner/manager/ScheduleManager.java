@@ -121,7 +121,8 @@ public class ScheduleManager {
             taskId += taskManager.size() - pqSize;
             schedule = new ArrayList<>();
             errorCount = 0;
-            generateSchedule();
+            eventLog.reportProcessTasks(filename);
+//            generateSchedule();
         } catch (FileNotFoundException e) {
             eventLog.reportException(e);
             System.out.println("File could not be located");
