@@ -120,7 +120,7 @@ public class EventLog {
     }
 
     /**
-     * Reports the display of the schedule for the current d ay
+     * Reports the display of the schedule for the current day
      *
      * @param day Day being displayed to STDOUT
      */
