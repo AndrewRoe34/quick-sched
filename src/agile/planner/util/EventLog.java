@@ -6,7 +6,6 @@ import agile.planner.task.Task;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.PriorityQueue;
 
 /**
  * Creates a cumulative log of all actions performed during each session
@@ -125,7 +124,7 @@ public class EventLog {
      *
      * @param day Day being displayed to STDOUT
      */
-    public void reportDaySchedule(Day day) {
+    public void reportDisplayDaySchedule(Day day) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
         output.print(" Display Day_Schedule: ");
