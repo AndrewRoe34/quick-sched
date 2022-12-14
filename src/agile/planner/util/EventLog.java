@@ -52,7 +52,7 @@ public class EventLog {
      * Reports a given Task action
      *
      * @param task Task being reported
-     * @param type Action type (0=Add, 1=Remove)
+     * @param type Action type (0=Add, 1=Remove, 2=EDIT)
      */
     public void reportTaskAction(Task task, int type) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
@@ -60,8 +60,10 @@ public class EventLog {
 
         if(type == 0) {
             output.print(" ADD(TASK): ");
-        } else {
+        } else if(type == 1) {
             output.print(" REMOVE(TASK): ");
+        } else {
+            output.print(" EDIT(TASK): ");
         }
         output.print(" ID=" + task.getId());
         output.print(", NAME=" + task.getName());

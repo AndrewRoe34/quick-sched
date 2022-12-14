@@ -119,10 +119,7 @@ public class ScheduleManager {
             int pqSize = taskManager.size();
             lastDueDate = IOProcessing.readTasks("data/" + filename, taskManager, taskId);
             taskId += taskManager.size() - pqSize;
-            schedule = new ArrayList<>();
-            errorCount = 0;
             eventLog.reportProcessTasks(filename);
-//            generateSchedule();
         } catch (FileNotFoundException e) {
             eventLog.reportException(e);
             System.out.println("File could not be located");
@@ -136,10 +133,11 @@ public class ScheduleManager {
      * @param hours number of hours for Task
      * @param incrementation number of days till due date for Task
      */
-    public void addTask(String name, int hours, int incrementation) {
+    public Task addTask(String name, int hours, int incrementation) {
         Task task = new Task(taskId++, name, hours, incrementation);
         taskManager.add(task);
         eventLog.reportTaskAction(task, 0);
+        return task;
     }
 
     /**
@@ -171,15 +169,18 @@ public class ScheduleManager {
      * @param dayIndex day that the task exists
      * @param taskIndex index of the task to be removed
      */
-    public void editTask(int dayIndex, int taskIndex, String name, int hours, int incrementation) {
+    public Task editTask(int dayIndex, int taskIndex, int hours, int incrementation) {
         Task t1 = removeTask(dayIndex, taskIndex);
-
-        //TODO need to finish rest of code as well as add more parameters for customization
+        if(t1 == null || hours <= 0 || incrementation < 0) {
+            return null;
+        }
+        Task t2 = addTask(t1.getName(), hours, incrementation);
+        eventLog.reportTaskAction(t2,2);
+        return t2;
     }
 
     /**
      * Resets all the tasks as well as the entire schedule for it to be regenerated
-     * TODO will need to update to include the generate() methods
      */
     private void resetSchedule() {
         schedule = new LinkedList<>();

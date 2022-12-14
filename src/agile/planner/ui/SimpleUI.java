@@ -85,7 +85,11 @@ public class SimpleUI {
                     System.out.println("Invalid command");
                 }
             } else if("edit".equals(input)) {
-
+                int dayIdx = strScanner.nextInt();
+                int taskIdx = strScanner.nextInt();
+                int hours = strScanner.nextInt();
+                int incrementation = strScanner.nextInt();
+                scheduleManager.editTask(dayIdx, taskIdx, hours, incrementation);
             } else if("v_day".equals(input)) {
                 scheduleManager.outputCurrentDayToConsole();
             } else if("build".equals(input)) {
