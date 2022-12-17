@@ -61,9 +61,10 @@ public class IOProcessing {
      * Processes the specified file for the list of all specified Tasks
      *
      * @param filename file to be processed
-     * @param taskId
+     * @param pq PriorityQueue for holding Tasks in sorted order
+     * @param taskId identification number for each Task
      * @return last due date for Task
-     * @throws FileNotFoundException if file does not exist
+     * @throws FileNotFoundException if task file does not exist
      */
     public static int readTasks(String filename, PriorityQueue<Task> pq, int taskId) throws FileNotFoundException {
         Scanner fileScanner = new Scanner(new File(filename));
@@ -83,14 +84,34 @@ public class IOProcessing {
     /**
      * Processes the cfg file for the contents of the week
      *
+     * @param filename name of cfg file
      * @return int array for number of hours for each day
+     * @throws FileNotFoundException if cfg file does not exist
      */
-    public static int[] readCfg() throws FileNotFoundException {
-        Scanner cfgScanner = new Scanner(new File("settings/week.cfg"));
+    public static int[] readCfg(String filename) throws FileNotFoundException {
+        if(filename == null) {
+            filename = "settings/week.cfg";
+        }
+        Scanner cfgScanner = new Scanner(new File(filename));
         int[] week = new int[7];
         for(int i = 0; i < week.length; i++) {
             week[i] = cfgScanner.nextInt();
         }
         return week;
     }
+
+    public static List<Day> readSchedule(String filename) {
+        return null; //TODO need to finish
+    }
+
+    /*
+
+    #Day ...:
+    -Task1
+    -Task2
+    -Task3
+
+    #Day ...:
+    ...
+     */
 }

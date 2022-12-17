@@ -42,40 +42,45 @@ public class ScheduleManager {
      * Private constructor of ScheduleManager
      * Initially performs task processing as well as schedule generation
      *
+     * @param filename name for cfg file
      * @throws FileNotFoundException if event log file does not exist
      */
-    private ScheduleManager(boolean debug) throws FileNotFoundException {
+    private ScheduleManager(String filename, boolean debug) throws FileNotFoundException {
         taskManager = new PriorityQueue<>();
         schedule = new LinkedList<>();
         customHours = new HashMap<>();
         taskManager = new PriorityQueue<>();
         eventLog = EventLog.getEventLog(debug);
         eventLog.reportUserLogin();
-        processSettingsCfg();
-    }
-
-    /**
-     * Processes all the settings configurations to be used
-     */
-    private void processSettingsCfg() {
-        try {
-            week = IOProcessing.readCfg();
-        } catch (FileNotFoundException e) {
-            eventLog.reportException(e);
-        }
+        processSettingsCfg(filename);
     }
 
     /**
      * Gets a singleton of ScheduleManager
      *
+     * @param filename name for cfg file
+     * @param debug boolean status for debug mode
      * @return singleton of ScheduleManager
      * @throws FileNotFoundException if event log file does not exist
      */
-    public static ScheduleManager getSingleton(boolean debug) throws FileNotFoundException {
+    public static ScheduleManager getSingleton(String filename, boolean debug) throws FileNotFoundException {
         if(singleton == null) {
-            singleton = new ScheduleManager(debug);
+            singleton = new ScheduleManager(filename, debug);
         }
         return singleton;
+    }
+
+    /**
+     * Processes all the settings configurations to be used
+     *
+     * @param filename name for cfg file
+     */
+    private void processSettingsCfg(String filename) {
+        try {
+            week = IOProcessing.readCfg(filename);
+        } catch (FileNotFoundException e) {
+            eventLog.reportException(e);
+        }
     }
 
     /**
@@ -132,6 +137,7 @@ public class ScheduleManager {
      * @param name name of Task
      * @param hours number of hours for Task
      * @param incrementation number of days till due date for Task
+     * @return newly generated Task
      */
     public Task addTask(String name, int hours, int incrementation) {
         Task task = new Task(taskId++, name, hours, incrementation);
@@ -168,6 +174,9 @@ public class ScheduleManager {
      *
      * @param dayIndex day that the task exists
      * @param taskIndex index of the task to be removed
+     * @param hours number of hours to be assigned
+     * @param incrementation number of days till due date
+     * @return newly edited Task
      */
     public Task editTask(int dayIndex, int taskIndex, int hours, int incrementation) {
         Task t1 = removeTask(dayIndex, taskIndex);
@@ -198,7 +207,7 @@ public class ScheduleManager {
     /**
      * Generates an entire schedule following a distributive approach
      */
-    public void generateSchedule() {
+    public void buildSchedule() {
         eventLog.reportSchedulingStart();
         resetSchedule();
         //Tasks that are "finished scheduling" are added here

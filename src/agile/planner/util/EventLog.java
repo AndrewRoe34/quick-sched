@@ -76,6 +76,7 @@ public class EventLog {
      * Reports a given Day edit
      *
      * @param date Calendar date being reported
+     * @param hours number of hours assigned for the day
      * @param global whether edit is standard or not
      */
     public void reportWeekEdit(Calendar date, int hours, boolean global) {
