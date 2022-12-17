@@ -6,7 +6,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import agile.planner.util.CommandManual;
 import agile.planner.manager.ScheduleManager;
 
 /**
@@ -20,12 +19,9 @@ public class SimpleUI {
     private static SimpleUI singleton;
     /** Manages all scheduling for AGILE Planner */
     private final ScheduleManager scheduleManager;
-    /** Holds the manual for all possible commands */
-    private final HashMap<String, String> commandManual;
 
     private SimpleUI() throws FileNotFoundException {
         scheduleManager = ScheduleManager.getSingleton(null,false);
-        commandManual = CommandManual.getSingleton().getCommandManual();
     }
 
     public static SimpleUI getSingleton() throws FileNotFoundException {
@@ -55,23 +51,28 @@ public class SimpleUI {
             String input = strScanner.next();
 
             if("list".equals(input)) {
-                System.out.println("list\nschedule\ntime\nadd\nremove\nedit\nday\nlog\nprint\nread\nquit");
+                System.out.println("list: list of commands\nbuild: builds schedule\ntime: current time\nadd: adds a task\n" +
+                        "remove: removes a task\nedit: edits a task\nv_day: outputs day\nv_week: outputs week\nwrite: writes to file\n" +
+                        "read: reads data\nquit: exits system");
             } else if("time".equals(input)) {
                 System.out.println(sdf.format(Calendar.getInstance().getTime()));
             } else if("v_week".equals(input)) {
                 scheduleManager.outputScheduleToConsole();
             } else if("add".equals(input)) {
+                System.out.print("Name, Hours, Days_Till_Due: ");
                 String name = strScanner.next();
                 int hours = strScanner.nextInt();
                 int dueDate = strScanner.nextInt();
                 scheduleManager.addTask(name, hours, dueDate);
             } else if("remove".equals(input)) {
+                System.out.print("Day_Number, Task_Number: ");
                 int dayIndex = strScanner.nextInt();
                 int taskIndex = strScanner.nextInt();
                 if(scheduleManager.removeTask(dayIndex, taskIndex) == null) {
                     System.out.println("Invalid command");
                 }
             } else if("edit".equals(input)) {
+                System.out.print("Day_Number, Task_Number, Hours, Days_Till_Due: ");
                 int dayIdx = strScanner.nextInt();
                 int taskIdx = strScanner.nextInt();
                 int hours = strScanner.nextInt();
@@ -81,19 +82,16 @@ public class SimpleUI {
                 scheduleManager.outputCurrentDayToConsole();
             } else if("build".equals(input)) {
                 scheduleManager.buildSchedule();
-            } else if("print".equals(input)) {
+            } else if("write".equals(input)) {
+                System.out.print("Filename: ");
                 String filename = strScanner.next();
                 scheduleManager.outputScheduleToFile("output/" + filename);
             } else if("read".equals(input)) {
+                System.out.print("Filename: ");
                 String filename = strScanner.next();
                 scheduleManager.processTasks(filename);
             } else if("quit".equals(input)) {
                 scheduleManager.quit();
-            } else if("man".equals(input)) {
-                String command = strScanner.next();
-                if(commandManual.containsKey(command)) {
-                    System.out.println(commandManual.get(command));
-                }
             } else if("custom".equals(input)) {
                 scheduleManager.setCustomHours(0, 8);
             } else if("global".equals(input)) {
