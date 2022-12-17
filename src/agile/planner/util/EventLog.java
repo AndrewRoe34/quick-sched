@@ -28,7 +28,8 @@ public class EventLog {
         if(debug) {
             output = new PrintStream("system.log");
         } else {
-            output = new PrintStream("C:\\Users\\" + System.getProperty("user.name") + "\\Documents\\AGILE Systems\\system.log");
+            //output = new PrintStream("C:\\Users\\" + System.getProperty("user.name") + "\\Documents\\AGILE Systems\\system.log"); //TODO need to fix for linux
+            output = new PrintStream("system.log");
         }
         output.print(new SimpleDateFormat("[dd-MM-yyyy]").format(Calendar.getInstance().getTime()));
         output.println(" Log of all activities from current session: \n");

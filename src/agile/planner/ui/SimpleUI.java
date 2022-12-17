@@ -3,7 +3,6 @@ package agile.planner.ui;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.Scanner;
 
 import agile.planner.manager.ScheduleManager;
@@ -47,7 +46,7 @@ public class SimpleUI {
         Scanner strScanner = new Scanner(System.in);
 
         while(true) {
-            System.out.print("aproe$ ");
+            System.out.print("user$ ");
             String input = strScanner.next();
 
             if("list".equals(input)) {
