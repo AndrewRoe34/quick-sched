@@ -71,7 +71,7 @@ public class ScheduleManager {
     }
 
     /**
-     * Processes all the settings configurations to be used
+     * Processes all the settings configurations to be used TODO need to finish with updated cfg file
      *
      * @param filename name for cfg file
      */

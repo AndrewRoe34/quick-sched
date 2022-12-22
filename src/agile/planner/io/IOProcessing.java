@@ -90,7 +90,7 @@ public class IOProcessing {
      */
     public static int[] readCfg(String filename) throws FileNotFoundException {
         if(filename == null) {
-            filename = "settings/week.cfg";
+            filename = "settings/profile.cfg";
         }
         Scanner cfgScanner = new Scanner(new File(filename));
         int[] week = new int[7];
