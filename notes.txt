@@ -1,0 +1,58 @@
+Script Interpreter Example:
+
+task: hello world, 8, 2
+task: print, 2, 3
+task: return, 1, 0
+
+sched: 3
+
+v_tasks:
+T1,hello world, 8, 2
+T2,print, 2, 3
+T3,return, 1, 0
+
+label: task:2, Boring
+
+labels:
+{Boring}
+
+enable: labels
+enable: overflow
+
+build:
+v_week
+
+
+Language Grammar:
+
+task: <name>, <hours>, <due_date>
+sched: <algorithm_option>
+v_tasks:
+v_tasks: <num_days>
+label: <label_name>
+label: task:#, <label_name>
+labels:
+enable: TODO list all configuration options
+edit: hours, due_date
+edit: task:#, hours, due_date
+remove: task:#
+read: file
+save: file
+pull:
+push:
+#
+quit
+time
+checklist: task:#, title
+checklist: title
+item: name
+item: task:#, name
+item: EDIT, name
+item: #, #
+item: REMOVE
+item: REMOVE, item:#
+item: NO
+item: YES
+item: VIEW
+print
+

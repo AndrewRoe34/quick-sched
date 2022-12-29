@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="PMD-IDEA">
+    <option name="rulesPath" value="C:\Users\Student\Desktop\CSC-Material\CSC216\csc_pmd.xml" />
+    <option name="pmdVersion" value="6.48.0" />
+    <option name="jdkVersion" value="11" />
+  </component>
+</project>

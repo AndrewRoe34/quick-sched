@@ -7,6 +7,7 @@ import java.util.*;
 import agile.planner.io.IOProcessing;
 import agile.planner.manager.scheduler.day.Day;
 import agile.planner.task.Task;
+import agile.planner.user.UserConfig;
 import agile.planner.util.EventLog;
 
 /**
@@ -21,9 +22,11 @@ public class ScheduleManager {
     /** PriorityQueue of all Tasks in sorted order */
     private PriorityQueue<Task> taskManager;
     /** Mapping of all Tasks via their unique IDs */
-    private Map<Integer, Task> taskMap; //TODO will need to work on this via updated UI
+    private Map<Integer, Task> taskMap; //TODO will need to work on this via IO processing
     /** Singleton for ScheduleManager */
     private static ScheduleManager singleton;
+    /** Holds all user settings for scheduling purposes */
+    private static UserConfig userConfig;
     /** Logs all actions performed by user */
     private static EventLog eventLog;
     /** Stores custom hours for future days */
@@ -48,6 +51,7 @@ public class ScheduleManager {
         customHours = new HashMap<>();
         taskManager = new PriorityQueue<>();
         taskMap = new HashMap<>();
+        processUserConfigFile();
         eventLog = EventLog.getEventLog();
         eventLog.reportUserLogin();
         //processSettingsCfg(filename);
@@ -65,19 +69,17 @@ public class ScheduleManager {
         return singleton;
     }
 
-//    /**
-//     * Processes all the settings configurations to be used TODO need to finish with updated cfg file
-//     *
-//     * @param filename name for cfg file
-//     */
-//    private void processSettingsCfg(String filename) {
-//        try {
-//            week = IOProcessing.readCfg(filename);
-//        } catch (FileNotFoundException e) {
-//            eventLog.reportException(e);
-//        }
-//    }
-//
+    /**
+     * Processes all settings configurations to be used
+     */
+    private void processUserConfigFile() {
+        try {
+            userConfig = IOProcessing.readCfg();
+        } catch (FileNotFoundException e) {
+            eventLog.reportException(e);
+        }
+    }
+
 //    /**
 //     * Sets standard hours for a day
 //     *

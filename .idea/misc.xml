@@ -3,6 +3,20 @@
   <component name="JavadocGenerationManager">
     <option name="OUTPUT_DIRECTORY" value="$PROJECT_DIR$/docs" />
   </component>
+  <component name="PDMPlugin">
+    <option name="customRuleSets">
+      <list>
+        <option value="C:\Users\Student\Desktop\CSC-Material\CSC216\csc_pmd.xml" />
+      </list>
+    </option>
+    <option name="options">
+      <map>
+        <entry key="Statistics URL" value="" />
+        <entry key="Target JDK" value="11" />
+      </map>
+    </option>
+    <option name="skipTestSources" value="false" />
+  </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>

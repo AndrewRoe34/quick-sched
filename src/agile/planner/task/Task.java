@@ -376,7 +376,7 @@ public class Task implements Comparable<Task> {
          *
          * @return title for CheckList
          */
-        private String getName() {
+        public String getName() {
             return name;
         }
 

@@ -20,7 +20,17 @@ public class UserConfig {
 
     private boolean fitSchedule;
 
-    private List<String> labels;
+    private int schedulingAlgorithm;
 
-    private boolean schedulingAlgorithm;
+    public UserConfig(String userName, String userEmail, int[] globalHr, int maxDays, int archiveDays, boolean priority, boolean overflow, boolean fitSchedule, int schedulingAlgorithm) {
+        this.userName = userName;
+        this.email = userEmail;
+        this.week = globalHr;
+        this.maxDays = maxDays;
+        this.archiveDays = archiveDays;
+        this.priority = priority;
+        this.overflow = overflow;
+        this.fitSchedule = fitSchedule;
+        this.schedulingAlgorithm = schedulingAlgorithm;
+    }
 }

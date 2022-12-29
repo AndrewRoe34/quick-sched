@@ -3,12 +3,14 @@ package agile.planner.io;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
 import agile.planner.manager.scheduler.day.Day;
 import agile.planner.task.Task;
+import agile.planner.user.UserConfig;
 
 /**
  * Handles all input/output functionality for the ScheduleManager
@@ -84,20 +86,61 @@ public class IOProcessing {
     /**
      * Processes the cfg file for the contents of the week
      *
-     * @param filename name of cfg file
-     * @return int array for number of hours for each day
+     * @return UserConfig instance
      * @throws FileNotFoundException if cfg file does not exist
      */
-    public static int[] readCfg(String filename) throws FileNotFoundException {
-        if(filename == null) {
-            filename = "settings/profile.cfg";
+    public static UserConfig readCfg() throws FileNotFoundException {
+        Scanner fileScanner = new Scanner("settings/profile.cfg");
+
+        int count = 0;
+        String userName = null;
+        String userEmail = null;
+        int[] globalHr = new int[7];
+        int maxDays = 14;
+        int archiveDays = 14;
+        boolean priority = false;
+        boolean overflow = true;
+        boolean fitSchedule = false;
+        int schedulingAlgorithm = 1;
+
+        while(fileScanner.hasNextLine()) {
+            String line = fileScanner.nextLine();
+            if(line.charAt(0) != '#') {
+                if(count == 0 && "user_name=".equals(line.substring(0, 10))) {
+                    userName = line.substring(10);
+                } else if(count == 1 && "user_email=".equals(line.substring(0, 11))) {
+                    userEmail = line.substring(11);
+                } else if(count == 2 && "global_hours=".equals(line.substring(0, 13))) {
+                    Scanner lineScanner = new Scanner(line.substring(13));
+                    lineScanner.useDelimiter(",");
+                    globalHr[0] = Integer.parseInt(lineScanner.next().substring(1));
+                    globalHr[1] = lineScanner.nextInt();
+                    globalHr[2] = lineScanner.nextInt();
+                    globalHr[3] = lineScanner.nextInt();
+                    globalHr[4] = lineScanner.nextInt();
+                    globalHr[5] = lineScanner.nextInt();
+                    String satStr = lineScanner.next();
+                    globalHr[6] = Integer.parseInt(satStr.substring(0, satStr.length() - 1));
+                } else if(count == 3 && "max_days=".equals(line.substring(0, 9))) {
+                    maxDays = Integer.parseInt(line.substring(9));
+                } else if(count == 4 && "archive_days=".equals(line.substring(0, 13))) {
+                    archiveDays = Integer.parseInt(line.substring(13));
+                } else if(count == 5 && "priority=".equals(line.substring(0, 9))) {
+                    priority = Boolean.parseBoolean(line.substring(9));
+                } else if (count == 6 && "overflow=".equals(line.substring(0, 9))) {
+                    overflow = Boolean.parseBoolean(line.substring(9));
+                } else if (count == 7 && "fit_schedule=".equals(line.substring(0, 13))) {
+                    fitSchedule = Boolean.parseBoolean(line.substring(13));
+                } else if (count == 8 && "schedule_algorithm=".equals(line.substring(0, 19))) {
+                    schedulingAlgorithm = Integer.parseInt(line.substring(19));
+                }
+                count++;
+            }
         }
-        Scanner cfgScanner = new Scanner(new File(filename));
-        int[] week = new int[7];
-        for(int i = 0; i < week.length; i++) {
-            week[i] = cfgScanner.nextInt();
+        if(count != 9) {
+            throw new InputMismatchException("Config file missing data");
         }
-        return week;
+        return new UserConfig(userName, userEmail, globalHr, maxDays, archiveDays, priority, overflow, fitSchedule, schedulingAlgorithm);
     }
 
     public static List<Day> readSchedule(String filename) {

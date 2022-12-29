@@ -18,7 +18,7 @@ public class Time {
      */
     public static int determineRangeOfDays(Calendar date1, Calendar date2) {
         long milliseconds = Math.abs(date1.getTimeInMillis() - date2.getTimeInMillis());
-        return (int) Math.round((milliseconds / 1000.0 / 3600.0 / 24.0));
+        return (int) Math.round(milliseconds / 1000.0 / 3600.0 / 24.0);
     }
 
     /**
