@@ -1,4 +1,4 @@
-package agile.planner.task.io;
+package agile.planner.io;
 
 import java.io.File;
 import java.io.FileNotFoundException;

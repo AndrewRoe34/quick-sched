@@ -5,7 +5,6 @@ import static org.junit.Assert.*;
 import java.io.FileNotFoundException;
 import java.util.PriorityQueue;
 
-import agile.planner.task.io.IOProcessing;
 import org.junit.Test;
 
 import agile.planner.task.Task;

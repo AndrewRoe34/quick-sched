@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.*;
 
-import agile.planner.task.io.IOProcessing;
+import agile.planner.io.IOProcessing;
 import agile.planner.manager.scheduler.day.Day;
 import agile.planner.task.Task;
 import agile.planner.util.EventLog;
