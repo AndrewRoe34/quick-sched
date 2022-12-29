@@ -1,4 +1,4 @@
-package agile.planner.io;
+package agile.planner.task.io;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Scanner;
 
-import agile.planner.manager.day.Day;
+import agile.planner.manager.scheduler.day.Day;
 import agile.planner.task.Task;
 
 /**

@@ -2,6 +2,7 @@ package agile.planner.task;
 
 import java.util.Calendar;
 
+import agile.planner.task.tool.CheckList;
 import agile.planner.util.Time;
 
 /**
@@ -25,6 +26,10 @@ public class Task implements Comparable<Task> {
     private int subTotalHours;
     /** # of hours / (DueDate - StartingDay) */
     private int averageNumHours;
+    /** CheckList of Items for Task */
+    private CheckList checkList; //TODO need to integrate
+    /** Label for String */ //TODO will need to finish later
+    private String label;
 
     /**
      * Primary constructor for Task
@@ -172,6 +177,81 @@ public class Task implements Comparable<Task> {
         return averageNumHours;
     }
 
+    /**
+     * Adds a CheckList for the Task
+     *
+     * @param title Title for the CheckList
+     * @return CheckList instance
+     */
+    public CheckList addCheckList(String title) {
+        if(checkList == null) {
+            this.checkList = new CheckList(title);
+        }
+        return checkList;
+    }
+
+    /**
+     * Adds an Item to the CheckList
+     *
+     * @param description Description info for the Item
+     * @return boolean status for whether successful or not
+     */
+    public boolean addItem(String description) {
+        return checkList != null && checkList.addItem(description);
+    }
+
+    /**
+     * Removes an Item from the CheckList
+     *
+     * @param idx index for removal
+     * @return Item removed from the CheckList
+     */
+    public CheckList.Item removeItem(int idx) {
+        return checkList != null ? checkList.removeItem(idx) : null;
+    }
+
+    /**
+     * Shifts an Item in the CheckList
+     *
+     * @param idx index of Item
+     * @param shiftIdx new index for Item
+     * @return boolean status for whether successful or not
+     */
+    public boolean shiftItem(int idx, int shiftIdx) {
+        if(checkList != null) {
+            checkList.shiftItem(idx, shiftIdx);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Gets Item from CheckList
+     *
+     * @param idx index of Item
+     * @return return Item
+     */
+    public CheckList.Item getItem(int idx) {
+        return checkList != null ? checkList.getItem(idx) : null;
+    }
+
+    public String getStringCheckList() {
+        return checkList != null ? checkList.toString() : null;
+    }
+
+    /**
+     * Resets the CheckList and removes all of its Items
+     *
+     * @return boolean status for whether successful or not
+     */
+    public boolean resetCheckList() {
+        if(checkList != null) {
+            checkList.resetCheckList();
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         return "Task [name=" + name + ", total=" + totalHours + "]";
@@ -181,6 +261,8 @@ public class Task implements Comparable<Task> {
         return id;
     }
 
+    public void editItem(String description) {
+    }
 
     /**
      * The individual component of a parent Task in the form of a SubTask

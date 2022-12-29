@@ -22,7 +22,7 @@ public class EventLogTest {
      */
     @Before
     public void before() throws FileNotFoundException {
-        eventLog = EventLog.getEventLog(true);
+        eventLog = EventLog.getEventLog();
     }
 
     @Test

@@ -5,7 +5,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Scanner;
 
-import agile.planner.manager.ScheduleManager;
+import agile.planner.manager.SystemManager;
+import agile.planner.task.Task;
 
 /**
  * Basic Command Line UI
@@ -17,10 +18,10 @@ public class SimpleUI {
     /** Singleton of SimpleUI */
     private static SimpleUI singleton;
     /** Manages all scheduling for AGILE Planner */
-    private final ScheduleManager scheduleManager;
+    private final SystemManager systemManager;
 
     private SimpleUI() throws FileNotFoundException {
-        scheduleManager = ScheduleManager.getSingleton(null,false);
+        systemManager = SystemManager.getSystemManager();
     }
 
     public static SimpleUI getSingleton() throws FileNotFoundException {
@@ -50,53 +51,98 @@ public class SimpleUI {
             String input = strScanner.next();
 
             if("list".equals(input)) {
-                System.out.println("list: list of commands\nbuild: builds schedule\ntime: current time\nadd: adds a task\n" +
-                        "remove: removes a task\nedit: edits a task\nv_day: outputs day\nv_week: outputs week\nwrite: writes to file\n" +
-                        "read: reads data\nquit: exits system");
-            } else if("time".equals(input)) {
-                System.out.println(sdf.format(Calendar.getInstance().getTime()));
-            } else if("v_week".equals(input)) {
-                scheduleManager.outputScheduleToConsole();
+                System.out.println("list: list of commands\n" +
+                        "add: adds a task\n" +
+                        "task: modifies task\n" +
+                        "build: builds schedule\n" +
+                        "v_week: outputs week schedule\n" +
+                        "v_day: outputs day schedule\n" +
+                        "write: writes schedule to file\n" +
+                        "read: reads task from file\n" +
+                        "quit: quits application");
             } else if("add".equals(input)) {
                 System.out.print("Name, Hours, Days_Till_Due: ");
                 String name = strScanner.next();
                 int hours = strScanner.nextInt();
                 int dueDate = strScanner.nextInt();
-                scheduleManager.addTask(name, hours, dueDate);
-            } else if("remove".equals(input)) {
-                System.out.print("Day_Number, Task_Number: ");
-                int dayIndex = strScanner.nextInt();
-                int taskIndex = strScanner.nextInt();
-                if(scheduleManager.removeTask(dayIndex, taskIndex) == null) {
-                    System.out.println("Invalid command");
-                }
-            } else if("edit".equals(input)) {
-                System.out.print("Day_Number, Task_Number, Hours, Days_Till_Due: ");
-                int dayIdx = strScanner.nextInt();
-                int taskIdx = strScanner.nextInt();
-                int hours = strScanner.nextInt();
-                int incrementation = strScanner.nextInt();
-                scheduleManager.editTask(dayIdx, taskIdx, hours, incrementation);
-            } else if("v_day".equals(input)) {
-                scheduleManager.outputCurrentDayToConsole();
+                systemManager.addTask(name, hours, dueDate);
+            } else if("task".equals(input)) {
+                System.out.print("Task ID: ");
+                int id = strScanner.nextInt();
+                Task t1 = systemManager.getTask(id);
+                taskInputHandling(t1, strScanner);
             } else if("build".equals(input)) {
-                scheduleManager.buildSchedule();
+                systemManager.buildSchedule(); //TODO
+            } else if("v_week".equals(input)) {
+                systemManager.outputScheduleToConsole();
+            } else if("v_day".equals(input)) {
+                systemManager.outputCurrentDayToConsole();
             } else if("write".equals(input)) {
                 System.out.print("Filename: ");
                 String filename = strScanner.next();
-                scheduleManager.outputScheduleToFile("output/" + filename);
+                systemManager.outputScheduleToFile("output/" + filename);
             } else if("read".equals(input)) {
                 System.out.print("Filename: ");
                 String filename = strScanner.next();
-                scheduleManager.processTasks(filename);
+                systemManager.processTaskInputFile(filename);
             } else if("quit".equals(input)) {
-                scheduleManager.quit();
-            } else if("custom".equals(input)) {
-                scheduleManager.setCustomHours(0, 8);
-            } else if("global".equals(input)) {
-                scheduleManager.setGlobalHours(0, 8);
+                systemManager.quit();
             } else {
                 System.out.println("Invalid command");
+            }
+        }
+    }
+
+    public void taskInputHandling(Task t1, Scanner strScanner) {
+        System.out.println("Task Options:\nedit\nremove\nchecklist\nexit\n");
+        while(true) {
+            System.out.print("Input: ");
+            String input = strScanner.next();
+            if("edit".equals(input)) {
+                System.out.print("Hours, DueDate: ");
+                int hours = strScanner.nextInt();
+                int dueDate = strScanner.nextInt();
+                systemManager.editTask(t1, hours, dueDate);
+            } else if("remove".equals(input)) {
+                systemManager.removeTask(t1);
+                break;
+            } else if("checklist".equals(input)) {
+                taskCheckListHandling(t1, strScanner);
+            } else if("exit".equals(input)) {
+                break;
+            } else {
+                System.out.println("Invalid input");
+            }
+        }
+    }
+
+    public void taskCheckListHandling(Task t1, Scanner strScanner) {
+        System.out.print("Please enter title: ");
+        String title = strScanner.next();
+        System.out.println(t1);
+        systemManager.createTaskCheckList(t1, title);
+        System.out.println("CheckList Options:\nadd\nedit\nremove\nview\nexit\n");
+        while(true) {
+            System.out.print("Input: ");
+            String input = strScanner.next();
+            if("add".equals(input)) {
+                System.out.print("Description: ");
+                String description = strScanner.next();
+                systemManager.addTaskCheckListItem(t1, description);
+            } else if("edit".equals(input)) {
+                System.out.print("Description: ");
+                String description = strScanner.next();
+                //TODO need to write method for systemManager
+            } else if("remove".equals(input)) {
+                System.out.print("Item_ID: ");
+                int itemIdx = strScanner.nextInt();
+                systemManager.removeTaskCheckListItem(t1, itemIdx - 1);
+            } else if("view".equals(input)) {
+                System.out.println(systemManager.getTaskStringCheckList(t1));
+            } else if("exit".equals(input)) {
+                break;
+            } else {
+                System.out.println("Invalid input");
             }
         }
     }

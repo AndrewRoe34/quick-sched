@@ -1,6 +1,6 @@
 package agile.planner.util;
 
-import agile.planner.manager.day.Day;
+import agile.planner.manager.scheduler.day.Day;
 import agile.planner.task.Task;
 
 import java.io.*;
@@ -24,13 +24,8 @@ public class EventLog {
      *
      * @throws FileNotFoundException thrown if invalid file
      */
-    private EventLog(boolean debug) throws FileNotFoundException {
-        if(debug) {
-            output = new PrintStream("system.log");
-        } else {
-            //output = new PrintStream("C:\\Users\\" + System.getProperty("user.name") + "\\Documents\\AGILE Systems\\system.log"); //TODO need to fix for linux
-            output = new PrintStream("system.log");
-        }
+    private EventLog() throws FileNotFoundException {
+        output = new PrintStream("system.log");
         output.print(new SimpleDateFormat("[dd-MM-yyyy]").format(Calendar.getInstance().getTime()));
         output.println(" Log of all activities from current session: \n");
     }
@@ -38,13 +33,12 @@ public class EventLog {
     /**
      * Gets a singleton of EventLog with passed file
      *
-     * @param debug boolean value for whether test is running
      * @return singleton of EventLog
      * @throws FileNotFoundException thrown if invalid file
      */
-    public static EventLog getEventLog(boolean debug) throws FileNotFoundException {
+    public static EventLog getEventLog() throws FileNotFoundException {
         if(instance == null) {
-            instance = new EventLog(debug);
+            instance = new EventLog();
         }
         return instance;
     }

@@ -1,14 +1,14 @@
-package agile.planner.manager;
+package agile.planner.manager.scheduler;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.*;
 
-import agile.planner.io.IOProcessing;
-import agile.planner.manager.day.Day;
+import agile.planner.task.io.IOProcessing;
+import agile.planner.manager.scheduler.day.Day;
 import agile.planner.task.Task;
+import agile.planner.task.tool.CheckList;
 import agile.planner.util.EventLog;
-import agile.planner.util.Time;
 
 /**
  * Handles the generation and management of the overall schedule
@@ -21,12 +21,12 @@ public class ScheduleManager {
     private List<Day> schedule;
     /** PriorityQueue of all Tasks in sorted order */
     private PriorityQueue<Task> taskManager;
+    /** Mapping of all Tasks via their unique IDs */
+    private Map<Integer, Task> taskMap; //TODO will need to work on this via updated UI
     /** Singleton for ScheduleManager */
     private static ScheduleManager singleton;
     /** Logs all actions performed by user */
     private static EventLog eventLog;
-    /** Standard number of hours for the week */
-    private int[] week;
     /** Stores custom hours for future days */
     private Map<Integer, Integer> customHours;
     /** Total count for the number of errors that occurred in schedule generation */
@@ -42,84 +42,79 @@ public class ScheduleManager {
      * Private constructor of ScheduleManager
      * Initially performs task processing as well as schedule generation
      *
-     * @param filename name for cfg file
-     * @throws FileNotFoundException if event log file does not exist
      */
-    private ScheduleManager(String filename, boolean debug) throws FileNotFoundException {
+    private ScheduleManager() throws FileNotFoundException {
         taskManager = new PriorityQueue<>();
         schedule = new LinkedList<>();
         customHours = new HashMap<>();
         taskManager = new PriorityQueue<>();
-        eventLog = EventLog.getEventLog(debug);
+        taskMap = new HashMap<>();
+        eventLog = EventLog.getEventLog();
         eventLog.reportUserLogin();
-        processSettingsCfg(filename);
+        //processSettingsCfg(filename);
     }
 
     /**
      * Gets a singleton of ScheduleManager
      *
-     * @param filename name for cfg file
-     * @param debug boolean status for debug mode
      * @return singleton of ScheduleManager
-     * @throws FileNotFoundException if event log file does not exist
      */
-    public static ScheduleManager getSingleton(String filename, boolean debug) throws FileNotFoundException {
+    public static ScheduleManager getScheduleManager() throws FileNotFoundException {
         if(singleton == null) {
-            singleton = new ScheduleManager(filename, debug);
+            singleton = new ScheduleManager();
         }
         return singleton;
     }
 
-    /**
-     * Processes all the settings configurations to be used TODO need to finish with updated cfg file
-     *
-     * @param filename name for cfg file
-     */
-    private void processSettingsCfg(String filename) {
-        try {
-            week = IOProcessing.readCfg(filename);
-        } catch (FileNotFoundException e) {
-            eventLog.reportException(e);
-        }
-    }
-
-    /**
-     * Sets standard hours for a day
-     *
-     * @param day day to be modified
-     * @param hours number of hours to be set
-     */
-    public void setGlobalHours(int day, int hours) {
-        if(day >= 0 && day < 7 && hours >= 0 && hours <= 24) {
-            week[day] = hours;
-            eventLog.reportWeekEdit(Time.getFormattedCalendarInstance(day), hours, true);
-        } else {
-            throw new IllegalArgumentException("Invalid data for standard days of week");
-        }
-    }
-
-    /**
-     * Sets custom hours for a single instance of a day
-     *
-     * @param day day to be modified
-     * @param hours number of hours to be set
-     */
-    public void setCustomHours(int day, int hours) {
-        if(day >= 0 && hours >= 0 && hours <= 24) {
-            customHours.put(day, hours);
-            eventLog.reportWeekEdit(Time.getFormattedCalendarInstance(day), hours, false);
-        } else {
-            throw new IllegalArgumentException("Invalid data for custom days of week");
-        }
-
-    }
+//    /**
+//     * Processes all the settings configurations to be used TODO need to finish with updated cfg file
+//     *
+//     * @param filename name for cfg file
+//     */
+//    private void processSettingsCfg(String filename) {
+//        try {
+//            week = IOProcessing.readCfg(filename);
+//        } catch (FileNotFoundException e) {
+//            eventLog.reportException(e);
+//        }
+//    }
+//
+//    /**
+//     * Sets standard hours for a day
+//     *
+//     * @param day day to be modified
+//     * @param hours number of hours to be set
+//     */
+//    public void setGlobalHours(int day, int hours) {
+//        if(day >= 0 && day < 7 && hours >= 0 && hours <= 24) {
+//            week[day] = hours;
+//            eventLog.reportWeekEdit(Time.getFormattedCalendarInstance(day), hours, true);
+//        } else {
+//            throw new IllegalArgumentException("Invalid data for standard days of week");
+//        }
+//    }
+//
+//    /**
+//     * Sets custom hours for a single instance of a day
+//     *
+//     * @param day day to be modified
+//     * @param hours number of hours to be set
+//     */
+//    public void setCustomHours(int day, int hours) {
+//        if(day >= 0 && hours >= 0 && hours <= 24) {
+//            customHours.put(day, hours);
+//            eventLog.reportWeekEdit(Time.getFormattedCalendarInstance(day), hours, false);
+//        } else {
+//            throw new IllegalArgumentException("Invalid data for custom days of week");
+//        }
+//    }
 
     /**
      * Processes the Tasks from the given file
      *
      * @param filename file to be processed
      */
-    public void processTasks(String filename) {
+    public void processTaskInputFile(String filename) {
         try {
             int pqSize = taskManager.size();
             lastDueDate = IOProcessing.readTasks("data/" + filename, taskManager, taskId);
@@ -142,6 +137,7 @@ public class ScheduleManager {
     public Task addTask(String name, int hours, int incrementation) {
         Task task = new Task(taskId++, name, hours, incrementation);
         taskManager.add(task);
+        taskMap.put(taskId - 1, task);
         eventLog.reportTaskAction(task, 0);
         return task;
     }
@@ -149,59 +145,48 @@ public class ScheduleManager {
     /**
      * Removes a task from the schedule given the day and task indices
      *
-     * @param dayIndex day that the task exists
-     * @param taskIndex index of the task to be removed
-     * @return Task removed from Day
+     * @param t1 task being removed
+     * @return boolean status for successful removal
      */
-    public Task removeTask(int dayIndex, int taskIndex) {
-        dayIndex--;
-        taskIndex--;
-        if(dayIndex < 0 || dayIndex >= schedule.size()) {
-            return null;
+    public boolean removeTask(Task t1) {
+        if(taskManager.contains(t1)) {
+            taskManager.remove(t1);
+            taskMap.remove(t1.getId(), t1);
+            eventLog.reportTaskAction(t1, 1);
+            return true;
         }
-        Day day = schedule.get(dayIndex);
-        if(taskIndex < 0 || taskIndex >= day.getNumSubTasks()) {
-            return null;
-        }
-        Task task = day.getParentTask(taskIndex);
-        taskManager.remove(task);
-        eventLog.reportTaskAction(task, 1);
-        return task;
+        return false;
     }
 
     /**
      * Edits a task from the schedule given the day and task indices
      *
-     * @param dayIndex day that the task exists
-     * @param taskIndex index of the task to be removed
+     * @param t1 task being edited
      * @param hours number of hours to be assigned
      * @param incrementation number of days till due date
      * @return newly edited Task
      */
-    public Task editTask(int dayIndex, int taskIndex, int hours, int incrementation) {
-        Task t1 = removeTask(dayIndex, taskIndex);
-        if(t1 == null || hours <= 0 || incrementation < 0) {
+    public Task editTask(Task t1, int hours, int incrementation) {
+        if(!taskManager.contains(t1) || hours <= 0 || incrementation < 0) {
             return null;
         }
+        removeTask(t1);
         Task t2 = addTask(t1.getName(), hours, incrementation);
         eventLog.reportTaskAction(t2,2);
         return t2;
     }
 
     /**
-     * Resets all the tasks as well as the entire schedule for it to be regenerated
+     * Gets a Task from the schedule
+     *
+     * @param taskId ID for task
+     * @return Task from schedule
      */
-    private void resetSchedule() {
-        schedule = new LinkedList<>();
-        PriorityQueue<Task> copy = new PriorityQueue<>();
-        while(taskManager.size() > 0) {
-            Task task = taskManager.remove();
-            task.reset();
-            copy.add(task);
+    public Task getTask(int taskId) {
+        if(!taskMap.containsKey(taskId)) {
+            return null;
         }
-        taskManager = copy;
-        errorCount = 0;
-        dayId = 0;
+        return taskMap.get(taskId);
     }
 
     /**
@@ -222,7 +207,7 @@ public class ScheduleManager {
         Day currDay;
 
         while(taskManager.size() > 0) {
-            currDay = new Day(dayId++, week[idx++ % 7], dayCount++);
+            currDay = new Day(dayId++, 8, dayCount++);
             schedule.add(currDay);
             // TODO need to make hours more customizable
             assignDay(currDay, complete, incomplete);
@@ -266,10 +251,102 @@ public class ScheduleManager {
     }
 
     /**
+     * Resets all the tasks as well as the entire schedule for it to be regenerated
+     */
+    private void resetSchedule() {
+        schedule = new LinkedList<>();
+        PriorityQueue<Task> copy = new PriorityQueue<>();
+        while(taskManager.size() > 0) {
+            Task task = taskManager.remove();
+            task.reset();
+            copy.add(task);
+        }
+        taskManager = copy;
+        errorCount = 0;
+        dayId = 0;
+    }
+
+    /**
      * Generates an entire schedule following the rushed approach
      */
     private void generateCrammedSchedule() {
         //TODO will be implemented in v0.4.0
+    }
+
+    /**
+     * Creates a CheckList for a particular Task
+     *
+     * @param t1 task being utilized
+     * @param title title for the Item
+     * @return newly created CheckList
+     */
+    public CheckList  createTaskCheckList(Task t1, String title) {
+        return t1.addCheckList(title);
+    }
+
+    /**
+     * Adds a CheckList Item for a Task
+     *
+     * @param t1 task being utilized
+     * @param description description info for Item
+     * @return boolean status for successful add
+     */
+    public boolean addTaskCheckListItem(Task t1, String description) {
+        return t1.addItem(description);
+    }
+
+    /**
+     * Removes a CheckList Item from a Task
+     *
+     * @param t1 task being utilized
+     * @param itemIdx index for Item
+     * @return Item removed from CheckList
+     */
+    public CheckList.Item removeTaskCheckListItem(Task t1, int itemIdx) {
+        return t1.removeItem(itemIdx);
+    }
+
+    /**
+     * Shifts an Item in the CheckList
+     *
+     * @param t1 task being utilized
+     * @param itemIdx index for Item
+     * @param shiftIdx index for updated position
+     * @return boolean status for successful shift
+     */
+    public boolean shiftTaskItem(Task t1, int itemIdx, int shiftIdx) {
+        return t1.shiftItem(itemIdx, shiftIdx);
+    }
+
+    /**
+     * Gets a Task Item
+     *
+     * @param t1 task being utilized
+     * @param itemIdx index for Item
+     * @return Task Item
+     */
+    public CheckList.Item getTaskItem(Task t1, int itemIdx) {
+        return t1.getItem(itemIdx);
+    }
+
+    /**
+     * Gets Task CheckList in String format
+     *
+     * @param t1 task being utilized
+     * @return String formatted CheckList
+     */
+    public String getTaskStringCheckList(Task t1) {
+        return t1.getStringCheckList();
+    }
+
+    /**
+     * Resets Task CheckList
+     *
+     * @param t1 task being utilized
+     * @return boolean status for successful reset
+     */
+    public boolean resetTaskCheckList(Task t1) {
+        return t1.resetCheckList();
     }
 
     /**
@@ -319,7 +396,6 @@ public class ScheduleManager {
      * @return boolean value for whether schedule is empty
      */
     public boolean scheduleIsEmpty() {
-
         return schedule.isEmpty();
     }
 

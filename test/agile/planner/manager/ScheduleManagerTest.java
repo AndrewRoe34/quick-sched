@@ -1,5 +1,6 @@
 package agile.planner.manager;
 
+import agile.planner.manager.scheduler.ScheduleManager;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -11,7 +12,7 @@ public class ScheduleManagerTest {
 
     @Before
     public void setUp() throws Exception {
-        sm = ScheduleManager.getSingleton(true);
+        //sm = ScheduleManager.getScheduleManager(true);
     }
 
     @Test
