@@ -121,7 +121,7 @@ public class SimpleUI {
         String title = strScanner.next();
         System.out.println(t1);
         systemManager.createTaskCheckList(t1, title);
-        System.out.println("CheckList Options:\nadd\nedit\nremove\nview\nexit\n");
+        System.out.println("CheckList Options:\nadd\nedit\nremove\nmark\nview\nexit\n");
         while(true) {
             System.out.print("Input: ");
             String input = strScanner.next();
@@ -137,6 +137,11 @@ public class SimpleUI {
                 System.out.print("Item_ID: ");
                 int itemIdx = strScanner.nextInt();
                 systemManager.removeTaskCheckListItem(t1, itemIdx - 1);
+            } else if("mark".equals(input)) {
+                System.out.print("Item_ID, Marking: ");
+                int index = strScanner.nextInt();
+                String marking = strScanner.next();
+                systemManager.markItem(t1, index, "true".equals(marking));
             } else if("view".equals(input)) {
                 System.out.println(systemManager.getTaskStringCheckList(t1));
             } else if("exit".equals(input)) {

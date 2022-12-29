@@ -7,7 +7,6 @@ import java.util.*;
 import agile.planner.task.io.IOProcessing;
 import agile.planner.manager.scheduler.day.Day;
 import agile.planner.task.Task;
-import agile.planner.task.tool.CheckList;
 import agile.planner.util.EventLog;
 
 /**
@@ -280,7 +279,7 @@ public class ScheduleManager {
      * @param title title for the Item
      * @return newly created CheckList
      */
-    public CheckList  createTaskCheckList(Task t1, String title) {
+    public Task.CheckList createTaskCheckList(Task t1, String title) {
         return t1.addCheckList(title);
     }
 
@@ -302,7 +301,7 @@ public class ScheduleManager {
      * @param itemIdx index for Item
      * @return Item removed from CheckList
      */
-    public CheckList.Item removeTaskCheckListItem(Task t1, int itemIdx) {
+    public Task.CheckList.Item removeTaskCheckListItem(Task t1, int itemIdx) {
         return t1.removeItem(itemIdx);
     }
 
@@ -319,13 +318,24 @@ public class ScheduleManager {
     }
 
     /**
-     * Gets a Task Item
+     * Marks a Task item as complete or incomplete
      *
      * @param t1 task being utilized
      * @param itemIdx index for Item
+     * @param flag boolean status for completion
+     */
+    public void markTaskItem(Task t1, int itemIdx, boolean flag) {
+        t1.markItem(itemIdx, flag);
+    }
+
+    /**
+     * Gets a Task Item
+     *
+     * @param t1      task being utilized
+     * @param itemIdx index for Item
      * @return Task Item
      */
-    public CheckList.Item getTaskItem(Task t1, int itemIdx) {
+    public Task.CheckList.Item getTaskItem(Task t1, int itemIdx) {
         return t1.getItem(itemIdx);
     }
 

@@ -2,7 +2,6 @@ package agile.planner.manager;
 
 import agile.planner.manager.scheduler.ScheduleManager;
 import agile.planner.task.Task;
-import agile.planner.task.tool.CheckList;
 
 import java.io.FileNotFoundException;
 
@@ -142,11 +141,11 @@ public class SystemManager {
     /**
      * Creates a CheckList for a particular Task
      *
-     * @param t1 task being utilized
+     * @param t1    task being utilized
      * @param title title for the Item
      * @return newly created CheckList
      */
-    public CheckList createTaskCheckList(Task t1, String title) {
+    public Task.CheckList createTaskCheckList(Task t1, String title) {
         return scheduleManager.createTaskCheckList(t1, title);
     }
 
@@ -164,11 +163,11 @@ public class SystemManager {
     /**
      * Removes a CheckList Item from a Task
      *
-     * @param t1 task being utilized
+     * @param t1      task being utilized
      * @param itemIdx index for Item
      * @return Item removed from CheckList
      */
-    public CheckList.Item removeTaskCheckListItem(Task t1, int itemIdx) {
+    public Task.CheckList.Item removeTaskCheckListItem(Task t1, int itemIdx) {
         return scheduleManager.removeTaskCheckListItem(t1, itemIdx);
     }
 
@@ -192,12 +191,7 @@ public class SystemManager {
      * @param checkmark boolean value to indicate checkmark
      */
     public void markItem(Task t1, int itemIdx, boolean checkmark) {
-        CheckList.Item item = scheduleManager.getTaskItem(t1, itemIdx);
-        if(checkmark) {
-            item.markComplete();
-        } else {
-            item.markIncomplete();
-        }
+        t1.markItem(itemIdx, checkmark);
     }
 
     /**
