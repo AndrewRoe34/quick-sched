@@ -140,6 +140,11 @@ public class Day {
         this.id = id;
     }
 
+    /**
+     * Gets ID for Day
+     *
+     * @return ID for Day
+     */
     public int getId() {
         return id;
     }
@@ -180,7 +185,7 @@ public class Day {
             sb.append(st.getParentTask().getName()).append(", ");
             sb.append(st.getSubTaskHours()).append("hr, Due ");
             sb.append(sdf.format(st.getParentTask().getDueDate().getTime()));
-            if(st.getOverflowStatus()) {
+            if(st.isOverflow()) {
                 sb.append(" OVERFLOW");
             }
             sb.append("\n");

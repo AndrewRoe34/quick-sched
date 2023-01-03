@@ -3,6 +3,7 @@ package agile.planner.task;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 import agile.planner.util.Time;
 
@@ -30,7 +31,7 @@ public class Task implements Comparable<Task> {
     /** CheckList of Items for Task */
     private CheckList checkList; //TODO need to integrate
     /** Label for String */ //TODO will need to finish later
-    private String label;
+    private List<String> label;
 
     /**
      * Primary constructor for Task
@@ -45,6 +46,15 @@ public class Task implements Comparable<Task> {
         setName(name);
         setTotalHours(hours);
         setDueDate(incrementation);
+    }
+
+    /**
+     * Gets the ID for a Task
+     *
+     * @return Task ID
+     */
+    public int getId() { //TODO need to add id to every task
+        return id;
     }
 
     /**
@@ -226,6 +236,13 @@ public class Task implements Comparable<Task> {
         return false;
     }
 
+    /**
+     * Marks an Item as complete or incomplete
+     *
+     * @param idx index for Item
+     * @param flag completion status flag
+     * @return boolean value for successful operation
+     */
     public boolean markItem(int idx, boolean flag) {
         if(checkList != null) {
             checkList.markItem(idx, flag);
@@ -244,6 +261,20 @@ public class Task implements Comparable<Task> {
         return checkList != null ? checkList.getItem(idx) : null;
     }
 
+    /**
+     * Edits an Item in the CheckList
+     *
+     * @param description newly updated description
+     */
+    public void editItem(String description) {
+        //TODO
+    }
+
+    /**
+     * Gets String format for CheckList
+     *
+     * @return String formatted CheckList
+     */
     public String getStringCheckList() {
         return checkList != null ? checkList.toString() : null;
     }
@@ -266,11 +297,19 @@ public class Task implements Comparable<Task> {
         return "Task [name=" + name + ", total=" + totalHours + "]";
     }
 
-    public int getId() { //TODO need to add id to every task
-        return id;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id && totalHours == task.totalHours && subTotalHours == task.subTotalHours &&
+                averageNumHours == task.averageNumHours && name.equals(task.name) && dueDate.equals(task.dueDate) &&
+                Objects.equals(checkList, task.checkList) && Objects.equals(label, task.label);
     }
 
-    public void editItem(String description) {
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, dueDate, totalHours, subTotalHours, averageNumHours, checkList, label);
     }
 
     /**
@@ -293,6 +332,7 @@ public class Task implements Comparable<Task> {
          *
          * @param parentTask parent of the SubTask
          * @param hours number of hours for the SubTask
+         * @param overflow boolean value for overflow status
          */
         private SubTask(Task parentTask, int hours, boolean overflow) {
             this.parentTask = parentTask;
@@ -323,7 +363,7 @@ public class Task implements Comparable<Task> {
          *
          * @return overflow status
          */
-        public boolean getOverflowStatus() {
+        public boolean isOverflow() {
             return overflowStatus;
         }
 
@@ -397,6 +437,7 @@ public class Task implements Comparable<Task> {
          * Adds a new Item to the CheckList
          *
          * @param description description for the Item
+         * @return boolean value for successful add of Item
          */
         public boolean addItem(String description) {
             return list.add(new Item(description));
@@ -441,14 +482,20 @@ public class Task implements Comparable<Task> {
             return list.get(idx);
         }
 
+        /**
+         * Marks an Item as complete or incomplete
+         *
+         * @param idx index of Item
+         * @param flag completion status flag
+         */
         public void markItem(int idx, boolean flag) {
             if(verifyIndex(idx) == -1) {
                 throw new IllegalArgumentException("Invalid index for checklist");
             }
             Item i1 = getItem(idx);
-            if(flag && !i1.getCompletionStatus()) {
+            if(flag && !i1.isComplete()) {
                 completed++;
-            } else if(!flag && i1.getCompletionStatus()) {
+            } else if(!flag && i1.isComplete()) {
                 completed--;
             }
             i1.setCompletionStatus(flag);
@@ -488,7 +535,13 @@ public class Task implements Comparable<Task> {
             return sb.toString();
         }
 
+        /**
+         * Edits an Item from the CheckList
+         *
+         * @param description newly updated description
+         */
         public void editItem(String description) {
+            //TODO
         }
 
         /**
@@ -544,7 +597,7 @@ public class Task implements Comparable<Task> {
              *
              * @return completion status
              */
-            public boolean getCompletionStatus() {
+            public boolean isComplete() {
                 return status;
             }
 

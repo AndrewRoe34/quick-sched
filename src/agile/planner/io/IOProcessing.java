@@ -27,14 +27,15 @@ public class IOProcessing {
      * @param output PrintStream for where output is directed
      */
     public static void writeDay(Day day, int errorCount, PrintStream output) {
+        PrintStream outputStream = output;
         if(output == null) {
-            output = System.out;
+            outputStream = System.out;
         }
         if(errorCount > 0) {
-            output.println(errorCount + " overflows have occurred within schedule...");
+            outputStream.println(errorCount + " overflows have occurred within schedule...");
         }
-        output.print("Day 1: ");
-        output.println(day.toString());
+        outputStream.print("Day 1: ");
+        outputStream.print(day.toString());
     }
 
     /**
@@ -45,16 +46,17 @@ public class IOProcessing {
      * @param output PrintStream for where output is directed
      */
     public static void writeSchedule(List<Day> list, int errorCount, PrintStream output) {
+        PrintStream outputStream = output;
         if(output == null) {
-            output = System.out;
+            outputStream = System.out;
         }
         if(errorCount > 0) {
-            output.println(errorCount + " overflows have occurred within schedule...");
+            outputStream.println(errorCount + " overflows have occurred within schedule...");
         }
         int i = 1;
         for(Day day : list) {
-            output.print("Day " + i + ": ");
-            output.println(day.toString());
+            outputStream.print("Day " + i + ": ");
+            outputStream.print(day.toString());
             i++;
         }
     }
@@ -68,15 +70,17 @@ public class IOProcessing {
      * @return last due date for Task
      * @throws FileNotFoundException if task file does not exist
      */
+    @Deprecated
     public static int readTasks(String filename, PriorityQueue<Task> pq, int taskId) throws FileNotFoundException {
         Scanner fileScanner = new Scanner(new File(filename));
         fileScanner.useDelimiter(",|\\r\\n|\\n");
         int maxDate = 0;
+        int taskCount = taskId;
         while(fileScanner.hasNextLine()) {
             String name = fileScanner.next();
             int hours = fileScanner.nextInt();
             int date = fileScanner.nextInt();
-            pq.add(new Task(taskId++, name, hours, date));
+            pq.add(new Task(taskCount++, name, hours, date));
             maxDate = Math.max(maxDate, date);
         }
         fileScanner.close();
@@ -86,11 +90,16 @@ public class IOProcessing {
     /**
      * Processes the cfg file for the contents of the week
      *
+     * @param filename name of file
      * @return UserConfig instance
      * @throws FileNotFoundException if cfg file does not exist
      */
-    public static UserConfig readCfg() throws FileNotFoundException {
-        Scanner fileScanner = new Scanner("settings/profile.cfg");
+    public static UserConfig readCfg(String filename) throws FileNotFoundException {
+        String filePath = filename;
+        if(filePath == null) {
+            filePath = "settings/profile.cfg";
+        }
+        Scanner fileScanner = new Scanner(new File(filePath));
 
         int count = 0;
         String userName = null;
@@ -106,11 +115,12 @@ public class IOProcessing {
         while(fileScanner.hasNextLine()) {
             String line = fileScanner.nextLine();
             if(line.charAt(0) != '#') {
-                if(count == 0 && "user_name=".equals(line.substring(0, 10))) {
+                count++;
+                if(count == 1 && line.length() > 10 && "user_name=".equals(line.substring(0, 10))) {
                     userName = line.substring(10);
-                } else if(count == 1 && "user_email=".equals(line.substring(0, 11))) {
+                } else if(count == 2 && line.length() > 11 && "user_email=".equals(line.substring(0, 11))) {
                     userEmail = line.substring(11);
-                } else if(count == 2 && "global_hours=".equals(line.substring(0, 13))) {
+                } else if(count == 3 && line.length() == 28 && "global_hours=".equals(line.substring(0, 13))) {
                     Scanner lineScanner = new Scanner(line.substring(13));
                     lineScanner.useDelimiter(",");
                     globalHr[0] = Integer.parseInt(lineScanner.next().substring(1));
@@ -121,20 +131,21 @@ public class IOProcessing {
                     globalHr[5] = lineScanner.nextInt();
                     String satStr = lineScanner.next();
                     globalHr[6] = Integer.parseInt(satStr.substring(0, satStr.length() - 1));
-                } else if(count == 3 && "max_days=".equals(line.substring(0, 9))) {
+                } else if(count == 4 && line.length() > 9 && "max_days=".equals(line.substring(0, 9))) {
                     maxDays = Integer.parseInt(line.substring(9));
-                } else if(count == 4 && "archive_days=".equals(line.substring(0, 13))) {
+                } else if(count == 5 && line.length() > 13 && "archive_days=".equals(line.substring(0, 13))) {
                     archiveDays = Integer.parseInt(line.substring(13));
-                } else if(count == 5 && "priority=".equals(line.substring(0, 9))) {
+                } else if(count == 6 && line.length() > 9 && "priority=".equals(line.substring(0, 9))) {
                     priority = Boolean.parseBoolean(line.substring(9));
-                } else if (count == 6 && "overflow=".equals(line.substring(0, 9))) {
+                } else if (count == 7 && line.length() > 9 && "overflow=".equals(line.substring(0, 9))) {
                     overflow = Boolean.parseBoolean(line.substring(9));
-                } else if (count == 7 && "fit_schedule=".equals(line.substring(0, 13))) {
+                } else if (count == 8 && line.length() > 13 && "fit_schedule=".equals(line.substring(0, 13))) {
                     fitSchedule = Boolean.parseBoolean(line.substring(13));
-                } else if (count == 8 && "schedule_algorithm=".equals(line.substring(0, 19))) {
+                } else if (count == 9 && line.length() > 19 && "schedule_algorithm=".equals(line.substring(0, 19))) {
                     schedulingAlgorithm = Integer.parseInt(line.substring(19));
+                } else {
+                    throw new InputMismatchException("Config file improperly configured");
                 }
-                count++;
             }
         }
         if(count != 9) {
@@ -143,6 +154,12 @@ public class IOProcessing {
         return new UserConfig(userName, userEmail, globalHr, maxDays, archiveDays, priority, overflow, fitSchedule, schedulingAlgorithm);
     }
 
+    /**
+     * Reads saved schedule data to repopulate planner
+     *
+     * @param filename name of file
+     * @return List of fully scheduled days
+     */
     public static List<Day> readSchedule(String filename) {
         return null; //TODO need to finish
     }

@@ -2,7 +2,13 @@ package agile.planner.manager.scheduler;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+import java.util.Map;
+import java.util.Calendar;
 
 import agile.planner.io.IOProcessing;
 import agile.planner.manager.scheduler.day.Day;
@@ -74,7 +80,7 @@ public class ScheduleManager {
      */
     private void processUserConfigFile() {
         try {
-            userConfig = IOProcessing.readCfg();
+            userConfig = IOProcessing.readCfg(null);
         } catch (FileNotFoundException e) {
             eventLog.reportException(e);
         }
@@ -173,7 +179,7 @@ public class ScheduleManager {
         }
         removeTask(t1);
         Task t2 = addTask(t1.getName(), hours, incrementation);
-        eventLog.reportTaskAction(t2,2);
+        eventLog.reportTaskAction(t2, 2);
         return t2;
     }
 
@@ -208,7 +214,7 @@ public class ScheduleManager {
         Day currDay;
 
         while(taskManager.size() > 0) {
-            currDay = new Day(dayId++, 8, dayCount++);
+            currDay = new Day(dayId++, userConfig.getWeek()[idx++ % 7], dayCount++);
             schedule.add(currDay);
             // TODO need to make hours more customizable
             assignDay(currDay, complete, incomplete);

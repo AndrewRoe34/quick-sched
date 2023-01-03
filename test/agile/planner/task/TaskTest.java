@@ -53,8 +53,9 @@ public class TaskTest {
         Task t2 = new Task(1, "CSC216", 1, 1);
         Task t3 = new Task(2, "CSC316", 6, 2);
         Task t4 = new Task(3, "Test", 1, 1);
+        Task t5 = new Task(0, "CSC116", 5, 2);
         assertEquals(-1, t3.compareTo(t1));
-        assertEquals(0, t1.compareTo(t1));
+        assertEquals(0, t1.compareTo(t5));
         assertEquals(1, t1.compareTo(t3));
         assertEquals(-1, t2.compareTo(t3));
         assertEquals(0, t2.compareTo(t4));
@@ -113,8 +114,8 @@ public class TaskTest {
         assertEquals(4, t2.getSubTotalHoursRemaining());
         assertEquals(0, t2.getAverageNumHours());
 
-        assertFalse(st2.getOverflowStatus());
-        assertTrue(t2.addSubTask(1, true).getOverflowStatus());
+        assertFalse(st2.isOverflow());
+        assertTrue(t2.addSubTask(1, true).isOverflow());
 
         Task t3 = new Task(2, "Z", 17, 1);
         Calendar current = Time.getFormattedCalendarInstance(0);
@@ -123,7 +124,26 @@ public class TaskTest {
     }
 
     @Test
-    public void testCheckList() {
+    public void testId() {
+        Task t1 = new Task(0, "A", 5, 2);
+        Task t2 = new Task(1, "B", 5, 2);
+        Task t3 = new Task(2, "C", 5, 2);
+        assertEquals(0, t1.getId());
+        assertEquals(1, t2.getId());
+        assertEquals(2, t3.getId());
+    }
+
+    @Test
+    public void testEquals() {
+        Task t1 = new Task(0, "A", 5, 2);
+        Task t2 = new Task(1, "B", 5, 2);
+        Task t3 = new Task(1, "B", 5, 2);
+        assertNotEquals(t1, t2);
+        assertEquals(t2, t3);
+    }
+
+    @Test
+    public void testTaskCheckList() {
         Task t1 = new Task(0, "CSC116", 5, 2);
         Task.CheckList cl = t1.addCheckList("Hello World");
         assertEquals("Hello World", cl.getName());
@@ -131,18 +151,148 @@ public class TaskTest {
     }
 
     @Test
-    public void testCheckListSetName() {
+    public void testTaskCheckListSetName() {
         Task t1 = new Task(0, "CSC116", 5, 2);
         Task.CheckList cl = t1.addCheckList("Hello World");
-        //TODO
+        assertEquals("Hello World", cl.getName());
     }
 
    @Test
-   public void testCheckListAddItem() {
+   public void testTaskCheckListAddItem() {
        Task t1 = new Task(0, "CSC116", 5, 2);
-       Task.CheckList cl = t1.addCheckList("Hello World");
-       cl.addItem("Work to do");
-       assertEquals("Work to do", cl.getItem(0).getDescription()); //TODO will need to update
+       t1.addCheckList("Hello World");
+       t1.addItem("Work to do");
+       assertEquals("Work to do", t1.getItem(0).getDescription());
    }
+
+   @Test
+   public void testTaskCheckListRemoveItem() {
+       Task t1 = new Task(0, "CSC116", 5, 2);
+       t1.addCheckList("Hello World");
+       t1.addItem("A");
+       t1.addItem("B");
+       t1.addItem("C");
+       Task.CheckList.Item i1 = t1.removeItem(1);
+       assertEquals("B", i1.getDescription());
+       Task.CheckList.Item i2 = t1.removeItem(0);
+       assertEquals("A", i2.getDescription());
+       Task.CheckList.Item i3 = t1.removeItem(0);
+       assertEquals("C", i3.getDescription());
+
+       try {
+           t1.removeItem(2);
+           fail();
+       } catch(IllegalArgumentException e) {
+           assertEquals("Invalid index for checklist", e.getMessage());
+       }
+   }
+
+   @Test
+   public void testTaskCheckListShiftItem() {
+       Task t1 = new Task(0, "CSC116", 5, 2);
+       assertFalse(t1.shiftItem(0, 1));
+       t1.addCheckList("Hello World");
+       t1.addItem("A");
+       Task.CheckList.Item i1 = t1.getItem(0);
+       t1.addItem("B");
+       Task.CheckList.Item i2 = t1.getItem(1);
+       t1.addItem("C");
+       Task.CheckList.Item i3 = t1.getItem(2);
+       t1.shiftItem(0, 1);
+       assertEquals(i1, t1.getItem(1));
+       assertEquals(i2, t1.getItem(0));
+       assertEquals(i3, t1.getItem(2));
+       t1.shiftItem(2, 0);
+       assertEquals(i3, t1.getItem(0));
+       assertEquals(i1, t1.getItem(2));
+       assertEquals(i2, t1.getItem(1));
+
+       try {
+           t1.shiftItem(0, 3);
+           fail();
+       } catch(IllegalArgumentException e) {
+           assertEquals("Invalid index for checklist", e.getMessage());
+       }
+   }
+
+    @Test
+    public void testTaskCheckListMarkItem() {
+        Task t1 = new Task(0, "CSC116", 5, 2);
+        assertFalse(t1.markItem(0, true));
+        t1.addCheckList("Hello World");
+        t1.addItem("A");
+        assertFalse(t1.getItem(0).isComplete());
+        t1.addItem("B");
+        assertFalse(t1.getItem(1).isComplete());
+        t1.addItem("C");
+        assertFalse(t1.getItem(2).isComplete());
+        t1.markItem(0, true);
+        assertTrue(t1.getItem(0).isComplete());
+        t1.markItem(2, true);
+        assertTrue(t1.getItem(2).isComplete());
+        t1.markItem(1, true);
+        assertTrue(t1.getItem(1).isComplete());
+
+        t1.markItem(0,false);
+        assertFalse(t1.getItem(0).isComplete());
+        t1.markItem(1,false);
+        assertFalse(t1.getItem(1).isComplete());
+        t1.markItem(2,false);
+        assertFalse(t1.getItem(2).isComplete());
+
+        try {
+            t1.markItem(3, true);
+            fail();
+        } catch(IllegalArgumentException e) {
+            assertEquals("Invalid index for checklist", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTaskCheckListGetItem() {
+        Task t1 = new Task(0, "CSC116", 5, 2);
+        assertNull(t1.getItem(1));
+        t1.addCheckList("Hello World");
+        t1.addItem("A");
+        assertEquals("A", t1.getItem(0).getDescription());
+        assertFalse(t1.getItem(0).isComplete());
+
+        try {
+            t1.getItem(1);
+            fail();
+        } catch(IllegalArgumentException e) {
+            assertEquals("Invalid index for checklist", e.getMessage());
+        }
+    }
+
+    @Test
+    public void testTaskCheckListString() {
+        Task t1 = new Task(0, "CSC116", 5, 2);
+        assertNull(t1.getStringCheckList());
+        t1.addCheckList("Hello World");
+        t1.addItem("A");
+        t1.addItem("B");
+        t1.addItem("C");
+        t1.markItem(0, true);
+        t1.markItem(2, true);
+        assertEquals("Hello World [66%]:\n" +
+                "* A✅\n" +
+                "* B\n" +
+                "* C✅\n", t1.getStringCheckList());
+    }
+
+    @Test
+    public void testTaskCheckListReset() {
+        Task t1 = new Task(0, "CSC116", 5, 2);
+        assertFalse(t1.resetCheckList());
+        Task.CheckList cl = t1.addCheckList("Hello World");
+        assertEquals(0, cl.size());
+        t1.addItem("A");
+        t1.addItem("B");
+        t1.addItem("C");
+        assertEquals(3, cl.size());
+        t1.resetCheckList();
+        assertEquals(0, cl.size());
+    }
 
 }

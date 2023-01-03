@@ -1,5 +1,10 @@
 package agile.planner.util;
 
+/**
+ * Handler of all core linker and utility functions for GoogleIO
+ *
+ * @author Andrew Roe
+ */
 public class GoogleUtil {
 
     //TODO links the codebase to Google Calendar

@@ -1,4 +1,16 @@
-Script Interpreter Example:
+#Reading/Writing Data:
+L1:<Name>
+...
+T1:<Name>,<Hours>,<Due_Date>,<Priority>,<L#>
+...
+C1:<Name><L#><[T#]>
+...
+D1:<Custom_Hr>
+
+With this data, generate the new schedule
+
+
+#Script Interpreter Example:
 
 task: hello world, 8, 2
 task: print, 2, 3
@@ -38,8 +50,8 @@ edit: task:#, hours, due_date
 remove: task:#
 read: file
 save: file
-pull:
-push:
+pull;
+push;
 #
 quit
 time
@@ -56,3 +68,23 @@ item: YES
 item: VIEW
 print
 
+Functions that return data use ":", while functions that are simple "void" use ";"
+Example:
+
+task: T,3,2 // [T1]
+task: U,4,3 // [T1, T2]
+label: task:0, CS // [L1]
+edit: label, MA
+#this is a stupid comment
+
+
+[t1, t2, t3, t4, t5]
+
+tempTask = null
+tempTask = t3
+
+
+Scheduling Algorithms:
+1. Round Robin (i.e. hardcode number of hours to divide up work)
+2. SJF (i.e. fills in all hours by shortest, no breaking up)
+3. LJF (i.e. fills in all hours by longest, no breaking up)

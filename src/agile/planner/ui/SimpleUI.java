@@ -2,7 +2,6 @@ package agile.planner.ui;
 
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Scanner;
 
 import agile.planner.manager.SystemManager;

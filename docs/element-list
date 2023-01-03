@@ -3,7 +3,6 @@ agile.planner.manager
 agile.planner.manager.scheduler
 agile.planner.manager.scheduler.day
 agile.planner.task
-agile.planner.task.tool
 agile.planner.ui
 agile.planner.user
 agile.planner.util
