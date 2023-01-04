@@ -1,6 +1,5 @@
 package agile.planner.manager;
 
-import agile.planner.manager.scheduler.ScheduleManager;
 import org.junit.Before;
 import org.junit.Test;
 

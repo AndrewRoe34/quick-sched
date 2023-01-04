@@ -1,6 +1,5 @@
 package agile.planner.manager;
 
-import agile.planner.manager.scheduler.ScheduleManager;
 import agile.planner.task.Task;
 
 import java.io.FileNotFoundException;

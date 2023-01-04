@@ -1,6 +1,6 @@
 package agile.planner.util;
 
-import agile.planner.manager.scheduler.day.Day;
+import agile.planner.schedule.day.Day;
 import agile.planner.task.Task;
 
 import java.io.PrintStream;

@@ -1,7 +1,7 @@
 agile.planner.io
 agile.planner.manager
-agile.planner.manager.scheduler
-agile.planner.manager.scheduler.day
+agile.planner.schedule
+agile.planner.schedule.day
 agile.planner.task
 agile.planner.ui
 agile.planner.user

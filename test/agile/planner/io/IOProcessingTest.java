@@ -3,13 +3,12 @@ package agile.planner.io;
 import static org.junit.Assert.*;
 
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import agile.planner.manager.scheduler.day.Day;
+import agile.planner.schedule.day.Day;
 import agile.planner.user.UserConfig;
 import org.junit.Test;
 

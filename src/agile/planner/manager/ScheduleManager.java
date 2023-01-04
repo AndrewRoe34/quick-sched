@@ -1,4 +1,4 @@
-package agile.planner.manager.scheduler;
+package agile.planner.manager;
 
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
@@ -11,7 +11,9 @@ import java.util.Map;
 import java.util.Calendar;
 
 import agile.planner.io.IOProcessing;
-import agile.planner.manager.scheduler.day.Day;
+import agile.planner.schedule.DynamicScheduler;
+import agile.planner.schedule.Scheduler;
+import agile.planner.schedule.day.Day;
 import agile.planner.task.Task;
 import agile.planner.user.UserConfig;
 import agile.planner.util.EventLog;
@@ -31,6 +33,8 @@ public class ScheduleManager {
     private Map<Integer, Task> taskMap; //TODO will need to work on this via IO processing
     /** Singleton for ScheduleManager */
     private static ScheduleManager singleton;
+    /** Performs all scheduling operations for each day */
+    private Scheduler scheduler;
     /** Holds all user settings for scheduling purposes */
     private static UserConfig userConfig;
     /** Logs all actions performed by user */
@@ -53,6 +57,7 @@ public class ScheduleManager {
      */
     private ScheduleManager() throws FileNotFoundException {
         taskManager = new PriorityQueue<>();
+        scheduler = new DynamicScheduler();
         schedule = new LinkedList<>();
         customHours = new HashMap<>();
         taskManager = new PriorityQueue<>();
@@ -216,45 +221,10 @@ public class ScheduleManager {
         while(taskManager.size() > 0) {
             currDay = new Day(dayId++, userConfig.getWeek()[idx++ % 7], dayCount++);
             schedule.add(currDay);
-            // TODO need to make hours more customizable
-            assignDay(currDay, complete, incomplete);
+            errorCount = scheduler.assignDay(currDay, errorCount, complete, incomplete, taskManager);
         }
         this.taskManager = complete;
         eventLog.reportSchedulingFinish();
-    }
-
-    /**
-     * Assigns each day a set of SubTasks
-     *
-     * @param day Day being processed
-     * @param complete Tasks that are "finished scheduling" are added here
-     * @param incomplete Tasks that are incomplete and need to be scheduled for later days
-     */
-    private void assignDay(Day day, PriorityQueue<Task> complete, PriorityQueue<Task> incomplete) {
-        while(day.hasSpareHours() && taskManager.size() > 0) {
-            Task task = taskManager.remove();
-            boolean validTaskStatus = day.addSubTask(task);
-            if(task.getSubTotalHoursRemaining() > 0) {
-                eventLog.reportDayAction(day, task, validTaskStatus);
-                incomplete.add(task);
-            } else {
-                complete.add(task);
-                eventLog.reportDayAction(day, task, validTaskStatus); //TODO test to see if works
-                errorCount += validTaskStatus ? 0 : 1;
-                if(!validTaskStatus || !day.hasSpareHours()) {
-                    while(taskManager.size() > 0 && taskManager.peek().getDueDate().equals(day.getDate())) {
-                        Task dueTask = taskManager.remove();
-                        complete.add(dueTask);
-                        validTaskStatus = day.addSubTask(dueTask);
-                        eventLog.reportDayAction(day, dueTask, validTaskStatus);
-                        errorCount++;
-                    }
-                }
-            }
-        }
-        while(incomplete.size() > 0) {
-            taskManager.add(incomplete.remove());
-        }
     }
 
     /**

@@ -1,4 +1,4 @@
-package agile.planner.manager.scheduler.day;
+package agile.planner.schedule.day;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

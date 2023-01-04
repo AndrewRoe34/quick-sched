@@ -4,7 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Calendar;
 
-import agile.planner.manager.scheduler.day.Day;
+import agile.planner.schedule.day.Day;
 import org.junit.Test;
 
 import agile.planner.task.Task;
