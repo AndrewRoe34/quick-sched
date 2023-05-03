@@ -1,4 +1,4 @@
-package agile.planner.task;
+package agile.planner.data;
 
 import java.util.Comparator;
 

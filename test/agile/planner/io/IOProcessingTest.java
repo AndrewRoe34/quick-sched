@@ -12,7 +12,7 @@ import agile.planner.schedule.day.Day;
 import agile.planner.user.UserConfig;
 import org.junit.Test;
 
-import agile.planner.task.Task;
+import agile.planner.data.Task;
 
 /**
  * Tests IOProcessing functionality

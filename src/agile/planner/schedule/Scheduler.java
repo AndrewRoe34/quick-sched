@@ -1,7 +1,7 @@
 package agile.planner.schedule;
 
 import agile.planner.schedule.day.Day;
-import agile.planner.task.Task;
+import agile.planner.data.Task;
 
 import java.util.PriorityQueue;
 

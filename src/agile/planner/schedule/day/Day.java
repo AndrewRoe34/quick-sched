@@ -4,8 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 
-import agile.planner.task.Task;
-import agile.planner.task.Task.SubTask;
+import agile.planner.data.Task;
+import agile.planner.data.Task.SubTask;
 import agile.planner.util.Time;
 
 /**
@@ -120,11 +120,16 @@ public class Day {
     /**
      * Adds a SubTask manually to the Day
      *
-     * @param task Task to be added
+     * @param task  Task to be added
      * @param hours number of hours for the SubTask
+     * @return boolean status for success of adding SubTask manually
      */
-    public void addSubTaskManually(Task task, int hours) {
-        //TODO will be utilized for the schedule parsing IO
+    public boolean addSubTaskManually(Task task, int hours) {
+        SubTask subtask = task.addSubTask(hours, false);
+
+        subtaskManager.addLast(subtask);
+        this.size += hours;
+        return true;
     }
 
     /**

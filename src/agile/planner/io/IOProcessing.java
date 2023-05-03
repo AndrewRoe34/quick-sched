@@ -9,7 +9,7 @@ import java.util.PriorityQueue;
 import java.util.Scanner;
 
 import agile.planner.schedule.day.Day;
-import agile.planner.task.Task;
+import agile.planner.data.Task;
 import agile.planner.user.UserConfig;
 
 /**

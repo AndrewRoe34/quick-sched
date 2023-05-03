@@ -1,7 +1,7 @@
 package agile.planner.schedule;
 
 import agile.planner.schedule.day.Day;
-import agile.planner.task.Task;
+import agile.planner.data.Task;
 
 import java.util.PriorityQueue;
 
@@ -25,11 +25,11 @@ public class DynamicScheduler implements Scheduler {
                 complete.add(task);
                 //eventLog.reportDayAction(day, task, validTaskStatus); //TODO need to add back
                 numErrors += validTaskStatus ? 0 : 1;
-                if(!validTaskStatus || !day.hasSpareHours()) {
+                if(!day.hasSpareHours()) {
                     while(taskManager.size() > 0 && taskManager.peek().getDueDate().equals(day.getDate())) {
                         Task dueTask = taskManager.remove();
                         complete.add(dueTask);
-                        validTaskStatus = day.addSubTask(dueTask);
+                        day.addSubTask(dueTask);
                         //eventLog.reportDayAction(day, dueTask, validTaskStatus); //TODO need to add back
                         numErrors++;
                     }

@@ -10,12 +10,16 @@ import java.util.PriorityQueue;
 import java.util.Map;
 import java.util.Calendar;
 
+import agile.planner.data.LongOrderComparator;
+import agile.planner.data.ShortOrderComparator;
 import agile.planner.io.IOProcessing;
+import agile.planner.schedule.CompactScheduler;
 import agile.planner.schedule.DynamicScheduler;
 import agile.planner.schedule.Scheduler;
 import agile.planner.schedule.day.Day;
-import agile.planner.task.Task;
+import agile.planner.data.Task;
 import agile.planner.user.UserConfig;
+import agile.planner.util.CheckList;
 import agile.planner.util.EventLog;
 
 /**
@@ -56,15 +60,15 @@ public class ScheduleManager {
      *
      */
     private ScheduleManager() throws FileNotFoundException {
+        eventLog = EventLog.getEventLog();
+        eventLog.reportUserLogin();
+        processUserConfigFile();
         taskManager = new PriorityQueue<>();
+        //scheduler = new CompactScheduler(userConfig);
         scheduler = new DynamicScheduler();
         schedule = new LinkedList<>();
         customHours = new HashMap<>();
-        taskManager = new PriorityQueue<>();
         taskMap = new HashMap<>();
-        processUserConfigFile();
-        eventLog = EventLog.getEventLog();
-        eventLog.reportUserLogin();
         //processSettingsCfg(filename);
     }
 
@@ -72,6 +76,7 @@ public class ScheduleManager {
      * Gets a singleton of ScheduleManager
      *
      * @return singleton of ScheduleManager
+     * @throws FileNotFoundException if invalid file for EventLog
      */
     public static ScheduleManager getScheduleManager() throws FileNotFoundException {
         if(singleton == null) {
@@ -244,20 +249,13 @@ public class ScheduleManager {
     }
 
     /**
-     * Generates an entire schedule following the rushed approach
-     */
-    private void generateCrammedSchedule() {
-        //TODO will be implemented in v0.4.0
-    }
-
-    /**
      * Creates a CheckList for a particular Task
      *
      * @param t1 task being utilized
      * @param title title for the Item
      * @return newly created CheckList
      */
-    public Task.CheckList createTaskCheckList(Task t1, String title) {
+    public CheckList<Task.SubTask> createTaskCheckList(Task t1, String title) {
         return t1.addCheckList(title);
     }
 
@@ -279,7 +277,7 @@ public class ScheduleManager {
      * @param itemIdx index for Item
      * @return Item removed from CheckList
      */
-    public Task.CheckList.Item removeTaskCheckListItem(Task t1, int itemIdx) {
+    public CheckList.Item<Task.SubTask> removeTaskCheckListItem(Task t1, int itemIdx) {
         return t1.removeItem(itemIdx);
     }
 
@@ -313,7 +311,7 @@ public class ScheduleManager {
      * @param itemIdx index for Item
      * @return Task Item
      */
-    public Task.CheckList.Item getTaskItem(Task t1, int itemIdx) {
+    public CheckList.Item<Task.SubTask> getTaskItem(Task t1, int itemIdx) {
         return t1.getItem(itemIdx);
     }
 

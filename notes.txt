@@ -88,3 +88,13 @@ Scheduling Algorithms:
 1. Round Robin (i.e. hardcode number of hours to divide up work)
 2. SJF (i.e. fills in all hours by shortest, no breaking up)
 3. LJF (i.e. fills in all hours by longest, no breaking up)
+
+
+
+task: T,3,2 // [T0]
+label: _task 0, CS // [T0] <- [L0]
+edit: label, MA
+#dumb comment BOP
+task: B,5,1 // [T1]
+#filler
+edit: _task 1, 10, 4

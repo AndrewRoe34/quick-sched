@@ -7,7 +7,7 @@ import java.util.Calendar;
 import agile.planner.schedule.day.Day;
 import org.junit.Test;
 
-import agile.planner.task.Task;
+import agile.planner.data.Task;
 import agile.planner.util.Time;
 
 /**

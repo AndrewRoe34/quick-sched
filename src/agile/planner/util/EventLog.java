@@ -1,7 +1,7 @@
 package agile.planner.util;
 
 import agile.planner.schedule.day.Day;
-import agile.planner.task.Task;
+import agile.planner.data.Task;
 
 import java.io.PrintStream;
 import java.io.FileNotFoundException;
@@ -169,6 +169,12 @@ public class EventLog {
         output.print(sdf.format(Calendar.getInstance().getTime()));
         output.println(" Reading Tasks: FILE=" + filename);
     }
+
+    /*TODO Need to add the following methods:
+        reportCardAction(Card, int) (Note: Model it after reportTaskAction(Task, int) )
+        reportScriptAction(...) (Note: Take a look at notes.txt and see what types of behaviors that are "common")
+        reportConfigAction(...) (Note: Take a look at UserConfig and the types of "actions" worth noting)
+    */
 
     /**
      * Reports the User's most recent login

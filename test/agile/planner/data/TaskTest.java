@@ -1,4 +1,4 @@
-package agile.planner.task;
+package agile.planner.data;
 
 import static org.junit.Assert.*;
 
@@ -6,7 +6,7 @@ import java.util.Calendar;
 
 import org.junit.Test;
 
-import agile.planner.task.Task.SubTask;
+import agile.planner.data.Task.SubTask;
 import agile.planner.util.Time;
 
 /**
