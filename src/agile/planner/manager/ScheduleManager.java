@@ -64,8 +64,8 @@ public class ScheduleManager {
         eventLog.reportUserLogin();
         processUserConfigFile();
         taskManager = new PriorityQueue<>();
-        //scheduler = new CompactScheduler(userConfig);
-        scheduler = new DynamicScheduler();
+        scheduler = new CompactScheduler(userConfig);
+        //scheduler = new DynamicScheduler();
         schedule = new LinkedList<>();
         customHours = new HashMap<>();
         taskMap = new HashMap<>();

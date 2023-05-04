@@ -30,7 +30,7 @@ public class CompactScheduler implements Scheduler {
         int numErrors = errorCount;
         while(day.hasSpareHours() && taskManager.size() > 0) {
             Task t1 = taskManager.remove();
-            if(t1.getDueDate().equals(day.getDate())) {
+            if(t1.getDueDate().equals(day.getDate())) { //TODO this shouldn't be here (fill up day until it's full, or if there's more tasks due that day)
                 int maxHours = userConfig.isFitSchedule() ? Math.min(day.getSpareHours(), t1.getSubTotalHoursRemaining()) : t1.getSubTotalHoursRemaining();
                 boolean status = day.addSubTaskManually(t1, maxHours);
                 complete.add(t1);

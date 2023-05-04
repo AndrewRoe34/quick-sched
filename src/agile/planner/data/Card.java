@@ -11,8 +11,9 @@ public class Card {
 
     private String name;
 
-    private CheckList checkList;
+    //TODO need to add Labels (for tasks)
 
     //TODO will need to make CheckList use generics
-    //TODO look at Trello and see the types of things a Card has (e.g. name, notes, date, etc.)
+
+    //TODO view this as the columns on Trello holding cards (but in this case, the column is the card, and the card is the task) :S
 }
