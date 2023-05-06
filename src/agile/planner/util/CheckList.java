@@ -6,25 +6,27 @@ import java.util.List;
 /**
  * CheckList for each individual task assigned to a day
  *
- * @param <E> generic object being linked to Item
  * @author Andrew Roe
  */
-public class CheckList<E> {
+public class CheckList {
 
     /** Name for CheckList */
     private String name;
     /** List of all Items for a task */
-    private List<Item<E>> list;
+    private List<Item> list;
     /** Number of Items completed */
     private int completed;
+    /** CheckList id */
+    private int checklistId;
 
     /**
      * Primary instance for a CheckList
      *
      * @param name title of the CheckList
      */
-    public CheckList(String name) {
+    public CheckList(String name, int checklistId) {
         setName(name);
+        setChecklistId(checklistId);
         list = new ArrayList<>();
     }
 
@@ -47,6 +49,24 @@ public class CheckList<E> {
     }
 
     /**
+     * Sets the ID for CheckList
+     *
+     * @param checklistId ID for CheckList
+     */
+    private void setChecklistId(int checklistId) {
+        this.checklistId = checklistId;
+    }
+
+    /**
+     * Gets the ID for CheckList
+     *
+     * @return ID for CheckList
+     */
+    public int getChecklistId() {
+        return checklistId;
+    }
+
+    /**
      * Helper method for verifying the index of the list
      *
      * @param idx index to be verified
@@ -62,12 +82,11 @@ public class CheckList<E> {
     /**
      * Adds a new Item to the CheckList
      *
-     * @param obj generic type being linked
      * @param description description for the Item
      * @return boolean value for successful add of Item
      */
-    public boolean addItem(E obj, String description) {
-        return list.add(new Item<E>(obj, description));
+    public boolean addItem(String description) {
+        return list.add(new Item(description));
     }
 
     /**
@@ -76,7 +95,7 @@ public class CheckList<E> {
      * @param idx index of CheckList
      * @return removed Item
      */
-    public Item<E> removeItem(int idx) {
+    public Item removeItem(int idx) {
         if(verifyIndex(idx) == -1) {
             throw new IllegalArgumentException("Invalid index for checklist");
         }
@@ -102,7 +121,7 @@ public class CheckList<E> {
      * @param idx index of Item
      * @return Item at specified index
      */
-    public Item<E> getItem(int idx) {
+    public Item getItem(int idx) {
         if(verifyIndex(idx) == -1) {
             throw new IllegalArgumentException("Invalid index for checklist");
         }
@@ -119,7 +138,7 @@ public class CheckList<E> {
         if(verifyIndex(idx) == -1) {
             throw new IllegalArgumentException("Invalid index for checklist");
         }
-        Item<E> i1 = getItem(idx);
+        Item i1 = getItem(idx);
         if(flag && !i1.isComplete()) {
             completed++;
         } else if(!flag && i1.isComplete()) {
@@ -156,7 +175,7 @@ public class CheckList<E> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder(name + " [" + getPercentage() + "%]:\n");
-        for(Item<E> i : list) {
+        for(Item i : list) {
             sb.append("* ").append(i.toString()).append("\n");
         }
         return sb.toString();
@@ -172,15 +191,21 @@ public class CheckList<E> {
     }
 
     /**
+     * Gets CheckList ID
+     *
+     * @return CheckList ID
+     */
+    public int getId() {
+        return checklistId;
+    }
+
+    /**
      * Represents a single Item in a CheckList
      *
-     * @param <E> generic object being linked to Item
      * @author Andrew Roe
      */
-    public static class Item<E> {
+    public static class Item {
 
-        /** Generic object being linked to Item (or null if not needed) */
-        private E obj;
         /** Description for Item */
         private String description;
         /** Completion status of Item */
@@ -189,30 +214,10 @@ public class CheckList<E> {
         /**
          * Primary constructor for Item
          *
-         * @param obj generic object being linked to Item (or null if not needed)
          * @param description description for Item
          */
-        private Item(E obj, String description) {
-            setObj(obj);
+        private Item(String description) {
             setDescription(description);
-        }
-
-        /**
-         * Sets the generic object
-         *
-         * @param obj generic object (or null)
-         */
-        private void setObj(E obj) {
-            this.obj = obj;
-        }
-
-        /**
-         * Gets the generic object (or null)
-         *
-         * @return generic object (or null)
-         */
-        public E getObj() {
-            return obj;
         }
 
         /**

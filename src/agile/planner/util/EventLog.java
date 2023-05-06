@@ -69,6 +69,67 @@ public class EventLog {
     }
 
     /**
+     * Reports the creation of a CheckList
+     *
+     * @param cl CheckList created
+     */
+    public void reportCheckListCreation(CheckList cl) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" CheckList ID=" + cl.getId());
+        output.println(", CREATED");
+    }
+
+    /**
+     * Reports the removal of a CheckList
+     *
+     * @param cl CheckList removed
+     */
+    public void reportCheckListRemoval(CheckList cl) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" CheckList ID=" + cl.getId());
+        output.println(", REMOVED");
+    }
+
+    /**
+     * Reports the reset of a CheckList
+     *
+     * @param cl CheckList being reset
+     */
+    public void reportCheckListReset(CheckList cl) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" CheckList ID=" + cl.getId());
+        output.println(", RESET");
+    }
+
+    /**
+     * Reports CheckList action performed
+     *
+     * @param cl CheckList being utilized
+     * @param itemIdx index of Item
+     * @param action representing which action was performed on CheckList
+     */
+    public void reportCheckListAction(CheckList cl, int itemIdx, int action) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" CheckList ID=" + cl.getId());
+        if(action == 0) {
+            output.print(", ITEM_REMOVED=" + cl.getItem(itemIdx));
+        } else if(action == 1) {
+            output.print(", ITEM_ADDED=" + cl.getItem(itemIdx));
+        } else if(action == 2) {
+            output.print(", ITEM=" + cl.getItem(itemIdx) + ", MARKED=COMPLETE");
+        } else if(action == 3) {
+            output.print(", ITEM=" + cl.getItem(itemIdx) + ", MARKED=INCOMPLETE");
+        } else if(action == 4) {
+            output.print(", ITEM=" + cl.getItem(itemIdx) + ", SHIFTED");
+        }
+        output.println(", PERCENTAGE_COMPLETE=" + cl.getPercentage());
+    }
+
+    /**
      * Reports a given Day edit
      *
      * @param date Calendar date being reported

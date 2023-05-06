@@ -25,20 +25,25 @@ public class UserConfig {
     private boolean fitSchedule;
     /** Scheduling algorithm chosen */
     private int schedulingAlgorithm;
+    /** Minimum number of hours for a given day */
+    private int minHours;
+
 
     /**
      * Primary constructor for UserConfig
-     * @param userName Name for user
-     * @param userEmail Email for user
-     * @param globalHr Global data for week
-     * @param maxDays Maximum number of days to display
-     * @param archiveDays Maximum number of past days to display
-     * @param priority Whether to enable priority for tasks
-     * @param overflow Whether to display overflow
-     * @param fitSchedule Whether to fit schedule
+     *
+     * @param userName            Name for user
+     * @param userEmail           Email for user
+     * @param globalHr            Global data for week
+     * @param maxDays             Maximum number of days to display
+     * @param archiveDays         Maximum number of past days to display
+     * @param priority            Whether to enable priority for tasks
+     * @param overflow            Whether to display overflow
+     * @param fitSchedule         Whether to fit schedule
      * @param schedulingAlgorithm Scheduling algorithm chosen
+     * @param minHours            Minimum number of hours for a given day
      */
-    public UserConfig(String userName, String userEmail, int[] globalHr, int maxDays, int archiveDays, boolean priority, boolean overflow, boolean fitSchedule, int schedulingAlgorithm) {
+    public UserConfig(String userName, String userEmail, int[] globalHr, int maxDays, int archiveDays, boolean priority, boolean overflow, boolean fitSchedule, int schedulingAlgorithm, int minHours) {
         this.userName = userName;
         this.email = userEmail;
         this.week = globalHr;
@@ -48,6 +53,7 @@ public class UserConfig {
         this.overflow = overflow;
         this.fitSchedule = fitSchedule;
         this.schedulingAlgorithm = schedulingAlgorithm;
+        this.minHours = minHours;
     }
 
     /**
@@ -216,5 +222,23 @@ public class UserConfig {
      */
     public void setSchedulingAlgorithm(int schedulingAlgorithm) { //TODO need to provide max of 4 (currently only 1)
         this.schedulingAlgorithm = schedulingAlgorithm;
+    }
+
+    /**
+     * Gets minimum number of hours per given day
+     *
+     * @return minimum number of hours
+     */
+    public int getMinHours() {
+        return minHours;
+    }
+
+    /**
+     * Sets minimum number of hours per given day
+     *
+     * @param minHours minimum number of hours
+     */
+    public void setMinHours(int minHours) {
+        this.minHours = minHours;
     }
 }

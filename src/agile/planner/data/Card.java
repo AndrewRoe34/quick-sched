@@ -2,18 +2,84 @@ package agile.planner.data;
 
 import agile.planner.util.CheckList;
 
+import java.util.List;
+
 /**
- * Holds Tasks for a specific grouping or category
+ * Holds Tasks for a specific grouping or category <p>
+ * View this as the columns on Trello holding cards (but in our case,
+ * the column is the card, and the card is the task)
  *
  * @author Andrew Roe
  */
 public class Card {
 
-    private String name;
+    /** Label for Card */
+    private String title;
+    /** List of Tasks for Card */
+    private List<Task> list;
 
-    //TODO need to add Labels (for tasks)
+    /**
+     * Primary constructor for Card
+     *
+     * @param title title for Card
+     */
+    public Card(String title) {
+        this.title = title;
+    }
 
-    //TODO will need to make CheckList use generics
+    /**
+     * Gets title for Card
+     *
+     * @return title
+     */
+    public String getLabel() {
+        return title;
+    }
 
-    //TODO view this as the columns on Trello holding cards (but in this case, the column is the card, and the card is the task) :S
+    /**
+     * Sets title for Card
+     *
+     * @param title title for Card
+     */
+    public void setLabel(String title) {
+        this.title = title;
+    }
+
+    /**
+     * Gets List of Tasks for Card
+     *
+     * @return List of Tasks
+     */
+    public List<Task> getList() {
+        return list;
+    }
+
+    /**
+     * Sets List of Tasks for Card
+     *
+     * @param list List of Tasks
+     */
+    public void setList(List<Task> list) {
+        this.list = list;
+    }
+
+    /**
+     * Adds a Task to Card
+     *
+     * @param task Task being added
+     * @return boolean status for success
+     */
+    public boolean addTask(Task task) {
+        return list.add(task);
+    }
+
+    /**
+     * Removes Task from Card
+     *
+     * @param idx index of Task
+     * @return Task being removed
+     */
+    public Task removeTask(int idx) {
+        return list.remove(idx);
+    }
 }

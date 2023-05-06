@@ -10,6 +10,7 @@ import java.util.PriorityQueue;
 import java.util.Map;
 import java.util.Calendar;
 
+import agile.planner.data.Card;
 import agile.planner.data.LongOrderComparator;
 import agile.planner.data.ShortOrderComparator;
 import agile.planner.io.IOProcessing;
@@ -29,6 +30,8 @@ import agile.planner.util.EventLog;
  */
 public class ScheduleManager {
 
+    /** List of Cards holding Tasks */
+    private List<Card> cards;
     /** LinkedList of Days representing a single schedule */
     private List<Day> schedule;
     /** PriorityQueue of all Tasks in sorted order */
@@ -64,8 +67,8 @@ public class ScheduleManager {
         eventLog.reportUserLogin();
         processUserConfigFile();
         taskManager = new PriorityQueue<>();
-        scheduler = new CompactScheduler(userConfig);
-        //scheduler = new DynamicScheduler();
+        scheduler = new CompactScheduler(userConfig, eventLog);
+        //scheduler = new DynamicScheduler(userConfig, eventLog);
         schedule = new LinkedList<>();
         customHours = new HashMap<>();
         taskMap = new HashMap<>();
@@ -99,7 +102,7 @@ public class ScheduleManager {
 //    /**
 //     * Sets standard hours for a day
 //     *
-//     * @param day day to be modified
+//     * @param day a Day to be modified
 //     * @param hours number of hours to be set
 //     */
 //    public void setGlobalHours(int day, int hours) {
@@ -114,7 +117,7 @@ public class ScheduleManager {
 //    /**
 //     * Sets custom hours for a single instance of a day
 //     *
-//     * @param day day to be modified
+//     * @param day a Day to be modified
 //     * @param hours number of hours to be set
 //     */
 //    public void setCustomHours(int day, int hours) {
@@ -134,7 +137,7 @@ public class ScheduleManager {
     public void processTaskInputFile(String filename) {
         try {
             int pqSize = taskManager.size();
-            lastDueDate = IOProcessing.readTasks("data/" + filename, taskManager, taskId);
+            lastDueDate = IOProcessing.readTasks("data/" + filename, taskManager, taskMap, taskId);
             taskId += taskManager.size() - pqSize;
             eventLog.reportProcessTasks(filename);
         } catch (FileNotFoundException e) {
@@ -255,8 +258,18 @@ public class ScheduleManager {
      * @param title title for the Item
      * @return newly created CheckList
      */
-    public CheckList<Task.SubTask> createTaskCheckList(Task t1, String title) {
-        return t1.addCheckList(title);
+    public CheckList createTaskCheckList(Task t1, String title) {
+        CheckList cl = t1.addCheckList(title, 0);
+        eventLog.reportCheckListCreation(cl);
+        return cl;
+    }
+
+    public CheckList removeTaskCheckList(Task t1) {
+        CheckList cl = t1.removeCheckList();
+        if(cl != null) {
+            eventLog.reportCheckListRemoval(cl);
+        }
+        return cl;
     }
 
     /**
@@ -267,7 +280,11 @@ public class ScheduleManager {
      * @return boolean status for successful add
      */
     public boolean addTaskCheckListItem(Task t1, String description) {
-        return t1.addItem(description);
+        boolean status = t1.addItem(description);
+        if(status) {
+            eventLog.reportCheckListAction(t1.getCheckList(), t1.getCheckList().size() - 1, 1);
+        }
+        return status;
     }
 
     /**
@@ -277,7 +294,8 @@ public class ScheduleManager {
      * @param itemIdx index for Item
      * @return Item removed from CheckList
      */
-    public CheckList.Item<Task.SubTask> removeTaskCheckListItem(Task t1, int itemIdx) {
+    public CheckList.Item removeTaskCheckListItem(Task t1, int itemIdx) {
+        eventLog.reportCheckListAction(t1.getCheckList(), itemIdx, 0);
         return t1.removeItem(itemIdx);
     }
 
@@ -290,6 +308,7 @@ public class ScheduleManager {
      * @return boolean status for successful shift
      */
     public boolean shiftTaskItem(Task t1, int itemIdx, int shiftIdx) {
+        eventLog.reportCheckListAction(t1.getCheckList(), itemIdx, 4);
         return t1.shiftItem(itemIdx, shiftIdx);
     }
 
@@ -302,6 +321,11 @@ public class ScheduleManager {
      */
     public void markTaskItem(Task t1, int itemIdx, boolean flag) {
         t1.markItem(itemIdx, flag);
+        if(flag) {
+            eventLog.reportCheckListAction(t1.getCheckList(), itemIdx, 2);
+        } else {
+            eventLog.reportCheckListAction(t1.getCheckList(), itemIdx, 2);
+        }
     }
 
     /**
@@ -311,7 +335,7 @@ public class ScheduleManager {
      * @param itemIdx index for Item
      * @return Task Item
      */
-    public CheckList.Item<Task.SubTask> getTaskItem(Task t1, int itemIdx) {
+    public CheckList.Item getTaskItem(Task t1, int itemIdx) {
         return t1.getItem(itemIdx);
     }
 
@@ -332,6 +356,7 @@ public class ScheduleManager {
      * @return boolean status for successful reset
      */
     public boolean resetTaskCheckList(Task t1) {
+        eventLog.reportCheckListReset(t1.getCheckList());
         return t1.resetCheckList();
     }
 

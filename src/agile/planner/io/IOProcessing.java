@@ -3,10 +3,7 @@ package agile.planner.io;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.InputMismatchException;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Scanner;
+import java.util.*;
 
 import agile.planner.schedule.day.Day;
 import agile.planner.data.Task;
@@ -65,13 +62,14 @@ public class IOProcessing {
      * Processes the specified file for the list of all specified Tasks
      *
      * @param filename file to be processed
-     * @param pq PriorityQueue for holding Tasks in sorted order
-     * @param taskId identification number for each Task
+     * @param pq       PriorityQueue for holding Tasks in sorted order
+     * @param taskMap Map for holding ID/Task relationship
+     * @param taskId   identification number for each Task
      * @return last due date for Task
      * @throws FileNotFoundException if task file does not exist
      */
     @Deprecated
-    public static int readTasks(String filename, PriorityQueue<Task> pq, int taskId) throws FileNotFoundException {
+    public static int readTasks(String filename, PriorityQueue<Task> pq, Map<Integer, Task> taskMap, int taskId) throws FileNotFoundException {
         Scanner fileScanner = new Scanner(new File(filename));
         fileScanner.useDelimiter(",|\\r\\n|\\n");
         int maxDate = 0;
@@ -80,7 +78,9 @@ public class IOProcessing {
             String name = fileScanner.next();
             int hours = fileScanner.nextInt();
             int date = fileScanner.nextInt();
-            pq.add(new Task(taskCount++, name, hours, date));
+            Task t1 = new Task(taskCount++, name, hours, date);
+            pq.add(t1);
+            taskMap.put(taskCount - 1, t1);
             maxDate = Math.max(maxDate, date);
         }
         fileScanner.close();
@@ -101,6 +101,8 @@ public class IOProcessing {
         }
         Scanner fileScanner = new Scanner(new File(filePath));
 
+        int variableCount = 10;
+
         int count = 0;
         String userName = null;
         String userEmail = null;
@@ -111,6 +113,7 @@ public class IOProcessing {
         boolean overflow = true;
         boolean fitSchedule = false;
         int schedulingAlgorithm = 1;
+        int minHours = 1;
 
         while(fileScanner.hasNextLine()) {
             String line = fileScanner.nextLine();
@@ -143,15 +146,17 @@ public class IOProcessing {
                     fitSchedule = Boolean.parseBoolean(line.substring(13));
                 } else if (count == 9 && line.length() > 19 && "schedule_algorithm=".equals(line.substring(0, 19))) {
                     schedulingAlgorithm = Integer.parseInt(line.substring(19));
+                } else if (count == 10 && line.length() > 10 && "min_hours=".equals(line.substring(0, 10)) ){
+                    minHours = schedulingAlgorithm = Integer.parseInt(line.substring(10));
                 } else {
                     throw new InputMismatchException("Config file improperly configured");
                 }
             }
         }
-        if(count != 9) {
+        if(count != variableCount) {
             throw new InputMismatchException("Config file missing data");
         }
-        return new UserConfig(userName, userEmail, globalHr, maxDays, archiveDays, priority, overflow, fitSchedule, schedulingAlgorithm);
+        return new UserConfig(userName, userEmail, globalHr, maxDays, archiveDays, priority, overflow, fitSchedule, schedulingAlgorithm, minHours);
     }
 
     /**

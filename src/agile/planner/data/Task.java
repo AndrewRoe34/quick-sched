@@ -29,7 +29,7 @@ public class Task implements Comparable<Task> {
     /** # of hours / (DueDate - StartingDay) */
     private int averageNumHours;
     /** CheckList of Items for Task */
-    private CheckList<SubTask> checkList;
+    private CheckList checkList;
     /** Label for String */ //TODO will need to finish later
     private List<String> label;
 
@@ -192,13 +192,20 @@ public class Task implements Comparable<Task> {
      * Adds a CheckList for the Task
      *
      * @param title Title for the CheckList
+     * @param id ID for CheckList
      * @return CheckList instance
      */
-    public CheckList<SubTask> addCheckList(String title) {
+    public CheckList addCheckList(String title, int id) {
         if(checkList == null) {
-            this.checkList = new CheckList<>(title);
+            this.checkList = new CheckList(title, id);
         }
         return checkList;
+    }
+
+    public CheckList removeCheckList() {
+        CheckList cl = checkList;
+        checkList = null;
+        return cl;
     }
 
     /**
@@ -219,7 +226,7 @@ public class Task implements Comparable<Task> {
      * @return boolean status for whether successful or not
      */
     public boolean addItem(SubTask subTask, String description) {
-        return checkList != null && checkList.addItem(subTask, description);
+        return checkList != null && checkList.addItem(description);
     }
 
     /**
@@ -228,7 +235,7 @@ public class Task implements Comparable<Task> {
      * @param idx index for removal
      * @return Item removed from the CheckList
      */
-    public CheckList.Item<SubTask> removeItem(int idx) {
+    public CheckList.Item removeItem(int idx) {
         return checkList != null ? checkList.removeItem(idx) : null;
     }
 
@@ -268,7 +275,7 @@ public class Task implements Comparable<Task> {
      * @param idx index of Item
      * @return return Item
      */
-    public CheckList.Item<SubTask> getItem(int idx) {
+    public CheckList.Item getItem(int idx) {
         return checkList != null ? checkList.getItem(idx) : null;
     }
 
@@ -321,6 +328,10 @@ public class Task implements Comparable<Task> {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, dueDate, totalHours, subTotalHours, averageNumHours, checkList, label);
+    }
+
+    public CheckList getCheckList() {
+        return checkList;
     }
 
     /**

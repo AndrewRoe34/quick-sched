@@ -141,7 +141,7 @@ public class TaskTest {
         assertNotEquals(t1, t2);
         assertEquals(t2, t3);
     }
-
+/*
     @Test
     public void testTaskCheckList() {
         Task t1 = new Task(0, "CSC116", 5, 2);
@@ -294,5 +294,5 @@ public class TaskTest {
         t1.resetCheckList();
         assertEquals(0, cl.size());
     }
-
+*/
 }

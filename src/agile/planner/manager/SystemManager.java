@@ -145,7 +145,7 @@ public class SystemManager {
      * @param title title for the Item
      * @return newly created CheckList
      */
-    public CheckList<Task.SubTask> createTaskCheckList(Task t1, String title) {
+    public CheckList createTaskCheckList(Task t1, String title) {
         return scheduleManager.createTaskCheckList(t1, title);
     }
 
@@ -167,7 +167,7 @@ public class SystemManager {
      * @param itemIdx index for Item
      * @return Item removed from CheckList
      */
-    public CheckList.Item<Task.SubTask> removeTaskCheckListItem(Task t1, int itemIdx) {
+    public CheckList.Item removeTaskCheckListItem(Task t1, int itemIdx) {
         return scheduleManager.removeTaskCheckListItem(t1, itemIdx);
     }
 
