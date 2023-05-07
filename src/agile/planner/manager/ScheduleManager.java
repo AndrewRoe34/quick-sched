@@ -67,8 +67,8 @@ public class ScheduleManager {
         eventLog.reportUserLogin();
         processUserConfigFile();
         taskManager = new PriorityQueue<>();
-        scheduler = new CompactScheduler(userConfig, eventLog);
-        //scheduler = new DynamicScheduler(userConfig, eventLog);
+        //scheduler = new CompactScheduler(userConfig, eventLog);
+        scheduler = new DynamicScheduler(userConfig, eventLog);
         schedule = new LinkedList<>();
         customHours = new HashMap<>();
         taskMap = new HashMap<>();
@@ -93,6 +93,7 @@ public class ScheduleManager {
      */
     private void processUserConfigFile() {
         try {
+            eventLog.reportProcessConfig("profile.cfg");
             userConfig = IOProcessing.readCfg(null);
         } catch (FileNotFoundException e) {
             eventLog.reportException(e);
