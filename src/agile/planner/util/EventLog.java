@@ -1,5 +1,6 @@
 package agile.planner.util;
 
+import agile.planner.data.Card;
 import agile.planner.schedule.day.Day;
 import agile.planner.data.Task;
 
@@ -65,8 +66,35 @@ public class EventLog {
         output.print(", NAME=" + task.getName());
         output.print(", HOURS=" + task.getTotalHours());
         SimpleDateFormat sdf2 = new SimpleDateFormat("MM-dd-yyyy");
-        output.println(", DUE_DATE=" + sdf2.format(task.getDueDate().getTime())); //TODO need to format it with sdf
+        output.println(", DUE_DATE=" + sdf2.format(task.getDueDate().getTime()));
     }
+
+    /**
+     * Reports a given Card action
+     *
+     * @param card Card being reported
+     * @param type Action type (0=Card Created, 1=Task Added, 2=Task Removed, 3=Label Added, 4=Label Removed)
+     */
+    public void reportCardAction(Card card, int type) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+
+        if(type == 0) {
+            output.print(" CREATE(CARD): ");
+        } else if(type == 1) {
+            output.print(" ADD(TASK): ");
+        } else if(type == 2) {
+            output.print(" REMOVE(TASK): ");
+        } else if(type == 3) {
+            output.print(" ADD(LABEL): ");
+        } else {
+            output.print(" REMOVE(LABEL): ");
+        }
+
+        //output.print(" ID=" + card.getId()); //TODO: need to finish getId()
+        output.print(", TITLE=" + card.getLabel());
+    }
+
 
     /**
      * Reports the creation of a CheckList

@@ -417,5 +417,10 @@ public class ScheduleManager {
         eventLog.reportExitSession();
         System.exit(0);
     }
+    
+    public boolean createCard(String title) {
+        Card card;
+        eventLog.reportCardAction(card, 0);
+    }
 
 }
