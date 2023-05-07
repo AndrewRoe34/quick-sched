@@ -36,7 +36,12 @@ public class CompactScheduler implements Scheduler {
         int numErrors = errorCount;
         while(day.hasSpareHours() && taskManager.size() > 0) {
             Task task = taskManager.remove();
-            int maxHours = userConfig.isFitSchedule() ? Math.min(day.getSpareHours(), task.getSubTotalHoursRemaining()) : task.getSubTotalHoursRemaining();
+            int maxHours = 0;
+            if(task.getDueDate().equals(day.getDate())) {
+                maxHours = userConfig.isFitSchedule() ? Math.min(day.getSpareHours(), task.getSubTotalHoursRemaining()) : task.getSubTotalHoursRemaining();
+            } else {
+                maxHours = Math.min(day.getSpareHours(), task.getSubTotalHoursRemaining());
+            }
             boolean validTaskStatus = day.addSubTaskManually(task, maxHours);
             if(userConfig.isFitSchedule() && task.getSubTotalHoursRemaining() > 0) {
                 eventLog.reportDayAction(day, task, validTaskStatus);
@@ -45,7 +50,11 @@ public class CompactScheduler implements Scheduler {
                     complete.add(taskManager.remove());
                 }
             } else {
-                complete.add(task);
+                if(task.getSubTotalHoursRemaining() > 0) {
+                    incomplete.add(task);
+                } else {
+                    complete.add(task);
+                }
                 eventLog.reportDayAction(day, task, validTaskStatus);
                 numErrors += validTaskStatus ? 0 : 1;
                 if(!day.hasSpareHours() && !userConfig.isFitSchedule()) {

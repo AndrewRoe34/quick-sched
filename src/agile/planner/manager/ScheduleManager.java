@@ -67,8 +67,8 @@ public class ScheduleManager {
         eventLog.reportUserLogin();
         processUserConfigFile();
         taskManager = new PriorityQueue<>();
-        //scheduler = new CompactScheduler(userConfig, eventLog);
-        scheduler = new DynamicScheduler(userConfig, eventLog);
+        scheduler = new CompactScheduler(userConfig, eventLog);
+        //scheduler = new DynamicScheduler(userConfig, eventLog);
         schedule = new LinkedList<>();
         customHours = new HashMap<>();
         taskMap = new HashMap<>();
@@ -420,8 +420,9 @@ public class ScheduleManager {
     }
     
     public boolean createCard(String title) {
-        Card card;
+        Card card = null;
         eventLog.reportCardAction(card, 0);
+        return false;
     }
 
 }
