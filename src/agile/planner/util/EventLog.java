@@ -259,6 +259,18 @@ public class EventLog {
         output.println(" Reading Tasks: FILE=" + filename);
     }
 
+
+    /**
+     * Reports the processing of Config from a file
+     *
+     * @param filename name of Config file
+     */
+    public void reportProcessConfig(String filename) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.println(" Reading Config: FILE=" + filename);
+    }
+
     /*TODO Need to add the following methods:
         reportCardAction(Card, int) (Note: Model it after reportTaskAction(Task, int) )
         reportScriptAction(...) (Note: Take a look at notes.txt and see what types of behaviors that are "common")

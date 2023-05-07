@@ -99,6 +99,7 @@ public class IOProcessing {
         if(filePath == null) {
             filePath = "settings/profile.cfg";
         }
+
         Scanner fileScanner = new Scanner(new File(filePath));
 
         int variableCount = 10;
