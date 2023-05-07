@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 /**
  * Tests Card functionality
  *
- * @author
+ * @author lucialanganey
  */
 public class CardTest {
 
