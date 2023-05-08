@@ -76,6 +76,7 @@ public class IOProcessingTest {
     @Test @Deprecated
     public void testReadSchedule() {
         try {
+            Map<Integer, Task> taskMap = new HashMap<>();
             PriorityQueue<Task> pq = new PriorityQueue<>();
             int lastDueInDays = IOProcessing.readTasks("data/break.txt", pq, taskMap, 0);
             assertEquals("A", pq.remove().getName());
