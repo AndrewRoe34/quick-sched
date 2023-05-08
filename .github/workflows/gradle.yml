@@ -32,5 +32,3 @@ jobs:
       uses: gradle/wrapper-validation-action@ccb4328a959376b642e027874838f60f8e596de3
     - name: Build with Gradle
       run: ./gradlew build
-      with:
-        arguments: build
