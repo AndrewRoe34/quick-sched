@@ -28,9 +28,7 @@ jobs:
       with:
         java-version: '11'
         distribution: 'temurin'
-    - name: Validate Gradle wrapper
-      uses: gradle/wrapper-validation-action@ccb4328a959376b642e027874838f60f8e596de3
     - name: Build with Gradle
-      run: ./gradlew build
+      uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
       with:
         arguments: build
