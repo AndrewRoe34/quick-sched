@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.Calendar;
 
+import agile.planner.util.CheckList;
 import org.junit.Test;
 
 import agile.planner.data.Task.SubTask;
@@ -141,11 +142,11 @@ public class TaskTest {
         assertNotEquals(t1, t2);
         assertEquals(t2, t3);
     }
-/* This is a test commit
+
     @Test
     public void testTaskCheckList() {
         Task t1 = new Task(0, "CSC116", 5, 2);
-        Task.CheckList cl = t1.addCheckList("Hello World");
+        CheckList cl = t1.addCheckList("Hello World", 0);
         assertEquals("Hello World", cl.getName());
         assertEquals(0, cl.size());
     }
@@ -153,14 +154,14 @@ public class TaskTest {
     @Test
     public void testTaskCheckListSetName() {
         Task t1 = new Task(0, "CSC116", 5, 2);
-        Task.CheckList cl = t1.addCheckList("Hello World");
+        CheckList cl = t1.addCheckList("Hello World", 0);
         assertEquals("Hello World", cl.getName());
     }
 
    @Test
    public void testTaskCheckListAddItem() {
        Task t1 = new Task(0, "CSC116", 5, 2);
-       t1.addCheckList("Hello World");
+       t1.addCheckList("Hello World", 0);
        t1.addItem("Work to do");
        assertEquals("Work to do", t1.getItem(0).getDescription());
    }
@@ -168,15 +169,15 @@ public class TaskTest {
    @Test
    public void testTaskCheckListRemoveItem() {
        Task t1 = new Task(0, "CSC116", 5, 2);
-       t1.addCheckList("Hello World");
+       t1.addCheckList("Hello World", 0);
        t1.addItem("A");
        t1.addItem("B");
        t1.addItem("C");
-       Task.CheckList.Item i1 = t1.removeItem(1);
+       CheckList.Item i1 = t1.removeItem(1);
        assertEquals("B", i1.getDescription());
-       Task.CheckList.Item i2 = t1.removeItem(0);
+       CheckList.Item i2 = t1.removeItem(0);
        assertEquals("A", i2.getDescription());
-       Task.CheckList.Item i3 = t1.removeItem(0);
+       CheckList.Item i3 = t1.removeItem(0);
        assertEquals("C", i3.getDescription());
 
        try {
@@ -191,13 +192,13 @@ public class TaskTest {
    public void testTaskCheckListShiftItem() {
        Task t1 = new Task(0, "CSC116", 5, 2);
        assertFalse(t1.shiftItem(0, 1));
-       t1.addCheckList("Hello World");
+       t1.addCheckList("Hello World", 0);
        t1.addItem("A");
-       Task.CheckList.Item i1 = t1.getItem(0);
+       CheckList.Item i1 = t1.getItem(0);
        t1.addItem("B");
-       Task.CheckList.Item i2 = t1.getItem(1);
+       CheckList.Item i2 = t1.getItem(1);
        t1.addItem("C");
-       Task.CheckList.Item i3 = t1.getItem(2);
+       CheckList.Item i3 = t1.getItem(2);
        t1.shiftItem(0, 1);
        assertEquals(i1, t1.getItem(1));
        assertEquals(i2, t1.getItem(0));
@@ -219,7 +220,7 @@ public class TaskTest {
     public void testTaskCheckListMarkItem() {
         Task t1 = new Task(0, "CSC116", 5, 2);
         assertFalse(t1.markItem(0, true));
-        t1.addCheckList("Hello World");
+        t1.addCheckList("Hello World", 0);
         t1.addItem("A");
         assertFalse(t1.getItem(0).isComplete());
         t1.addItem("B");
@@ -252,7 +253,7 @@ public class TaskTest {
     public void testTaskCheckListGetItem() {
         Task t1 = new Task(0, "CSC116", 5, 2);
         assertNull(t1.getItem(1));
-        t1.addCheckList("Hello World");
+        t1.addCheckList("Hello World", 0);
         t1.addItem("A");
         assertEquals("A", t1.getItem(0).getDescription());
         assertFalse(t1.getItem(0).isComplete());
@@ -269,7 +270,7 @@ public class TaskTest {
     public void testTaskCheckListString() {
         Task t1 = new Task(0, "CSC116", 5, 2);
         assertNull(t1.getStringCheckList());
-        t1.addCheckList("Hello World");
+        t1.addCheckList("Hello World", 0);
         t1.addItem("A");
         t1.addItem("B");
         t1.addItem("C");
@@ -285,7 +286,7 @@ public class TaskTest {
     public void testTaskCheckListReset() {
         Task t1 = new Task(0, "CSC116", 5, 2);
         assertFalse(t1.resetCheckList());
-        Task.CheckList cl = t1.addCheckList("Hello World");
+        CheckList cl = t1.addCheckList("Hello World", 0);
         assertEquals(0, cl.size());
         t1.addItem("A");
         t1.addItem("B");
@@ -294,5 +295,4 @@ public class TaskTest {
         t1.resetCheckList();
         assertEquals(0, cl.size());
     }
-*/
 }
