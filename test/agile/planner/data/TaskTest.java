@@ -124,6 +124,9 @@ public class TaskTest {
         assertEquals(9, t3.getAverageNumHours());
     }
 
+    /**
+     * Tests ID functionality
+     */
     @Test
     public void testId() {
         Task t1 = new Task(0, "A", 5, 2);
@@ -134,6 +137,9 @@ public class TaskTest {
         assertEquals(2, t3.getId());
     }
 
+    /**
+     * Tests equals() functionality
+     */
     @Test
     public void testEquals() {
         Task t1 = new Task(0, "A", 5, 2);
@@ -143,6 +149,9 @@ public class TaskTest {
         assertEquals(t2, t3);
     }
 
+    /**
+     * Tests CheckList functionality
+     */
     @Test
     public void testTaskCheckList() {
         Task t1 = new Task(0, "CSC116", 5, 2);
@@ -151,6 +160,9 @@ public class TaskTest {
         assertEquals(0, cl.size());
     }
 
+    /**
+     * Tests CheckList setName() functionality
+     */
     @Test
     public void testTaskCheckListSetName() {
         Task t1 = new Task(0, "CSC116", 5, 2);
@@ -158,6 +170,9 @@ public class TaskTest {
         assertEquals("Hello World", cl.getName());
     }
 
+    /**
+     * Tests CheckList addItem() functionality
+     */
    @Test
    public void testTaskCheckListAddItem() {
        Task t1 = new Task(0, "CSC116", 5, 2);
@@ -166,6 +181,9 @@ public class TaskTest {
        assertEquals("Work to do", t1.getItem(0).getDescription());
    }
 
+    /**
+     * Tests CheckList removeItem() functionality
+     */
    @Test
    public void testTaskCheckListRemoveItem() {
        Task t1 = new Task(0, "CSC116", 5, 2);
@@ -188,6 +206,9 @@ public class TaskTest {
        }
    }
 
+    /**
+     * Tests CheckList shiftItem() functionality
+     */
    @Test
    public void testTaskCheckListShiftItem() {
        Task t1 = new Task(0, "CSC116", 5, 2);
@@ -216,6 +237,9 @@ public class TaskTest {
        }
    }
 
+    /**
+     * Tests CheckList markItem() functionality
+     */
     @Test
     public void testTaskCheckListMarkItem() {
         Task t1 = new Task(0, "CSC116", 5, 2);
@@ -249,6 +273,9 @@ public class TaskTest {
         }
     }
 
+    /**
+     * Tests CheckList getItem() functionality
+     */
     @Test
     public void testTaskCheckListGetItem() {
         Task t1 = new Task(0, "CSC116", 5, 2);
@@ -266,6 +293,9 @@ public class TaskTest {
         }
     }
 
+    /**
+     * Tests CheckList toString() functionality
+     */
     @Test
     public void testTaskCheckListString() {
         Task t1 = new Task(0, "CSC116", 5, 2);
@@ -282,6 +312,9 @@ public class TaskTest {
                 "* C✅\n", t1.getStringCheckList());
     }
 
+    /**
+     * Tests CheckList reset() functionality
+     */
     @Test
     public void testTaskCheckListReset() {
         Task t1 = new Task(0, "CSC116", 5, 2);
