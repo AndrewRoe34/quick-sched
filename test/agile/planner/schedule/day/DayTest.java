@@ -1,10 +1,9 @@
-package agile.planner.manager.day;
+package agile.planner.schedule.day;
 
 import static org.junit.Assert.*;
 
 import java.util.Calendar;
 
-import agile.planner.schedule.day.Day;
 import org.junit.Test;
 
 import agile.planner.data.Task;
