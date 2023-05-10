@@ -13,6 +13,7 @@ import java.util.Calendar;
  * Creates a cumulative log of all actions performed during each session
  *
  * @author Andrew Roe
+ * @author lucialanganey
  */
 public class EventLog {
 
