@@ -11,11 +11,8 @@ import java.util.Map;
 import java.util.Calendar;
 
 import agile.planner.data.Card;
-import agile.planner.data.LongOrderComparator;
-import agile.planner.data.ShortOrderComparator;
 import agile.planner.io.IOProcessing;
 import agile.planner.schedule.CompactScheduler;
-import agile.planner.schedule.DynamicScheduler;
 import agile.planner.schedule.Scheduler;
 import agile.planner.schedule.day.Day;
 import agile.planner.data.Task;
@@ -369,7 +366,7 @@ public class ScheduleManager {
         if(schedule.isEmpty()) {
             System.out.println("Schedule is empty");
         } else {
-            IOProcessing.writeDay(schedule.get(0), errorCount, null);
+            IOProcessing.outputDay(schedule.get(0), errorCount, null);
             eventLog.reportDisplayDaySchedule(schedule.get(0));
         }
     }
@@ -381,7 +378,7 @@ public class ScheduleManager {
         if(schedule.isEmpty()) {
             System.out.println("Schedule is empty");
         } else {
-            IOProcessing.writeSchedule(schedule, errorCount, null);
+            IOProcessing.outputSchedule(schedule, errorCount, null);
             eventLog.reportDisplaySchedule(schedule.size(), taskManager.size(), true);
         }
     }
@@ -394,7 +391,7 @@ public class ScheduleManager {
     public void outputScheduleToFile(String filename) {
         try {
             PrintStream output = new PrintStream(filename);
-            IOProcessing.writeSchedule(schedule, errorCount, output);
+            IOProcessing.outputSchedule(schedule, errorCount, output);
             output.close();
             eventLog.reportDisplaySchedule(schedule.size(), taskManager.size(), false);
         } catch (FileNotFoundException e) {

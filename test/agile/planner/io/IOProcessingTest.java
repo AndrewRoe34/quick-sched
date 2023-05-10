@@ -101,7 +101,7 @@ public class IOProcessingTest {
         try {
             Day d1 = new Day(0, 8, 0);
             d1.addSubTask(new Task(0, "CSC116", 8, 2));
-            IOProcessing.writeDay(d1, 0, new PrintStream(testFile));
+            IOProcessing.outputDay(d1, 0, new PrintStream(testFile));
             String actual = Files.readString(p1);
             assertEquals("Day 1: " + d1.toString(), actual);
         } catch(Exception e) {
@@ -111,7 +111,7 @@ public class IOProcessingTest {
         try {
             Day d1 = new Day(0, 8, 0);
             d1.addSubTask(new Task(0, "CSC116", 9, 0));
-            IOProcessing.writeDay(d1, 1, new PrintStream(testFile));
+            IOProcessing.outputDay(d1, 1, new PrintStream(testFile));
             String actual = Files.readString(p1);
             assertEquals("1 overflows have occurred within schedule...\r\nDay 1: " + d1.toString(), actual);
         } catch(Exception e) {
@@ -132,7 +132,7 @@ public class IOProcessingTest {
             d1.addSubTask(new Task(0, "CSC116", 8, 2));
             List<Day> list = new ArrayList<>();
             list.add(d1);
-            IOProcessing.writeSchedule(list, 0, new PrintStream(testFile));
+            IOProcessing.outputSchedule(list, 0, new PrintStream(testFile));
             String actual = Files.readString(p1);
             assertEquals("Day 1: " + d1.toString(), actual);
         } catch(Exception e) {
@@ -144,7 +144,7 @@ public class IOProcessingTest {
             d1.addSubTask(new Task(0, "CSC116", 9, 0));
             List<Day> list = new ArrayList<>();
             list.add(d1);
-            IOProcessing.writeSchedule(list, 1, new PrintStream(testFile));
+            IOProcessing.outputSchedule(list, 1, new PrintStream(testFile));
             String actual = Files.readString(p1);
             assertEquals("1 overflows have occurred within schedule...\r\nDay 1: " + d1.toString(), actual);
         } catch(Exception e) {

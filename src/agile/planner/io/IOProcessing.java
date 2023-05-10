@@ -1,8 +1,6 @@
 package agile.planner.io;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
+import java.io.*;
 import java.util.*;
 
 import agile.planner.schedule.day.Day;
@@ -16,6 +14,9 @@ import agile.planner.user.UserConfig;
  */
 public class IOProcessing {
 
+    /** Maximum buffer size for input/output processing */
+    private static final int BUFFER_SIZE = 4096;
+
     /**
      * Outputs the current day in text format
      *
@@ -23,7 +24,7 @@ public class IOProcessing {
      * @param errorCount number of errors with the schedule
      * @param output PrintStream for where output is directed
      */
-    public static void writeDay(Day day, int errorCount, PrintStream output) {
+    public static void outputDay(Day day, int errorCount, PrintStream output) {
         PrintStream outputStream = output;
         if(output == null) {
             outputStream = System.out;
@@ -42,7 +43,7 @@ public class IOProcessing {
      * @param errorCount number of errors with the schedule
      * @param output PrintStream for where output is directed
      */
-    public static void writeSchedule(List<Day> list, int errorCount, PrintStream output) {
+    public static void outputSchedule(List<Day> list, int errorCount, PrintStream output) {
         PrintStream outputStream = output;
         if(output == null) {
             outputStream = System.out;
@@ -160,8 +161,51 @@ public class IOProcessing {
         return new UserConfig(userName, userEmail, globalHr, maxDays, archiveDays, priority, overflow, fitSchedule, schedulingAlgorithm, minHours);
     }
 
+    /**
+     * Writes the JBin string to a binary file
+     *
+     * @param filename name of output file
+     * @param jbinStr JBin string
+     */
+    public static void writeJBinFile(String filename, String jbinStr) {
+        try (FileOutputStream binaryWriter = new FileOutputStream(filename)) {
+            byte[] bytes = jbinStr.getBytes();
+            binaryWriter.write(bytes);
+        } catch (IOException e) {
+            //empty catch block
+        }
+    }
+
+    /**
+     * Reads the Java Binary Serialization file
+     *
+     * @param filename name of saved system file
+     * @return JBin string
+     */
     public static String readJBinFile(String filename) {
-        //TODO
-        return null;
+        StringBuilder sb = new StringBuilder();
+        try (FileInputStream binaryReader = new FileInputStream(filename)) {
+            byte[] bytes = new byte[BUFFER_SIZE];
+            int bytesRead = -1;
+            while((bytesRead = binaryReader.read(bytes)) != -1) {
+                appendBytesToString(sb, bytes, bytesRead);
+            }
+        } catch (IOException e) {
+            return null;
+        }
+        return sb.toString();
+    }
+
+    /**
+     * Appends bytes to StringBuilder
+     *
+     * @param sb StringBuilder being utilized
+     * @param bytes bytes array being processed
+     * @param bytesRead number of bytes available
+     */
+    private static void appendBytesToString(StringBuilder sb, byte[] bytes, int bytesRead) {
+        for(int i = 0; i < bytesRead; i++) {
+            sb.append(bytes[i]);
+        }
     }
 }
