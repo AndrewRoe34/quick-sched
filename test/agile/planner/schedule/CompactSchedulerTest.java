@@ -56,6 +56,7 @@ public class CompactSchedulerTest {
         complete = new PriorityQueue<>();
         incomplete = new PriorityQueue<>();
         taskMap = new HashMap<>();
+        config.setFitSchedule(false);
     }
 
     /**
