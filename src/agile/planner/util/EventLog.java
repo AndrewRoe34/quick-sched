@@ -8,6 +8,7 @@ import java.io.PrintStream;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.InputMismatchException;
 
 /**
  * Creates a cumulative log of all actions performed during each session
@@ -272,11 +273,113 @@ public class EventLog {
         output.println(" Reading Config: FILE=" + filename);
     }
 
-    /*TODO Need to add the following methods:
-        reportCardAction(Card, int) (Note: Model it after reportTaskAction(Task, int) )
-        reportScriptAction(...) (Note: Take a look at notes.txt and see what types of behaviors that are "common")
-        reportConfigAction(...) (Note: Take a look at UserConfig and the types of "actions" worth noting)
-    */
+    /**
+     * Reports User Configuration modifications <p>
+     * Types of operations:<ul>
+     * <li> Index 0: user_name    (String)
+     * <li> Index 1: email        (String)
+     * <li> Index 2: day_hours    (int)
+     * <li> Index 3: max_days     (int)
+     * <li> Index 4: archive_days (int)
+     * <li> Index 5: priority     (boolean)
+     * <li> Index 6: overflow     (boolean)
+     * <li> Index 7: fit_schedule (boolean)
+     * <li> Index 8: schedule_alg (int)
+     * <li> Index 9: min_hours    (int)
+     * </ul>
+     *
+     * @param idx type of action being performed
+     * @param value Object value now being utilized
+     */
+    public void reportConfigAction(int idx, Object value) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        if(idx == 0) {
+            if(value instanceof String) {
+                output.println("EDIT(USER_CONFIG): USER_NAME=" + (String) value);
+            } else {
+                throw new InputMismatchException("Expected <String> for <USER_NAME>");
+            }
+        } else if(idx == 1) {
+            if(value instanceof String) {
+                output.println("EDIT(USER_CONFIG): EMAIL=" + (String) value);
+            } else {
+                throw new InputMismatchException("Expected <String> for <EMAIL>");
+            }
+        } else if(idx == 2) {
+            if(value instanceof Integer) {
+                output.println("EDIT(USER_CONFIG): DAY_HOURS=" + (Integer) value);
+            } else {
+                throw new InputMismatchException("Expected <Integer> for <DAY_HOURS>");
+            }
+        } else if(idx == 3) {
+            if(value instanceof Integer) {
+                output.println("EDIT(USER_CONFIG): MAX_DAYS=" + (Integer) value);
+            } else {
+                throw new InputMismatchException("Expected <Integer> for <MAX_DAYS>");
+            }
+        } else if(idx == 4) {
+            if(value instanceof Integer) {
+                output.println("EDIT(USER_CONFIG): ARCHIVE_DAYS=" + (Integer) value);
+            } else {
+                throw new InputMismatchException("Expected <Integer> for <ARCHIVE_DAYS>");
+            }
+        } else if(idx == 5) {
+            if(value instanceof Boolean) {
+                output.println("EDIT(USER_CONFIG): PRIORITY=" + (Boolean) value);
+            } else {
+                throw new InputMismatchException("Expected <Boolean> for <PRIORITY>");
+            }
+        } else if(idx == 6) {
+            if(value instanceof Boolean) {
+                output.println("EDIT(USER_CONFIG): OVERFLOW=" + (Boolean) value);
+            } else {
+                throw new InputMismatchException("Expected <Boolean> for <OVERFLOW>");
+            }
+        } else if(idx == 7) {
+            if(value instanceof Boolean) {
+                output.println("EDIT(USER_CONFIG): FIT_SCHEDULE=" + (Boolean) value);
+            } else {
+                throw new InputMismatchException("Expected <Boolean> for <FIT_SCHEDULE>");
+            }
+        } else if(idx == 8) {
+            if(value instanceof Integer) {
+                output.println("EDIT(USER_CONFIG): SCHEDULE_ALG=" + (Integer) value);
+            } else {
+                throw new InputMismatchException("Expected <Integer> for <SCHEDULE_ALG>");
+            }
+        } else {
+            if(value instanceof Integer) {
+                output.println("EDIT(USER_CONFIG): MIN_HOURS=" + (Integer) value);
+            } else {
+                throw new InputMismatchException("Expected <Integer> for <MIN_HOURS>");
+            }
+        }
+    }
+
+    /**
+     * Reads JBin contents from file
+     *
+     * @param filename name of input file
+     */
+    public void reportReadJBinFile(String filename) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.println(" PROCESSING JBIN: FILE=" + filename);
+    }
+
+    /**
+     * Writes JBin contents to file
+     *
+     * @param filename name of output file
+     */
+    public void reportWriteJBinFile(String filename) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.println(" WRITING JBIN: FILE=" + filename);
+    }
+
+
 
     /**
      * Reports the User's most recent login
