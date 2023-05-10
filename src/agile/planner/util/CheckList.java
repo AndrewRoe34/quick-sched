@@ -23,6 +23,7 @@ public class CheckList {
      * Primary instance for a CheckList
      *
      * @param name title of the CheckList
+     * @param checklistId ID for CheckList
      */
     public CheckList(String name, int checklistId) {
         setName(name);
