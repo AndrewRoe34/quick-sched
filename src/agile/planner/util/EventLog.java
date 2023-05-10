@@ -365,7 +365,7 @@ public class EventLog {
     public void reportReadJBinFile(String filename) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.println(" PROCESSING JBIN: FILE=" + filename);
+        output.println(" READE(JBIN): FILE=" + filename);
     }
 
     /**
@@ -376,10 +376,26 @@ public class EventLog {
     public void reportWriteJBinFile(String filename) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.println(" WRITING JBIN: FILE=" + filename);
+        output.println(" WRITE(JBIN): FILE=" + filename);
     }
 
+    /**
+     * Reports the creation of a JBin file
+     */
+    public void reportCreateJBin() {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.println(" JBIN FILE CREATED");
+    }
 
+    /**
+     * Reports the processing of a JBin file
+     */
+    public void reportProcessJBin() {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.println(" JBIN FILE PROCESSED");
+    }
 
     /**
      * Reports the User's most recent login

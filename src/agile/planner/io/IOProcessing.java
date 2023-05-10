@@ -160,24 +160,8 @@ public class IOProcessing {
         return new UserConfig(userName, userEmail, globalHr, maxDays, archiveDays, priority, overflow, fitSchedule, schedulingAlgorithm, minHours);
     }
 
-    /**
-     * Reads saved schedule data to repopulate planner
-     *
-     * @param filename name of file
-     * @return List of fully scheduled days
-     */
-    public static List<Day> readSchedule(String filename) {
-        return null; //TODO need to finish
+    public static String readJBinFile(String filename) {
+        //TODO
+        return null;
     }
-
-    /*
-
-    #Day ...:
-    -Task1
-    -Task2
-    -Task3
-
-    #Day ...:
-    ...
-     */
 }
