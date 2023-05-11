@@ -31,8 +31,6 @@ public class CompactSchedulerTest {
     private PriorityQueue<Task> pq;
     /** Holds completed Tasks for system */
     private PriorityQueue<Task> complete;
-    /** Holds incomplete Tasks for system */
-    private PriorityQueue<Task> incomplete;
     /** Maps Tasks to IDs */
     private Map<Integer, Task> taskMap;
 
@@ -54,7 +52,6 @@ public class CompactSchedulerTest {
     public void setUp() {
         pq = new PriorityQueue<>();
         complete = new PriorityQueue<>();
-        incomplete = new PriorityQueue<>();
         taskMap = new HashMap<>();
         config.setFitSchedule(false);
     }
@@ -74,14 +71,14 @@ public class CompactSchedulerTest {
         Day d2 = new Day(2, 8, 2);
 
         //DAY 0
-        compactSched.assignDay(d0, 0, complete, incomplete, pq);
+        compactSched.assignDay(d0, 0, complete, pq);
         assertEquals(1, d0.getNumSubTasks());
         assertEquals(0, d0.getSpareHours());
         assertEquals(8, d0.getHoursFilled());
         assertEquals(0, d0.getParentTask(0).getSubTotalHoursRemaining());
         assertEquals("A", d0.getParentTask(0).getName());
         //DAY 1
-        compactSched.assignDay(d1, 0, complete, incomplete, pq);
+        compactSched.assignDay(d1, 0, complete, pq);
         assertEquals(2, d1.getNumSubTasks());
         assertEquals(0, d1.getSpareHours());
         assertEquals(10,d1.getHoursFilled());
@@ -90,7 +87,7 @@ public class CompactSchedulerTest {
         assertEquals(0, d1.getParentTask(1).getSubTotalHoursRemaining());
         assertEquals("D", d1.getParentTask(1).getName());
         //DAY 2
-        compactSched.assignDay(d2, 0, complete, incomplete, pq);
+        compactSched.assignDay(d2, 0, complete, pq);
         assertEquals(1, d2.getNumSubTasks());
         assertEquals(2, d2.getSpareHours());
         assertEquals(6, d2.getHoursFilled());
@@ -112,7 +109,7 @@ public class CompactSchedulerTest {
         Day d1 = new Day(1, 8, 1);
 
         //DAY 0
-        compactSched.assignDay(d0, 0, complete, incomplete, pq);
+        compactSched.assignDay(d0, 0, complete, pq);
         assertEquals(2, d0.getNumSubTasks());
         assertEquals(0, d0.getSpareHours());
         assertEquals(8, d0.getHoursFilled());
@@ -121,7 +118,7 @@ public class CompactSchedulerTest {
         assertEquals(2, d0.getParentTask(1).getSubTotalHoursRemaining());
         assertEquals("B", d0.getParentTask(1).getName());
         //DAY 1
-        compactSched.assignDay(d1, 0, complete, incomplete, pq);
+        compactSched.assignDay(d1, 0, complete, pq);
         assertEquals(2, d1.getNumSubTasks());
         assertEquals(3, d1.getSpareHours());
         assertEquals(5,d1.getHoursFilled());
@@ -144,7 +141,7 @@ public class CompactSchedulerTest {
         Day d0 = new Day(0, 8, 0);
 
         //DAY 0
-        compactSched.assignDay(d0, 0, complete, incomplete, pq);
+        compactSched.assignDay(d0, 0, complete, pq);
         assertEquals(3, d0.getNumSubTasks());
         assertEquals(0, d0.getSpareHours());
         assertEquals(14, d0.getHoursFilled());
@@ -164,7 +161,7 @@ public class CompactSchedulerTest {
         Day d0 = new Day(0, 8, 0);
 
         //DAY 0
-        compactSched.assignDay(d0, 0, complete, incomplete, pq);
+        compactSched.assignDay(d0, 0, complete, pq);
         assertEquals(2, d0.getNumSubTasks());
         assertEquals(0, d0.getSpareHours());
         assertEquals(8, d0.getHoursFilled());

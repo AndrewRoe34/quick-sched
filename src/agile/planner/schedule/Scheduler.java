@@ -18,9 +18,8 @@ public interface Scheduler {
      * @param day Day being processed
      * @param errorCount number of errors in current schedule
      * @param complete Tasks that are "finished scheduling" are added here
-     * @param incomplete Tasks that are incomplete and need to be scheduled for later days
      * @param taskManager PriorityQueue of all Tasks in sorted order
      * @return number of errors in scheduling Day
      */
-    int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> incomplete, PriorityQueue<Task> taskManager);
+    int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager);
 }

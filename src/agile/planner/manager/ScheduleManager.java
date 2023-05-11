@@ -19,6 +19,7 @@ import agile.planner.data.Task;
 import agile.planner.user.UserConfig;
 import agile.planner.util.CheckList;
 import agile.planner.util.EventLog;
+import agile.planner.util.JBin;
 
 /**
  * Handles the generation and management of the overall schedule
@@ -34,7 +35,7 @@ public class ScheduleManager {
     /** PriorityQueue of all Tasks in sorted order */
     private PriorityQueue<Task> taskManager;
     /** Mapping of all Tasks via their unique IDs */
-    private Map<Integer, Task> taskMap; //TODO will need to work on this via IO processing
+    private Map<Integer, Task> taskMap;
     /** Singleton for ScheduleManager */
     private static ScheduleManager singleton;
     /** Performs all scheduling operations for each day */
@@ -132,6 +133,7 @@ public class ScheduleManager {
      *
      * @param filename file to be processed
      */
+    @Deprecated
     public void processTaskInputFile(String filename) {
         try {
             int pqSize = taskManager.size();
@@ -143,6 +145,22 @@ public class ScheduleManager {
             System.out.println("File could not be located");
         }
     }
+
+    /* TODO need to work on JBin functionality
+    public void processJBinFile(String filename) {
+        try {
+            int pqSize = taskManager.size();
+            String binStr = IOProcessing.readJBinFile(filename);
+            JBin.processJBin(binStr, taskManager, cards, labels, taskMap, taskId);
+            taskId += taskManager.size() - pqSize;
+            eventLog.reportReadJBinFile(filename);
+        } catch (FileNotFoundException e) {
+            eventLog.reportException(e);
+            System.out.println("File could not be located");
+        }
+    }
+
+     */
 
     /**
      * Adds a task to the schedule
@@ -215,9 +233,7 @@ public class ScheduleManager {
         resetSchedule();
         //Tasks that are "finished scheduling" are added here
         PriorityQueue<Task> complete = new PriorityQueue<>();
-        //Tasks that are incomplete and need to be scheduled for later days
-        PriorityQueue<Task> incomplete = new PriorityQueue<>();
-
+        
         schedule = new ArrayList<>(14);
         Calendar today = Calendar.getInstance();
         int idx = today.get(Calendar.DAY_OF_WEEK) - 1;
@@ -228,7 +244,7 @@ public class ScheduleManager {
             currDay = new Day(dayId++, userConfig.getWeek()[idx++ % 7], dayCount++);
             schedule.add(currDay);
             //TODO don't need incomplete as argument (should be local to schedulers)
-            errorCount = scheduler.assignDay(currDay, errorCount, complete, incomplete, taskManager);
+            errorCount = scheduler.assignDay(currDay, errorCount, complete, taskManager);
         }
         this.taskManager = complete;
         eventLog.reportSchedulingFinish();
@@ -418,8 +434,7 @@ public class ScheduleManager {
     }
     
     public boolean createCard(String title) {
-        Card card = null;
-        eventLog.reportCardAction(card, 0);
+        eventLog.reportCardAction(null, 0);
         return false;
     }
 

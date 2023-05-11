@@ -1,6 +1,7 @@
 package agile.planner.io;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 import agile.planner.schedule.day.Day;
@@ -165,11 +166,11 @@ public class IOProcessing {
      * Writes the JBin string to a binary file
      *
      * @param filename name of output file
-     * @param jbinStr JBin string
+     * @param jBin JBin string
      */
-    public static void writeJBinFile(String filename, String jbinStr) {
-        try (FileOutputStream binaryWriter = new FileOutputStream(filename)) {
-            byte[] bytes = jbinStr.getBytes();
+    public static void writeJBinFile(String filename, String jBin) {
+        try (OutputStream binaryWriter = new FileOutputStream(filename)) {
+            byte[] bytes = jBin.getBytes(StandardCharsets.UTF_8);
             binaryWriter.write(bytes);
         } catch (IOException e) {
             //empty catch block
@@ -205,7 +206,7 @@ public class IOProcessing {
      */
     private static void appendBytesToString(StringBuilder sb, byte[] bytes, int bytesRead) {
         for(int i = 0; i < bytesRead; i++) {
-            sb.append(bytes[i]);
+            sb.append((char) bytes[i]);
         }
     }
 }

@@ -32,7 +32,8 @@ public class CompactScheduler implements Scheduler {
     }
 
     @Override
-    public int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> incomplete, PriorityQueue<Task> taskManager) {
+    public int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager) {
+        PriorityQueue<Task> incomplete = new PriorityQueue<>();
         int numErrors = errorCount;
         while(day.hasSpareHours() && taskManager.size() > 0) {
             Task task = taskManager.remove();

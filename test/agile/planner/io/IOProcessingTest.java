@@ -25,7 +25,7 @@ public class IOProcessingTest {
      * Tests readCfg() functionality
      */
     @Test
-    public void testReadCfg() {
+    public void readCfg() {
         //Valid case
         try {
             UserConfig uc = IOProcessing.readCfg(null);
@@ -74,15 +74,15 @@ public class IOProcessingTest {
      * Tests readSchedule() functionality
      */
     @Test @Deprecated
-    public void testReadSchedule() {
+    public void readTasks() {
         try {
             Map<Integer, Task> taskMap = new HashMap<>();
             PriorityQueue<Task> pq = new PriorityQueue<>();
             int lastDueInDays = IOProcessing.readTasks("data/break.txt", pq, taskMap, 0);
             assertEquals("A", pq.remove().getName());
-            assertEquals("B", pq.remove().getName());
             assertEquals("C", pq.remove().getName());
             assertEquals("D", pq.remove().getName());
+            assertEquals("B", pq.remove().getName());
             assertEquals(2, lastDueInDays);
             assertTrue(pq.isEmpty());
         } catch (FileNotFoundException e) {
@@ -94,7 +94,7 @@ public class IOProcessingTest {
      * Tests writeDay() functionality
      */
     @Test
-    public void testWriteDay() {
+    public void outputDay() {
         //Test valid data
         String testFile = "data/s_day.txt";
         Path p1 = Path.of("data/s_day.txt");
@@ -123,7 +123,7 @@ public class IOProcessingTest {
      * Tests writeSchedule() functionality
      */
     @Test
-    public void testWriteSchedule() {
+    public void outputSchedule() {
         //Test valid data
         String testFile = "data/s_day.txt";
         Path p1 = Path.of("data/s_day.txt");
@@ -150,5 +150,14 @@ public class IOProcessingTest {
         } catch(Exception e) {
             fail();
         }
+    }
+
+    /**
+     * Tests read/write JBin file functionality
+     */
+    @Test
+    public void readAndWriteJBinFile() {
+        IOProcessing.writeJBinFile("data/schedule.bin", "JIMMY JOHNS");
+        assertEquals("JIMMY JOHNS", IOProcessing.readJBinFile("data/schedule.bin"));
     }
 }
