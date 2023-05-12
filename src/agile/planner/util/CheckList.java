@@ -7,6 +7,7 @@ import java.util.List;
  * CheckList for each individual task assigned to a day
  *
  * @author Andrew Roe
+ * @author Lucia Langaney
  */
 public class CheckList {
 
@@ -185,10 +186,15 @@ public class CheckList {
     /**
      * Edits an Item from the CheckList
      *
+     * @param idx index of Item
      * @param description newly updated description
      */
-    public void editItem(String description) {
-        //TODO
+    public void editItem(int idx, String description) {
+        if(verifyIndex(idx) == -1) {
+            throw new IllegalArgumentException("Invalid index for checklist");
+        }
+        Item i1 = getItem(idx);
+        i1.setDescription(description);
     }
 
     /**
