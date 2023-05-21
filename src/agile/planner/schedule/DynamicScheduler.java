@@ -11,6 +11,7 @@ import java.util.PriorityQueue;
  * Provides a more dynamic solution with generating a schedule
  *
  * @author Andrew Roe
+ * @author Lucia Langaney
  */
 public class DynamicScheduler implements Scheduler {
 

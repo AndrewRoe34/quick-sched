@@ -93,6 +93,10 @@ public class CompactSchedulerTest {
         assertEquals(6, d2.getHoursFilled());
         assertEquals(0, d2.getParentTask(0).getSubTotalHoursRemaining());
         assertEquals("B", d2.getParentTask(0).getName());
+
+        System.out.println(d0);
+        System.out.println(d1);
+        System.out.println(d2);
     }
 
     /**
