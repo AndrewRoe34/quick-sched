@@ -14,7 +14,7 @@ import java.util.InputMismatchException;
  * Creates a cumulative log of all actions performed during each session
  *
  * @author Andrew Roe
- * @author lucialanganey
+ * @author Lucia Langaney
  */
 public class EventLog {
 
