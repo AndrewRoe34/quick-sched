@@ -5,6 +5,7 @@ import agile.planner.data.Task;
 import agile.planner.user.UserConfig;
 import agile.planner.util.EventLog;
 
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -61,5 +62,10 @@ public class DynamicScheduler implements Scheduler {
             taskManager.add(incomplete.remove());
         }
         return numErrors;
+    }
+
+    @Override
+    public boolean correctSchedule(List<Day> schedule, int errorCount) {
+        return false;
     }
 }
