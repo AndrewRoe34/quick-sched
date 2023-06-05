@@ -11,10 +11,14 @@ public class ScriptContext {
 
     protected void executeFunction(String func) {
         currState.determineState(this, func);
-        currState.processFunc(func);
+        if(!State.comment) {
+            currState.processFunc(func);
+        }
+        State.comment = false;
     }
 
     public void executeScript(String script) {
+        System.out.println("Simple Script V0.1.0...");
         Scanner scriptScanner = new Scanner(script);
         while(scriptScanner.hasNextLine()) {
             executeFunction(scriptScanner.nextLine());

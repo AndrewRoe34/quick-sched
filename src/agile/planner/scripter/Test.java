@@ -1,15 +1,15 @@
 package agile.planner.scripter;
 
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Scanner;
+
 public class Test {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ScriptContext sc = new ScriptContext();
-        String script = "task: test, 3, 2\n" +
-                "task: foo, 8, 1\n" +
-                "day: 8, 0\n" +
-                "print: task\n" +
-                "day: 6, 1\n" +
-                "print: day";
+        String script = new String(Files.readAllBytes(Paths.get("data/test.smpl")));
         sc.executeScript(script);
     }
 }

@@ -1,0 +1,7 @@
+task: hello, 4, 0
+#comment is here
+day: 8, 0
+task: world, 6, 1
+day: 2, 1
+print: _day
+print: _task, 0

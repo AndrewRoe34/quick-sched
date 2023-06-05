@@ -26,6 +26,7 @@ public abstract class State {
     protected static List<Card> cardList = new ArrayList<>();
     protected static List<CheckList> clList = new ArrayList<>();
     protected static List<Label> labelList = new ArrayList<>();
+    protected static boolean comment = false;
 
     /**
      * Determines the state for the given line of code
@@ -44,6 +45,8 @@ public abstract class State {
             context.updateState(new LabelState());
         } else if("day:".equals(type)) {
             context.updateState(new DayState());
+        } else if(type.charAt(0) == '#') {
+            comment = true;
         }
     }
 
