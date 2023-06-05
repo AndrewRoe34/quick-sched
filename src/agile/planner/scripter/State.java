@@ -3,6 +3,7 @@ package agile.planner.scripter;
 import agile.planner.data.Card;
 import agile.planner.data.Label;
 import agile.planner.data.Task;
+import agile.planner.exception.UnknownClassException;
 import agile.planner.manager.ScheduleManager;
 import agile.planner.schedule.day.Day;
 import agile.planner.user.UserConfig;
@@ -33,11 +34,15 @@ public abstract class State {
      *
      * @param context provides ScriptContext for State Pattern
      * @param line line of code being processed
+     * @throws UnknownClassException if class or function is not detected
      */
-    protected void determineState(ScriptContext context, String line) {
+    protected void determineState(ScriptContext context, String line) throws UnknownClassException {
         Scanner strScanner = new Scanner(line);
         String type = strScanner.next();
-        if("task:".equals(type)) {
+        if("__DEF_CONFIG__".equals(type) || "__LOG__".equals(type) || "__DEBUG__".equals(type)
+                || "__BUILD__".equals(type) || "__EXPORT__".equals(type) || "__IMPORT__".equals(type)) {
+            context.updateState(new PreProcessorState());
+        } else if("task:".equals(type)) {
             context.updateState(new TaskState());
         } else if("print:".equals(type)) {
             context.updateState(new PrintState());
@@ -47,6 +52,20 @@ public abstract class State {
             context.updateState(new DayState());
         } else if(type.charAt(0) == '#') {
             comment = true;
+        } else if("checklist".equals(type)) {
+            context.updateState(new CheckListState());
+        } else if("card".equals(type)) {
+            context.updateState(new CardState());
+        } else if("board".equals(type)) {
+            context.updateState(new BoardState());
+        } else if("add".equals(type)) {
+            context.updateState(new AddState());
+        } else if("edit".equals(type)) {
+            context.updateState(new EditState());
+        } else if("remove".equals(type)) {
+            context.updateState(new RemoveState());
+        } else {
+            throw new UnknownClassException("Unknown class or function being utilized");
         }
     }
 
