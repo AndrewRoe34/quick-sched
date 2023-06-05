@@ -19,7 +19,6 @@ import agile.planner.data.Task;
 import agile.planner.user.UserConfig;
 import agile.planner.util.CheckList;
 import agile.planner.util.EventLog;
-import agile.planner.util.JBin;
 
 /**
  * Handles the generation and management of the overall schedule
@@ -58,10 +57,13 @@ public class ScheduleManager {
     /**
      * Private constructor of ScheduleManager
      * Initially performs task processing as well as schedule generation
-     *
      */
-    private ScheduleManager() throws FileNotFoundException {
-        eventLog = EventLog.getEventLog();
+    private ScheduleManager() {
+        try {
+            eventLog = EventLog.getEventLog();
+        } catch (FileNotFoundException e) {
+            throw new IllegalArgumentException("Could not locate logging file");
+        }
         eventLog.reportUserLogin();
         processUserConfigFile();
         taskManager = new PriorityQueue<>();
@@ -77,9 +79,8 @@ public class ScheduleManager {
      * Gets a singleton of ScheduleManager
      *
      * @return singleton of ScheduleManager
-     * @throws FileNotFoundException if invalid file for EventLog
      */
-    public static ScheduleManager getScheduleManager() throws FileNotFoundException {
+    public static ScheduleManager getScheduleManager() {
         if(singleton == null) {
             singleton = new ScheduleManager();
         }
@@ -161,6 +162,24 @@ public class ScheduleManager {
     }
 
      */
+
+    /**
+     * Gets last ID for Task
+     *
+     * @return last Task ID
+     */
+    public int getLastTaskId() {
+        return taskId;
+    }
+
+    /**
+     * Gets last ID for Day
+     *
+     * @return last Day ID
+     */
+    public int getLastDayId() {
+        return dayId;
+    }
 
     /**
      * Adds a task to the schedule

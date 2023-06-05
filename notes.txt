@@ -98,3 +98,16 @@ edit: label, MA
 task: B,5,1 // [T1]
 #filler
 edit: _task 1, 10, 4
+
+
+
+Script file format:
+__define__ DEFAULT_CONFIG
+__include__ <script.asl>
+<code>
+
+
+
+Config Enum:
+DEFAULT_CONFIG
+CURRENT_CONFIG

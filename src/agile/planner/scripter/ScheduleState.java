@@ -1,4 +1,8 @@
 package agile.planner.scripter;
 
-public class ScheduleState extends BaseState {
+public class ScheduleState extends State {
+    @Override
+    protected void processFunc(String line) {
+
+    }
 }

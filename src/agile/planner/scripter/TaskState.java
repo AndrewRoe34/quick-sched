@@ -1,21 +1,25 @@
 package agile.planner.scripter;
 
-public class TaskState extends BaseState {
+import agile.planner.data.Task;
 
-    /**
-     * Processes the Task function:
-     * task: [name: String], [number of hours: int], [number of days: int]
-     *
-     * @param line code line being processed
-     */
-    public void processFunction(String line) {
-        processToken(line);
-        processToken(line);
-        processToken(line);
-        //this should be null
-        processToken(line);
-        //create the task
+import java.util.InputMismatchException;
 
-        //TODO switch back to BaseState
+/**
+ * Class --> task: [name:string], [hours:int], [days:int] <br>
+ * Creates a new instance of a Task while utilizing dynamic variable usage
+ *
+ * @author Andrew Roe
+ */
+public class TaskState extends State {
+
+    @Override
+    protected void processFunc(String line) {
+        String[] tokens = processArguments(line, 3, ",");
+        try {
+            taskList.add(new Task(scheduleManager.getLastTaskId() + taskList.size(), tokens[0], Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2])));
+            System.out.println("Task added.. [T" + (scheduleManager.getLastTaskId() + taskList.size() - 1) + "]");
+        } catch(Exception e) {
+            throw new InputMismatchException("Invalid input. Expected[task: <name: string>, <hours: int>, <num_days: int>]");
+        }
     }
 }

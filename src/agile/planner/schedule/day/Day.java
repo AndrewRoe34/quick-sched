@@ -185,6 +185,16 @@ public class Day {
     @Override
     public String toString() {
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+        return "Day [" + sdf.format(this.date.getTime()) + "]";
+    }
+
+    /**
+     * Provides a formatted string for output purposes
+     *
+     * @return formatted String
+     */
+    public String formattedString() {
+        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
         StringBuilder sb = new StringBuilder(sdf.format(this.date.getTime()) + "\n");
         for(SubTask st : subtaskManager) {
             sb.append("-");
