@@ -1,8 +1,12 @@
 package agile.planner.exception;
 
-public class UnknownClassException extends Exception {
+public class UnknownClassException extends RuntimeException {
 
     public UnknownClassException(String s) {
         super(s);
+    }
+
+    public UnknownClassException() {
+        super("Unknown class or function being utilized");
     }
 }

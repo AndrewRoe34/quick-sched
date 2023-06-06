@@ -23,10 +23,10 @@ public class CheckList {
     /**
      * Primary instance for a CheckList
      *
-     * @param name title of the CheckList
      * @param checklistId ID for CheckList
+     * @param name title of the CheckList
      */
-    public CheckList(String name, int checklistId) {
+    public CheckList(int checklistId, String name) {
         setName(name);
         setChecklistId(checklistId);
         list = new ArrayList<>();

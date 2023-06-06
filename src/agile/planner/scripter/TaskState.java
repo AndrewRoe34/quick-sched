@@ -1,8 +1,7 @@
 package agile.planner.scripter;
 
 import agile.planner.data.Task;
-
-import java.util.InputMismatchException;
+import agile.planner.exception.InvalidGrammarException;
 
 /**
  * Class --> task: [name:string], [hours:int], [days:int] <br>
@@ -19,7 +18,7 @@ public class TaskState extends State {
             taskList.add(new Task(scheduleManager.getLastTaskId() + taskList.size(), tokens[0], Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2])));
             System.out.println("Task added.. [T" + (scheduleManager.getLastTaskId() + taskList.size() - 1) + "]");
         } catch(Exception e) {
-            throw new InputMismatchException("Invalid input. Expected[task: <name: string>, <hours: int>, <num_days: int>]");
+            throw new InvalidGrammarException("Invalid input. Expected[task: <name: string>, <hours: int>, <num_days: int>]");
         }
     }
 }

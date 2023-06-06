@@ -28,6 +28,12 @@ public abstract class State {
     protected static List<CheckList> clList = new ArrayList<>();
     protected static List<Label> labelList = new ArrayList<>();
     protected static boolean comment = false;
+    protected static boolean config = false;
+    protected static boolean logPP = false;
+    protected static boolean debugPP = false;
+    protected static boolean buildPP = false;
+    protected static boolean exportPP = false;
+    protected static boolean imprtPP = false;
 
     /**
      * Determines the state for the given line of code
@@ -39,8 +45,7 @@ public abstract class State {
     protected void determineState(ScriptContext context, String line) throws UnknownClassException {
         Scanner strScanner = new Scanner(line);
         String type = strScanner.next();
-        if("__DEF_CONFIG__".equals(type) || "__LOG__".equals(type) || "__DEBUG__".equals(type)
-                || "__BUILD__".equals(type) || "__EXPORT__".equals(type) || "__IMPORT__".equals(type)) {
+        if("__DEF_CONFIG__".equals(type)) {
             context.updateState(new PreProcessorState());
         } else if("task:".equals(type)) {
             context.updateState(new TaskState());
@@ -65,7 +70,7 @@ public abstract class State {
         } else if("remove".equals(type)) {
             context.updateState(new RemoveState());
         } else {
-            throw new UnknownClassException("Unknown class or function being utilized");
+            throw new UnknownClassException();
         }
     }
 

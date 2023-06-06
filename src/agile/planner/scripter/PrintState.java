@@ -1,5 +1,7 @@
 package agile.planner.scripter;
 
+import agile.planner.exception.InvalidGrammarException;
+
 /**
  * Function --> print: [class] <br>
  * Provides output based on whether it is by class (i.e. all class items) or by
@@ -60,6 +62,8 @@ public class PrintState extends State {
             } else {
                 System.out.println(dayList.get(Integer.parseInt(tokens[1])));
             }
+        } else {
+            throw new InvalidGrammarException("Invalid input. Expected[print: <class>]");
         }
     }
 }

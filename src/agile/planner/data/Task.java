@@ -191,13 +191,13 @@ public class Task implements Comparable<Task> {
     /**
      * Adds a CheckList for the Task
      *
-     * @param title Title for the CheckList
      * @param id ID for CheckList
+     * @param title Title for the CheckList
      * @return CheckList instance
      */
-    public CheckList addCheckList(String title, int id) {
+    public CheckList addCheckList(int id, String title) {
         if(checkList == null) {
-            this.checkList = new CheckList(title, id);
+            this.checkList = new CheckList(id, title);
         }
         return checkList;
     }
