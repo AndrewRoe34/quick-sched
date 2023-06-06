@@ -297,7 +297,7 @@ public class ScheduleManager {
      * @return newly created CheckList
      */
     public CheckList createTaskCheckList(Task t1, String title) {
-        CheckList cl = t1.addCheckList(title, 0);
+        CheckList cl = t1.addCheckList(0, title);
         eventLog.reportCheckListCreation(cl);
         return cl;
     }

@@ -57,17 +57,17 @@ public abstract class State {
             context.updateState(new DayState());
         } else if(type.charAt(0) == '#') {
             comment = true;
-        } else if("checklist".equals(type)) {
+        } else if("checklist:".equals(type)) {
             context.updateState(new CheckListState());
-        } else if("card".equals(type)) {
+        } else if("card:".equals(type)) {
             context.updateState(new CardState());
-        } else if("board".equals(type)) {
+        } else if("board:".equals(type)) {
             context.updateState(new BoardState());
-        } else if("add".equals(type)) {
+        } else if("add:".equals(type)) {
             context.updateState(new AddState());
-        } else if("edit".equals(type)) {
+        } else if("edit:".equals(type)) {
             context.updateState(new EditState());
-        } else if("remove".equals(type)) {
+        } else if("remove:".equals(type)) {
             context.updateState(new RemoveState());
         } else {
             throw new UnknownClassException();

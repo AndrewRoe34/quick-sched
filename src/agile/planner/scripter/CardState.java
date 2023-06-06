@@ -13,7 +13,7 @@ public class CardState extends State {
 
     @Override
     protected void processFunc(String line) {
-        String[] tokens = processArguments(line, 3, ",");
+        String[] tokens = processArguments(line, 1, ",");
         try {
             cardList.add(new Card(tokens[0]));
             System.out.println("Card added..");
