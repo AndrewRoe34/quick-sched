@@ -37,7 +37,10 @@ public abstract class State {
     /** Boolean value for whether line is a comment */
     protected static boolean comment = false;
     /** Boolean value for whether config preprocessor has been initialized (REQUIRED) */
-    protected static boolean config = false;
+    protected static boolean startPP = false;
+    protected static boolean configPP = false;
+    protected static boolean currConfig = false;
+    protected static boolean defConfig = false;
     /** Boolean value for whether log preprocessor has been initialized (OPTIONAL) */
     protected static boolean logPP = false;
     /** Boolean value for whether debug preprocessor has been initialized (OPTIONAL) */
@@ -59,9 +62,7 @@ public abstract class State {
     protected void determineState(ScriptContext context, String line) throws UnknownClassException {
         Scanner strScanner = new Scanner(line);
         String type = strScanner.next();
-        if("__DEF_CONFIG__".equals(type)) {
-            context.updateState(new PreProcessorState());
-        } else if("task:".equals(type)) {
+        if("task:".equals(type)) {
             context.updateState(new TaskState());
         } else if("print:".equals(type)) {
             context.updateState(new PrintState());

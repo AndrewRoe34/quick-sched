@@ -1,10 +1,23 @@
-task: hello, 7, 2
-day: 8, 0
-label: Intermediate Accounting, 3
-card: Accounting
-checklist: ToDo
-#this statement is false
-print: card
-print: checklist
-print: task
-print: day
+#preprocessor comment
+START:
+__DEF_CONFIG__
+__DEBUG__
+__LOG__
+__EXPORT__
+__BUILD__
+END:
+
+#custom function
+_func_ foo: task, label, card, checklist
+  add: label, task
+  add: task, card
+  add: checklist, task
+
+#data
+task: HW, 5, 0
+label: MA, green
+card: MATH
+checklist: TODO
+
+#custom function call
+foo: _task, _label, _card, _checklist
