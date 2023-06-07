@@ -18,22 +18,36 @@ import java.util.*;
  */
 public abstract class State {
 
+    /** Instance of ScheduleManager (separate from the main scheduler) */
     protected static ScheduleManager scheduleManager = ScheduleManager.getScheduleManager();
+    /** UserConfig copy for local scheduling */
     protected static UserConfig userConfig = null;
+    /** Scripts matched by keyword function */
     protected static Map<String, String> scripts;
-    protected static boolean preProcessor = false;
+    /** List of all Task variables */
     protected static List<Task> taskList = new ArrayList<>();
+    /** List of all Day variables */
     protected static List<Day> dayList = new ArrayList<>();
+    /** List of all Card variables */
     protected static List<Card> cardList = new ArrayList<>();
+    /** List of all Checklist variables */
     protected static List<CheckList> clList = new ArrayList<>();
+    /** List of all Label variables */
     protected static List<Label> labelList = new ArrayList<>();
+    /** Boolean value for whether line is a comment */
     protected static boolean comment = false;
+    /** Boolean value for whether config preprocessor has been initialized (REQUIRED) */
     protected static boolean config = false;
+    /** Boolean value for whether log preprocessor has been initialized (OPTIONAL) */
     protected static boolean logPP = false;
+    /** Boolean value for whether debug preprocessor has been initialized (OPTIONAL) */
     protected static boolean debugPP = false;
+    /** Boolean value for whether build preprocessor has been initialized (OPTIONAL) */
     protected static boolean buildPP = false;
+    /** Boolean value for whether export preprocessor has been initialized (OPTIONAL) */
     protected static boolean exportPP = false;
-    protected static boolean imprtPP = false;
+    /** Boolean value for whether import preprocessor has been initialized (OPTIONAL) */
+    protected static boolean importPP = false;
 
     /**
      * Determines the state for the given line of code
