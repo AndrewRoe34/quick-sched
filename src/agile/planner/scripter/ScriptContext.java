@@ -1,6 +1,6 @@
 package agile.planner.scripter;
 
-import agile.planner.exception.InvalidPreProcessorException;
+import agile.planner.scripter.exception.InvalidPreProcessorException;
 
 import java.util.Scanner;
 
@@ -43,28 +43,45 @@ public class ScriptContext {
                 //do nothing here
             } else if("START:".equals(line)) {
                 State.startPP = true;
-            } else if("END:".equals(line)) {
+            } else if(State.startPP && State.configPP && "END:".equals(line)) {
                 break;
             } else if(State.startPP && !State.configPP && !State.defConfig && line.equals("__DEF_CONFIG__")) {
                 State.configPP = true;
                 State.defConfig = true;
+                currState.processFunc(line);
             } else if(State.startPP && !State.configPP && !State.currConfig && line.equals("__CURR_CONFIG__")) {
                 State.configPP = true;
                 State.currConfig = true;
+                currState.processFunc(line);
             } else if(State.startPP && !State.logPP && line.equals("__LOG__")) {
                 State.logPP = true;
+                currState.processFunc(line);
             } else if(State.startPP && !State.debugPP && line.equals("__DEBUG__")) {
                 State.debugPP = true;
+                currState.processFunc(line);
             } else if(State.startPP && !State.importPP && line.equals("__IMPORT__")) {
                 State.importPP = true;
+                currState.processFunc(line);
             } else if(State.startPP && !State.exportPP && line.equals("__EXPORT__")) {
                 State.exportPP = true;
+                currState.processFunc(line);
             } else if(State.startPP && !State.buildPP && line.equals("__BUILD__")) {
                 State.buildPP = true;
+                currState.processFunc(line);
             } else {
                 throw new InvalidPreProcessorException();
             }
         }
+    }
+
+    /**
+     * Sets up a new custom function with its provided parameters and statements
+     *
+     * @param strScanner Scanner for parsing new function
+     * @param funcDefinition function's definition (including name and parameters)
+     */
+    private void preFunctionSetup(Scanner strScanner, String funcDefinition) {
+
     }
 
     /**
@@ -79,7 +96,12 @@ public class ScriptContext {
         preProcessorSetup(scriptScanner);
 
         while(scriptScanner.hasNextLine()) {
-            executeFunction(scriptScanner.nextLine());
+            String statement = scriptScanner.nextLine();
+            if(currState.isNewValidFunction(statement)) {
+                preFunctionSetup(scriptScanner, statement);
+            } else {
+                executeFunction(statement);
+            }
         }
     }
 }

@@ -1,7 +1,7 @@
 package agile.planner.scripter;
 
 import agile.planner.data.Label;
-import agile.planner.exception.InvalidGrammarException;
+import agile.planner.scripter.exception.InvalidGrammarException;
 
 /**
  * Class --> label: [name:string], [color:int] <br>

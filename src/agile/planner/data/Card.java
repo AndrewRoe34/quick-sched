@@ -1,7 +1,6 @@
 package agile.planner.data;
 
-import agile.planner.util.CheckList;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,6 +16,7 @@ public class Card {
     private String title;
     /** List of Tasks for Card */
     private List<Task> list;
+    private List<Label> labelList;
 
     /**
      * Primary constructor for Card
@@ -25,6 +25,7 @@ public class Card {
      */
     public Card(String title) {
         this.title = title;
+        labelList = new ArrayList<>();
     }
 
     /**
@@ -81,5 +82,9 @@ public class Card {
      */
     public Task removeTask(int idx) {
         return list.remove(idx);
+    }
+
+    public void addLabel(Label label) {
+        labelList.add(label);
     }
 }

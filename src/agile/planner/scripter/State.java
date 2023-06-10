@@ -3,7 +3,7 @@ package agile.planner.scripter;
 import agile.planner.data.Card;
 import agile.planner.data.Label;
 import agile.planner.data.Task;
-import agile.planner.exception.UnknownClassException;
+import agile.planner.scripter.exception.UnknownClassException;
 import agile.planner.manager.ScheduleManager;
 import agile.planner.schedule.day.Day;
 import agile.planner.user.UserConfig;
@@ -34,12 +34,20 @@ public abstract class State {
     protected static List<CheckList> clList = new ArrayList<>();
     /** List of all Label variables */
     protected static List<Label> labelList = new ArrayList<>();
+    /** Set of all keywords within the system */
+    protected static Set<String> keyWords = new HashSet<>(Set.of("add:", "board:", "card:", "checklist:",
+            "day:", "edit:", "label:", "print:", "remove:", "task:"));
+    /** Map for func name to function statements/arguments */
+    protected static Map<String, String> funcMap = new HashMap<>();
     /** Boolean value for whether line is a comment */
     protected static boolean comment = false;
-    /** Boolean value for whether config preprocessor has been initialized (REQUIRED) */
+    /** Boolean value for whether preprocessor has been started (REQUIRED) */
     protected static boolean startPP = false;
+    /** Boolean value for whether config preprocessor has been initialized (REQUIRED) */
     protected static boolean configPP = false;
+    /** Boolean value for whether current config settings preprocessor has been initialized (REQUIRED) */
     protected static boolean currConfig = false;
+    /** Boolean value for whether default config settings preprocessor has been initialized (REQUIRED) */
     protected static boolean defConfig = false;
     /** Boolean value for whether log preprocessor has been initialized (OPTIONAL) */
     protected static boolean logPP = false;
@@ -61,6 +69,10 @@ public abstract class State {
      */
     protected void determineState(ScriptContext context, String line) throws UnknownClassException {
         Scanner strScanner = new Scanner(line);
+        if("".equals(line)) {
+            comment = true;
+            return;
+        }
         String type = strScanner.next();
         if("task:".equals(type)) {
             context.updateState(new TaskState());
@@ -84,9 +96,12 @@ public abstract class State {
             context.updateState(new EditState());
         } else if("remove:".equals(type)) {
             context.updateState(new RemoveState());
+        } else if("_func_".equals(type)) {
+            context.updateState(new FunctionState());
         } else {
             throw new UnknownClassException();
         }
+        //TODO will need to include a check for any custom function calls with our last condition (which will defer to the function state as well)
     }
 
     /**
@@ -118,5 +133,41 @@ public abstract class State {
             }
         }
         return tokens;
+    }
+
+    /**
+     * Processes all the tokens in a given string by its delimiter
+     *
+     * @param line string being processed
+     * @param numTokens maximum number of tokens possible
+     * @param delimiter pattern for separating tokens
+     * @return string array of all arguments
+     */
+    protected String[] processTokens(String line, int numTokens, String delimiter) {
+        String[] tokens = new String[numTokens];
+        Scanner strScanner = new Scanner(line);
+        strScanner.useDelimiter(delimiter);
+        int i = 0;
+        while(strScanner.hasNext()){
+            if(i < numTokens) {
+                tokens[i++] = strScanner.next().trim();
+            } else {
+                throw new InputMismatchException("Invalid expression for function");
+            }
+        }
+        return tokens;
+    }
+
+    /**
+     * Determines whether provided input is a new valid function
+     *
+     * @param statement string being processed
+     * @return boolean value for whether function is both new and valid
+     */
+    public boolean isNewValidFunction(String statement) {
+        Scanner strScanner = new Scanner(statement);
+        String funcKey = strScanner.next();
+        return funcKey.charAt(funcKey.length() - 1) == ':' && !keyWords.contains(funcKey)
+                && !funcMap.containsKey(funcKey);
     }
 }

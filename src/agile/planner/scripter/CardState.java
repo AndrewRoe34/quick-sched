@@ -1,7 +1,7 @@
 package agile.planner.scripter;
 
 import agile.planner.data.Card;
-import agile.planner.exception.InvalidGrammarException;
+import agile.planner.scripter.exception.InvalidGrammarException;
 
 /**
  * Class --> card: [title:string] <br>

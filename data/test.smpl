@@ -8,7 +8,7 @@ __BUILD__
 END:
 
 #custom function
-_func_ foo: task, label, card, checklist
+foo: task, label, card, checklist
   add: label, task
   add: task, card
   add: checklist, task

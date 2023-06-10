@@ -1,4 +1,4 @@
-package agile.planner.exception;
+package agile.planner.scripter.exception;
 
 public class UnknownClassException extends RuntimeException {
 

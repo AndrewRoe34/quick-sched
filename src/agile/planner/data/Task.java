@@ -1,5 +1,6 @@
 package agile.planner.data;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
@@ -31,7 +32,7 @@ public class Task implements Comparable<Task> {
     /** CheckList of Items for Task */
     private CheckList checkList;
     /** Label for String */ //TODO will need to finish later
-    private List<String> label;
+    private List<Label> labelList;
 
     /**
      * Primary constructor for Task
@@ -46,6 +47,7 @@ public class Task implements Comparable<Task> {
         setName(name);
         setTotalHours(hours);
         setDueDate(incrementation);
+        labelList = new ArrayList<>();
     }
 
     /**
@@ -188,6 +190,12 @@ public class Task implements Comparable<Task> {
         return averageNumHours;
     }
 
+    public void addCheckList(CheckList checkList) {
+        if(this.checkList == null) {
+            this.checkList = checkList;
+        }
+    }
+
     /**
      * Adds a CheckList for the Task
      *
@@ -322,16 +330,21 @@ public class Task implements Comparable<Task> {
         Task task = (Task) o;
         return id == task.id && totalHours == task.totalHours && subTotalHours == task.subTotalHours &&
                 averageNumHours == task.averageNumHours && name.equals(task.name) && dueDate.equals(task.dueDate) &&
-                Objects.equals(checkList, task.checkList) && Objects.equals(label, task.label);
+                Objects.equals(checkList, task.checkList) && Objects.equals(labelList, task.labelList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, dueDate, totalHours, subTotalHours, averageNumHours, checkList, label);
+        return Objects.hash(id, name, dueDate, totalHours, subTotalHours, averageNumHours, checkList, labelList);
     }
 
     public CheckList getCheckList() {
         return checkList;
+    }
+
+    //TODO need to add more functionality
+    public void addLabel(Label label) {
+        labelList.add(label);
     }
 
     /**

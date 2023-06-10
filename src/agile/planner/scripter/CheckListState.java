@@ -1,7 +1,6 @@
 package agile.planner.scripter;
 
-import agile.planner.data.Task;
-import agile.planner.exception.InvalidGrammarException;
+import agile.planner.scripter.exception.InvalidGrammarException;
 import agile.planner.util.CheckList;
 
 public class CheckListState extends State {

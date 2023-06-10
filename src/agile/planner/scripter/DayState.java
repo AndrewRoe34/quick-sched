@@ -1,6 +1,6 @@
 package agile.planner.scripter;
 
-import agile.planner.exception.InvalidGrammarException;
+import agile.planner.scripter.exception.InvalidGrammarException;
 import agile.planner.schedule.day.Day;
 
 /**

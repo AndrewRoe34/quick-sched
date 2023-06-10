@@ -1,7 +1,7 @@
 package agile.planner.scripter;
 
 import agile.planner.data.Task;
-import agile.planner.exception.InvalidGrammarException;
+import agile.planner.scripter.exception.InvalidGrammarException;
 
 /**
  * Class --> task: [name:string], [hours:int], [days:int] <br>

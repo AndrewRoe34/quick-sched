@@ -1,4 +1,4 @@
-package agile.planner.exception;
+package agile.planner.scripter.exception;
 
 public class InvalidPreProcessorException extends RuntimeException {
     public InvalidPreProcessorException(String s) {
