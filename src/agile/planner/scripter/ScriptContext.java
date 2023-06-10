@@ -81,7 +81,24 @@ public class ScriptContext {
      * @param funcDefinition function's definition (including name and parameters)
      */
     private void preFunctionSetup(Scanner strScanner, String funcDefinition) {
-
+        StringBuilder sb = new StringBuilder();
+        String funcName = strScanner.next();
+        sb.append(strScanner.nextLine()); //TODO need to check if that just skips to next line
+        String line = null;
+        boolean flag = false;
+        while(strScanner.hasNextLine()) {
+            line = strScanner.nextLine();
+            if(line.startsWith("  ")) {
+                sb.append(line);
+            } else {
+                flag = true;
+                break;
+            }
+        }
+        State.funcMap.put(funcName, sb.toString());
+        if(flag) {
+            executeFunction(line);
+        }
     }
 
     /**

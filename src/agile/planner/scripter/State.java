@@ -96,7 +96,7 @@ public abstract class State {
             context.updateState(new EditState());
         } else if("remove:".equals(type)) {
             context.updateState(new RemoveState());
-        } else if("_func_".equals(type)) {
+        } else if(funcMap.containsKey(type)) {
             context.updateState(new FunctionState());
         } else {
             throw new UnknownClassException();
