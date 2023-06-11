@@ -8,16 +8,19 @@ __BUILD__
 END:
 
 #custom function
-foo: task, label, card, checklist
+setup_task: task, label, card
+  #this should be fine
   add: label, task
   add: task, card
-  add: checklist, task
 
 #data
 task: HW, 5, 0
 label: MA, green
 card: MATH
-checklist: TODO
 
 #custom function call
-foo: _task, _label, _card, _checklist
+setup_task: _task, _label, _card
+task: read, 4, 2
+setup_task: _task, _label, _card
+task: fix, 7, 4
+setup_task: _task, _label, _card

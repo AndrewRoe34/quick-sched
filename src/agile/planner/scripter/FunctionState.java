@@ -12,6 +12,9 @@ public class FunctionState extends State {
         task, card      <-- Match with given input
         add: task, card <-- Call with given input
         ...
+
+        Steps for how to solve:
+        (ask me if you'd like a hint)
          */
     }
 }
