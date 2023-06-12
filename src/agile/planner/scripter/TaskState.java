@@ -15,7 +15,11 @@ public class TaskState extends State {
     protected void processFunc(String line) {
         String[] tokens = processArguments(line, 3, ",");
         try {
-            taskList.add(new Task(scheduleManager.getLastTaskId() + taskList.size(), tokens[0], Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2])));
+            int id = scheduleManager.getLastTaskId() + taskList.size();
+            int hours = Integer.parseInt(tokens[1]);
+            int days = Integer.parseInt(tokens[2]);
+            taskList.add(new Task(id, tokens[0], hours, days));
+            scriptLog.reportTaskCreation(id, tokens[0], hours, days);
             System.out.println("Task added.. [T" + (scheduleManager.getLastTaskId() + taskList.size() - 1) + "]");
         } catch(Exception e) {
             throw new InvalidGrammarException("Invalid input. Expected[task: <name: string>, <hours: int>, <num_days: int>]");

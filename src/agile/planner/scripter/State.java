@@ -3,9 +3,11 @@ package agile.planner.scripter;
 import agile.planner.data.Card;
 import agile.planner.data.Label;
 import agile.planner.data.Task;
+import agile.planner.scripter.exception.InvalidGrammarException;
 import agile.planner.scripter.exception.UnknownClassException;
 import agile.planner.manager.ScheduleManager;
 import agile.planner.schedule.day.Day;
+import agile.planner.scripter.tools.ScriptLog;
 import agile.planner.user.UserConfig;
 import agile.planner.util.CheckList;
 
@@ -59,6 +61,8 @@ public abstract class State {
     protected static boolean exportPP = false;
     /** Boolean value for whether import preprocessor has been initialized (OPTIONAL) */
     protected static boolean importPP = false;
+    /** Holds a log of the script being processed */
+    protected static ScriptLog scriptLog = new ScriptLog();
 
     /**
      * Determines the state for the given line of code
@@ -115,8 +119,8 @@ public abstract class State {
      * Processes arguments to a class or function in the script
      *
      * @param line line of code being processed
-     * @param maxArgs maximum number of tokens possible
-     * @param delimiter pattern for separating tokens
+     * @param maxArgs maximum number of arguments possible
+     * @param delimiter pattern for separating arguments
      * @return string array of all arguments
      */
     protected String[] processArguments(String line, int maxArgs, String delimiter) {
@@ -129,7 +133,7 @@ public abstract class State {
             if(i < maxArgs) {
                 tokens[i++] = strScanner.next().trim();
             } else {
-                throw new InputMismatchException("Invalid expression for function");
+                throw new InvalidGrammarException();
             }
         }
         return tokens;
@@ -152,7 +156,7 @@ public abstract class State {
             if(i < numTokens) {
                 tokens[i++] = strScanner.next().trim();
             } else {
-                throw new InputMismatchException("Invalid expression for function");
+                throw new InvalidGrammarException();
             }
         }
         return tokens;
@@ -169,5 +173,7 @@ public abstract class State {
         String funcKey = strScanner.next();
         return funcKey.charAt(funcKey.length() - 1) == ':' && !keyWords.contains(funcKey)
                 && !funcMap.containsKey(funcKey);
+
+        //TODO need to update so that if the function tries to reuse the same name, it will throw an InvalidKeyWordException
     }
 }
