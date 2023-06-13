@@ -14,9 +14,42 @@ import agile.planner.util.CheckList;
 import java.util.*;
 
 /**
- * Abstract State for holding all core data (e.g. stack, heap, etc.) for the scripting language
+ * The class {@code State} serves as parent class to all functions and classes within the {@code Simple}
+ * language. It is responsible for managing the various states, stacks for variable usage, and string processing
+ * of provided code snippets. It utilizes {@link ScriptContext} as its preprocess handler when dealing with the
+ * construction of custom functions and updating flags for built-in operations such as logging or debug support
+ * to the user. {@code State} utilizes a modified version of State Pattern as a means of performing context switches amongst
+ * various classes, functions, and preprocessor flags.
+ * <p>
+ * {@code Simple} utilizes dynamic variable storage with its constant recall from the Stack of the most recently created
+ * instance of a class. While users can specify a certain index, it is not necessary as long as they utilize a '_' before the class
+ * type. This saves time and reduces error as can be seen here:
+ * <blockquote><pre>
+ *     task: hw, 3, 0  <-- [T0]
+ *     task: rd, 4, 0  <-- [T1]
+ *     print: _task    <-- prints [T1]
+ *     print: _task 0  <-- prints [T0]
+ * </pre></blockquote><p>
+ * The {@code State} class also serves as a context handler with regards to managing states and storing all relevant data. The core
+ * identifier for a type is the ':'. It follows the very first token and is accompanied by arguments provided if any. Below demonstrates
+ * the three kinds of types a user will typically encounter:
+ * <blockquote><pre>
+ *     __LOG__              <-- preprocessor flag
+ *     print: _task         <-- pre-built function
+ *     card: Math           <-- class
+ *     foo: _task, _card    <-- custom function
+ * </pre></blockquote><p>
+ * String processing is also provided via {@code State} to offer all child classes the option to call one of its
+ * utility methods. This includes parsing arguments for a class/function or parsing tokens from an entire code statement:
+ * <blockquote><pre>
+ *     processArguments("task: hw, 3, 0") --> ["hw", "3", "0"]
+ *     processTokens("print: _task")      --> ["print", "_task"]
+ * </pre></blockquote><p>
+ * The {@code State} class has all its fields protected and static to ensure ease of access for all children classes to
+ * the stack and preprocessor attributes.
  *
  * @author Andrew Roe
+ * @since 1.0
  */
 public abstract class State {
 
