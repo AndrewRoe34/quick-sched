@@ -22,11 +22,12 @@ package agile.planner.scripter.exception;
  *       add: _label, _task
  * </pre></blockquote><p>
  * A more detailed explanation can be found in {@link InvalidGrammarException}, but to summarise, Simple does not
- * attempt to prevent the creation of new functions with core keywords with {@code InvalidKeyWordException} since
- * the language does not recognize the difference between a prebuilt function and a normal pre-built function call.
+ * throw {@code InvalidKeyWordException} to prevent the creation of new functions with prebuilt keywords (despite the
+ * argument differences). That is handled as an {@link InvalidGrammarException} issue involving invalid .
  *
  * @author Andrew Roe
  * @since 1.0
+ * @deprecated
  */
 public class InvalidKeyWordException extends RuntimeException {
     public InvalidKeyWordException(String s) {

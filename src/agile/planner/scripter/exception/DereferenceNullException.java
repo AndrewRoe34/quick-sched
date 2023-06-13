@@ -6,15 +6,15 @@ package agile.planner.scripter.exception;
  * outside its valid index or if an attempt to utilize the dynamic nature of the language fails if not one value
  * remains in the existing stack.
  * <p>
- * {@code Simple} takes advantage of the stack and allows constant recall of the most recently created values
- * in the stack. However, if nothing currently remains (either to removal or never being added), an exception
+ * {@code Simple} takes advantage of the stack and allows constant recall of the most recently constructed class
+ * instances. However, if nothing currently remains (either due to removal or never being added), an exception
  * will be thrown.
  * <blockquote><pre>
  *     card: Math
  *     add: _task, _card  <-- This will result in an exception
  * </pre></blockquote><p>
  * Another instance that could result in failure would be the user attempting to utilize a value outside the valid
- * index of the stack, thus resulting in another exception being thrown.
+ * index of the stack, thus resulting in this exception being thrown.
  * <blockquote><pre>
  *     task: hw, 3, 0
  *     card: Math

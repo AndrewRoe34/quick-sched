@@ -82,15 +82,20 @@ public class ScriptContext {
      */
     private void preFunctionSetup(Scanner strScanner, String funcDefinition) {
         StringBuilder sb = new StringBuilder();
-        String funcName = strScanner.next();
-        sb.append(strScanner.nextLine()); //TODO need to check if that just skips to next line
+        Scanner funcScanner = new Scanner(funcDefinition);
+        String funcName = funcScanner.next();
+        if(funcScanner.hasNextLine()) {
+            sb.append(funcScanner.nextLine()).append('\n');
+        }
         String line = null;
         boolean flag = false;
         while(strScanner.hasNextLine()) {
             line = strScanner.nextLine();
-            if(line.startsWith("  ")) {
-                sb.append(line);
-            } else {
+            if(line.startsWith(" ")) {
+                sb.append(line).append('\n');
+            } else if("".equals(line)) {
+                //do nothing
+            } else  {
                 flag = true;
                 break;
             }

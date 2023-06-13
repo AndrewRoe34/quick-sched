@@ -10,12 +10,13 @@ END:
 #custom function
 setup_task: task, label, card
   #this should be fine
-  add: label, task
-  add: task, card
+  add: _label, _task
+  #test
+  add: _task, _card
 
 #data
 task: HW, 5, 0
-label: MA, green
+label: MA, 3
 card: MATH
 
 #custom function call

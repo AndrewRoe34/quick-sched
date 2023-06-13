@@ -105,7 +105,6 @@ public abstract class State {
         } else {
             throw new UnknownClassException();
         }
-        //TODO will need to include a check for any custom function calls with our last condition (which will defer to the function state as well)
     }
 
     /**
@@ -169,11 +168,12 @@ public abstract class State {
      * @return boolean value for whether function is both new and valid
      */
     public boolean isNewValidFunction(String statement) {
+        if("".equals(statement) || statement == null) {
+            return false;
+        }
         Scanner strScanner = new Scanner(statement);
         String funcKey = strScanner.next();
-        return funcKey.charAt(funcKey.length() - 1) == ':' && !keyWords.contains(funcKey)
+        return funcKey.charAt(0) != '#' && funcKey.charAt(funcKey.length() - 1) == ':' && !keyWords.contains(funcKey)
                 && !funcMap.containsKey(funcKey);
-
-        //TODO need to update so that if the function tries to reuse the same name, it will throw an InvalidKeyWordException
     }
 }

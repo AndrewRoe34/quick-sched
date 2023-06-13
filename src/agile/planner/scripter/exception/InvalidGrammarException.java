@@ -25,7 +25,7 @@ package agile.planner.scripter.exception;
  * The {@code InvalidGrammarException} class differs from {@link InvalidKeyWordException}, which is thrown only when
  * a duplicate occurs when defining a custom function. This, however, does not prevent the user from defining a custom
  * function with an already existing keyword (such as 'add'). Instead, it will throw an {@code InvalidGrammarException}
- * for violating the type or number of arguments based on the given keyword.
+ * for violating the type or number of arguments based on the existing keyword.
  *
  * @author Andrew Roe
  * @since 1.0
