@@ -5,6 +5,7 @@ import agile.planner.data.Label;
 import agile.planner.data.Task;
 import agile.planner.scripter.exception.InvalidGrammarException;
 import agile.planner.scripter.exception.UnknownClassException;
+import agile.planner.scripter.exception.DereferenceNullException;
 import agile.planner.manager.ScheduleManager;
 import agile.planner.schedule.day.Day;
 import agile.planner.scripter.tools.ScriptLog;
@@ -47,6 +48,11 @@ import java.util.*;
  * </pre></blockquote><p>
  * The {@code State} class has all its fields protected and static to ensure ease of access for all children classes to
  * the stack and preprocessor attributes.
+ * <p>
+ * As for exceptions, there are various circumstances that will result in a {@link RuntimeException} being thrown. The first deals
+ * with a case of the user attempting to recall a {@link Task} from an empty stack, resulting in a {@link DereferenceNullException}
+ * being thrown. Another situation involving an unknown type will result in an {@link UnknownClassException}. Finally, when the
+ * string processing method encounters more tokens/arguments than previously expected, an {@link InvalidGrammarException} will occur.
  *
  * @author Andrew Roe
  * @since 1.0
@@ -98,13 +104,12 @@ public abstract class State {
     protected static ScriptLog scriptLog = new ScriptLog();
 
     /**
-     * Determines the state for the given line of code
+     * Determines the next context switch for the scripting language {@code Simple}
      *
      * @param context provides ScriptContext for State Pattern
      * @param line line of code being processed
-     * @throws UnknownClassException if class or function is not detected
      */
-    protected void determineState(ScriptContext context, String line) throws UnknownClassException {
+    protected void determineState(ScriptContext context, String line) {
         Scanner strScanner = new Scanner(line);
         if("".equals(line)) {
             comment = true;
@@ -141,14 +146,14 @@ public abstract class State {
     }
 
     /**
-     * Processes the function given via the String input
+     * Processes the given function via the correct {@code State} implementation
      *
      * @param line line of code being processed
      */
     protected abstract void processFunc(String line);
 
     /**
-     * Processes arguments to a class or function in the script
+     * Processes arguments to a given class or function in the code statement
      *
      * @param line line of code being processed
      * @param maxArgs maximum number of arguments possible
@@ -172,7 +177,7 @@ public abstract class State {
     }
 
     /**
-     * Processes all the tokens in a given string by its delimiter
+     * Processes all the tokens in a given string provided by its delimiter
      *
      * @param line string being processed
      * @param numTokens maximum number of tokens possible
@@ -195,7 +200,7 @@ public abstract class State {
     }
 
     /**
-     * Determines whether provided input is a new valid function
+     * Determines whether the given input is a new valid custom function
      *
      * @param statement string being processed
      * @return boolean value for whether function is both new and valid
