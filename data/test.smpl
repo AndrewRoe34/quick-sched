@@ -1,10 +1,10 @@
 #preprocessor comment
 START:
-__DEF_CONFIG__
-__DEBUG__
-__LOG__
-__EXPORT__
-__BUILD__
+  __DEF_CONFIG__
+  __DEBUG__
+  __LOG__
+  __EXPORT__
+  __BUILD__
 END:
 
 #custom function
@@ -25,3 +25,13 @@ task: read, 4, 2
 setup_task: _task, _label, _card
 task: fix, 7, 4
 setup_task: _task, _label, _card
+
+
+setup_task: task
+  print: _task
+
+setup_task: task  <-- will call the first function with the value of "all tasks"
+ add: _task, card  <-- This will be considered its own statement
+
+task: hw, 3, 0
+setup_task: _task  <-- will call the first function

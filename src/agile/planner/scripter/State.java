@@ -205,13 +205,17 @@ public abstract class State {
      * @param statement string being processed
      * @return boolean value for whether function is both new and valid
      */
-    public boolean isNewValidFunction(String statement) {
+    protected boolean isNewValidFunction(String statement) {
         if("".equals(statement) || statement == null) {
             return false;
         }
+        //TODO need to add regex check here (will throw an exception)
         Scanner strScanner = new Scanner(statement);
         String funcKey = strScanner.next();
-        return funcKey.charAt(0) != '#' && funcKey.charAt(funcKey.length() - 1) == ':' && !keyWords.contains(funcKey)
-                && !funcMap.containsKey(funcKey);
+        if(funcKey.charAt(0) != '#' && funcKey.charAt(funcKey.length() - 1) == ':' && !keyWords.contains(funcKey)
+                && !funcMap.containsKey(funcKey)) {
+            //TODO check regex pattern match here (will allow us to throw a InvalidNameException (need to create)
+        }
+        return false;
     }
 }

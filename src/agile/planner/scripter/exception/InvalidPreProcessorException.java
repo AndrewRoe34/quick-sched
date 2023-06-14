@@ -9,27 +9,27 @@ package agile.planner.scripter.exception;
  * A prime example that would involve this exception being thrown would be the omission of either the start or end flags:
  * <blockquote><pre>
  *     START:
- *     __DEF_CONFIG__
+ *       __DEF_CONFIG__
  *     task: hw, 3, 0  <-- This will result in an exception
  * </pre></blockquote></p>
  * Another instance would be the absence of the configuration option (a core requirement for any scheduling to be possible):
  * <blockquote><pre>
  *     START:
- *     __LOG__
+ *       __LOG__
  *     END:  <-- This will result in an exception
  * </pre></blockquote></p>
  * Other cases might involve the inclusion of functions or classes within the preprocessor block:
  * <blockquote><pre>
  *     START:
- *     __DEF_CONFIG__
- *     task: hw, 3, 0  <-- This will result in an exception
+ *       __DEF_CONFIG__
+ *       task: hw, 3, 0  <-- This will result in an exception
  *     END:
  * </pre></blockquote></p>
  * Finally, one of the last reasons why this exception might occur is if a repeating flag is spotted throughout the block:
  * <blockquote><pre>
  *     START:
- *     __DEF_CONFIG__
- *     __CUR_CONFIG__  <-- This will result in an exception (despite the different name)
+ *       __DEF_CONFIG__
+ *       __CUR_CONFIG__  <-- This will result in an exception (same flag)
  *     END:
  * </pre></blockquote>
  * </p>
