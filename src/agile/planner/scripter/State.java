@@ -214,6 +214,7 @@ public abstract class State {
         String funcKey = strScanner.next();
         if(funcKey.charAt(0) != '#' && funcKey.charAt(funcKey.length() - 1) == ':' && !keyWords.contains(funcKey)
                 && !funcMap.containsKey(funcKey)) {
+            return true;
             //TODO check regex pattern match here (will allow us to throw a InvalidNameException (need to create)
         }
         return false;

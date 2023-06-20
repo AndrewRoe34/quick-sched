@@ -1,10 +1,11 @@
 package agile.planner.scripter;
 
-import agile.planner.scripter.exception.InvalidFuncNameException;
 import agile.planner.scripter.exception.InvalidFunctionException;
 import agile.planner.scripter.exception.InvalidPreProcessorException;
 
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * The class {@code ScriptContext} serves as a manager of the {@link State} through its focus on
@@ -40,7 +41,7 @@ import java.util.Scanner;
  *
  *     foo: _task, _card
  * </pre></blockquote><p>
- * In the situation where a custom function possesses an invalid name (e.g. special characters), an {@link InvalidFuncNameException} will be thrown.
+ * In the situation where a custom function possesses an invalid name (e.g. special characters), an {@link InvalidFunctionException} will be thrown.
  * Below contains some good examples of the style for custom functions in Simple:
  * <blockquote><pre>
  *     task_setup:
@@ -134,8 +135,17 @@ public class ScriptContext {
         StringBuilder sb = new StringBuilder();
         Scanner funcScanner = new Scanner(funcDefinition);
         String funcName = funcScanner.next();
+
+        String regex = "^(?!.*:.*[^:])\\w{2,}$";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(funcName);
+        if(!matcher.matches()) {
+            throw new InvalidFunctionException();
+        }
+
         if(funcScanner.hasNextLine()) {
             sb.append(funcScanner.nextLine()).append('\n');
+            //TODO process parameters here to verify
         }
         String line = null;
         boolean flag = false;
