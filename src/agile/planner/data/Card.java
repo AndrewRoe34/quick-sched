@@ -15,8 +15,8 @@ public class Card {
     /** Label for Card */
     private String title;
     /** List of Tasks for Card */
-    private List<Task> list;
-    private List<Label> labelList;
+    private List<Task> cardTasks;
+    private List<Label> cardLabels;
 
     /**
      * Primary constructor for Card
@@ -25,7 +25,8 @@ public class Card {
      */
     public Card(String title) {
         this.title = title;
-        labelList = new ArrayList<>();
+        cardLabels = new ArrayList<>();
+        cardTasks = new ArrayList<>();
     }
 
     /**
@@ -51,17 +52,17 @@ public class Card {
      *
      * @return List of Tasks
      */
-    public List<Task> getList() {
-        return list;
+    public List<Task> getCardTasks() {
+        return cardTasks;
     }
 
     /**
      * Sets List of Tasks for Card
      *
-     * @param list List of Tasks
+     * @param cardTasks List of Tasks
      */
-    public void setList(List<Task> list) {
-        this.list = list;
+    public void setCardTasks(List<Task> cardTasks) {
+        this.cardTasks = cardTasks;
     }
 
     /**
@@ -71,7 +72,7 @@ public class Card {
      * @return boolean status for success
      */
     public boolean addTask(Task task) {
-        return list.add(task);
+        return cardTasks.add(task);
     }
 
     /**
@@ -81,10 +82,10 @@ public class Card {
      * @return Task being removed
      */
     public Task removeTask(int idx) {
-        return list.remove(idx);
+        return cardTasks.remove(idx);
     }
 
     public void addLabel(Label label) {
-        labelList.add(label);
+        cardLabels.add(label);
     }
 }

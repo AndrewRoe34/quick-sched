@@ -140,13 +140,36 @@ public class ScriptContext {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(funcName);
         if(!matcher.matches()) {
-            throw new InvalidFunctionException();
+            //throw new InvalidFunctionException();
         }
 
         if(funcScanner.hasNextLine()) {
-            sb.append(funcScanner.nextLine()).append('\n');
-            //TODO process parameters here to verify
+            String line = funcScanner.nextLine();
+            String[] args = currState.processTokens(line, 5, ",");
+            boolean taskFlag = false;
+            boolean clFlag = false;
+            boolean cardFlag = false;
+            boolean boardFlag = false;
+            boolean labelFlag = false;
+            for(String s : args) {
+                if("task".equals(s) && !taskFlag) {
+                    taskFlag = true;
+                } else if("checklist".equals(s) && !clFlag) {
+                    clFlag = true;
+                } else if("card".equals(s) && !cardFlag) {
+                    cardFlag = true;
+                } else if("board".equals(s) && !boardFlag) {
+                    boardFlag = true;
+                } else if("label".equals(s) && !labelFlag) {
+                    labelFlag = true;
+                } else if(s != null) {
+                    throw new InvalidFunctionException();
+                }
+            }
+            sb.append(line).append('\n');
         }
+
+
         String line = null;
         boolean flag = false;
         while(strScanner.hasNextLine()) {

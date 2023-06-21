@@ -164,7 +164,9 @@ public abstract class State {
         String[] tokens = new String[maxArgs];
         Scanner strScanner = new Scanner(line);
         strScanner.next();
-        strScanner.useDelimiter(delimiter);
+        if(delimiter != null) {
+            strScanner.useDelimiter(delimiter);
+        }
         int i = 0;
         while(strScanner.hasNext()){
             if(i < maxArgs) {
@@ -187,7 +189,9 @@ public abstract class State {
     protected String[] processTokens(String line, int numTokens, String delimiter) {
         String[] tokens = new String[numTokens];
         Scanner strScanner = new Scanner(line);
-        strScanner.useDelimiter(delimiter);
+        if(delimiter != null) {
+            strScanner.useDelimiter(delimiter);
+        }
         int i = 0;
         while(strScanner.hasNext()){
             if(i < numTokens) {

@@ -8,7 +8,7 @@ START:
 END:
 
 #custom function
-!setup_task: task, label, card
+setup_task: task, label, card
   #this should be fine
   add: _label, _task
   #test

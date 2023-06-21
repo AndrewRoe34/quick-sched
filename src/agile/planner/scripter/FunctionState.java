@@ -4,9 +4,11 @@ import agile.planner.data.Board;
 import agile.planner.data.Card;
 import agile.planner.data.Label;
 import agile.planner.data.Task;
+import agile.planner.scripter.exception.InvalidFunctionException;
 import agile.planner.scripter.exception.UnknownClassException;
 import agile.planner.util.CheckList;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -42,15 +44,65 @@ public class FunctionState extends State {
          * 3. Store the values inside the associated global function variables
          * 4. Call each function with the correct variables (will need boolean variable to make this easier)
          */
-        Scanner  strScanner = new Scanner(line);
-        String type = strScanner.next();
 
-        //process arguments (and ensure they match)
 
-        //update variables depending on what's provided
+        //process arguments TODO (and ensure they match with parameters)
+        String[] args = processArguments(line, 5, ",");
+        for (String arg : args) {
+            if (arg == null) {
+                break;
+            }
+            String[] tokens = processTokens(arg, 2, "\\s");
+            if ("_task".equals(arg) && tokens[1] == null) {
+                tasks = new ArrayList<>();
+                tasks.add(taskList.get(taskList.size() - 1));
+            } else if ("_task".equals(arg)) {
+                int idx = Integer.parseInt(tokens[1]);
+                tasks = new ArrayList<>();
+                tasks.add(taskList.get(idx));
+            } else if ("task".equals(arg) && tokens[1] == null) {
+                tasks = taskList;
+            } else if("_checklist".equals(arg) && tokens[1] == null) {
+                checkLists = new ArrayList<>();
+                checkLists.add(clList.get(clList.size() - 1));
+            } else if("_checklist".equals(arg)) {
+                int idx = Integer.parseInt(tokens[1]);
+                checkLists = new ArrayList<>();
+                checkLists.add(clList.get(idx));
+            } else if("checklist".equals(arg) && tokens[1] == null) {
+                checkLists = clList;
+            } else if("_card".equals(arg) && tokens[1] == null) {
+                cards = new ArrayList<>();
+                cards.add(cardList.get(cardList.size() - 1));
+            } else if("_card".equals(arg)) {
+                int idx = Integer.parseInt(tokens[1]);
+                cards = new ArrayList<>();
+                cards.add(cardList.get(idx));
+            } else if("card".equals(arg) && tokens[1] == null) {
+                cards = cardList;
+            } else if("_label".equals(arg) && tokens[1] == null) {
+                labels = new ArrayList<>();
+                labels.add(labelList.get(labelList.size() - 1));
+            } else if("_label".equals(arg)) {
+                int idx = Integer.parseInt(tokens[1]);
+                labels = new ArrayList<>();
+                labels.add(labelList.get(idx));
+            } else if("label".equals(arg) && tokens[1] == null) {
+                labels = labelList;
+            } else {
+                throw new InvalidFunctionException();
+            }
+        } //TODO need to add "board" to the above argument processing
 
-        //process each line of code while making function calls here
-        parseFunction(type, line);
+
+        String script = funcMap.get(processTokens(line, 5, "\\s")[0]);
+        Scanner funcScanner = new Scanner(script);
+        funcScanner.nextLine(); //skips the function definition and parameters
+        while(funcScanner.hasNextLine()) {
+            String statement = funcScanner.nextLine();
+            //process each line of code while making function calls here
+            parseFunction(statement);
+        }
 
         //reset all the variables
         resetVariables();
@@ -89,23 +141,12 @@ public class FunctionState extends State {
         inFunction = false;
     }
 
-    private void parseFunction(String type, String line) {
-        if("task:".equals(type)) {
-            new TaskState().processFunc(line);
-        } else if("print:".equals(type)) {
+    private void parseFunction(String line) {
+        String type = processTokens(line, 5, null)[0];
+        if("print:".equals(type)) {
             new PrintState().processFunc(line);
-        } else if("label:".equals(type)) {
-            new LabelState().processFunc(line);
-        } else if("day:".equals(type)) {
-            new DayState().processFunc(line);
         } else if(type.charAt(0) == '#') {
             //do nothing
-        } else if("checklist:".equals(type)) {
-            new CheckListState().processFunc(line);
-        } else if("card:".equals(type)) {
-            new CardState().processFunc(line);
-        } else if("board:".equals(type)) {
-            new BoardState().processFunc(line);
         } else if("add:".equals(type)) {
             new AddState().processFunc(line);
         } else if("edit:".equals(type)) {
@@ -114,6 +155,9 @@ public class FunctionState extends State {
             new RemoveState().processFunc(line);
         } else if(funcMap.containsKey(type)) {
             new FunctionState().processFunc(line);
+        } else if("task:".equals(type) || "label:".equals(type) || "day:".equals(type)
+                || "checklist:".equals(type) || "card:".equals(type) || "board:".equals(type)) {
+            throw new InvalidFunctionException();
         } else {
             throw new UnknownClassException();
         }

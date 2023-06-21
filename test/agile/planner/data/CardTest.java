@@ -1,6 +1,5 @@
 package agile.planner.data;
 
-import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -58,8 +57,8 @@ public class CardTest {
         list.add(t2);
         list.add(t3);
 
-        c1.setList(list);
-        assertEquals(list, c1.getList());
+        c1.setCardTasks(list);
+        assertEquals(list, c1.getCardTasks());
     }
 
     /**
@@ -76,8 +75,8 @@ public class CardTest {
         list.add(t2);
         list.add(t3);
 
-        c1.setList(list);
-        assertEquals(list, c1.getList());
+        c1.setCardTasks(list);
+        assertEquals(list, c1.getCardTasks());
     }
 
     /**
@@ -94,12 +93,12 @@ public class CardTest {
         list.add(t1);
         list.add(t2);
         list.add(t3);
-        c1.setList(list);
+        c1.setCardTasks(list);
 
         Task t4 = new Task(2, "C", 5, 2);
         c1.addTask(t4);
 
-        assertEquals(list, c1.getList());
+        assertEquals(list, c1.getCardTasks());
     }
 
     /**
@@ -116,10 +115,10 @@ public class CardTest {
         list.add(t1);
         list.add(t2);
         list.add(t3);
-        c1.setList(list);
+        c1.setCardTasks(list);
 
         c1.removeTask(1);
 
-        assertEquals(list, c1.getList());
+        assertEquals(list, c1.getCardTasks());
     }
 }

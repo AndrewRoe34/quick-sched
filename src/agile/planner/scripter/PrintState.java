@@ -1,6 +1,9 @@
 package agile.planner.scripter;
 
+import agile.planner.data.Task;
 import agile.planner.scripter.exception.InvalidGrammarException;
+
+import java.util.List;
 
 /**
  * Function --> print: [class] <br>
@@ -13,12 +16,19 @@ public class PrintState extends State {
 
     @Override
     protected void processFunc(String line) {
-        String[] tokens = processArguments(line, 2, "\\s");
+        String[] tokens = processArguments(line, 2, null);
         if("task".equals(tokens[0])) {
             System.out.println(taskList);
         } else if("_task".equals(tokens[0])) {
             if(tokens[1] == null) {
-                System.out.println(taskList.get(taskList.size()-1));
+                List<Task> tasks = FunctionState.getTasks();
+                if(tasks == null) {
+                    System.out.println(taskList.get(taskList.size()-1));
+                } else if(tasks.size() == 1){
+                    System.out.println(tasks.get(0));
+                } else {
+                    System.out.println(tasks);
+                }
             } else {
                 System.out.println(taskList.get(Integer.parseInt(tokens[1])));
             }
