@@ -142,7 +142,8 @@ public class FunctionState extends State {
     }
 
     private void parseFunction(String line) {
-        String type = processTokens(line, 5, null)[0];
+        Scanner tokenScanner = new Scanner(line);
+        String type = tokenScanner.next();
         if("print:".equals(type)) {
             new PrintState().processFunc(line);
         } else if(type.charAt(0) == '#') {

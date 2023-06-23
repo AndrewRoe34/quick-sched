@@ -7,31 +7,6 @@ START:
   __BUILD__
 END:
 
-#custom function
-setup_task: task, label, card
-  #this should be fine
-  add: _label, _task
-  #test
-  add: _task, _card
-
-#data
-task: HW, 5, 0
-label: MA, 3
-card: MATH
-
-#custom function call
-setup_task: _task, _label, _card
-task: read, 4, 2
-setup_task: _task, _label, _card
-task: fix, 7, 4
-setup_task: _task, _label, _card
-
-
-#setup_task: task
-#  print: _task
-
-#setup_task: task  <-- will call the first function with the value of "all tasks"
-# add: _task, card  <-- This will be considered its own statement
-
-#task: hw, 3, 0
-#setup_task: _task  <-- will call the first function
+print: ""
+print: "Setting up data"
+task: hw, 3, 0

@@ -167,6 +167,8 @@ public class ScriptContext {
                 }
             }
             sb.append(line).append('\n');
+        } else {
+            sb.append("none\n");
         }
 
 
@@ -184,8 +186,10 @@ public class ScriptContext {
             }
         }
         State.funcMap.put(funcName, sb.toString());
-        if(flag) {
+        if(flag && !currState.isNewValidFunction(line)) {
             executeFunction(line);
+        } else if(flag) {
+            preFunctionSetup(strScanner, line);
         }
     }
 
@@ -195,7 +199,7 @@ public class ScriptContext {
      * @param script script input to be processed
      */
     public void executeScript(String script) {
-        System.out.println("Simple Script V0.1.0...");
+        System.out.println("Simple Script 1.0");
         Scanner scriptScanner = new Scanner(script);
 
         preProcessorSetup(scriptScanner);

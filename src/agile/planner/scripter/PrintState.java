@@ -16,6 +16,11 @@ public class PrintState extends State {
 
     @Override
     protected void processFunc(String line) {
+        String s = verifyString(line);
+        if(s != null) {
+            System.out.println(s);
+            return;
+        }
         String[] tokens = processArguments(line, 2, null);
         if("task".equals(tokens[0])) {
             System.out.println(taskList);
@@ -75,5 +80,34 @@ public class PrintState extends State {
         } else {
             throw new InvalidGrammarException("Invalid input. Expected[print: <class>]");
         }
+    }
+
+    private String verifyString(String line) {
+        boolean quoteBegin = false;
+        boolean quoteEnd = false;
+        int beginIdx = 0;
+        int endIdx = 0;
+        for(int i = 0; i < line.length(); i++) {
+            if(line.charAt(i) == ' ' || line.charAt(i) == '\t') {
+                beginIdx++;
+            } else if(line.charAt(i) == 'p') break;
+        }
+        beginIdx += 6;
+        for(int i = beginIdx; i < line.length(); i++) {
+            if(!quoteBegin && line.charAt(i) == '"') {
+                quoteBegin = true;
+                beginIdx = i;
+            } else if(!quoteEnd && line.charAt(i) == '"') {
+                quoteEnd = true;
+                endIdx = i;
+            } else if(!quoteBegin && line.charAt(i) != ' ' && line.charAt(i) != '\t') {
+                return null;
+            } else if(quoteEnd && line.charAt(i) != ' ' && line.charAt(i) != '\t' &&
+                    line.charAt(i) != '\n' && line.charAt(i) != '\r') {
+                return null;
+            }
+        }
+        if(beginIdx >= endIdx) return null;
+        return line.substring(beginIdx + 1, endIdx);
     }
 }
