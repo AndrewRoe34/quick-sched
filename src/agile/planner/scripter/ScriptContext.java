@@ -3,7 +3,11 @@ package agile.planner.scripter;
 import agile.planner.scripter.exception.InvalidFunctionException;
 import agile.planner.scripter.exception.InvalidPreProcessorException;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -58,6 +62,8 @@ import java.util.regex.Pattern;
 public class ScriptContext {
     /** Beginning State for scripting processor */
     private State currState = new PreProcessorState();
+
+    private Set<String> funcSet = new HashSet<>();
 
     /**
      * Updates the State for the scripting processor
@@ -130,8 +136,9 @@ public class ScriptContext {
      *
      * @param strScanner Scanner for parsing new function
      * @param funcDefinition function's definition (including name and parameters)
+     * @param funcFile boolean flag for whether a function file is being processed
      */
-    private void preFunctionSetup(Scanner strScanner, String funcDefinition) {
+    private void preFunctionSetup(Scanner strScanner, String funcDefinition, boolean funcFile) {
         StringBuilder sb = new StringBuilder();
         Scanner funcScanner = new Scanner(funcDefinition);
         String funcName = funcScanner.next();
@@ -186,10 +193,12 @@ public class ScriptContext {
             }
         }
         State.funcMap.put(funcName, sb.toString());
-        if(flag && !currState.isNewValidFunction(line)) {
+        if(flag && !funcFile && !currState.isNewValidFunction(line)) {
             executeFunction(line);
-        } else if(flag) {
-            preFunctionSetup(strScanner, line);
+        } else if(flag && !funcFile) {
+            preFunctionSetup(strScanner, line, false);
+        } else {
+            return;
         }
     }
 
@@ -207,10 +216,35 @@ public class ScriptContext {
         while(scriptScanner.hasNextLine()) {
             String statement = scriptScanner.nextLine();
             if(currState.isNewValidFunction(statement)) {
-                preFunctionSetup(scriptScanner, statement);
+                preFunctionSetup(scriptScanner, statement, false);
+            } else if(isNewValidFuncScript(statement)) {
+                preScriptSetup(statement);
             } else {
                 executeFunction(statement);
             }
         }
+    }
+
+    private void preScriptSetup(String statement) {
+        try {
+            Scanner funcScanner = new Scanner(new File("data/" + statement));
+            while(funcScanner.hasNextLine()) {
+                String line = funcScanner.nextLine().trim();
+                if(line.charAt(0) == '#') {
+                    //do nothing
+                } else if(currState.isNewValidFunction(line)) {
+                    preFunctionSetup(funcScanner, line, true);
+                } else {
+                    throw new InvalidFunctionException();
+                }
+            }
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean isNewValidFuncScript(String filename) {
+        return !funcSet.contains(filename) && filename.length() > 5
+                && ".func".equals(filename.substring(filename.length() - 5));
     }
 }

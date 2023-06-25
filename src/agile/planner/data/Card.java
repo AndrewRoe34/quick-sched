@@ -88,4 +88,9 @@ public class Card {
     public void addLabel(Label label) {
         cardLabels.add(label);
     }
+
+    @Override
+    public String toString() {
+        return title;
+    }
 }

@@ -3,10 +3,22 @@ START:
   __DEF_CONFIG__
   __DEBUG__
   __LOG__
+  __IMPORT__
   __EXPORT__
   __BUILD__
 END:
 
-print: ""
-print: "Setting up data"
+# we could do this to use other custom functions
+foo.func
+
+#data
 task: hw, 3, 0
+task: read, 6, 1
+
+#function call
+#setup_task: _task 0
+
+print: ""
+create_box:
+create_head:
+create_torso:

@@ -53,41 +53,41 @@ public class FunctionState extends State {
                 break;
             }
             String[] tokens = processTokens(arg, 2, "\\s");
-            if ("_task".equals(arg) && tokens[1] == null) {
+            if ("_task".equals(tokens[0]) && tokens[1] == null) {
                 tasks = new ArrayList<>();
                 tasks.add(taskList.get(taskList.size() - 1));
-            } else if ("_task".equals(arg)) {
+            } else if ("_task".equals(tokens[0])) {
                 int idx = Integer.parseInt(tokens[1]);
                 tasks = new ArrayList<>();
                 tasks.add(taskList.get(idx));
-            } else if ("task".equals(arg) && tokens[1] == null) {
+            } else if ("task".equals(tokens[0]) && tokens[1] == null) {
                 tasks = taskList;
-            } else if("_checklist".equals(arg) && tokens[1] == null) {
+            } else if("_checklist".equals(tokens[0]) && tokens[1] == null) {
                 checkLists = new ArrayList<>();
                 checkLists.add(clList.get(clList.size() - 1));
-            } else if("_checklist".equals(arg)) {
+            } else if("_checklist".equals(tokens[0])) {
                 int idx = Integer.parseInt(tokens[1]);
                 checkLists = new ArrayList<>();
                 checkLists.add(clList.get(idx));
-            } else if("checklist".equals(arg) && tokens[1] == null) {
+            } else if("checklist".equals(tokens[0]) && tokens[1] == null) {
                 checkLists = clList;
-            } else if("_card".equals(arg) && tokens[1] == null) {
+            } else if("_card".equals(tokens[0]) && tokens[1] == null) {
                 cards = new ArrayList<>();
                 cards.add(cardList.get(cardList.size() - 1));
-            } else if("_card".equals(arg)) {
+            } else if("_card".equals(tokens[0])) {
                 int idx = Integer.parseInt(tokens[1]);
                 cards = new ArrayList<>();
                 cards.add(cardList.get(idx));
-            } else if("card".equals(arg) && tokens[1] == null) {
+            } else if("card".equals(tokens[0]) && tokens[1] == null) {
                 cards = cardList;
-            } else if("_label".equals(arg) && tokens[1] == null) {
+            } else if("_label".equals(tokens[0]) && tokens[1] == null) {
                 labels = new ArrayList<>();
                 labels.add(labelList.get(labelList.size() - 1));
-            } else if("_label".equals(arg)) {
+            } else if("_label".equals(tokens[0])) {
                 int idx = Integer.parseInt(tokens[1]);
                 labels = new ArrayList<>();
                 labels.add(labelList.get(idx));
-            } else if("label".equals(arg) && tokens[1] == null) {
+            } else if("label".equals(tokens[0]) && tokens[1] == null) {
                 labels = labelList;
             } else {
                 throw new InvalidFunctionException();

@@ -32,16 +32,20 @@ public class AddState extends State {
         if(arg1[1] == null) {
             if("_card".equals(arg2[0]) && arg2[1] == null) {
                 cardList.get(cardList.size() - 1).addTask(taskList.get(taskList.size() - 1));
+                System.out.println("Adds [T" + (taskList.size() - 1) + "] --> [C" + (cardList.size() - 1) + "]");
             } else if("_card".equals(arg2[0])) {
                 cardList.get(Integer.parseInt(arg2[1])).addTask(taskList.get(taskList.size() - 1));
+                System.out.println("Adds [T" + (taskList.size() - 1) + "] --> [C" + Integer.parseInt(arg2[1]) + "]");
             } else {
                 throw new InvalidPairingException("Expected Card but was a different class");
             }
         } else {
             if("_card".equals(arg2[0]) && arg2[1] == null) {
                 cardList.get(cardList.size() - 1).addTask(taskList.get(Integer.parseInt(arg1[1])));
+                System.out.println("Adds [T" + Integer.parseInt(arg1[1]) + "] --> [C" + (cardList.size() - 1) + "]");
             } else if("_card".equals(arg2[0])) {
                 cardList.get(Integer.parseInt(arg2[1])).addTask(taskList.get(Integer.parseInt(arg1[1])));
+                System.out.println("Adds [T" + Integer.parseInt(arg1[1]) + "] --> [C" + Integer.parseInt(arg2[1]) + "]");
             } else {
                 throw new InvalidPairingException("Expected Card but was a different class");
             }

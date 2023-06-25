@@ -1,0 +1,39 @@
+setup_task: task
+  print: _task
+
+#custom function
+create_box:
+  print: "                              _____________________"
+  print: "                             | IF I HOPE TO SAVE |"
+  print: "                             |_____GOTHAM CITY___|"
+  print: "                                     ________________"
+  print: "                                    | I NEED TO STOP |"
+  print: "                                    |___FALCONE...___|"
+  print: ""
+
+#custom function
+create_head:
+  print: "              /\\/\\"
+  print: "             /  / \\"
+  print: "           _/_/    \\__"
+  print: "          /           \\"
+  print: "         /             \\"
+  print: "        /  _____        \\"
+  print: "        | /__/     )    |"
+  print: "        /               |"
+  print: "       /__             /"
+  print: "        /__\\__        /"
+  print: "        |____/      /"
+  print: "            \\        \\"
+
+#custom function
+create_torso:
+  print: "            /         \\_/\\_____"
+  print: "          /  /      \\      \\   /\\ \\ \\"
+  print: "        /   //__/\\__\\\\      \\ /  \\   \\"
+  print: "       /   /          \\     \\\\   \\    \\"
+  print: "       |   \\/ \\    /\\ /     /     \\    \\"
+  print: "       \\    \\  \\  /  \\     |       |    \\"
+  print: "        |   ____\\/_____    |       |    \\"
+  print: "        |   \\____|____/    \\      \\    \\"
+  print: "        |    \\___|___/      \\     |    \\"
