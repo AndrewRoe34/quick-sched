@@ -11,6 +11,8 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static agile.planner.scripter.State.scriptLog;
+
 /**
  * The class {@code ScriptContext} serves as a manager of the {@link State} through its focus on
  * context switches, preprocessing setup, and building custom functions for later use. {@code Simple}
@@ -178,7 +180,6 @@ public class ScriptContext {
             sb.append("none\n");
         }
 
-
         String line = null;
         boolean flag = false;
         while(strScanner.hasNextLine()) {
@@ -192,10 +193,13 @@ public class ScriptContext {
                 break;
             }
         }
+
+        scriptLog.reportFunctionSetup(funcDefinition);
+
         State.funcMap.put(funcName, sb.toString());
         if(flag && !funcFile && !currState.isNewValidFunction(line)) {
             executeFunction(line);
-        } else if(flag && !funcFile) {
+        } else if(flag && line.charAt(0) != '#') {
             preFunctionSetup(strScanner, line, false);
         } else {
             return;
@@ -210,22 +214,31 @@ public class ScriptContext {
     public void executeScript(String script) {
         System.out.println("Simple Script 1.0");
         Scanner scriptScanner = new Scanner(script);
+        try {
+            preProcessorSetup(scriptScanner);
+            scriptLog.reportPreProcessorSetup();
 
-        preProcessorSetup(scriptScanner);
-
-        while(scriptScanner.hasNextLine()) {
-            String statement = scriptScanner.nextLine();
-            if(currState.isNewValidFunction(statement)) {
-                preFunctionSetup(scriptScanner, statement, false);
-            } else if(isNewValidFuncScript(statement)) {
-                preScriptSetup(statement);
-            } else {
-                executeFunction(statement);
+            while(scriptScanner.hasNextLine()) {
+                String statement = scriptScanner.nextLine();
+                if(currState.isNewValidFunction(statement)) {
+                    preFunctionSetup(scriptScanner, statement, false);
+                } else if(isNewValidFuncScript(statement)) {
+                    preScriptSetup(statement);
+                } else {
+                    executeFunction(statement);
+                }
             }
+        } catch(Exception e) {
+            scriptLog.reportException(e);
+        }
+        if(State.logPP) {
+            System.out.println(scriptLog.toString());
         }
     }
 
     private void preScriptSetup(String statement) {
+        funcSet.add(statement);
+        scriptLog.reportLinkFile(statement);
         try {
             Scanner funcScanner = new Scanner(new File("data/" + statement));
             while(funcScanner.hasNextLine()) {
@@ -245,6 +258,7 @@ public class ScriptContext {
 
     private boolean isNewValidFuncScript(String filename) {
         return !funcSet.contains(filename) && filename.length() > 5
-                && ".func".equals(filename.substring(filename.length() - 5));
+                && ".func".equals(filename.substring(filename.length() - 5))
+                && filename.charAt(0) != '#';
     }
 }

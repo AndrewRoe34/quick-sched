@@ -62,16 +62,20 @@ public class AddState extends State {
         if(arg1[1] == null) {
             if("_task".equals(arg2[0]) && arg2[1] == null) {
                 taskList.get(taskList.size() - 1).addCheckList(clList.get(clList.size() - 1));
+                System.out.println("Adds [CL" + (clList.size() - 1) + "] --> [T" + (taskList.size() - 1) + "]");
             } else if("_task".equals(arg2[0])) {
                 taskList.get(Integer.parseInt(arg2[1])).addCheckList(clList.get(clList.size() - 1));
+                System.out.println("Adds [CL" + (clList.size() - 1) + "] --> [T" + Integer.parseInt(arg2[1]) + "]");
             } else {
                 throw new InvalidPairingException("Expected Task but was a different class");
             }
         } else {
             if("_task".equals(arg2[0]) && arg2[1] == null) {
                 taskList.get(taskList.size() - 1).addCheckList(clList.get(Integer.parseInt(arg1[1])));
+                System.out.println("Adds [CL" + Integer.parseInt(arg1[1]) + "] --> [T" + (taskList.size() - 1) + "]");
             } else if("_task".equals(arg2[0])) {
                 taskList.get(Integer.parseInt(arg2[1])).addCheckList(clList.get(Integer.parseInt(arg1[1])));
+                System.out.println("Adds [CL" + Integer.parseInt(arg1[1]) + "] --> [T" + Integer.parseInt(arg2[1]) + "]");
             } else {
                 throw new InvalidPairingException("Expected Task but was a different class");
             }

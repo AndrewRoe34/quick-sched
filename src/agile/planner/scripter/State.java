@@ -223,4 +223,16 @@ public abstract class State {
         }
         return false;
     }
+
+    public static boolean isDefConfigPP() {
+        return defConfig;
+    }
+
+    public static boolean isDebugPP() {
+        return debugPP;
+    }
+
+    public static boolean isLogPP() {
+        return logPP;
+    }
 }

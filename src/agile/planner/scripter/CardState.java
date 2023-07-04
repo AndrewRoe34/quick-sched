@@ -15,7 +15,10 @@ public class CardState extends State {
     protected void processFunc(String line) {
         String[] tokens = processArguments(line, 1, ",");
         try {
-            cardList.add(new Card(tokens[0]));
+            int id = scheduleManager.getLastCardId() + cardList.size();
+            String name = tokens[0];
+            cardList.add(new Card(name));
+            scriptLog.reportCardCreation(id, name);
             System.out.println("Card added..");
         } catch(Exception e) {
             throw new InvalidGrammarException("Invalid input. Expected[card: <title: string>]");

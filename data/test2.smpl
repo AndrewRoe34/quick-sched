@@ -1,0 +1,22 @@
+#preprocessor flags
+START:
+  __DEF_CONFIG__
+  __DEBUG__
+  __LOG__
+  __IMPORT__
+  __EXPORT__
+  __BUILD__
+END:
+
+# Links func files to script
+task.func
+
+#data
+task: hw, 3, 0
+task: read, 6, 1
+label: math, 3
+card: MA
+checklist: title
+
+#function call
+setup_data: _label, _task, _card, _checklist

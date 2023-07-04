@@ -176,11 +176,17 @@ public class CheckList {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder(name + " [" + getPercentage() + "%]:\n");
+        StringBuilder sb = new StringBuilder("Checklist [name=" + name + ", percentage=" + getPercentage() + "%, items=");
+        boolean flag = true;
         for(Item i : list) {
-            sb.append("* ").append(i.toString()).append("\n");
+            if(flag) {
+                flag = false;
+                sb.append(i.toString());
+            } else {
+                sb.append(", ").append(i.toString());
+            }
         }
-        return sb.toString();
+        return sb.append("]").toString();
     }
 
     /**

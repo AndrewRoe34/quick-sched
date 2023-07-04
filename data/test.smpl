@@ -2,23 +2,38 @@
 START:
   __DEF_CONFIG__
   __DEBUG__
-  __LOG__
-  __IMPORT__
   __EXPORT__
+  __LOG__
   __BUILD__
 END:
 
-# we could do this to use other custom functions
 foo.func
 
+#custom function
+setup_task: task, label, card
+  #this should be fine
+  add: _label, _task
+  #test
+  add: _task, _card
+  print: "Success!"
+  print: _task
+
 #data
-task: hw, 3, 0
-task: read, 6, 1
+task: HW, 5, 0
+label: MA, 3
+card: MATH
+checklist: ToDo
+checklist: don't do
 
-#function call
-#setup_task: _task 0
+print: _checklist 0
 
-print: ""
-create_box:
-create_head:
-create_torso:
+print: _task 0
+
+#custom function call
+setup_task: _task, _label, _card
+task: read, 4, 2
+setup_task: _task, _label, _card
+task: fix, 7, 4
+setup_task: _task, _label, _card
+label: CH, 6
+setup_task: _task 0, _label, _card

@@ -55,6 +55,7 @@ public class ScheduleManager {
     private int labelId;
     /** ID specifier ro each CheckList */
     private int checklistId;
+    private int cardId;
     /** Last day Task is due */
     private int lastDueDate;
 
@@ -467,5 +468,9 @@ public class ScheduleManager {
 
     public int getLastCLId() {
         return checklistId;
+    }
+
+    public int getLastCardId() {
+        return cardId;
     }
 }

@@ -1,7 +1,3 @@
-setup_task: task
-  print: _task
-
-#custom function
 create_box:
   print: "                              _____________________"
   print: "                             | IF I HOPE TO SAVE |"
@@ -11,7 +7,6 @@ create_box:
   print: "                                    |___FALCONE...___|"
   print: ""
 
-#custom function
 create_head:
   print: "              /\\/\\"
   print: "             /  / \\"
@@ -26,7 +21,6 @@ create_head:
   print: "        |____/      /"
   print: "            \\        \\"
 
-#custom function
 create_torso:
   print: "            /         \\_/\\_____"
   print: "          /  /      \\      \\   /\\ \\ \\"

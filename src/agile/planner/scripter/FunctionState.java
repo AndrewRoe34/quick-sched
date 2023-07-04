@@ -94,8 +94,8 @@ public class FunctionState extends State {
             }
         } //TODO need to add "board" to the above argument processing
 
-
-        String script = funcMap.get(processTokens(line, 5, "\\s")[0]);
+        Scanner strScanner = new Scanner(line);
+        String script = funcMap.get(strScanner.next());
         Scanner funcScanner = new Scanner(script);
         funcScanner.nextLine(); //skips the function definition and parameters
         while(funcScanner.hasNextLine()) {
@@ -103,6 +103,8 @@ public class FunctionState extends State {
             //process each line of code while making function calls here
             parseFunction(statement);
         }
+
+        scriptLog.reportFunctionCall(line);
 
         //reset all the variables
         resetVariables();

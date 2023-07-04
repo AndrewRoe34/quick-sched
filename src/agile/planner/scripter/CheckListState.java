@@ -9,7 +9,10 @@ public class CheckListState extends State {
     protected void processFunc(String line) {
         String[] tokens = processArguments(line, 1, ",");
         try {
-            clList.add(new CheckList(scheduleManager.getLastCLId() + clList.size(), tokens[0]));
+            int id = scheduleManager.getLastCLId() + clList.size();
+            String name = tokens[0];
+            clList.add(new CheckList(id, name));
+            scriptLog.reportCheckListCreation(id, name);
             System.out.println("Task added.. [T" + (scheduleManager.getLastCLId() + clList.size() - 1) + "]");
         } catch(Exception e) {
             throw new InvalidGrammarException("Invalid input. Expected[checklist: <name: string>]");

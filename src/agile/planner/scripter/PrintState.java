@@ -2,6 +2,7 @@ package agile.planner.scripter;
 
 import agile.planner.data.Task;
 import agile.planner.scripter.exception.InvalidGrammarException;
+import agile.planner.util.CheckList;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class PrintState extends State {
         String s = verifyString(line);
         if(s != null) {
             System.out.println(s);
+            scriptLog.reportPrintFunc(false, s);
             return;
         }
         String[] tokens = processArguments(line, 2, null);
@@ -41,7 +43,14 @@ public class PrintState extends State {
             System.out.println(clList);
         } else if("_checklist".equals(tokens[0])) {
             if(tokens[1] == null) {
-                System.out.println(clList.get(clList.size()-1));
+                List<CheckList> checkLists = FunctionState.getCheckLists();
+                if(checkLists == null) {
+                    System.out.println(clList.get(clList.size()-1));
+                } else if(checkLists.size() == 1) {
+                    System.out.println(checkLists.get(0));
+                } else {
+                    System.out.println(checkLists);
+                }
             } else {
                 System.out.println(clList.get(Integer.parseInt(tokens[1])));
             }
@@ -80,6 +89,8 @@ public class PrintState extends State {
         } else {
             throw new InvalidGrammarException("Invalid input. Expected[print: <class>]");
         }
+
+        scriptLog.reportPrintFunc(true, tokens[0] + (tokens[1] == null ? "" : " " + tokens[1]));
     }
 
     private String verifyString(String line) {
