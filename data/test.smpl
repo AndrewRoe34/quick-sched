@@ -22,12 +22,6 @@ setup_task: task, label, card
 task: HW, 5, 0
 label: MA, 3
 card: MATH
-checklist: ToDo
-checklist: don't do
-
-print: _checklist 0
-
-print: _task 0
 
 #custom function call
 setup_task: _task, _label, _card

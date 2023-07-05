@@ -19,7 +19,7 @@ public class CardState extends State {
             String name = tokens[0];
             cardList.add(new Card(name));
             scriptLog.reportCardCreation(id, name);
-            System.out.println("Card added..");
+            System.out.println("Card added.. [C" + (scheduleManager.getLastCardId() + cardList.size() - 1) + "]");
         } catch(Exception e) {
             throw new InvalidGrammarException("Invalid input. Expected[card: <title: string>]");
         }

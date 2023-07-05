@@ -16,12 +16,7 @@ public class PreProcessorState extends State {
         } else if("__CURR_CONFIG__".equals(line)) {
             //State.userConfig = scheduleManager.getUserConfig();
         } else if("__LOG__".equals(line)) {
-            /*
-            try {
-                State.eventLog = EventLog.getEventLog(System.out);
-            } catch (FileNotFoundException e) {
-                throw new RuntimeException(e);
-            } */
+            //DO NOTHING FOR NOW
         } else if("__DEBUG__".equals(line)) {
             //DO NOTHING FOR NOW
         }else if("__IMPORT__".equals(line)) {
