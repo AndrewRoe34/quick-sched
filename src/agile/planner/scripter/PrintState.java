@@ -1,5 +1,7 @@
 package agile.planner.scripter;
 
+import agile.planner.data.Card;
+import agile.planner.data.Label;
 import agile.planner.data.Task;
 import agile.planner.scripter.exception.InvalidGrammarException;
 import agile.planner.util.CheckList;
@@ -64,7 +66,14 @@ public class PrintState extends State {
                 break;
             case "_card":
                 if (tokens[1] == null) {
-                    System.out.println(cardList.get(cardList.size() - 1));
+                    List<Card> cards = FunctionState.getCards();
+                    if(cards == null) {
+                        System.out.println(cardList.get(cardList.size() - 1));
+                    } else if(cards.size() == 1) {
+                        System.out.println(cards.get(0));
+                    } else {
+                        System.out.println(cards);
+                    }
                 } else {
                     System.out.println(cardList.get(Integer.parseInt(tokens[1])));
                 }
@@ -84,19 +93,16 @@ public class PrintState extends State {
                 break;
             case "_label":
                 if (tokens[1] == null) {
-                    System.out.println(labelList.get(labelList.size() - 1));
+                    List<Label> labels = FunctionState.getLabels();
+                    if(labels == null) {
+                        System.out.println(labelList.get(labelList.size() - 1));
+                    } else if(labels.size() == 1) {
+                        System.out.println(labels.get(0));
+                    } else {
+                        System.out.println(labels);
+                    }
                 } else {
                     System.out.println(labelList.get(Integer.parseInt(tokens[1])));
-                }
-                break;
-            case "day":
-                System.out.println(dayList);
-                break;
-            case "_day":
-                if (tokens[1] == null) {
-                    System.out.println(dayList.get(dayList.size() - 1));
-                } else {
-                    System.out.println(dayList.get(Integer.parseInt(tokens[1])));
                 }
                 break;
             default:
