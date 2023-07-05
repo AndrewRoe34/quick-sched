@@ -20,9 +20,6 @@ setup_task: task, label, card
   print: "Success!"
   print: _task
 
-#might possibly support if conditions (though, would need to figure out how to manage it)
-#will not be considered until core functionality is finished
-
 
 #data
 task: HW, 5, 0

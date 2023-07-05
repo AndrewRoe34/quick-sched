@@ -12,5 +12,9 @@ public class Label {
         this.color = color;
     }
 
+    public int getColor() {
+        return color;
+    }
+
     //TODO each label needs a string and a color
 }

@@ -4,6 +4,7 @@ import agile.planner.data.Card;
 import agile.planner.data.Label;
 import agile.planner.data.Task;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.PriorityQueue;
 

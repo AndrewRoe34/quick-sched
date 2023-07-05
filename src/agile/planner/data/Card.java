@@ -93,4 +93,12 @@ public class Card {
     public String toString() {
         return title;
     }
+
+    public List<Task> getTask() {
+        return cardTasks;
+    }
+
+    public String getTitle() {
+        return title;
+    }
 }

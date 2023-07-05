@@ -192,15 +192,17 @@ public class FunctionState extends State {
             case "remove:":
                 new RemoveState().processFunc(line);
                 break;
+            case "task:":
+            case "label:":
+            case "day:":
+            case "checklist:":
+            case "card:":
+            case "board:":
+                throw new InvalidFunctionException();
             default:
-                if (type.charAt(0) == '#') {
-                    // do nothing
-                } else if (funcMap.containsKey(type)) {
+                if(funcMap.containsKey(type)) {
                     new FunctionState().processFunc(line);
-                } else if ("task:".equals(type) || "label:".equals(type) || "day:".equals(type) || "checklist:".equals(type)
-                        || "card:".equals(type) || "board:".equals(type)) {
-                    throw new InvalidFunctionException();
-                } else {
+                } else if(type.charAt(0) != '#') {
                     throw new UnknownClassException();
                 }
                 break;

@@ -347,6 +347,14 @@ public class Task implements Comparable<Task> {
         labelList.add(label);
     }
 
+    public List<Label> getLabel() {
+        return labelList;
+    }
+
+    public CheckList getChecklist() {
+        return checkList;
+    }
+
     /**
      * The individual component of a parent Task in the form of a SubTask
      * TODO will need to include a markComplete() method
