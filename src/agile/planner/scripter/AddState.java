@@ -9,16 +9,20 @@ public class AddState extends State {
         String[] arg1 = processTokens(tokens[0], 2, "\\s");
         String[] arg2 = processTokens(tokens[1], 2, "\\s");
         //TODO will need to check for duplicates (not sure how to handle it for time being)
-        if("_task".equals(arg1[0])) {
-            processTaskAddition(arg1, arg2);
-        } else if("_checklist".equals(arg1[0])) {
-            processCheckListAddition(arg1, arg2);
-        } else if("_label".equals(arg1[0])) {
-            processLabelAddition(arg1, arg2);
-        } else if("_card".equals(arg1[0])) {
-
-        } else {
-            throw new InvalidPairingException();
+        switch(arg1[0]) {
+            case "_task":
+                processTaskAddition(arg1, arg2);
+                break;
+            case "_checklist":
+                processCheckListAddition(arg1, arg2);
+                break;
+            case "_label":
+                processLabelAddition(arg1, arg2);
+                break;
+            case "_card":
+                break;
+            default:
+                throw new InvalidPairingException();
         }
     }
 

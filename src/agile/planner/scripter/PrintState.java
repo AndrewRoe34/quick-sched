@@ -24,70 +24,83 @@ public class PrintState extends State {
             return;
         }
         String[] tokens = processArguments(line, 2, null);
-        if("task".equals(tokens[0])) {
-            System.out.println(taskList);
-        } else if("_task".equals(tokens[0])) {
-            if(tokens[1] == null) {
-                List<Task> tasks = FunctionState.getTasks();
-                if(tasks == null) {
-                    System.out.println(taskList.get(taskList.size()-1));
-                } else if(tasks.size() == 1){
-                    System.out.println(tasks.get(0));
+        switch (tokens[0]) {
+            case "task":
+                System.out.println(taskList);
+                break;
+            case "_task":
+                if (tokens[1] == null) {
+                    List<Task> tasks = FunctionState.getTasks();
+                    if (tasks == null) {
+                        System.out.println(taskList.get(taskList.size() - 1));
+                    } else if (tasks.size() == 1) {
+                        System.out.println(tasks.get(0));
+                    } else {
+                        System.out.println(tasks);
+                    }
                 } else {
-                    System.out.println(tasks);
+                    System.out.println(taskList.get(Integer.parseInt(tokens[1])));
                 }
-            } else {
-                System.out.println(taskList.get(Integer.parseInt(tokens[1])));
-            }
-        } else if("checklist".equals(tokens[0])) {
-            System.out.println(clList);
-        } else if("_checklist".equals(tokens[0])) {
-            if(tokens[1] == null) {
-                List<CheckList> checkLists = FunctionState.getCheckLists();
-                if(checkLists == null) {
-                    System.out.println(clList.get(clList.size()-1));
-                } else if(checkLists.size() == 1) {
-                    System.out.println(checkLists.get(0));
+                break;
+            case "checklist":
+                System.out.println(clList);
+                break;
+            case "_checklist":
+                if (tokens[1] == null) {
+                    List<CheckList> checkLists = FunctionState.getCheckLists();
+                    if (checkLists == null) {
+                        System.out.println(clList.get(clList.size() - 1));
+                    } else if (checkLists.size() == 1) {
+                        System.out.println(checkLists.get(0));
+                    } else {
+                        System.out.println(checkLists);
+                    }
                 } else {
-                    System.out.println(checkLists);
+                    System.out.println(clList.get(Integer.parseInt(tokens[1])));
                 }
-            } else {
-                System.out.println(clList.get(Integer.parseInt(tokens[1])));
-            }
-        } else if("card".equals(tokens[0])) {
-            System.out.println(cardList);
-        } else if("_card".equals(tokens[0])) {
-            if(tokens[1] == null) {
-                System.out.println(cardList.get(cardList.size()-1));
-            } else {
-                System.out.println(cardList.get(Integer.parseInt(tokens[1])));
-            }
-        } else if("board".equals(tokens[0])) {
-
-        } else if("_board".equals(tokens[0])) {
-            if(tokens[1] == null) {
-
-            } else {
-
-            }
-        } else if("label".equals(tokens[0])) {
-            System.out.println(labelList);
-        } else if("_label".equals(tokens[0])) {
-            if(tokens[1] == null) {
-                System.out.println(labelList.get(labelList.size()-1));
-            } else {
-                System.out.println(labelList.get(Integer.parseInt(tokens[1])));
-            }
-        } else if("day".equals(tokens[0])) {
-            System.out.println(dayList);
-        } else if("_day".equals(tokens[0])) {
-            if(tokens[1] == null) {
-                System.out.println(dayList.get(dayList.size()-1));
-            } else {
-                System.out.println(dayList.get(Integer.parseInt(tokens[1])));
-            }
-        } else {
-            throw new InvalidGrammarException("Invalid input. Expected[print: <class>]");
+                break;
+            case "card":
+                System.out.println(cardList);
+                break;
+            case "_card":
+                if (tokens[1] == null) {
+                    System.out.println(cardList.get(cardList.size() - 1));
+                } else {
+                    System.out.println(cardList.get(Integer.parseInt(tokens[1])));
+                }
+                break;
+            case "board":
+                // Handle board case (if needed)
+                break;
+            case "_board":
+                if (tokens[1] == null) {
+                    // Handle _board case (if needed)
+                } else {
+                    // Handle _board case with tokens[1] (if needed)
+                }
+                break;
+            case "label":
+                System.out.println(labelList);
+                break;
+            case "_label":
+                if (tokens[1] == null) {
+                    System.out.println(labelList.get(labelList.size() - 1));
+                } else {
+                    System.out.println(labelList.get(Integer.parseInt(tokens[1])));
+                }
+                break;
+            case "day":
+                System.out.println(dayList);
+                break;
+            case "_day":
+                if (tokens[1] == null) {
+                    System.out.println(dayList.get(dayList.size() - 1));
+                } else {
+                    System.out.println(dayList.get(Integer.parseInt(tokens[1])));
+                }
+                break;
+            default:
+                throw new InvalidGrammarException("Invalid input. Expected [print: <class>]");
         }
 
         scriptLog.reportPrintFunc(true, tokens[0] + (tokens[1] == null ? "" : " " + tokens[1]));

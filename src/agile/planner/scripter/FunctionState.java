@@ -52,45 +52,78 @@ public class FunctionState extends State {
             if (arg == null) {
                 break;
             }
-            String[] tokens = processTokens(arg, 2, "\\s");
-            if ("_task".equals(tokens[0]) && tokens[1] == null) {
-                tasks = new ArrayList<>();
-                tasks.add(taskList.get(taskList.size() - 1));
-            } else if ("_task".equals(tokens[0])) {
-                int idx = Integer.parseInt(tokens[1]);
-                tasks = new ArrayList<>();
-                tasks.add(taskList.get(idx));
-            } else if ("task".equals(tokens[0]) && tokens[1] == null) {
-                tasks = taskList;
-            } else if("_checklist".equals(tokens[0]) && tokens[1] == null) {
-                checkLists = new ArrayList<>();
-                checkLists.add(clList.get(clList.size() - 1));
-            } else if("_checklist".equals(tokens[0])) {
-                int idx = Integer.parseInt(tokens[1]);
-                checkLists = new ArrayList<>();
-                checkLists.add(clList.get(idx));
-            } else if("checklist".equals(tokens[0]) && tokens[1] == null) {
-                checkLists = clList;
-            } else if("_card".equals(tokens[0]) && tokens[1] == null) {
-                cards = new ArrayList<>();
-                cards.add(cardList.get(cardList.size() - 1));
-            } else if("_card".equals(tokens[0])) {
-                int idx = Integer.parseInt(tokens[1]);
-                cards = new ArrayList<>();
-                cards.add(cardList.get(idx));
-            } else if("card".equals(tokens[0]) && tokens[1] == null) {
-                cards = cardList;
-            } else if("_label".equals(tokens[0]) && tokens[1] == null) {
-                labels = new ArrayList<>();
-                labels.add(labelList.get(labelList.size() - 1));
-            } else if("_label".equals(tokens[0])) {
-                int idx = Integer.parseInt(tokens[1]);
-                labels = new ArrayList<>();
-                labels.add(labelList.get(idx));
-            } else if("label".equals(tokens[0]) && tokens[1] == null) {
-                labels = labelList;
-            } else {
-                throw new InvalidFunctionException();
+            String[] tokens = processTokens(arg, 2, null);
+            switch (tokens[0]) {
+                case "_task":
+                    if (tokens[1] == null) {
+                        tasks = new ArrayList<>();
+                        tasks.add(taskList.get(taskList.size() - 1));
+                    } else {
+                        int idx = Integer.parseInt(tokens[1]);
+                        tasks = new ArrayList<>();
+                        tasks.add(taskList.get(idx));
+                    }
+                    break;
+                case "task":
+                    if (tokens[1] == null) {
+                        tasks = taskList;
+                    } else {
+                        throw new InvalidFunctionException();
+                    }
+                    break;
+                case "_checklist":
+                    if (tokens[1] == null) {
+                        checkLists = new ArrayList<>();
+                        checkLists.add(clList.get(clList.size() - 1));
+                    } else {
+                        int idx = Integer.parseInt(tokens[1]);
+                        checkLists = new ArrayList<>();
+                        checkLists.add(clList.get(idx));
+                    }
+                    break;
+                case "checklist":
+                    if (tokens[1] == null) {
+                        checkLists = clList;
+                    } else {
+                        throw new InvalidFunctionException();
+                    }
+                    break;
+                case "_card":
+                    if (tokens[1] == null) {
+                        cards = new ArrayList<>();
+                        cards.add(cardList.get(cardList.size() - 1));
+                    } else {
+                        int idx = Integer.parseInt(tokens[1]);
+                        cards = new ArrayList<>();
+                        cards.add(cardList.get(idx));
+                    }
+                    break;
+                case "card":
+                    if (tokens[1] == null) {
+                        cards = cardList;
+                    } else {
+                        throw new InvalidFunctionException();
+                    }
+                    break;
+                case "_label":
+                    if (tokens[1] == null) {
+                        labels = new ArrayList<>();
+                        labels.add(labelList.get(labelList.size() - 1));
+                    } else {
+                        int idx = Integer.parseInt(tokens[1]);
+                        labels = new ArrayList<>();
+                        labels.add(labelList.get(idx));
+                    }
+                    break;
+                case "label":
+                    if (tokens[1] == null) {
+                        labels = labelList;
+                    } else {
+                        throw new InvalidFunctionException();
+                    }
+                    break;
+                default:
+                    throw new InvalidFunctionException();
             }
         } //TODO need to add "board" to the above argument processing
 
@@ -146,23 +179,31 @@ public class FunctionState extends State {
     private void parseFunction(String line) {
         Scanner tokenScanner = new Scanner(line);
         String type = tokenScanner.next();
-        if("print:".equals(type)) {
-            new PrintState().processFunc(line);
-        } else if(type.charAt(0) == '#') {
-            //do nothing
-        } else if("add:".equals(type)) {
-            new AddState().processFunc(line);
-        } else if("edit:".equals(type)) {
-            new EditState().processFunc(line);
-        } else if("remove:".equals(type)) {
-            new RemoveState().processFunc(line);
-        } else if(funcMap.containsKey(type)) {
-            new FunctionState().processFunc(line);
-        } else if("task:".equals(type) || "label:".equals(type) || "day:".equals(type)
-                || "checklist:".equals(type) || "card:".equals(type) || "board:".equals(type)) {
-            throw new InvalidFunctionException();
-        } else {
-            throw new UnknownClassException();
+        switch(type) {
+            case "print:":
+                new PrintState().processFunc(line);
+                break;
+            case "add:":
+                new AddState().processFunc(line);
+                break;
+            case "edit:":
+                new EditState().processFunc(line);
+                break;
+            case "remove:":
+                new RemoveState().processFunc(line);
+                break;
+            default:
+                if (type.charAt(0) == '#') {
+                    // do nothing
+                } else if (funcMap.containsKey(type)) {
+                    new FunctionState().processFunc(line);
+                } else if ("task:".equals(type) || "label:".equals(type) || "day:".equals(type) || "checklist:".equals(type)
+                        || "card:".equals(type) || "board:".equals(type)) {
+                    throw new InvalidFunctionException();
+                } else {
+                    throw new UnknownClassException();
+                }
+                break;
         }
     }
 }

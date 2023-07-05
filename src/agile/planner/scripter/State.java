@@ -116,32 +116,45 @@ public abstract class State {
             return;
         }
         String type = strScanner.next();
-        if("task:".equals(type)) {
-            context.updateState(new TaskState());
-        } else if("print:".equals(type)) {
-            context.updateState(new PrintState());
-        } else if("label:".equals(type)) {
-            context.updateState(new LabelState());
-        } else if("day:".equals(type)) {
-            context.updateState(new DayState());
-        } else if(type.charAt(0) == '#') {
-            comment = true;
-        } else if("checklist:".equals(type)) {
-            context.updateState(new CheckListState());
-        } else if("card:".equals(type)) {
-            context.updateState(new CardState());
-        } else if("board:".equals(type)) {
-            context.updateState(new BoardState());
-        } else if("add:".equals(type)) {
-            context.updateState(new AddState());
-        } else if("edit:".equals(type)) {
-            context.updateState(new EditState());
-        } else if("remove:".equals(type)) {
-            context.updateState(new RemoveState());
-        } else if(funcMap.containsKey(type)) {
-            context.updateState(new FunctionState());
-        } else {
-            throw new UnknownClassException();
+        switch (type) {
+            case "task:":
+                context.updateState(new TaskState());
+                break;
+            case "print:":
+                context.updateState(new PrintState());
+                break;
+            case "label:":
+                context.updateState(new LabelState());
+                break;
+            case "day:":
+                context.updateState(new DayState());
+                break;
+            case "checklist:":
+                context.updateState(new CheckListState());
+                break;
+            case "card:":
+                context.updateState(new CardState());
+                break;
+            case "board:":
+                context.updateState(new BoardState());
+                break;
+            case "add:":
+                context.updateState(new AddState());
+                break;
+            case "edit:":
+                context.updateState(new EditState());
+                break;
+            case "remove:":
+                context.updateState(new RemoveState());
+                break;
+            default:
+                if (type.charAt(0) == '#') {
+                    comment = true;
+                } else if (funcMap.containsKey(type)) {
+                    context.updateState(new FunctionState());
+                } else {
+                    throw new UnknownClassException();
+                }
         }
     }
 

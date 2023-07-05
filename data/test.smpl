@@ -2,9 +2,11 @@
 START:
   __DEF_CONFIG__
   __DEBUG__
+  __IMPORT__
   __EXPORT__
   __LOG__
   __BUILD__
+  #__STATS__ will provide info on the system's data
 END:
 
 foo.func
@@ -17,6 +19,10 @@ setup_task: task, label, card
   add: _task, _card
   print: "Success!"
   print: _task
+
+#might possibly support if conditions (though, would need to figure out how to manage it)
+#will not be considered until core functionality is finished
+
 
 #data
 task: HW, 5, 0

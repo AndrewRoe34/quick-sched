@@ -98,38 +98,95 @@ public class ScriptContext {
         String line = null;
         while(strScanner.hasNextLine()) {
             line = strScanner.nextLine().trim();
-            if(line.charAt(0) == '#') {
-                //do nothing here
-            } else if("START:".equals(line)) {
-                State.startPP = true;
-            } else if(State.startPP && State.configPP && "END:".equals(line)) {
-                break;
-            } else if(State.startPP && !State.configPP && !State.defConfig && line.equals("__DEF_CONFIG__")) {
-                State.configPP = true;
-                State.defConfig = true;
-                currState.processFunc(line);
-            } else if(State.startPP && !State.configPP && !State.currConfig && line.equals("__CURR_CONFIG__")) {
-                State.configPP = true;
-                State.currConfig = true;
-                currState.processFunc(line);
-            } else if(State.startPP && !State.logPP && line.equals("__LOG__")) {
-                State.logPP = true;
-                currState.processFunc(line);
-            } else if(State.startPP && !State.debugPP && line.equals("__DEBUG__")) {
-                State.debugPP = true;
-                currState.processFunc(line);
-            } else if(State.startPP && !State.importPP && line.equals("__IMPORT__")) {
-                State.importPP = true;
-                currState.processFunc(line);
-            } else if(State.startPP && !State.exportPP && line.equals("__EXPORT__")) {
-                State.exportPP = true;
-                currState.processFunc(line);
-            } else if(State.startPP && !State.buildPP && line.equals("__BUILD__")) {
-                State.buildPP = true;
-                currState.processFunc(line);
-            } else {
-                throw new InvalidPreProcessorException();
+            switch (line.charAt(0)) {
+                case '#':
+                    // do nothing here
+                    break;
+                case 'S':
+                    if ("START:".equals(line) && !State.startPP) {
+                        State.startPP = true;
+                    } else {
+                        throw new InvalidPreProcessorException();
+                    }
+                    break;
+                case 'E':
+                    if (State.startPP && State.configPP && "END:".equals(line)) {
+                        return;
+                    } else {
+                        throw new InvalidPreProcessorException();
+                    }
+                case '_':
+                    if (State.startPP) {
+                        switch (line) {
+                            case "__DEF_CONFIG__":
+                                if(!State.configPP && !State.defConfig) {
+                                    State.configPP = true;
+                                    State.defConfig = true;
+                                    currState.processFunc(line);
+                                } else {
+                                    throw new InvalidPreProcessorException();
+                                }
+                                break;
+                            case "__CURR_CONFIG__":
+                                if(!State.configPP && !State.currConfig) {
+                                    State.configPP = true;
+                                    State.currConfig = true;
+                                    currState.processFunc(line);
+                                } else {
+                                    throw new InvalidPreProcessorException();
+                                }
+                                break;
+                            case "__LOG__":
+                                if(!State.logPP) {
+                                    State.logPP = true;
+                                    currState.processFunc(line);
+                                } else {
+                                    throw new InvalidPreProcessorException();
+                                }
+                                break;
+                            case "__DEBUG__":
+                                if(!State.debugPP) {
+                                    State.debugPP = true;
+                                    currState.processFunc(line);
+                                } else {
+                                    throw new InvalidPreProcessorException();
+                                }
+                                break;
+                            case "__IMPORT__":
+                                if(!State.importPP) {
+                                    State.importPP = true;
+                                    currState.processFunc(line);
+                                } else {
+                                    throw new InvalidPreProcessorException();
+                                }
+                                break;
+                            case "__EXPORT__":
+                                if(!State.exportPP) {
+                                    State.exportPP = true;
+                                    currState.processFunc(line);
+                                } else {
+                                    throw new InvalidPreProcessorException();
+                                }
+                                break;
+                            case "__BUILD__":
+                                if(!State.buildPP) {
+                                    State.buildPP = true;
+                                    currState.processFunc(line);
+                                } else {
+                                    throw new InvalidPreProcessorException();
+                                }
+                                break;
+                            default:
+                                throw new InvalidPreProcessorException();
+                        }
+                    } else {
+                        throw new InvalidPreProcessorException();
+                    }
+                    break;
+                default:
+                    throw new InvalidPreProcessorException();
             }
+
         }
     }
 
