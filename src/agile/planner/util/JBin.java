@@ -98,9 +98,9 @@ public class JBin {
                 for(Label l : t.getLabel()) {
                     if(!labelList.contains(l)) {
                         labelList.add(l);
-                        cardSB.append(", L").append(labelList.size() - 1);
+                        taskSB.append(", L").append(labelList.size() - 1);
                     } else {
-                        cardSB.append(", L").append(labelList.indexOf(l));
+                        taskSB.append(", L").append(labelList.indexOf(l));
                     }
                 }
                 CheckList cl = t.getCheckList();
@@ -115,7 +115,7 @@ public class JBin {
         if(!labelList.isEmpty()) {
             System.out.println("LABEL {");
             for(Label l : labelList) {
-                System.out.println("  " + l.getName() + ", " + l.getColor());
+                System.out.println("  " + l.getName() + ", " + l.getColor() + "\n}\n");
             }
         }
         if(!checkListList.isEmpty()) {
