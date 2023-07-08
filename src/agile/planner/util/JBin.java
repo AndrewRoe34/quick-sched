@@ -92,6 +92,9 @@ public class JBin {
             taskSB.append("TASK {\n");
             for(Task t : taskList) {
                 String name = t.getName();
+                int totalHours = t.getTotalHours();
+                int remainingHours = t.getSubTotalHoursRemaining();
+                taskSB.append(name).append(", ").append(totalHours).append(", ").append(remainingHours);
                 for(Label l : t.getLabel()) {
                     if(!labelList.contains(l)) {
                         labelList.add(l);
