@@ -34,8 +34,8 @@ public class Card {
      *
      * @return title
      */
-    public String getLabel() {
-        return title;
+    public List<Label> getLabel() {
+        return cardLabels;
     }
 
     /**
@@ -45,15 +45,6 @@ public class Card {
      */
     public void setLabel(String title) {
         this.title = title;
-    }
-
-    /**
-     * Gets List of Tasks for Card
-     *
-     * @return List of Tasks
-     */
-    public List<Task> getCardTasks() {
-        return cardTasks;
     }
 
     /**

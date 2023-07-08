@@ -16,5 +16,9 @@ public class Label {
         return color;
     }
 
+    public String getName() {
+        return name;
+    }
+
     //TODO each label needs a string and a color
 }

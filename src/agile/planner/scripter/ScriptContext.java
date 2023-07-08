@@ -100,7 +100,6 @@ public class ScriptContext {
             line = strScanner.nextLine().trim();
             switch (line.charAt(0)) {
                 case '#':
-                    // do nothing here
                     break;
                 case 'S':
                     if ("START:".equals(line) && !State.startPP) {
@@ -243,9 +242,7 @@ public class ScriptContext {
             line = strScanner.nextLine();
             if(line.startsWith(" ")) {
                 sb.append(line).append('\n');
-            } else if("".equals(line)) {
-                //do nothing
-            } else  {
+            } else if(!"".equals(line)){
                 flag = true;
                 break;
             }

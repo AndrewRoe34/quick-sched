@@ -212,6 +212,10 @@ public class CheckList {
         return checklistId;
     }
 
+    public Iterable<? extends Item> getItems() {
+        return list;
+    }
+
     /**
      * Represents a single Item in a CheckList
      *

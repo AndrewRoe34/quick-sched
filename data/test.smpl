@@ -34,3 +34,9 @@ task: fix, 7, 4
 setup_task: _task, _label, _card
 label: CH, 6
 setup_task: _task 0, _label, _card
+
+#suggestions for how to run the code:
+
+#smpl (works similar to python)
+#smpl test.smpl
+#smpl test.smpl > file.txt

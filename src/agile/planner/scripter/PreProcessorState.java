@@ -9,22 +9,19 @@ public class PreProcessorState extends State {
 
     @Override
     protected void processFunc(String line) {
-        if("__DEF_CONFIG__".equals(line)) {
-            int[] arr = {8, 8, 8, 8, 8, 8, 8};
-            State.userConfig = new UserConfig("name", "email", arr, 14,
-                    14, false, true, false,0, 0);
-        } else if("__CURR_CONFIG__".equals(line)) {
-            //State.userConfig = scheduleManager.getUserConfig();
-        } else if("__LOG__".equals(line)) {
-            //DO NOTHING FOR NOW
-        } else if("__DEBUG__".equals(line)) {
-            //DO NOTHING FOR NOW
-        }else if("__IMPORT__".equals(line)) {
-            //DO NOTHING FOR NOW
-        } else if("__EXPORT__".equals(line)) {
-            //DO NOTHING FOR NOW
-        } else {
-            //DO NOTHING FOR BUILD (for now)
+        switch(line) {
+            case "__DEF_CONFIG__":
+                int[] arr = {8, 8, 8, 8, 8, 8, 8};
+                State.userConfig = new UserConfig("name", "email", arr, 14,
+                        14, false, true, false,0, 0);
+                break;
+            case "__CURR_CONFIG__":
+            case "__LOG__":
+            case "__DEBUG__":
+            case "__IMPORT__":
+            case "__EXPORT__":
+            default:
+                break;
         }
     }
 }

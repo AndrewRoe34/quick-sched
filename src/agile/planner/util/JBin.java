@@ -4,7 +4,7 @@ import agile.planner.data.Card;
 import agile.planner.data.Label;
 import agile.planner.data.Task;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -25,7 +25,7 @@ public class JBin {
      * @param labels all Labels in System
      * @return JBin String
      */
-    public static String createJBin(PriorityQueue<Task> tasks, List<Card> cards, List<Label> labels) {
+    public static String createJBin(List<Card> cards) {
         /* NOTES:
         1. Create Label section (with ID, not associated with system)
         2. Create Task section (with ID, not associated with system)
@@ -38,7 +38,6 @@ public class JBin {
         Need to account for possibility that file is read two times in a row
             --> This would mean tasks, cards, and labels are the same/duplicates (will need to verify via the equals method, i.e. HashSet)
             --> Otherwise, it simply gets added to the system
-
 
         FORMATTING OF DATA:
         LABEL {
@@ -60,6 +59,77 @@ public class JBin {
 
         NOTE: Try working from bottom to top (might be able to save on efficiency and storage)
          */
+
+        StringBuilder cardSB = new StringBuilder();
+        List<Task> taskList = new ArrayList<>();
+        List<Label> labelList = new ArrayList<>();
+        List<CheckList> checkListList = new ArrayList<>();
+        if(!cards.isEmpty()) {
+            cardSB.append("CARD {\n");
+            for(Card c : cards) {
+                String title = c.getTitle();
+                cardSB.append(title);
+                for(Task t : c.getTask()) {
+                    if(!taskList.contains(t)) {
+                        taskList.add(t);
+                        cardSB.append(", T").append(taskList.size() - 1);
+                    } else {
+                        cardSB.append(", T").append(taskList.indexOf(t));
+                    }
+                }
+                for(Label l : c.getLabel()) {
+                    if(!labelList.contains(l)) {
+                        labelList.add(l);
+                        cardSB.append(", C").append(labelList.size() - 1);
+                    } else {
+                        cardSB.append(", C").append(labelList.indexOf(l));
+                    }
+                }
+                cardSB.append("\n");
+            }
+            cardSB.append("}\n");
+        }
+        StringBuilder taskSB = new StringBuilder();
+        if(!taskList.isEmpty()) {
+            taskSB.append("TASK {\n");
+            for(Task t : taskList) {
+                String name = t.getName();
+                for(Label l : t.getLabel()) {
+                    if(!labelList.contains(l)) {
+                        labelList.add(l);
+                        cardSB.append(", L").append(labelList.size() - 1);
+                    } else {
+                        cardSB.append(", L").append(labelList.indexOf(l));
+                    }
+                }
+                CheckList cl = t.getCheckList();
+                if(cl != null) {
+                    checkListList.add(cl);
+                    taskSB.append("CL").append(checkListList.size() - 1);
+                }
+                taskSB.append("\n");
+            }
+            taskSB.append("}\n");
+        }
+        if(!labelList.isEmpty()) {
+            System.out.println("LABEL {");
+            for(Label l : labelList) {
+                System.out.println("  " + l.getName() + ", " + l.getColor());
+            }
+        }
+        if(!checkListList.isEmpty()) {
+            System.out.println("CHECKLIST {");
+            for(CheckList cl : checkListList) {
+                System.out.print("  " + cl.getName());
+                for(CheckList.Item i : cl.getItems()) {
+                    System.out.print(", " + i);
+                }
+            }
+        }
+        System.out.println(taskSB.toString());
+        System.out.println(cardSB.toString());
+        //now go from top to bottom with all the data you now have
+
         return null;
     }
 
