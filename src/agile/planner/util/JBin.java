@@ -20,9 +20,7 @@ public class JBin {
     /**
      * Creates a Java Binary Serialization string to be later passed or stored
      *
-     * @param tasks all Tasks in System
      * @param cards all Cards in System
-     * @param labels all Labels in System
      * @return JBin String
      */
     public static String createJBin(List<Card> cards) {
