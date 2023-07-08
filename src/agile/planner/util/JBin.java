@@ -125,7 +125,9 @@ public class JBin {
                 for(CheckList.Item i : cl.getItems()) {
                     System.out.print(", " + i);
                 }
+                System.out.println();
             }
+            System.out.println("}\n");
         }
         System.out.println(taskSB.toString());
         System.out.println(cardSB.toString());

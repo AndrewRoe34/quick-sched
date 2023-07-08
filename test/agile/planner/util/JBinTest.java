@@ -19,6 +19,10 @@ public class JBinTest {
         cardList.get(0).addTask(new Task(0, "Read", 4, 0));
         cardList.get(0).addTask(new Task(1, "Write", 2, 1));
         cardList.get(0).getTask().get(0).addLabel(new Label(0, "MA", 3));
+        cardList.get(0).getTask().get(1).addCheckList(0, "To Do");
+        cardList.get(0).getTask().get(1).getCheckList().addItem("Item 1");
+        cardList.get(0).getTask().get(1).getCheckList().addItem("Item 2");
+        cardList.get(0).getTask().get(1).getCheckList().markItem(0, true);
         JBin.createJBin(cardList);
     }
 
