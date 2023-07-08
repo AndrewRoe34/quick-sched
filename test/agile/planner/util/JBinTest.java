@@ -23,6 +23,9 @@ public class JBinTest {
         cardList.get(0).getTask().get(1).getCheckList().addItem("Item 1");
         cardList.get(0).getTask().get(1).getCheckList().addItem("Item 2");
         cardList.get(0).getTask().get(1).getCheckList().markItem(0, true);
+        Label l = cardList.get(0).getTask().get(0).getLabel().get(0);
+        cardList.get(0).addLabel(l);
+        cardList.get(0).addLabel(new Label(1, "Party", 4));
         JBin.createJBin(cardList);
     }
 
