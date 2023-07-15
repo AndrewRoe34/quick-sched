@@ -30,6 +30,9 @@ public class ScriptDebug {
     setup_task: _task, _label, _card    [T0], [L0], [C0]
       add: _label, _task  [L0] -> [T0]
       add: _task, _card   [T0] -> [C0]
+     */
 
+    /*
+    One option is to write it so that it works similar to GCC (shitty, but impressive)
      */
 }

@@ -91,7 +91,7 @@ public class JBin {
             for(Task t : taskList) {
                 String name = t.getName();
                 int totalHours = t.getTotalHours();
-                int remainingHours = t.getSubTotalHoursRemaining();
+                int remainingHours = t.getSubTotalHoursRemaining(); //TODO need to verify this
                 taskSB.append("  ").append(name).append(", ").append(totalHours).append(", ").append(remainingHours);
                 for(Label l : t.getLabel()) {
                     if(!labelList.contains(l)) {
@@ -160,10 +160,10 @@ public class JBin {
                 while(jbinScanner.hasNextLine()) {
                     type = jbinScanner.nextLine();
                     tokens = type.split(",");
-                    if("}".equals(tokens[0]) && tokens.length == 1) {
+                    if("}".equals(tokens[0].trim()) && tokens.length == 1) {
                         break;
                     } else if(tokens.length == 2) {
-                        labels.add(new Label(labels.size(), tokens[0], Integer.parseInt(tokens[1])));
+                        labels.add(new Label(labels.size(), tokens[0].trim(), Integer.parseInt(tokens[1])));
                     } else {
                         throw new InputMismatchException();
                     }
@@ -175,12 +175,12 @@ public class JBin {
                     tokens = type.split(",");
                     if(tokens.length == 0) {
                         throw new InputMismatchException();
-                    } else if("}".equals(tokens[0]) && tokens.length == 1) {
+                    } else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
                         break;
                     } else if(tokens.length == 1) {
-                        checkLists.add(new CheckList(checkLists.size(), tokens[0]));
+                        checkLists.add(new CheckList(checkLists.size(), tokens[0].trim()));
                     } else {
-                        checkLists.add(new CheckList(checkLists.size(), tokens[0]));
+                        checkLists.add(new CheckList(checkLists.size(), tokens[0].trim()));
                         int itemId = 0;
                         for(int i = 1; i < tokens.length; i++) {
                             String item = tokens[i];
@@ -199,17 +199,18 @@ public class JBin {
                 tokens = type.split(",");
                 if(tokens.length == 0) {
                     throw new InputMismatchException();
-                } else if("}".equals(tokens[0]) && tokens.length == 1) {
+                } else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
                     break;
                 } else if(tokens.length == 3) {
-                    taskList.add(new Task(taskList.size(), tokens[0], Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2])));
+                    taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2])));
                 } else if(tokens.length > 3) {
-                    taskList.add(new Task(taskList.size(), tokens[0], Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2])));
+                    taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2])));
                     for(int i = 3; i < tokens.length; i++) {
-                        if(tokens[i].length() > 2 && tokens[i].charAt(0) == 'C' && tokens[i].charAt(1) == 'L') {
-                            taskList.get(taskList.size() - 1).addCheckList(checkLists.get(Integer.parseInt(tokens[i].substring(2))));
-                        } else if(tokens[i].length() > 1 && tokens[i].charAt(0) == 'L') {
-                            taskList.get(taskList.size() - 1).addLabel(labels.get(Integer.parseInt(tokens[i].substring(2))));
+                        String item = tokens[i].trim();
+                        if(item.length() > 2 && item.charAt(0) == 'C' && item.charAt(1) == 'L') {
+                            taskList.get(taskList.size() - 1).addCheckList(checkLists.get(Integer.parseInt(item.substring(2))));
+                        } else if(item.length() > 1 && item.charAt(0) == 'L') {
+                            taskList.get(taskList.size() - 1).addLabel(labels.get(Integer.parseInt(item.substring(2))));
                         } else {
                             throw new InputMismatchException();
                         }

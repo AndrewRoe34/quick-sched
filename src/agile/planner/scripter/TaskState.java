@@ -8,7 +8,7 @@ import agile.planner.scripter.exception.InvalidGrammarException;
  * The class {@code TaskState} deals with the construction of {@link Task} instances throughout the
  * scripting file. It ensures that each {@link Task} receives an appropriate id and is synced
  * with the {@link ScheduleManager} class. {@link State} first determines the appropriate context
- * switch and then transfers over control to {@code TaskState} to perform its own responsibilities.
+ * switch and then transfers over control to {@code TaskState} to perform its own responsibilities. <p>
  * Class --> task: [name:string], [hours:int], [days:int] <br>
  * Creates a new instance of a Task while utilizing dynamic variable usage
  *
