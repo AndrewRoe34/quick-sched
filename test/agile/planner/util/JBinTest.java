@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.PriorityQueue;
 
 import static org.junit.Assert.*;
 
@@ -27,6 +28,24 @@ public class JBinTest {
         cardList.get(0).addLabel(l);
         cardList.get(0).addLabel(new Label(1, "Party", 4));
         JBin.createJBin(cardList);
+        String jbin = "LABEL {\n" +
+                "  MA, 3\n" +
+                "  Party, 4\n" +
+                "}\n" +
+                "\n" +
+                "CHECKLIST {\n" +
+                "  To Do, Item 1✅, Item 2\n" +
+                "}\n" +
+                "\n" +
+                "TASK {\n" +
+                "  Read, 4, 4, L0\n" +
+                "  Write, 2, 2, CL0\n" +
+                "}\n" +
+                "\n" +
+                "CARD {\n" +
+                "  HW, T0, T1, L0, L1\n" +
+                "}";
+        JBin.processJBin(jbin, new PriorityQueue<>(), new ArrayList<>(), new ArrayList<>());
     }
 
     @Test

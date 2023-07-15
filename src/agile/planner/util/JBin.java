@@ -146,36 +146,45 @@ public class JBin {
     public static void processJBin(String data, PriorityQueue<Task> tasks, List<Card> cards, List<Label> labels) {
         //NOTE: When processing, you should work from top to bottom (use ArrayLists to easily locate data by index value)
         Scanner jbinScanner = new Scanner(data);
-        boolean label = false;
-        boolean checklist = false;
-        boolean task = false;
-        boolean card = false;
+        boolean labelOpen = false;
+        boolean labelClosed = false;
+        boolean checklistOpen = false;
+        boolean checklistClosed = false;
+        boolean taskOpen = false;
+        boolean taskClosed = false;
+        boolean cardOpen = false;
+        boolean cardClosed = false;
         List<CheckList> checkLists = new ArrayList<>();
         List<Task> taskList = new ArrayList<>();
         while(jbinScanner.hasNextLine()) {
             String type = jbinScanner.nextLine();
             String[] tokens = type.split("\\s");
-            if(!label && tokens.length == 2 && "LABEL".equals(tokens[0]) && "{".equals(tokens[1])) {
-                label = true;
+            if(!labelOpen && tokens.length == 2 && "LABEL".equals(tokens[0]) && "{".equals(tokens[1])) {
+                labelOpen = true;
                 while(jbinScanner.hasNextLine()) {
                     type = jbinScanner.nextLine();
                     tokens = type.split(",");
                     if("}".equals(tokens[0].trim()) && tokens.length == 1) {
+                        labelClosed = true;
                         break;
                     } else if(tokens.length == 2) {
-                        labels.add(new Label(labels.size(), tokens[0].trim(), Integer.parseInt(tokens[1])));
+                        labels.add(new Label(labels.size(), tokens[0].trim(), Integer.parseInt(tokens[1].trim())));
                     } else {
                         throw new InputMismatchException();
                     }
                 }
-            } else if(!checklist && tokens.length == 2 && "CHECKLIST".equals(tokens[0]) && "{".equals(tokens[1])) {
-                checklist = true;
+                if(!labelClosed) {
+                    throw new IllegalArgumentException();
+                }
+            } else if(!checklistOpen && tokens.length == 2 && "CHECKLIST".equals(tokens[0]) && "{".equals(tokens[1])) {
+                checklistOpen = true;
                 while(jbinScanner.hasNextLine()) {
                     type = jbinScanner.nextLine();
                     tokens = type.split(",");
                     if(tokens.length == 0) {
                         throw new InputMismatchException();
                     } else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
+                        checklistClosed = true;
                         break;
                     } else if(tokens.length == 1) {
                         checkLists.add(new CheckList(checkLists.size(), tokens[0].trim()));
@@ -187,40 +196,50 @@ public class JBin {
                             boolean complete = false;
                             if(item.charAt(item.length() - 1) == '✅') {
                                 complete = true;
-                                item = item.substring(0, item.length() - 1).trim();
+                                item = item.substring(0, item.length() - 1);
                             }
-                            checkLists.get(checkLists.size() - 1).addItem(item);
+                            checkLists.get(checkLists.size() - 1).addItem(item.trim());
                             checkLists.get(checkLists.size() - 1).markItem(itemId++, complete);
                         }
                     }
                 }
-            } else if(!task && tokens.length == 2 && "TASK".equals(tokens[0]) && "{".equals(tokens[1])) {
-                type = jbinScanner.nextLine();
-                tokens = type.split(",");
-                if(tokens.length == 0) {
-                    throw new InputMismatchException();
-                } else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
-                    break;
-                } else if(tokens.length == 3) {
-                    taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2])));
-                } else if(tokens.length > 3) {
-                    taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2])));
-                    for(int i = 3; i < tokens.length; i++) {
-                        String item = tokens[i].trim();
-                        if(item.length() > 2 && item.charAt(0) == 'C' && item.charAt(1) == 'L') {
-                            taskList.get(taskList.size() - 1).addCheckList(checkLists.get(Integer.parseInt(item.substring(2))));
-                        } else if(item.length() > 1 && item.charAt(0) == 'L') {
-                            taskList.get(taskList.size() - 1).addLabel(labels.get(Integer.parseInt(item.substring(2))));
-                        } else {
-                            throw new InputMismatchException();
-                        }
-                    }
-                } else {
-                    throw new InputMismatchException();
+                if(!checklistClosed) {
+                    throw new IllegalArgumentException();
                 }
-            } else if(!card && tokens.length == 2 && "CARD".equals(tokens[0]) && "{".equals(tokens[1])) {
+            } else if(!taskOpen && tokens.length == 2 && "TASK".equals(tokens[0]) && "{".equals(tokens[1])) {
+                taskOpen = true;
+                while(jbinScanner.hasNextLine()) {
+                    type = jbinScanner.nextLine();
+                    tokens = type.split(",");
+                    if(tokens.length == 0) {
+                        throw new InputMismatchException();
+                    } else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
+                        taskClosed = true;
+                        break;
+                    } else if(tokens.length == 3) {
+                        taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1].trim()), Integer.parseInt(tokens[2].trim())));
+                    } else if(tokens.length > 3) {
+                        taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1].trim()), Integer.parseInt(tokens[2].trim())));
+                        for(int i = 3; i < tokens.length; i++) {
+                            String item = tokens[i].trim();
+                            if(item.length() > 2 && item.charAt(0) == 'C' && item.charAt(1) == 'L') {
+                                taskList.get(taskList.size() - 1).addCheckList(checkLists.get(Integer.parseInt(item.substring(2))));
+                            } else if(item.length() > 1 && item.charAt(0) == 'L') {
+                                taskList.get(taskList.size() - 1).addLabel(labels.get(Integer.parseInt(item.substring(1))));
+                            } else {
+                                throw new InputMismatchException();
+                            }
+                        }
+                    } else {
+                        throw new InputMismatchException();
+                    }
+                }
+                if(!taskClosed) {
+                    throw new IllegalArgumentException();
+                }
+            } else if(!cardOpen && tokens.length == 2 && "CARD".equals(tokens[0]) && "{".equals(tokens[1])) {
                 //todo
-            } else {
+            } else if(!"".equals(type)) {
                 throw new InputMismatchException();
             }
 
