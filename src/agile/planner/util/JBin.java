@@ -4,9 +4,7 @@ import agile.planner.data.Card;
 import agile.planner.data.Label;
 import agile.planner.data.Task;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * Java Binary Serialization is modeled after JSON for data storage/retrieval.
@@ -147,6 +145,84 @@ public class JBin {
      */
     public static void processJBin(String data, PriorityQueue<Task> tasks, List<Card> cards, List<Label> labels) {
         //NOTE: When processing, you should work from top to bottom (use ArrayLists to easily locate data by index value)
+        Scanner jbinScanner = new Scanner(data);
+        boolean label = false;
+        boolean checklist = false;
+        boolean task = false;
+        boolean card = false;
+        List<CheckList> checkLists = new ArrayList<>();
+        List<Task> taskList = new ArrayList<>();
+        while(jbinScanner.hasNextLine()) {
+            String type = jbinScanner.nextLine();
+            String[] tokens = type.split("\\s");
+            if(!label && tokens.length == 2 && "LABEL".equals(tokens[0]) && "{".equals(tokens[1])) {
+                label = true;
+                while(jbinScanner.hasNextLine()) {
+                    type = jbinScanner.nextLine();
+                    tokens = type.split(",");
+                    if("}".equals(tokens[0]) && tokens.length == 1) {
+                        break;
+                    } else if(tokens.length == 2) {
+                        labels.add(new Label(labels.size(), tokens[0], Integer.parseInt(tokens[1])));
+                    } else {
+                        throw new InputMismatchException();
+                    }
+                }
+            } else if(!checklist && tokens.length == 2 && "CHECKLIST".equals(tokens[0]) && "{".equals(tokens[1])) {
+                checklist = true;
+                while(jbinScanner.hasNextLine()) {
+                    type = jbinScanner.nextLine();
+                    tokens = type.split(",");
+                    if(tokens.length == 0) {
+                        throw new InputMismatchException();
+                    } else if("}".equals(tokens[0]) && tokens.length == 1) {
+                        break;
+                    } else if(tokens.length == 1) {
+                        checkLists.add(new CheckList(checkLists.size(), tokens[0]));
+                    } else {
+                        checkLists.add(new CheckList(checkLists.size(), tokens[0]));
+                        int itemId = 0;
+                        for(int i = 1; i < tokens.length; i++) {
+                            String item = tokens[i];
+                            boolean complete = false;
+                            if(item.charAt(item.length() - 1) == '✅') {
+                                complete = true;
+                                item = item.substring(0, item.length() - 1).trim();
+                            }
+                            checkLists.get(checkLists.size() - 1).addItem(item);
+                            checkLists.get(checkLists.size() - 1).markItem(itemId++, complete);
+                        }
+                    }
+                }
+            } else if(!task && tokens.length == 2 && "TASK".equals(tokens[0]) && "{".equals(tokens[1])) {
+                type = jbinScanner.nextLine();
+                tokens = type.split(",");
+                if(tokens.length == 0) {
+                    throw new InputMismatchException();
+                } else if("}".equals(tokens[0]) && tokens.length == 1) {
+                    break;
+                } else if(tokens.length == 3) {
+                    taskList.add(new Task(taskList.size(), tokens[0], Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2])));
+                } else if(tokens.length > 3) {
+                    taskList.add(new Task(taskList.size(), tokens[0], Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2])));
+                    for(int i = 3; i < tokens.length; i++) {
+                        if(tokens[i].length() > 2 && tokens[i].charAt(0) == 'C' && tokens[i].charAt(1) == 'L') {
+                            taskList.get(taskList.size() - 1).addCheckList(checkLists.get(Integer.parseInt(tokens[i].substring(2))));
+                        } else if(tokens[i].length() > 1 && tokens[i].charAt(0) == 'L') {
+                            taskList.get(taskList.size() - 1).addLabel(labels.get(Integer.parseInt(tokens[i].substring(2))));
+                        } else {
+                            throw new InputMismatchException();
+                        }
+                    }
+                } else {
+                    throw new InputMismatchException();
+                }
+            } else if(!card && tokens.length == 2 && "CARD".equals(tokens[0]) && "{".equals(tokens[1])) {
+                //todo
+            } else {
+                throw new InputMismatchException();
+            }
 
+        }
     }
 }
