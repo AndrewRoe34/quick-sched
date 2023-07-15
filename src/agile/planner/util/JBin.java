@@ -238,11 +238,37 @@ public class JBin {
                     throw new IllegalArgumentException();
                 }
             } else if(!cardOpen && tokens.length == 2 && "CARD".equals(tokens[0]) && "{".equals(tokens[1])) {
-                //todo
+                cardOpen = true;
+                while(jbinScanner.hasNextLine()) {
+                    type = jbinScanner.nextLine();
+                    tokens = type.split(",");
+                    if(tokens.length == 0) {
+                        throw new InputMismatchException();
+                    } else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
+                        cardClosed = true;
+                        break;
+                    } else if(tokens.length == 1) {
+                        cards.add(new Card(tokens[0].trim())); //todo need to add id eventually
+                    } else {
+                        cards.add(new Card(tokens[0].trim())); //todo need to add id eventually
+                        for(int i = 1; i < tokens.length; i++) {
+                            String item = tokens[i].trim();
+                            if(item.length() > 1 && item.charAt(0) == 'T') {
+                                cards.get(cards.size() - 1).addTask(taskList.get(Integer.parseInt(item.substring(1))));
+                            } else if(item.length() > 1 && item.charAt(0) == 'L') {
+                                cards.get(cards.size() - 1).addLabel(labels.get(Integer.parseInt(item.substring(1))));
+                            } else {
+                                throw new InputMismatchException();
+                            }
+                        }
+                    }
+                }
+                if(!cardClosed) {
+                    throw new IllegalArgumentException();
+                }
             } else if(!"".equals(type)) {
                 throw new InputMismatchException();
             }
-
         }
     }
 }
