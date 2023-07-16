@@ -45,7 +45,16 @@ public class JBinTest {
                 "CARD {\n" +
                 "  HW, T0, T1, L0, L1\n" +
                 "}";
-        JBin.processJBin(jbin, new PriorityQueue<>(), new ArrayList<>(), new ArrayList<>());
+        PriorityQueue<Task> tasks = new PriorityQueue<>();
+        List<Label> labels = new ArrayList<>();
+        List<Card> cards = new ArrayList<>();
+        JBin.processJBin(jbin, tasks, cards, labels);
+        for(Task t : tasks)
+            System.out.println(t);
+        for(Card c : cards)
+            System.out.println(c);
+        for(Label ll : labels)
+            System.out.println(ll);
     }
 
     @Test

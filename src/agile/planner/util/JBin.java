@@ -270,5 +270,6 @@ public class JBin {
                 throw new InputMismatchException();
             }
         }
+        tasks.addAll(taskList);
     }
 }
