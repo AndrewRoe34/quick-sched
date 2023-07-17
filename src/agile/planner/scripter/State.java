@@ -248,4 +248,10 @@ public abstract class State {
     public static boolean isLogPP() {
         return logPP;
     }
+
+    public static void buildSchedule() {
+        scheduleManager.addTaskList(taskList);
+        scheduleManager.buildSchedule();
+        scheduleManager.outputScheduleToConsole();
+    }
 }

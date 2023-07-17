@@ -22,6 +22,8 @@ public class JBin {
      * @return JBin String
      */
     public static String createJBin(List<Card> cards) {
+        //TODO might add Days and the tasks they hold (for schedule preservation versus creating another one)
+
         /* NOTES:
         1. Create Label section (with ID, not associated with system)
         2. Create Task section (with ID, not associated with system)

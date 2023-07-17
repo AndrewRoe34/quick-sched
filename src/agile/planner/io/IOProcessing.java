@@ -55,7 +55,7 @@ public class IOProcessing {
         int i = 1;
         for(Day day : list) {
             outputStream.print("Day " + i + ": ");
-            outputStream.print(day.toString());
+            outputStream.print(day.formattedString());
             i++;
         }
     }

@@ -186,6 +186,13 @@ public class ScheduleManager {
         return dayId;
     }
 
+    public void addTaskList(List<Task> list) {
+        for(Task t : list) {
+            taskMap.put(taskId, t);
+            taskManager.add(t);
+        }
+    }
+
     /**
      * Adds a task to the schedule
      *

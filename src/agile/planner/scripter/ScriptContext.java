@@ -65,7 +65,7 @@ public class ScriptContext {
     /** Beginning State for scripting processor */
     private State currState = new PreProcessorState();
 
-    private Set<String> funcSet = new HashSet<>();
+    private final Set<String> funcSet = new HashSet<>();
 
     /**
      * Updates the State for the scripting processor
@@ -285,6 +285,9 @@ public class ScriptContext {
         } catch(Exception e) {
             scriptLog.reportException(e);
         }
+        if(State.buildPP) {
+            State.buildSchedule();
+        }
         if(State.logPP) {
             System.out.println(scriptLog.toString());
         }
@@ -297,11 +300,9 @@ public class ScriptContext {
             Scanner funcScanner = new Scanner(new File("data/" + statement));
             while(funcScanner.hasNextLine()) {
                 String line = funcScanner.nextLine().trim();
-                if(line.charAt(0) == '#') {
-                    //do nothing
-                } else if(currState.isNewValidFunction(line)) {
+                if(currState.isNewValidFunction(line)) {
                     preFunctionSetup(funcScanner, line, true);
-                } else {
+                } else if (line.charAt(0) != '#'){
                     throw new InvalidFunctionException();
                 }
             }
