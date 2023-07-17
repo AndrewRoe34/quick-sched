@@ -8,7 +8,7 @@ public class Test {
 
     public static void main(String[] args) throws IOException {
         ScriptContext sc = new ScriptContext();
-        String script = new String(Files.readAllBytes(Paths.get("data/test.smpl")));
+        String script = new String(Files.readAllBytes(Paths.get("data/test2.smpl")));
         sc.executeScript(script);
     }
 }

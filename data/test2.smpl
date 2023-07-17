@@ -2,7 +2,7 @@
 START:
   __DEF_CONFIG__
   __DEBUG__
-  __LOG__
+#  __LOG__
   __IMPORT__
   __EXPORT__
   __BUILD__

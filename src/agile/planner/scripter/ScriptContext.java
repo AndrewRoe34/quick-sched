@@ -286,6 +286,7 @@ public class ScriptContext {
             scriptLog.reportException(e);
         }
         if(State.buildPP) {
+            System.out.println("\nSCHEDULE:");
             State.buildSchedule();
         }
         if(State.logPP) {
