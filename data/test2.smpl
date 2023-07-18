@@ -3,6 +3,7 @@ START:
   __DEF_CONFIG__
   __DEBUG__
 #  __LOG__
+# Import will focus on reading the jbin file to load up the system's data
   __IMPORT__
   __EXPORT__
   __BUILD__

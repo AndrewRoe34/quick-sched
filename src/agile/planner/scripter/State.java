@@ -249,6 +249,10 @@ public abstract class State {
         return logPP;
     }
 
+    public static boolean isBuildPP() {
+        return buildPP;
+    }
+
     public static void buildSchedule() {
         scheduleManager.addTaskList(taskList);
         scheduleManager.buildSchedule();

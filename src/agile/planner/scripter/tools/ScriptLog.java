@@ -85,7 +85,8 @@ public class ScriptLog {
     public void reportPreProcessorSetup() {
         sb.append("PREPROC_ATTR: DEF_CONFIG=").append(State.isDefConfigPP());
         sb.append(", DEBUG=").append(State.isDebugPP());
-        sb.append(", LOG=").append(State.isLogPP()).append("\n");
+        sb.append(", LOG=").append(State.isLogPP());
+        sb.append(", BUILD=").append(State.isBuildPP()).append("\n");
     }
 
     public void reportFunctionSetup(String definition) {

@@ -1,8 +1,14 @@
 package agile.planner.scripter;
 
+import agile.planner.data.Card;
+import agile.planner.data.Task;
 import agile.planner.scripter.exception.InvalidPairingException;
+import agile.planner.util.CheckList;
+
+import java.util.List;
 
 public class AddState extends State {
+
     @Override
     protected void processFunc(String line) {
         String[] tokens = processArguments(line, 2, ",");
@@ -11,15 +17,19 @@ public class AddState extends State {
         //TODO will need to check for duplicates (not sure how to handle it for time being)
         switch(arg1[0]) {
             case "_task":
+            case "task":
                 processTaskAddition(arg1, arg2);
                 break;
             case "_checklist":
+            case "checklist":
                 processCheckListAddition(arg1, arg2);
                 break;
             case "_label":
+            case "label":
                 processLabelAddition(arg1, arg2);
                 break;
             case "_card":
+            case "card":
                 break;
             default:
                 throw new InvalidPairingException();
@@ -33,26 +43,44 @@ public class AddState extends State {
      * @param arg2 tokens of argument 2
      */
     private void processTaskAddition(String[] arg1, String[] arg2) {
-        if(arg1[1] == null) {
-            if("_card".equals(arg2[0]) && arg2[1] == null) {
-                cardList.get(cardList.size() - 1).addTask(taskList.get(taskList.size() - 1));
-                System.out.println("Adds [T" + (taskList.size() - 1) + "] --> [C" + (cardList.size() - 1) + "]");
-            } else if("_card".equals(arg2[0])) {
-                cardList.get(Integer.parseInt(arg2[1])).addTask(taskList.get(taskList.size() - 1));
-                System.out.println("Adds [T" + (taskList.size() - 1) + "] --> [C" + Integer.parseInt(arg2[1]) + "]");
+        List<Card> cards = FunctionState.getCards() != null ? FunctionState.getCards() : cardList;
+        List<Task> tasks = FunctionState.getTasks() != null ? FunctionState.getTasks() : taskList;
+        Card singleCard = null;
+        if("_card".equals(arg2[0])) {
+            if(arg2[1] == null) {
+                singleCard = cards.get(cards.size() - 1);
             } else {
-                throw new InvalidPairingException("Expected Card but was a different class");
+                singleCard = cards.get(Integer.parseInt(arg2[1]));
             }
-        } else {
-            if("_card".equals(arg2[0]) && arg2[1] == null) {
-                cardList.get(cardList.size() - 1).addTask(taskList.get(Integer.parseInt(arg1[1])));
-                System.out.println("Adds [T" + Integer.parseInt(arg1[1]) + "] --> [C" + (cardList.size() - 1) + "]");
-            } else if("_card".equals(arg2[0])) {
-                cardList.get(Integer.parseInt(arg2[1])).addTask(taskList.get(Integer.parseInt(arg1[1])));
-                System.out.println("Adds [T" + Integer.parseInt(arg1[1]) + "] --> [C" + Integer.parseInt(arg2[1]) + "]");
-            } else {
-                throw new InvalidPairingException("Expected Card but was a different class");
-            }
+        } else if(!"card".equals(arg2[0]) || arg2[1] != null) {
+            throw new InvalidPairingException("Expected Card but was a different class");
+        }
+
+        switch(arg1[0]) {
+            case "task":
+                if(singleCard != null) {
+                    for(Task t : tasks) {
+                        singleCard.addTask(t);
+                    }
+                } else {
+                    for(Card c : cards) {
+                        for (Task t : tasks) {
+                            c.addTask(t);
+                        }
+                    }
+                }
+                break;
+            case "_task":
+                Task singleTask = arg2[1] == null ? tasks.get(tasks.size() - 1)
+                        : tasks.get(Integer.parseInt(arg2[1]));
+                if(singleCard != null) {
+                    singleCard.addTask(singleTask);
+                } else {
+                    for(Card c : cards) {
+                        c.addTask(singleTask);
+                    }
+                }
+                break;
         }
     }
 
@@ -63,26 +91,44 @@ public class AddState extends State {
      * @param arg2 tokens of argument 2
      */
     private void processCheckListAddition(String[] arg1, String[] arg2) {
-        if(arg1[1] == null) {
-            if("_task".equals(arg2[0]) && arg2[1] == null) {
-                taskList.get(taskList.size() - 1).addCheckList(clList.get(clList.size() - 1));
-                System.out.println("Adds [CL" + (clList.size() - 1) + "] --> [T" + (taskList.size() - 1) + "]");
-            } else if("_task".equals(arg2[0])) {
-                taskList.get(Integer.parseInt(arg2[1])).addCheckList(clList.get(clList.size() - 1));
-                System.out.println("Adds [CL" + (clList.size() - 1) + "] --> [T" + Integer.parseInt(arg2[1]) + "]");
+        List<Task> tasks = FunctionState.getTasks() != null ? FunctionState.getTasks() : taskList;
+        List<CheckList> checkLists = FunctionState.getCheckLists() != null ? FunctionState.getCheckLists() : clList;
+        Task singleTask = null;
+        if("_task".equals(arg2[0])) {
+            if(arg2[1] == null) {
+                singleTask = tasks.get(tasks.size() - 1);
             } else {
-                throw new InvalidPairingException("Expected Task but was a different class");
+                singleTask = tasks.get(Integer.parseInt(arg2[1]));
             }
-        } else {
-            if("_task".equals(arg2[0]) && arg2[1] == null) {
-                taskList.get(taskList.size() - 1).addCheckList(clList.get(Integer.parseInt(arg1[1])));
-                System.out.println("Adds [CL" + Integer.parseInt(arg1[1]) + "] --> [T" + (taskList.size() - 1) + "]");
-            } else if("_task".equals(arg2[0])) {
-                taskList.get(Integer.parseInt(arg2[1])).addCheckList(clList.get(Integer.parseInt(arg1[1])));
-                System.out.println("Adds [CL" + Integer.parseInt(arg1[1]) + "] --> [T" + Integer.parseInt(arg2[1]) + "]");
-            } else {
-                throw new InvalidPairingException("Expected Task but was a different class");
-            }
+        } else if(!"task".equals(arg2[0]) || arg2[1] != null) {
+            throw new InvalidPairingException("Expected Task but was a different class");
+        }
+
+        switch(arg1[0]) {
+            case "checklist":
+                if(singleTask != null) {
+                    for(CheckList cl : checkLists) {
+                        singleTask.addCheckList(cl);
+                    }
+                } else {
+                    for(Task t : tasks) {
+                        for (CheckList cl : checkLists) {
+                            t.addCheckList(cl);
+                        }
+                    }
+                }
+                break;
+            case "_checklist":
+                CheckList singleCheckList = arg2[1] == null ? checkLists.get(checkLists.size() - 1)
+                        : checkLists.get(Integer.parseInt(arg2[1]));
+                if(singleTask != null) {
+                    singleTask.addCheckList(singleCheckList);
+                } else {
+                    for(Task t : tasks) {
+                        t.addCheckList(singleCheckList);
+                    }
+                }
+                break;
         }
     }
 
@@ -93,20 +139,6 @@ public class AddState extends State {
      * @param arg2 tokens of argument 2
      */
     private void processLabelAddition(String[] arg1, String[] arg2) {
-        if(arg1[1] == null) {
-            if("_task".equals(arg2[0]) && arg2[1] == null) {
-                taskList.get(taskList.size() - 1).addLabel(labelList.get(labelList.size() - 1));
-            } else if("_task".equals(arg2[0])) {
-                taskList.get(Integer.parseInt(arg2[1])).addLabel(labelList.get(labelList.size() - 1));
-            } else if("_card".equals(arg2[0]) && arg2[1] == null) {
-                cardList.get(cardList.size() - 1).addLabel(labelList.get(labelList.size() - 1));
-            } else if("_card".equals(arg2[0])) {
-                cardList.get(Integer.parseInt(arg2[1])).addLabel(labelList.get(labelList.size() - 1));
-            } else {
-                throw new InvalidPairingException("Expected Task or Card but was a different class");
-            }
-        } else {
-
-        }
+        //todo need to add refactored version here (will need to account for two types, task and card)
     }
 }

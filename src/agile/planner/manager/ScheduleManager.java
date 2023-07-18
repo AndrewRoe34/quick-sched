@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Calendar;
 
 import agile.planner.data.Card;
+import agile.planner.data.Label;
 import agile.planner.io.IOProcessing;
 import agile.planner.schedule.CompactScheduler;
 import agile.planner.schedule.Scheduler;
@@ -19,6 +20,7 @@ import agile.planner.data.Task;
 import agile.planner.user.UserConfig;
 import agile.planner.util.CheckList;
 import agile.planner.util.EventLog;
+import agile.planner.util.JBin;
 
 /**
  * Handles the generation and management of the overall schedule
@@ -58,6 +60,7 @@ public class ScheduleManager {
     private int cardId;
     /** Last day Task is due */
     private int lastDueDate;
+    private List<Label> labels;
 
     /**
      * Private constructor of ScheduleManager
@@ -133,6 +136,23 @@ public class ScheduleManager {
 //            throw new IllegalArgumentException("Invalid data for custom days of week");
 //        }
 //    }
+    
+    public boolean processJBinFile(String filename) {
+        String binStr = IOProcessing.readJBinFile(filename);
+        if(binStr != null) {
+            eventLog.reportReadJBinFile(binStr);
+            JBin.processJBin(filename, taskManager, cards, labels);
+            eventLog.reportProcessJBin();
+            return true;
+        }
+        return false;
+    }
+
+    public void createJBinFile(String filename) {
+        eventLog.reportCreateJBin();
+        JBin.createJBin(cards);
+        eventLog.reportWriteJBinFile(filename);
+    }
 
     /**
      * Processes the Tasks from the given file
@@ -151,22 +171,6 @@ public class ScheduleManager {
             System.out.println("File could not be located");
         }
     }
-
-    /* TODO need to work on JBin functionality
-    public void processJBinFile(String filename) {
-        try {
-            int pqSize = taskManager.size();
-            String binStr = IOProcessing.readJBinFile(filename);
-            JBin.processJBin(binStr, taskManager, cards, labels, taskMap, taskId);
-            taskId += taskManager.size() - pqSize;
-            eventLog.reportReadJBinFile(filename);
-        } catch (FileNotFoundException e) {
-            eventLog.reportException(e);
-            System.out.println("File could not be located");
-        }
-    }
-
-     */
 
     /**
      * Gets last ID for Task
@@ -190,6 +194,7 @@ public class ScheduleManager {
         for(Task t : list) {
             taskMap.put(taskId, t);
             taskManager.add(t);
+            eventLog.reportTaskAction(t, 0);
         }
     }
 
