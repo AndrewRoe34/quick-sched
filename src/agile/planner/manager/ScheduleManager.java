@@ -80,7 +80,11 @@ public class ScheduleManager {
         schedule = new LinkedList<>();
         customHours = new HashMap<>();
         taskMap = new HashMap<>();
+        cards = new ArrayList<>();
+        labels = new ArrayList<>();
         //processSettingsCfg(filename);
+        //processJBinFile("data/week.jbin");
+
     }
 
     /**
@@ -141,7 +145,7 @@ public class ScheduleManager {
         String binStr = IOProcessing.readJBinFile(filename);
         if(binStr != null) {
             eventLog.reportReadJBinFile(binStr);
-            JBin.processJBin(filename, taskManager, cards, labels);
+            JBin.processJBin(binStr, taskManager, cards, labels);
             eventLog.reportProcessJBin();
             return true;
         }

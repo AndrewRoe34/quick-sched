@@ -1,0 +1,6 @@
+percentage by label type
+percentage by card type
+percentage by task type
+histograms for the above as well
+
+Pie chart showing percentage by day of task consumption (or week)

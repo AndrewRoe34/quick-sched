@@ -1,0 +1,17 @@
+LABEL {
+  MA, 3
+  Party, 4
+}
+
+CHECKLIST {
+  To Do, Item 1✅, Item 2
+}
+
+TASK {
+  Read, 4, 4, L0
+  Write, 2, 2, CL0
+}
+
+CARD {
+  HW, T0, T1, L0, L1
+}
