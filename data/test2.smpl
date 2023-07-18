@@ -15,9 +15,12 @@ task.func
 #data
 task: hw, 3, 0
 task: read, 6, 1
+task: suffer, 5, 2
 label: math, 3
 card: MA
 checklist: title
 
 #function call
-setup_data: _label, _task, _card, _checklist
+setup_data: _label, task, _card, _checklist
+
+export: update2.jbin

@@ -1,0 +1,12 @@
+CHECKLIST {
+  title
+}
+
+TASK {
+  hw, 3, 3
+  read, 6, 6
+  suffer, 5, 5, CL0
+}
+CARD {
+  MA, T0, T1, T2
+}

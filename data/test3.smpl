@@ -16,6 +16,6 @@ add: _task, _card
 task: little dark age, 6, 2
 add: _task, _card
 
-print: "This should work"
+print: "Tasks and cards added. JBin is ready for export"
 
 export: update.jbin
