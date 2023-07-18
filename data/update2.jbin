@@ -1,14 +1,21 @@
+LABEL {
+  LOL, 3
+  Party, 4
+}
+
 CHECKLIST {
+  To Do, Item 1￢ﾜﾅ, Item 2
   title
 }
 
 TASK {
-  hw, 3, 3
-  read, 6, 6
-  suffer, 5, 5, CL0
+  Read, 4, 4, L0
+  Write, 2, 2, CL0
+  suffer, 5, 5, CL1
 }
 
 CARD {
-  MA, T0, T1, T2
-  Dummy, T0, T1, T2
+  HW, T0, T1, L0, L1
+  MA, T2
+  Dummy, T2
 }

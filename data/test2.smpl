@@ -2,19 +2,18 @@
 START:
   __DEF_CONFIG__
   __DEBUG__
-#  __LOG__
-# Import will focus on reading the jbin file to load up the system's data
+  __LOG__
   __IMPORT__
   __EXPORT__
   __BUILD__
 END:
 
+import: week.jbin
+
 # Links func files to script
 task.func
 
 #data
-task: hw, 3, 0
-task: read, 6, 1
 task: suffer, 5, 2
 label: math, 3
 card: MA
@@ -25,3 +24,12 @@ checklist: title
 setup_data: _label, task, card, _checklist
 
 export: update2.jbin
+
+
+
+
+
+
+#this test is different for some reason?
+#import update2.jbin (should be the same schedule)
+#when reading from jbin file, it's adding additional days to the dates of some tasks????
