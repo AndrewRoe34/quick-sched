@@ -7,6 +7,8 @@ TASK {
   read, 6, 6
   suffer, 5, 5, CL0
 }
+
 CARD {
   MA, T0, T1, T2
+  Dummy, T0, T1, T2
 }

@@ -133,7 +133,7 @@ public class JBin {
             clSB.append("}\n\n");
         }
         //now go from top to bottom with all the data you now have
-        return labelSB.append(clSB).append(taskSB).append(cardSB).toString();
+        return labelSB.append(clSB).append(taskSB).append("\n").append(cardSB).toString();
     }
 
     /**

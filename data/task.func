@@ -2,5 +2,5 @@ setup_data: label, task, card, checklist
   print: "Inside 'setup_data'"
   add: _label, _task
   add: _label, _card
-  add: task, _card
+  add: task, card
   add: _checklist, _task
