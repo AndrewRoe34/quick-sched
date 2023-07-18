@@ -154,7 +154,7 @@ public class ScheduleManager {
 
     public void createJBinFile(String filename) {
         eventLog.reportCreateJBin();
-        JBin.createJBin(cards);
+        IOProcessing.writeJBinFile(filename, JBin.createJBin(cards));
         eventLog.reportWriteJBinFile(filename);
     }
 
@@ -199,6 +199,13 @@ public class ScheduleManager {
             taskMap.put(taskId, t);
             taskManager.add(t);
             eventLog.reportTaskAction(t, 0);
+        }
+    }
+
+    public void addCardList(List<Card> list) {
+        for(Card c : list) {
+            cards.add(c);
+            eventLog.reportCardAction(c, 0);
         }
     }
 

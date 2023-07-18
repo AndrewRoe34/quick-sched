@@ -77,7 +77,7 @@ public abstract class State {
     protected static List<Label> labelList = new ArrayList<>();
     /** Set of all keywords within the system */
     protected static Set<String> keyWords = new HashSet<>(Set.of("add:", "board:", "card:", "checklist:",
-            "day:", "edit:", "label:", "print:", "remove:", "task:", "import:"));
+            "day:", "edit:", "label:", "print:", "remove:", "task:", "import:", "export:"));
     /** Map for func name to function statements/arguments */
     protected static Map<String, String> funcMap = new HashMap<>();
     /** Boolean value for whether line is a comment */
@@ -149,6 +149,9 @@ public abstract class State {
                 break;
             case "import:":
                 context.updateState(new ImportState());
+                break;
+            case "export:":
+                context.updateState(new ExportState());
                 break;
             default:
                 if (type.charAt(0) == '#') {

@@ -112,29 +112,28 @@ public class JBin {
             }
             taskSB.append("}\n");
         }
+        StringBuilder labelSB = new StringBuilder();
         if(!labelList.isEmpty()) {
-            System.out.println("LABEL {");
+            labelSB.append("LABEL {\n");
             for(Label l : labelList) {
-                System.out.println("  " + l.getName() + ", " + l.getColor());
+                labelSB.append("  ").append(l.getName()).append(", ").append(l.getColor()).append("\n");
             }
-            System.out.println("}\n");
+            labelSB.append("}\n\n");
         }
+        StringBuilder clSB = new StringBuilder();
         if(!checkListList.isEmpty()) {
-            System.out.println("CHECKLIST {");
+            clSB.append("CHECKLIST {\n");
             for(CheckList cl : checkListList) {
-                System.out.print("  " + cl.getName());
+                clSB.append("  ").append(cl.getName());
                 for(CheckList.Item i : cl.getItems()) {
-                    System.out.print(", " + i);
+                    clSB.append(", ").append(i);
                 }
-                System.out.println();
+                clSB.append("\n");
             }
-            System.out.println("}\n");
+            clSB.append("}\n\n");
         }
-        System.out.println(taskSB.toString());
-        System.out.println(cardSB.toString());
         //now go from top to bottom with all the data you now have
-
-        return null;
+        return labelSB.append(clSB).append(taskSB).append(cardSB).toString();
     }
 
     /**

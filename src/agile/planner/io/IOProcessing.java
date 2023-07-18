@@ -6,6 +6,7 @@ import java.util.*;
 
 import agile.planner.schedule.day.Day;
 import agile.planner.data.Task;
+import agile.planner.scripter.exception.InvalidGrammarException;
 import agile.planner.user.UserConfig;
 
 /**
@@ -169,6 +170,9 @@ public class IOProcessing {
      * @param jBin JBin string
      */
     public static void writeJBinFile(String filename, String jBin) {
+        if(filename.length() < 5 || !".jbin".equals(filename.substring(filename.length() - 5))) {
+            throw new InvalidGrammarException("Expected .jbin file extension but was not");
+        }
         try (OutputStream binaryWriter = new FileOutputStream(filename)) {
             byte[] bytes = jBin.getBytes(StandardCharsets.UTF_8);
             binaryWriter.write(bytes);
@@ -184,6 +188,9 @@ public class IOProcessing {
      * @return JBin string
      */
     public static String readJBinFile(String filename) {
+        if(filename.length() < 5 || !".jbin".equals(filename.substring(filename.length() - 5))) {
+            throw new InvalidGrammarException("Expected .jbin file extension but was not");
+        }
         StringBuilder sb = new StringBuilder();
         try (FileInputStream binaryReader = new FileInputStream(filename)) {
             byte[] bytes = new byte[BUFFER_SIZE];
