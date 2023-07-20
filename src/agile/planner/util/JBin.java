@@ -57,7 +57,6 @@ public class JBin {
 
         NOTE: Try working from bottom to top (might be able to save on efficiency and storage)
          */
-
         StringBuilder cardSB = new StringBuilder();
         List<Task> taskList = new ArrayList<>();
         List<Label> labelList = new ArrayList<>();
@@ -94,7 +93,7 @@ public class JBin {
                 String name = t.getName();
                 int totalHours = t.getTotalHours();
                 int remainingHours = t.getSubTotalHoursRemaining(); //TODO need to verify this
-                taskSB.append("  ").append(name).append(", ").append(totalHours).append(", ").append(remainingHours);
+                taskSB.append("  ").append(name).append(", ").append(totalHours).append(", ").append(remainingHours); //todo does not include number of days till due
                 for(Label l : t.getLabel()) {
                     if(!labelList.contains(l)) {
                         labelList.add(l);

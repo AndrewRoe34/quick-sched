@@ -4,7 +4,7 @@ LABEL {
 }
 
 CHECKLIST {
-  To Do, Item 1✅, Item 2
+  To Do, Item 1, Item 2
 }
 
 TASK {

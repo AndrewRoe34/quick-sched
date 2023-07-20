@@ -11,5 +11,6 @@ public class ImportState extends State {
         }
         String[] token = processArguments(line, 1, null);
         scheduleManager.processJBinFile("data/" + token[0]);
+        importPP = false;
     }
 }

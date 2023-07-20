@@ -8,6 +8,7 @@ START:
   __BUILD__
 END:
 
+#reads the schedule data
 import: week.jbin
 
 # Links func files to script
@@ -23,6 +24,7 @@ checklist: title
 #function call
 setup_data: _label, task, card, _checklist
 
+#writes the schedule data generated
 export: update2.jbin
 
 

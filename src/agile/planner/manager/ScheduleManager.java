@@ -144,7 +144,7 @@ public class ScheduleManager {
     public boolean processJBinFile(String filename) {
         String binStr = IOProcessing.readJBinFile(filename);
         if(binStr != null) {
-            eventLog.reportReadJBinFile(binStr);
+            eventLog.reportReadJBinFile(filename);
             JBin.processJBin(binStr, taskManager, cards, labels);
             eventLog.reportProcessJBin();
             return true;
