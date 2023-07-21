@@ -1,21 +1,24 @@
 LABEL {
-  LOL, 3
-  Party, 4
+  math, 3
+  test, 1
+  lol, 8
 }
 
 CHECKLIST {
-  To Do, Item 1, Item 2
-  title
+  bruh
+  bruh
+  bruh
+  bruh
 }
 
 TASK {
-  Read, 4, 4, L0
-  Write, 2, 2, CL0
-  suffer, 5, 5, CL1
+  suffer, 5, 5, CL0
+  based, 3, 3, CL1
+  dumb, 7, 7, CL2
+  idiot, 5, 5, L0, L1, L2, CL3
 }
 
 CARD {
-  HW, T0, T1, L0, L1
-  MA, T2
-  Dummy, T2
+  MA, T0, T1, T2, T3
+  Dummy, T0, T1, T2, T3, L0, L1, L2
 }

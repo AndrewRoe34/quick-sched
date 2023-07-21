@@ -3,6 +3,7 @@ package agile.planner.util;
 import agile.planner.data.Card;
 import agile.planner.data.Label;
 import agile.planner.data.Task;
+import agile.planner.scripter.State;
 
 import java.util.*;
 
@@ -271,5 +272,9 @@ public class JBin {
             }
         }
         tasks.addAll(taskList);
+//        State.addAllLabels(labels);
+//        State.addAllCheckLists(checkLists);
+//        State.addAllTasks(taskList);
+//        State.addAllCards(cards);
     }
 }

@@ -102,6 +102,14 @@ public abstract class State {
     protected static boolean importPP = false;
     /** Holds a log of the script being processed */
     protected static ScriptLog scriptLog = new ScriptLog();
+    protected static boolean defaultCard = false;
+
+    public State() {
+        if(!defaultCard) {
+            cardList.add(new Card("Default"));
+            defaultCard = true;
+        }
+    }
 
     /**
      * Determines the next context switch for the scripting language {@code Simple}
@@ -263,5 +271,21 @@ public abstract class State {
         scheduleManager.addTaskList(taskList);
         scheduleManager.buildSchedule();
         scheduleManager.outputScheduleToConsole();
+    }
+
+    public static boolean addAllTasks(List<Task> tasks) {
+        return taskList.addAll(tasks);
+    }
+
+    public static boolean addAllLabels(List<Label> labels) {
+        return labelList.addAll(labels);
+    }
+
+    public static boolean addAllCheckLists(List<CheckList> checkLists) {
+        return clList.addAll(checkLists);
+    }
+
+    public static boolean addAllCards(List<Card> cards) {
+        return cardList.addAll(cards);
     }
 }

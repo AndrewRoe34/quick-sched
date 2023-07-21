@@ -18,20 +18,14 @@ task.func
 task: suffer, 5, 2
 label: math, 3
 card: MA
-card: Dummy
-checklist: title
+label: lol, 8
+task: based, 3, 1
+card: SCIENCE
+
+
 
 #function call
-setup_data: _label, task, card, _checklist
+setup_data:
 
 #writes the schedule data generated
-export: update2.jbin
-
-
-
-
-
-
-#this test is different for some reason?
-#import update2.jbin (should be the same schedule)
-#when reading from jbin file, it's adding additional days to the dates of some tasks????
+export: update3.jbin

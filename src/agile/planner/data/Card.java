@@ -1,6 +1,7 @@
 package agile.planner.data;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -26,7 +27,7 @@ public class Card {
     public Card(String title) {
         this.title = title;
         cardLabels = new ArrayList<>();
-        cardTasks = new ArrayList<>();
+        cardTasks = new LinkedList<>();
     }
 
     /**
@@ -74,6 +75,16 @@ public class Card {
      */
     public Task removeTask(int idx) {
         return cardTasks.remove(idx);
+    }
+
+    /**
+     * Removes Task from Card
+     *
+     * @param task Task being removed
+     * @return boolean status for successful removal
+     */
+    public boolean removeTask(Task task) {
+        return cardTasks.remove(task);
     }
 
     public void addLabel(Label label) {

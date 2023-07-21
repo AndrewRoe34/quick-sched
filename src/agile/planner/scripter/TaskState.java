@@ -23,9 +23,12 @@ public class TaskState extends State {
             int id = scheduleManager.getLastTaskId() + taskList.size();
             int hours = Integer.parseInt(tokens[1]);
             int days = Integer.parseInt(tokens[2]);
-            taskList.add(new Task(id, tokens[0], hours, days));
+            Task t = new Task(id, tokens[0], hours, days);
+            taskList.add(t);
             scriptLog.reportTaskCreation(id, tokens[0], hours, days);
             System.out.println("Task added.. [T" + (scheduleManager.getLastTaskId() + taskList.size() - 1) + "]");
+            //adds task to default card
+            cardList.get(0).addTask(t);
         } catch(Exception e) {
             throw new InvalidGrammarException("Invalid input. Expected[task: <name: string>, <hours: int>, <num_days: int>]");
         }

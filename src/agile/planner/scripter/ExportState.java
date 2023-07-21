@@ -10,8 +10,7 @@ public class ExportState extends State {
             throw new InvalidPreProcessorException("No exports are allowed due to the absence of the __EXPORT__ flag");
         }
         String[] token = processArguments(line, 1, null);
-        scheduleManager.addCardList(cardList);
-        scheduleManager.createJBinFile("data/" + token[0]);
-        exportPP = false;
+//        scheduleManager.addCardList(cardList);
+        scheduleManager.createJBinFile("data/" + token[0], cardList);
     }
 }

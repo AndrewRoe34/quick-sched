@@ -1,0 +1,23 @@
+LABEL {
+  LOL, 3
+  Party, 4
+  math, 3
+  lol, 8
+}
+
+CHECKLIST {
+  To Do, Item 1, Item 2
+}
+
+TASK {
+  Read, 4, 4, L0
+  Write, 2, 2, CL0
+  suffer, 5, 5, L2, L3
+  based, 3, 3, L2, L3
+}
+
+CARD {
+  HW, T0, T1, L0, L1
+  MA, T2, T3, L2, L3
+  SCIENCE, T2, T3, L2, L3
+}

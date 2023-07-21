@@ -152,9 +152,11 @@ public class ScheduleManager {
         return false;
     }
 
-    public void createJBinFile(String filename) {
+    public void createJBinFile(String filename, List<Card> cards2) {
         eventLog.reportCreateJBin();
-        IOProcessing.writeJBinFile(filename, JBin.createJBin(cards));
+        List<Card> cardSet = new ArrayList<>(cards);
+        cardSet.addAll(cards2);
+        IOProcessing.writeJBinFile(filename, JBin.createJBin(cardSet));
         eventLog.reportWriteJBinFile(filename);
     }
 

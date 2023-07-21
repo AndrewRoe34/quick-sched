@@ -1,7 +1,9 @@
 package agile.planner.scripter;
 
 import agile.planner.data.Card;
+import agile.planner.data.Label;
 import agile.planner.data.Task;
+import agile.planner.scripter.exception.InvalidGrammarException;
 import agile.planner.scripter.exception.InvalidPairingException;
 import agile.planner.util.CheckList;
 
@@ -60,11 +62,13 @@ public class AddState extends State {
             case "task":
                 if(singleCard != null) {
                     for(Task t : tasks) {
+                        cardList.get(0).removeTask(t);
                         singleCard.addTask(t);
                     }
                 } else {
                     for(Card c : cards) {
                         for (Task t : tasks) {
+                            cardList.get(0).removeTask(t);
                             c.addTask(t);
                         }
                     }
@@ -74,9 +78,11 @@ public class AddState extends State {
                 Task singleTask = arg2[1] == null ? tasks.get(tasks.size() - 1)
                         : tasks.get(Integer.parseInt(arg2[1]));
                 if(singleCard != null) {
+                    cardList.get(0).removeTask(singleTask);
                     singleCard.addTask(singleTask);
                 } else {
                     for(Card c : cards) {
+                        cardList.get(0).removeTask(singleTask);
                         c.addTask(singleTask);
                     }
                 }
@@ -111,11 +117,12 @@ public class AddState extends State {
                         singleTask.addCheckList(cl);
                     }
                 } else {
-                    for(Task t : tasks) {
-                        for (CheckList cl : checkLists) {
-                            t.addCheckList(cl);
-                        }
-                    }
+                    throw new InvalidGrammarException("A Task cannot have multiple CheckLists");
+//                    for(Task t : tasks) {
+//                        for (CheckList cl : checkLists) {
+//                            t.addCheckList(cl);
+//                        }
+//                    }
                 }
                 break;
             case "_checklist":
@@ -139,6 +146,92 @@ public class AddState extends State {
      * @param arg2 tokens of argument 2
      */
     private void processLabelAddition(String[] arg1, String[] arg2) {
-        //todo need to add refactored version here (will need to account for two types, task and card)
+        //two possible options for a pairing class
+        List<Task> tasks = FunctionState.getTasks() != null ? FunctionState.getTasks() : taskList;
+        List<Card> cards = FunctionState.getCards() != null ? FunctionState.getCards() : cardList;
+
+        //Class being added to one of the above
+        List<Label> labels = FunctionState.getLabels() != null ? FunctionState.getLabels() : labelList;
+
+        //Single class instance of task or card if possible
+        Task singleTask = null;
+        Card singleCard = null;
+
+        //flags for type of class
+        boolean isTask = true;
+
+        switch(arg2[0]) {
+            case "task":
+                if(arg2[1] != null) {
+                    throw new InvalidGrammarException("Provides 'task' but also includes index value");
+                }
+                break;
+            case "_task":
+                if(arg2[1] == null) {
+                    singleTask = tasks.get(tasks.size() - 1);
+                } else {
+                    singleTask = tasks.get(Integer.parseInt(arg2[1]));
+                }
+                break;
+            case "card":
+                if(arg2[1] != null) {
+                    throw new InvalidGrammarException("Provides 'card' but also includes index value");
+                }
+                isTask = false;
+                break;
+            case "_card":
+                if(arg2[1] == null) {
+                    singleCard = cards.get(cards.size() - 1);
+                } else {
+                    singleCard = cards.get(Integer.parseInt(arg2[1]));
+                }
+                isTask = false;
+                break;
+            default:
+                throw new InvalidPairingException("Expected Task or Card but was a different class");
+        }
+
+        switch(arg1[0]) {
+            case "label":
+                if(isTask && singleTask != null) {
+                    for(Label l : labels) {
+                        singleTask.addLabel(l);
+                    }
+                } else if(isTask) {
+                    for(Task t : tasks) {
+                        for (Label l : labels) {
+                            t.addLabel(l);
+                        }
+                    }
+                } else if(singleCard != null) {
+                    for(Label l : labels) {
+                        singleCard.addLabel(l);
+                    }
+                } else {
+                    for(Card c : cards) {
+                        for (Label l : labels) {
+                            c.addLabel(l);
+                        }
+                    }
+                }
+                break;
+            case "_label":
+                Label singleLabel = arg2[1] == null ? labels.get(labels.size() - 1)
+                        : labels.get(Integer.parseInt(arg2[1]));
+                if(isTask && singleTask != null) {
+                    singleTask.addLabel(singleLabel);
+                } else if(isTask) {
+                    for(Task t : tasks) {
+                        t.addLabel(singleLabel);
+                    }
+                } else if(singleCard != null) {
+                    singleCard.addLabel(singleLabel);
+                } else {
+                    for(Card c : cards) {
+                        c.addLabel(singleLabel);
+                    }
+                }
+                break;
+        }
     }
 }
