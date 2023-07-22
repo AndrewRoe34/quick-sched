@@ -8,3 +8,4 @@ START:
 END:
 
 import: update5.jbin
+export: update6.jbin

@@ -62,10 +62,18 @@ public class JBin {
          */
         Calendar calendar = Time.getFormattedCalendarInstance(0);
         StringBuilder calendarSB = new StringBuilder();
-        calendarSB.append(calendar.get(Calendar.DAY_OF_MONTH))
-                .append("-").append(calendar.get(Calendar.MONTH))
-                .append("-").append(calendar.get(Calendar.YEAR))
-                .append("\n\n");
+        if(calendar.get(Calendar.DAY_OF_MONTH) < 10) {
+            calendarSB.append("0").append(calendar.get(Calendar.DAY_OF_MONTH));
+        } else {
+            calendarSB.append(calendar.get(Calendar.DAY_OF_MONTH));
+        }
+        calendarSB.append("-");
+        if(calendar.get(Calendar.MONTH) < 10) {
+            calendarSB.append("0").append(calendar.get(Calendar.MONTH));
+        } else {
+            calendarSB.append(calendar.get(Calendar.MONTH));
+        }
+        calendarSB.append("-").append(calendar.get(Calendar.YEAR)).append("\n\n");
         StringBuilder cardSB = new StringBuilder();
         List<Task> taskList = new ArrayList<>();
         List<Label> labelList = new ArrayList<>();
@@ -171,7 +179,7 @@ public class JBin {
         Scanner jbinScanner = new Scanner(data);
         LocalDate ld = null;
         if(jbinScanner.hasNextLine()) {
-            DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-M-yyyy");
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             ld = LocalDate.parse(jbinScanner.nextLine(), df);
         }
         Calendar calendar = Calendar.getInstance();
