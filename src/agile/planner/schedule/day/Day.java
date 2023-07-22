@@ -208,4 +208,8 @@ public class Day {
         }
         return sb.toString();
     }
+
+    public Iterable<? extends SubTask> getSubTasks() {
+        return subtaskManager;
+    }
 }

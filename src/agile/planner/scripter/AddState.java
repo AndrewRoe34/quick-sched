@@ -44,15 +44,18 @@ public class AddState extends State {
      * @param arg1 tokens of argument 1
      * @param arg2 tokens of argument 2
      */
-    private void processTaskAddition(String[] arg1, String[] arg2) {
+    private void processTaskAddition(String[] arg1, String[] arg2) { //NOTE: this function is done!!!
         List<Card> cards = FunctionState.getCards() != null ? FunctionState.getCards() : cardList;
         List<Task> tasks = FunctionState.getTasks() != null ? FunctionState.getTasks() : taskList;
         Card singleCard = null;
+        int cardIdx = -1;
         if("_card".equals(arg2[0])) {
             if(arg2[1] == null) {
                 singleCard = cards.get(cards.size() - 1);
+                cardIdx = cards.size() - 1;
             } else {
-                singleCard = cards.get(Integer.parseInt(arg2[1]));
+                cardIdx = Integer.parseInt(arg2[1]);
+                singleCard = cards.get(cardIdx);
             }
         } else if(!"card".equals(arg2[0]) || arg2[1] != null) {
             throw new InvalidPairingException("Expected Card but was a different class");
@@ -61,32 +64,47 @@ public class AddState extends State {
         switch(arg1[0]) {
             case "task":
                 if(singleCard != null) {
+                    int i = 0;
                     for(Task t : tasks) {
                         cardList.get(0).removeTask(t);
                         singleCard.addTask(t);
+                        System.out.println("[T" + i + "] --> [C" + cardIdx + "]");
+                        i++;
                     }
                 } else {
+                    int i = 0;
                     for(Card c : cards) {
+                        int j = 0;
                         for (Task t : tasks) {
                             cardList.get(0).removeTask(t);
                             c.addTask(t);
+                            System.out.println("[T" + j + "] --> [C" + i + "]");
+                            j++;
                         }
+                        i++;
                     }
                 }
                 break;
             case "_task":
-                Task singleTask = arg2[1] == null ? tasks.get(tasks.size() - 1)
-                        : tasks.get(Integer.parseInt(arg2[1]));
+                int taskIdx = arg1[1] == null ? tasks.size() - 1
+                        : Integer.parseInt(arg1[1]);
+                Task singleTask = tasks.get(taskIdx);
                 if(singleCard != null) {
                     cardList.get(0).removeTask(singleTask);
                     singleCard.addTask(singleTask);
+                    System.out.println("[T" + taskIdx + "] --> [C" + cardIdx + "]");
                 } else {
+                    int i = 0;
                     for(Card c : cards) {
                         cardList.get(0).removeTask(singleTask);
                         c.addTask(singleTask);
+                        System.out.println("[T" + taskIdx + "] --> [C" + i + "]");
+                        i++;
                     }
                 }
                 break;
+            default:
+                throw new InvalidPairingException("Expected Task but was something else");
         }
     }
 

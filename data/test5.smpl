@@ -7,6 +7,14 @@ START:
   __BUILD__
 END:
 
-import: update5.jbin
+task: a, 3, 2
+task: b, 2, 1
+task: c, 1, 0
+
+card: homework
+
+add: _task, _card
+add: _task 1, _card
+
 #results in duplicate "Default" cards (need to fix)
 export: update6.jbin

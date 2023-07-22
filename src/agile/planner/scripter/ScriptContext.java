@@ -287,6 +287,8 @@ public class ScriptContext {
         if(State.buildPP) {
             System.out.println("\nSCHEDULE:");
             State.buildSchedule();
+            currState = new ExportState();
+            currState.processFunc("export: default.jbin");
         }
         if(State.logPP) {
             System.out.println(scriptLog.toString());

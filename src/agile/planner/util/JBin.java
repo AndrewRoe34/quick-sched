@@ -3,6 +3,8 @@ package agile.planner.util;
 import agile.planner.data.Card;
 import agile.planner.data.Label;
 import agile.planner.data.Task;
+import agile.planner.manager.ScheduleManager;
+import agile.planner.schedule.day.Day;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -161,6 +163,35 @@ public class JBin {
             }
             clSB.append("}\n\n");
         }
+        StringBuilder daySB = new StringBuilder();
+        ScheduleManager sm = ScheduleManager.getScheduleManager();
+        if(!sm.scheduleIsEmpty()) {
+            daySB.append("DAY {\n"); //TODO need to include the date at the beginning of each line (also, how are we going to sync schedule with export)
+            for(Day d : sm.getSchedule()) {
+                boolean flag = false;
+                daySB.append("  ");
+                for(Task.SubTask st : d.getSubTasks()) {
+                    if(flag) {
+                        daySB.append(", ");
+                    }
+                    Task task = st.getParentTask();
+                    int i = 0;
+                    for(Task t : taskList) {
+                        i++;
+                        if(task == t) {
+                            break;
+                        }
+                    }
+                    daySB.append("T")
+                            .append(i)
+                            .append(" ")
+                            .append(st.getSubTaskHours());
+                    flag = true;
+                }
+                daySB.append("\n");
+            }
+            daySB.append("}\n");
+        }
         //todo need to add scheduling related data here
         //now go from top to bottom with all the data you now have
         return calendarSB.append(labelSB)
@@ -168,6 +199,8 @@ public class JBin {
                 .append(taskSB)
                 .append("\n")
                 .append(cardSB)
+                .append("\n")
+                .append(daySB)
                 .toString();
     }
 

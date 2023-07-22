@@ -498,4 +498,8 @@ public class ScheduleManager {
     public int getLastCardId() {
         return cardId;
     }
+
+    public List<Day> getSchedule() {
+        return schedule;
+    }
 }
