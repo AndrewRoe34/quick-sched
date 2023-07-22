@@ -87,8 +87,8 @@ public class Card {
         return cardTasks.remove(task);
     }
 
-    public void addLabel(Label label) {
-        cardLabels.add(label);
+    public boolean addLabel(Label label) {
+        return cardLabels.add(label);
     }
 
     @Override
@@ -102,5 +102,9 @@ public class Card {
 
     public String getTitle() {
         return title;
+    }
+
+    public boolean addLabelList(List<Label> labels) {
+        return cardLabels.addAll(labels);
     }
 }

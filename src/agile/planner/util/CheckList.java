@@ -91,6 +91,10 @@ public class CheckList {
         return list.add(new Item(description));
     }
 
+    public boolean addItem(Item item) {
+        return list.add(item);
+    }
+
     /**
      * Removes the Item from the CheckList
      *
@@ -214,6 +218,10 @@ public class CheckList {
 
     public Iterable<? extends Item> getItems() {
         return list;
+    }
+
+    public boolean addItemList(List<Item> items) {
+        return list.addAll(items);
     }
 
     /**

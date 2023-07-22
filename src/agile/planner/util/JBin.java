@@ -192,7 +192,6 @@ public class JBin {
             }
             daySB.append("}\n");
         }
-        //todo need to add scheduling related data here
         //now go from top to bottom with all the data you now have
         return calendarSB.append(labelSB)
                 .append(clSB)

@@ -206,10 +206,12 @@ public class Task implements Comparable<Task> {
         return averageNumHours;
     }
 
-    public void addCheckList(CheckList checkList) {
+    public boolean addCheckList(CheckList checkList) {
         if(this.checkList == null) {
             this.checkList = checkList;
+            return true;
         }
+        return false;
     }
 
     /**
@@ -359,8 +361,12 @@ public class Task implements Comparable<Task> {
     }
 
     //TODO need to add more functionality
-    public void addLabel(Label label) {
-        labelList.add(label);
+    public boolean addLabel(Label label) {
+        return labelList.add(label);
+    }
+
+    public boolean addLabelList(List<Label> labels) {
+        return labelList.addAll(labels);
     }
 
     public List<Label> getLabel() {
