@@ -1,5 +1,5 @@
 START:
-  __DEF_CONFIG__
+  __CURR_CONFIG__
   __DEBUG__
   __LOG__
   __IMPORT__
@@ -7,12 +7,4 @@ START:
   __BUILD__
 END:
 
-import: week.jbin
-
-#data
-task: suffer, 5, 2
-task: bane, 3, 1
-task: lmao, 2, 2
-task: lol, 1, 0
-
-export: update4.jbin
+import: update5.jbin

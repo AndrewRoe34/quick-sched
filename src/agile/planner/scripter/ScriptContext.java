@@ -266,7 +266,6 @@ public class ScriptContext {
      * @param script script input to be processed
      */
     public void executeScript(String script) {
-        System.out.println("Simple Script 1.0");
         Scanner scriptScanner = new Scanner(script);
         try {
             preProcessorSetup(scriptScanner);

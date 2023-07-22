@@ -51,6 +51,22 @@ public class Task implements Comparable<Task> {
     }
 
     /**
+     * Primary constructor for Task
+     *
+     * @param id ID of Task
+     * @param name name of Task
+     * @param hours number of hours for Task
+     * @param date number of days till due date for Task
+     */
+    public Task(int id, String name, int hours, Calendar date) {
+        setId(id);
+        setName(name);
+        setTotalHours(hours);
+        this.dueDate = date;
+        labelList = new ArrayList<>();
+    }
+
+    /**
      * Gets the ID for a Task
      *
      * @return Task ID

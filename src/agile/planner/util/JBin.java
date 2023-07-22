@@ -3,8 +3,9 @@ package agile.planner.util;
 import agile.planner.data.Card;
 import agile.planner.data.Label;
 import agile.planner.data.Task;
-import agile.planner.scripter.State;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -24,6 +25,7 @@ public class JBin {
      */
     public static String createJBin(List<Card> cards) {
         //TODO might add Days and the tasks they hold (for schedule preservation versus creating another one)
+        //TODO key thing to note is that you'll need to create a Calendar instance and use it for the number of days for each Task
 
         /* NOTES:
         1. Create Label section (with ID, not associated with system)
@@ -58,6 +60,12 @@ public class JBin {
 
         NOTE: Try working from bottom to top (might be able to save on efficiency and storage)
          */
+        Calendar calendar = Time.getFormattedCalendarInstance(0);
+        StringBuilder calendarSB = new StringBuilder();
+        calendarSB.append(calendar.get(Calendar.DAY_OF_MONTH))
+                .append("-").append(calendar.get(Calendar.MONTH))
+                .append("-").append(calendar.get(Calendar.YEAR))
+                .append("\n\n");
         StringBuilder cardSB = new StringBuilder();
         List<Task> taskList = new ArrayList<>();
         List<Label> labelList = new ArrayList<>();
@@ -93,8 +101,13 @@ public class JBin {
             for(Task t : taskList) {
                 String name = t.getName();
                 int totalHours = t.getTotalHours();
-                int remainingHours = t.getSubTotalHoursRemaining(); //TODO need to verify this
-                taskSB.append("  ").append(name).append(", ").append(totalHours).append(", ").append(remainingHours); //todo does not include number of days till due
+                //int remainingHours = t.getSubTotalHoursRemaining(); //TODO need to verify this
+                taskSB.append("  ")
+                        .append(name)
+                        .append(", ")
+                        .append(totalHours)
+                        .append(", ")
+                        .append(Time.determineRangeOfDays(calendar, t.getDueDate()));
                 for(Label l : t.getLabel()) {
                     if(!labelList.contains(l)) {
                         labelList.add(l);
@@ -116,7 +129,11 @@ public class JBin {
         if(!labelList.isEmpty()) {
             labelSB.append("LABEL {\n");
             for(Label l : labelList) {
-                labelSB.append("  ").append(l.getName()).append(", ").append(l.getColor()).append("\n");
+                labelSB.append("  ")
+                        .append(l.getName())
+                        .append(", ")
+                        .append(l.getColor())
+                        .append("\n");
             }
             labelSB.append("}\n\n");
         }
@@ -133,7 +150,12 @@ public class JBin {
             clSB.append("}\n\n");
         }
         //now go from top to bottom with all the data you now have
-        return labelSB.append(clSB).append(taskSB).append("\n").append(cardSB).toString();
+        return calendarSB.append(labelSB)
+                .append(clSB)
+                .append(taskSB)
+                .append("\n")
+                .append(cardSB)
+                .toString();
     }
 
     /**
@@ -147,6 +169,20 @@ public class JBin {
     public static void processJBin(String data, PriorityQueue<Task> tasks, List<Card> cards, List<Label> labels) {
         //NOTE: When processing, you should work from top to bottom (use ArrayLists to easily locate data by index value)
         Scanner jbinScanner = new Scanner(data);
+        LocalDate ld = null;
+        if(jbinScanner.hasNextLine()) {
+            DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-M-yyyy");
+            ld = LocalDate.parse(jbinScanner.nextLine(), df);
+        }
+        Calendar calendar = Calendar.getInstance();
+        assert ld != null;
+        //need to subtract month value by one since Calendar is zero based
+        int year = ld.getYear();
+        int month = ld.getMonthValue() - 1;
+        int day = ld.getDayOfMonth();
+        calendar.set(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth(), 0, 0, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+
         boolean labelOpen = false;
         boolean labelClosed = false;
         boolean checklistOpen = false;
@@ -218,9 +254,11 @@ public class JBin {
                         taskClosed = true;
                         break;
                     } else if(tokens.length == 3) {
-                        taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1].trim()), Integer.parseInt(tokens[2].trim())));
+                        taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1].trim()),
+                                Time.getFormattedCalendarInstance(calendar, Integer.parseInt(tokens[2].trim()))));
                     } else if(tokens.length > 3) {
-                        taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1].trim()), Integer.parseInt(tokens[2].trim())));
+                        taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1].trim()),
+                                Time.getFormattedCalendarInstance(calendar, Integer.parseInt(tokens[2].trim()))));
                         for(int i = 3; i < tokens.length; i++) {
                             String item = tokens[i].trim();
                             if(item.length() > 2 && item.charAt(0) == 'C' && item.charAt(1) == 'L') {

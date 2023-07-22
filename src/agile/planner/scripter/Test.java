@@ -10,6 +10,7 @@ import java.util.Scanner;
 public class Test {
 
     public static void main(String[] args) throws IOException {
+        System.out.println("Simple Script 1.0\n");
         ScriptContext sc = new ScriptContext();
         File file = new File("data/");
         File[] list = file.listFiles();

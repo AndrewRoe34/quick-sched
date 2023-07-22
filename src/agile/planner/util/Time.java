@@ -37,4 +37,10 @@ public class Time {
         return date;
     }
 
+    public static Calendar getFormattedCalendarInstance(Calendar date, int days) {
+        Calendar curr = (Calendar) date.clone();
+        curr.add(Calendar.DAY_OF_MONTH, days);
+        return curr;
+    }
+
 }
