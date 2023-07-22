@@ -57,6 +57,10 @@ public class JBin {
           <Title>, T#, L#
           ...
         }
+        DAY {
+          T0 4, T3 2, T1 4
+          ...
+        }
 
         NOTE: Try working from bottom to top (might be able to save on efficiency and storage)
          */
@@ -157,6 +161,7 @@ public class JBin {
             }
             clSB.append("}\n\n");
         }
+        //todo need to add scheduling related data here
         //now go from top to bottom with all the data you now have
         return calendarSB.append(labelSB)
                 .append(clSB)
@@ -184,10 +189,6 @@ public class JBin {
         }
         Calendar calendar = Calendar.getInstance();
         assert ld != null;
-        //need to subtract month value by one since Calendar is zero based
-        int year = ld.getYear();
-        int month = ld.getMonthValue() - 1;
-        int day = ld.getDayOfMonth();
         calendar.set(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth(), 0, 0, 0);
         calendar.set(Calendar.MILLISECOND, 0);
 

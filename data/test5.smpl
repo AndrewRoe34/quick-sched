@@ -8,4 +8,5 @@ START:
 END:
 
 import: update5.jbin
+#results in duplicate "Default" cards (need to fix)
 export: update6.jbin
