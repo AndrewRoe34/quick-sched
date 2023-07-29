@@ -1,0 +1,34 @@
+include: __DEF_CONFIG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__
+
+################SCRIPT 1##########################
+
+func edit_task(task_name, new_duration, new_priority)
+  # Get the task from the system using its name
+  task_to_edit: get_task_by_name(task_name)
+
+  # Update the task properties
+  task_to_edit.duration: new_duration
+  task_to_edit.priority: new_priority
+
+  # Save the changes to the system
+  save_changes()
+
+  return task_to_edit
+
+################SCRIPT 2##########################
+
+func export_encrypted_data(file_path, secret_key)
+  # Serialize the system data
+  serialized_data: serialize_data()
+
+  # Encrypt the serialized data using the provided secret key
+  encrypted_data: encrypt_data(serialized_data, secret_key)
+
+  # Write the encrypted data to the specified file
+  write_file(file_path, encrypted_data)
+
+
+################FUNCTION CALLS##########################
+
+t1: edit_task("HW", 6, 3)
+export_encrypted_data("data_backup.dat", "my_secret_key")

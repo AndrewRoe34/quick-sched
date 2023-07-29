@@ -1,0 +1,18 @@
+include: __DEF_CONFIG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__
+
+t1: task("read ch1", 6, 2)
+
+print: "name=", t1.name, ", hours=", t1.hours, ", due=", t1.due_date
+
+t1: card("Math")
+#similar to Python, it has dynamic memory
+
+t1: task("HW1", 4, 1)
+
+t1: get_all_tasks()
+
+t1: get_first_task()
+
+t1: get_last_task()
+
+t1: get_all_tasks.name = "HW"

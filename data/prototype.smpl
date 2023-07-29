@@ -1,8 +1,6 @@
+include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__, __STATS__
 
 #########SCRIPT 1###########
-
-#need to switch over to this
-include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__, __STATS__
 
 # Custom function
 func view_tasks:
@@ -12,18 +10,18 @@ func view_tasks:
   cards: get_all_cards
 
   # Display tasks, labels, and cards
-  print: "All Tasks:"
+  print("All Tasks:")
   foreach task in tasks:
-    print: task.name, "-", task.duration, "hours, priority:", task.priority
-    print: "  Labels:",
+    print(task.name, "-", task.duration, "hours, priority:", task.priority)
+    print("  Labels:")
     foreach label in task.labels:
-      print: "    ", label.name
-    print: "  Cards:",
+      print("    ", label.name)
+    print("  Cards:")
     foreach card in task.cards:
-      println: "    ", card.name
+      println("    ", card.name
 
 # Sample function call
-view_tasks:
+view_tasks()
 
 
 
@@ -41,10 +39,10 @@ func edit_task: task_name, new_duration, new_priority
   task_to_edit.priority: new_priority
 
   # Save the changes to the system
-  save_changes
+  save_changes()
 
 # Sample function call
-edit_task: "HW", 6, 3
+edit_task("HW", 6, 3)
 
 
 
@@ -65,4 +63,4 @@ func export_encrypted_data: file_path, secret_key
   write_file(file_path, encrypted_data)
 
 # Sample function call
-export_encrypted_data: "data_backup.dat", "my_secret_key"
+export_encrypted_data("data_backup.dat", "my_secret_key")

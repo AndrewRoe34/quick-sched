@@ -12,14 +12,13 @@ public class Type implements Comparable<Type> {
 
     private Object datatype;
 
-    private String variableName;
+    private final String variableName;
 
     private int variableIdx;
 
     public Type(Object datatype, String variableName, int variableIdx) {
-        this.datatype = datatype;
         this.variableName = variableName;
-        this.variableIdx = variableIdx;
+        setDatatype(datatype, variableIdx);
     }
 
     public Object getDatatype() {
@@ -32,6 +31,11 @@ public class Type implements Comparable<Type> {
 
     public int getVariableIdx() {
         return variableIdx;
+    }
+
+    public void setDatatype(Object datatype, int variableIdx) {
+        this.datatype = datatype;
+        this.variableIdx = variableIdx;
     }
 
     @Override

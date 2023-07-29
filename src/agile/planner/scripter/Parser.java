@@ -3,10 +3,8 @@ package agile.planner.scripter;
 import agile.planner.data.Card;
 import agile.planner.data.Label;
 import agile.planner.data.Task;
-import agile.planner.scripter.exception.InvalidFunctionException;
 import agile.planner.scripter.exception.InvalidGrammarException;
 import agile.planner.scripter.exception.InvalidPairingException;
-import agile.planner.scripter.exception.UnknownClassException;
 import agile.planner.util.CheckList;
 
 import java.util.*;
@@ -14,6 +12,9 @@ import java.util.*;
 public class Parser {
 
     private List<Type> variables = new ArrayList<>();
+    private int varNameLength;
+    private int constructIdx;
+    private static final String FUNC_REGEX = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
 
     public void parsePreProcessor(String line) {
         String[] tokens = line.split(",");
@@ -102,101 +103,108 @@ public class Parser {
          */
 
 
+
+
+
+
+
+
+
         //process arguments TODO (and ensure they match with parameters)
-        String[] args = processArguments(line, 5, ",");
-        for (String arg : args) {
-            if (arg == null) {
-                break;
-            }
-            String[] tokens = processTokens(arg, 2, null);
-            switch (tokens[0]) {
-                case "_task":
-                    if (tokens[1] == null) {
-                        tasks = new ArrayList<>();
-                        tasks.add(taskList.get(taskList.size() - 1));
-                    } else {
-                        int idx = Integer.parseInt(tokens[1]);
-                        tasks = new ArrayList<>();
-                        tasks.add(taskList.get(idx));
-                    }
-                    break;
-                case "task":
-                    if (tokens[1] == null) {
-                        tasks = taskList;
-                    } else {
-                        throw new InvalidFunctionException();
-                    }
-                    break;
-                case "_checklist":
-                    if (tokens[1] == null) {
-                        checkLists = new ArrayList<>();
-                        checkLists.add(clList.get(clList.size() - 1));
-                    } else {
-                        int idx = Integer.parseInt(tokens[1]);
-                        checkLists = new ArrayList<>();
-                        checkLists.add(clList.get(idx));
-                    }
-                    break;
-                case "checklist":
-                    if (tokens[1] == null) {
-                        checkLists = clList;
-                    } else {
-                        throw new InvalidFunctionException();
-                    }
-                    break;
-                case "_card":
-                    if (tokens[1] == null) {
-                        cards = new ArrayList<>();
-                        cards.add(cardList.get(cardList.size() - 1));
-                    } else {
-                        int idx = Integer.parseInt(tokens[1]);
-                        cards = new ArrayList<>();
-                        cards.add(cardList.get(idx));
-                    }
-                    break;
-                case "card":
-                    if (tokens[1] == null) {
-                        cards = cardList;
-                    } else {
-                        throw new InvalidFunctionException();
-                    }
-                    break;
-                case "_label":
-                    if (tokens[1] == null) {
-                        labels = new ArrayList<>();
-                        labels.add(labelList.get(labelList.size() - 1));
-                    } else {
-                        int idx = Integer.parseInt(tokens[1]);
-                        labels = new ArrayList<>();
-                        labels.add(labelList.get(idx));
-                    }
-                    break;
-                case "label":
-                    if (tokens[1] == null) {
-                        labels = labelList;
-                    } else {
-                        throw new InvalidFunctionException();
-                    }
-                    break;
-                default:
-                    throw new InvalidFunctionException();
-            }
-        } //TODO need to add "board" to the above argument processing
+//        String[] args = processArguments(line, 5, ",");
+//        for (String arg : args) {
+//            if (arg == null) {
+//                break;
+//            }
+//            String[] tokens = processTokens(arg, 2, null);
+//            switch (tokens[0]) {
+//                case "_task":
+//                    if (tokens[1] == null) {
+//                        tasks = new ArrayList<>();
+//                        tasks.add(taskList.get(taskList.size() - 1));
+//                    } else {
+//                        int idx = Integer.parseInt(tokens[1]);
+//                        tasks = new ArrayList<>();
+//                        tasks.add(taskList.get(idx));
+//                    }
+//                    break;
+//                case "task":
+//                    if (tokens[1] == null) {
+//                        tasks = taskList;
+//                    } else {
+//                        throw new InvalidFunctionException();
+//                    }
+//                    break;
+//                case "_checklist":
+//                    if (tokens[1] == null) {
+//                        checkLists = new ArrayList<>();
+//                        checkLists.add(clList.get(clList.size() - 1));
+//                    } else {
+//                        int idx = Integer.parseInt(tokens[1]);
+//                        checkLists = new ArrayList<>();
+//                        checkLists.add(clList.get(idx));
+//                    }
+//                    break;
+//                case "checklist":
+//                    if (tokens[1] == null) {
+//                        checkLists = clList;
+//                    } else {
+//                        throw new InvalidFunctionException();
+//                    }
+//                    break;
+//                case "_card":
+//                    if (tokens[1] == null) {
+//                        cards = new ArrayList<>();
+//                        cards.add(cardList.get(cardList.size() - 1));
+//                    } else {
+//                        int idx = Integer.parseInt(tokens[1]);
+//                        cards = new ArrayList<>();
+//                        cards.add(cardList.get(idx));
+//                    }
+//                    break;
+//                case "card":
+//                    if (tokens[1] == null) {
+//                        cards = cardList;
+//                    } else {
+//                        throw new InvalidFunctionException();
+//                    }
+//                    break;
+//                case "_label":
+//                    if (tokens[1] == null) {
+//                        labels = new ArrayList<>();
+//                        labels.add(labelList.get(labelList.size() - 1));
+//                    } else {
+//                        int idx = Integer.parseInt(tokens[1]);
+//                        labels = new ArrayList<>();
+//                        labels.add(labelList.get(idx));
+//                    }
+//                    break;
+//                case "label":
+//                    if (tokens[1] == null) {
+//                        labels = labelList;
+//                    } else {
+//                        throw new InvalidFunctionException();
+//                    }
+//                    break;
+//                default:
+//                    throw new InvalidFunctionException();
+//            }
+//        } //TODO need to add "board" to the above argument processing
 
-        Scanner strScanner = new Scanner(line);
-        String script = funcMap.get(strScanner.next());
-        Scanner funcScanner = new Scanner(script);
-        funcScanner.nextLine(); //skips the function definition and parameters
-        while(funcScanner.hasNextLine()) {
-            String statement = funcScanner.nextLine();
-            //process each line of code while making function calls here
-            parseFunction(statement);
-        }
-
-        scriptLog.reportFunctionCall(line);
-
-        //reset all the variables
-        resetVariables();
+//        Scanner strScanner = new Scanner(line);
+//        String script = funcMap.get(strScanner.next());
+//        Scanner funcScanner = new Scanner(script);
+//        funcScanner.nextLine(); //skips the function definition and parameters
+//        while(funcScanner.hasNextLine()) {
+//            String statement = funcScanner.nextLine();
+//            //process each line of code while making function calls here
+//            parseFunction(statement);
+//        }
+//
+//        scriptLog.reportFunctionCall(line);
+//
+//        //reset all the variables
+//        resetVariables();
     }
 
     private boolean parseFunction(String line) { //todo might not need this actually
@@ -214,22 +222,15 @@ public class Parser {
             case "remove:":
                 new RemoveState().processFunc(line);
                 break;
-            case "task:":
-            case "label:":
-            case "day:":
-            case "checklist:":
-            case "card:":
-            case "board:":
             default:
-                throw new InvalidFunctionException();
-            default:
-                if(funcMap.containsKey(type)) {
-                    new FunctionState().processFunc(line);
-                } else if(type.charAt(0) != '#') {
-                    throw new UnknownClassException();
-                }
+//                if(funcMap.containsKey(type)) {
+//                    new FunctionState().processFunc(line);
+//                } else if(type.charAt(0) != '#') {
+//                    throw new UnknownClassException();
+//                }
                 break;
         }
+        return false;
     }
 
     public void parseIf(String line) {
@@ -248,8 +249,12 @@ public class Parser {
          */
     }
 
-    public void parseForEach(String line) {
-        String[] tokens = processArguments(line, 3, null);
+    public Type[] parseForEach(String line) {
+        String[] tokens = processTokens(line, 4, null);
+        if(!"foreach".equals(tokens[0]) && !"in".equals(tokens[2])) {
+            throw new InvalidGrammarException();
+        }
+        return lookupVariablePair(tokens[1], tokens[3]);
 
         //how to reference a type:
         //  1. Holds a class: Task<name, hours, due_date>
@@ -417,7 +422,6 @@ public class Parser {
     }
 
     public void parsePrintFunc(String line) {
-        String[] tokens = line.split(","); //todo need to look up regex so that comma is not within quotes or parentheses
         /*
         1. Verify if a variable (if so, call toString() method)
         2. Verify if proper string (if so, utilize it)
@@ -425,18 +429,33 @@ public class Parser {
         4. If call is "print:", do not use a new line at the end
         5. If call is "println:", use a new line at the end
          */
-        for(int i = 1; i < tokens.length; i++) {
-            Type t1 = lookupVariable(tokens[i]);
+        String trimmedStr = line.trim();
+        int isValidPrint = trimmedStr.indexOf("print(");
+        int isValidPrintln = trimmedStr.indexOf("println(");
+        if(isValidPrint != 0 && isValidPrintln != 0) {
+            throw new InvalidGrammarException();
+        }
+        boolean println = isValidPrintln == 0;
+        if(trimmedStr.charAt(trimmedStr.length() - 1) != ')') {
+            throw new InvalidGrammarException();
+        }
+        trimmedStr = println ? trimmedStr.substring(8, trimmedStr.length() - 1) : trimmedStr.substring(6, trimmedStr.length() - 1);
+        String[] tokens = trimmedStr.split(FUNC_REGEX, -1);
+        for(int i = 0; i < tokens.length; i++) {
+            Type t1 = lookupVariable(tokens[i].trim());
             if(t1 == null) {
-                //todo process it as a string
-                System.out.print(verifyString(tokens[i]));
+                System.out.print(verifyString(tokens[i].trim()));
             } else {
                 System.out.print(t1.toString());
             }
         }
-        if("println:".equals(tokens[0])) { //todo this will always fail (need to break up token[0] by ":"
-            System.out.println("\n");
+        if(println) {
+            System.out.println();
         }
+    }
+
+    public Type getVariable(int idx) {
+        return variables.get(idx);
     }
 
     /**
@@ -448,16 +467,26 @@ public class Parser {
      * @param line code being processes
      */
     public Card parseCard(String line) {
-        String[] tokens = line.split(",");
-        if(tokens.length > 1) {
-            throw new InvalidFunctionException();
+        String varName = processVariable(line);
+        if(varName == null) return null;
+        if(!processType(line, 3, varNameLength)) return null;
+        String argumentSet = processConstructor(line, constructIdx);
+        assert argumentSet != null;
+        String[] tokens = argumentSet.split(",");
+        if(tokens.length != 1) {
+            throw new InvalidGrammarException();
         }
-        Card c = new Card(tokens[0]);
+        Card c1 = new Card(tokens[0]);
+        Type t1 = lookupVariable(varName);
+        if(t1 == null) {
+            variables.add(new Type(c1, varName, 3));
+        } else {
+            t1.setDatatype(c1, 3);
+        }
+        return c1;
 
         //todo need to have id for Card
         //todo need to log this data
-
-        return c;
 
 
 
@@ -473,48 +502,153 @@ public class Parser {
 //        }
     }
 
-    public void parseCheckList(String line) {
-        String[] tokens = processArguments(line, 1, ",");
-        try {
-            int id = scheduleManager.getLastCLId() + clList.size();
-            String name = tokens[0];
-            clList.add(new CheckList(id, name));
-            scriptLog.reportCheckListCreation(id, name);
-            System.out.println("Checklist added.. [C" + (scheduleManager.getLastCLId() + clList.size() - 1) + "]");
-        } catch(Exception e) {
-            throw new InvalidGrammarException("Invalid input. Expected[checklist: <name: string>]");
+    private boolean processType(String line, int type, int startIdx) {
+        int i = startIdx;
+        for(; i < line.length(); i++) {
+            if(line.charAt(i) != ' ' && line.charAt(i) != '\t')
+                break;
+        }
+        int endIdx = i;
+        for(; endIdx < line.length(); endIdx++) {
+            if(!Character.isAlphabetic(line.charAt(endIdx)))
+                break;
+        }
+        constructIdx = endIdx;
+        if(endIdx > line.length() || line.charAt(endIdx) != '(')
+            return false;
+        String codeword = line.substring(i, endIdx);
+        switch(codeword) {
+            case "card":
+                return type == 3;
+            case "task":
+                return type == 0;
+            case "label":
+                return type == 1;
+            case "checklist":
+                return type == 2;
+            default:
+                return false;
         }
     }
 
-    public void parseLabel(String line) {
-        String[] tokens = processArguments(line, 2, ",");
-        try {
-            int id = scheduleManager.getLastLabelId() + labelList.size();
-            String name = tokens[0];
-            int color = Integer.parseInt(tokens[1]);
-            labelList.add(new Label(id, name, color));
-            scriptLog.reportLabelCreation(id, name, color);
-            System.out.println("Label added.. [L" + (scheduleManager.getLastLabelId() + labelList.size() - 1) + "]");
-        } catch(Exception e) {
-            throw new InvalidGrammarException("Invalid input. Expected[label: <name: string>, <color: int>]");
+    public String processVariable(String line) {
+        int startIdx = 0;
+        for(; startIdx < line.length(); startIdx++) {
+            if(line.charAt(startIdx) != ' ' && line.charAt(startIdx) != '\t')
+                break;
         }
+        int endIdx = startIdx;
+        for(; endIdx < line.length(); endIdx++) {
+            if(Character.isAlphabetic(line.charAt(endIdx)) && Character.isDigit(line.charAt(endIdx))) {
+                continue;
+            } else if(line.charAt(endIdx) == ':' || line.charAt(endIdx) == ' ' || line.charAt(endIdx) == '\t'
+                    || line.charAt(endIdx) == '_' && endIdx + 1 < line.length() && line.charAt(endIdx + 1) == '_')
+                break;
+        }
+        varNameLength = endIdx - startIdx + 1;
+        return endIdx > startIdx && line.charAt(endIdx) == ':'
+                && (Character.isAlphabetic(line.charAt(endIdx - 1)) || Character.isDigit(line.charAt(endIdx - 1)))
+                ? line.substring(startIdx, endIdx) : null;
     }
 
-    public void parseTask(String line) {
-        String[] tokens = processArguments(line, 3, ",");
-        try {
-            int id = scheduleManager.getLastTaskId() + taskList.size();
-            int hours = Integer.parseInt(tokens[1]);
-            int days = Integer.parseInt(tokens[2]);
-            Task t = new Task(id, tokens[0], hours, days);
-            taskList.add(t);
-            scriptLog.reportTaskCreation(id, tokens[0], hours, days);
-            System.out.println("Task added.. [T" + (scheduleManager.getLastTaskId() + taskList.size() - 1) + "]");
-            //adds task to default card
-            cardList.get(0).addTask(t);
-        } catch(Exception e) {
-            throw new InvalidGrammarException("Invalid input. Expected[task: <name: string>, <hours: int>, <num_days: int>]");
+    public CheckList parseCheckList(String line) {
+        String varName = processVariable(line);
+        if(varName == null) return null;
+        if(!processType(line, 2, varNameLength)) return null;
+        String argumentSet = processConstructor(line, constructIdx);
+        assert argumentSet != null;
+        String[] tokens = argumentSet.split(",");
+        if(tokens.length != 2) {
+            throw new InvalidGrammarException();
         }
+        CheckList cl = new CheckList(0, tokens[0]);
+        Type t1 = lookupVariable(varName);
+        if(t1 == null) {
+            variables.add(new Type(cl, varName, 2));
+        } else {
+            t1.setDatatype(cl, 2);
+        }
+        return cl;
+
+
+//        String[] tokens = processArguments(line, 1, ",");
+//        try {
+//            int id = scheduleManager.getLastCLId() + clList.size();
+//            String name = tokens[0];
+//            clList.add(new CheckList(id, name));
+//            scriptLog.reportCheckListCreation(id, name);
+//            System.out.println("Checklist added.. [C" + (scheduleManager.getLastCLId() + clList.size() - 1) + "]");
+//        } catch(Exception e) {
+//            throw new InvalidGrammarException("Invalid input. Expected[checklist: <name: string>]");
+//        }
+    }
+
+    public Label parseLabel(String line) {
+        String varName = processVariable(line);
+        if(varName == null) return null;
+        if(!processType(line, 1, varNameLength)) return null;
+        String argumentSet = processConstructor(line, constructIdx);
+        assert argumentSet != null;
+        String[] tokens = argumentSet.split(",");
+        if(tokens.length != 2) {
+            throw new InvalidGrammarException();
+        }
+        Label l1 = new Label(0, tokens[0], Integer.parseInt(tokens[1]));
+        Type t1 = lookupVariable(varName);
+        if(t1 == null) {
+            variables.add(new Type(l1, varName, 1));
+        } else {
+            t1.setDatatype(t1, 1);
+        }
+        return l1;
+
+//        String[] tokens = processArguments(line, 2, ",");
+//        try {
+//            int id = scheduleManager.getLastLabelId() + labelList.size();
+//            String name = tokens[0];
+//            int color = Integer.parseInt(tokens[1]);
+//            labelList.add(new Label(id, name, color));
+//            scriptLog.reportLabelCreation(id, name, color);
+//            System.out.println("Label added.. [L" + (scheduleManager.getLastLabelId() + labelList.size() - 1) + "]");
+//        } catch(Exception e) {
+//            throw new InvalidGrammarException("Invalid input. Expected[label: <name: string>, <color: int>]");
+//        }
+    }
+
+    public Task parseTask(String line) {
+        String varName = processVariable(line);
+        if(varName == null) return null;
+        if(!processType(line, 0, varNameLength)) return null;
+        String argumentSet = processConstructor(line, constructIdx);
+        assert argumentSet != null;
+        String[] tokens = argumentSet.split(",");
+        if(tokens.length != 3) {
+            throw new InvalidGrammarException();
+        }
+        Task t1 = new Task(0, tokens[0], Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
+        Type type1 = lookupVariable(varName);
+        if(type1 == null) {
+            variables.add(new Type(t1, varName, 1));
+        } else {
+            type1.setDatatype(t1, 0);
+        }
+        return t1;
+
+
+//        String[] tokens = processArguments(line, 3, ",");
+//        try {
+//            int id = scheduleManager.getLastTaskId() + taskList.size();
+//            int hours = Integer.parseInt(tokens[1]);
+//            int days = Integer.parseInt(tokens[2]);
+//            Task t = new Task(id, tokens[0], hours, days);
+//            taskList.add(t);
+//            scriptLog.reportTaskCreation(id, tokens[0], hours, days);
+//            System.out.println("Task added.. [T" + (scheduleManager.getLastTaskId() + taskList.size() - 1) + "]");
+//            //adds task to default card
+//            cardList.get(0).addTask(t);
+//        } catch(Exception e) {
+//            throw new InvalidGrammarException("Invalid input. Expected[task: <name: string>, <hours: int>, <num_days: int>]");
+//        }
     }
 
     private String verifyString(String line) {
@@ -522,12 +656,6 @@ public class Parser {
         boolean quoteEnd = false;
         int beginIdx = 0;
         int endIdx = 0;
-        for(int i = 0; i < line.length(); i++) {
-            if(line.charAt(i) == ' ' || line.charAt(i) == '\t') {
-                beginIdx++;
-            } else if(line.charAt(i) == 'p') break;
-        }
-        beginIdx += 6;
         for(int i = beginIdx; i < line.length(); i++) {
             if(!quoteBegin && line.charAt(i) == '"') {
                 quoteBegin = true;
@@ -587,5 +715,55 @@ public class Parser {
             }
         }
         return tokens;
+    }
+
+    private String processConstructor(String line, int startIdx) {
+        //assume you're starting at the first parentheses
+        boolean start = false;
+        boolean end = false;
+        boolean inQuote = false;
+        int idx = 0;
+        int subStrBeg = -1;
+        int subStrEnd = -1;
+        for (int i = startIdx; i < line.length(); i++) {
+            if (line.charAt(i) == '(' && !start && !inQuote) {
+                start = true;
+            } else if (line.charAt(i) == ')' && start && !inQuote) {
+                end = true;
+                idx = i;
+                break;
+            } else if (line.charAt(i) == '"') {
+                if (subStrBeg == -1) {
+                    subStrBeg = i;
+                    subStrEnd = subStrBeg;
+                } else {
+                    subStrEnd++;
+                }
+                inQuote = !inQuote;
+            } else if (inQuote || line.charAt(i) != '(' && line.charAt(i) != ')') {
+                if (subStrBeg == -1) {
+                    subStrBeg = i;
+                    subStrEnd = subStrBeg;
+                } else {
+                    subStrEnd++;
+                }
+            } else {
+                return null;
+            }
+        }
+
+        for(int i = idx + 1; i < line.length(); i++) {
+            if(line.charAt(i) != ' ' && line.charAt(i) != '\t'
+                    && line.charAt(i) != '\r' && line.charAt(i) != '\n') {
+                return null;
+            }
+        }
+
+        if(!start || !end) {
+            return null;
+        }
+
+        return line.substring(subStrBeg, subStrEnd + 1);
+
     }
 }
