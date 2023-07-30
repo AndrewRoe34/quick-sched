@@ -15,7 +15,7 @@ import agile.planner.util.Time;
  *
  * @author Andrew Roe
  */
-public class Task implements Comparable<Task> {
+public class Task implements Comparable<Task>, Linker {
 
     /** ID of the Task */
     private int id;
@@ -375,6 +375,26 @@ public class Task implements Comparable<Task> {
 
     public CheckList getChecklist() {
         return checkList;
+    }
+
+    @Override
+    public boolean add(Linker o) {
+        if(o instanceof Label) {
+            return labelList.add((Label) o);
+        } else if(o instanceof CheckList) {
+            return addCheckList((CheckList) o);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean remove(Linker o) {
+        if(o instanceof Label) {
+            return labelList.remove((Label) o);
+        } else if(o instanceof CheckList) {
+            //todo need to update this part
+        }
+        return false;
     }
 
     /**

@@ -2,6 +2,7 @@ package agile.planner.scripter;
 
 import agile.planner.data.Card;
 import agile.planner.data.Label;
+import agile.planner.data.Linker;
 import agile.planner.data.Task;
 import agile.planner.scripter.exception.InvalidPairingException;
 import agile.planner.util.CheckList;
@@ -10,18 +11,18 @@ import java.util.List;
 
 public class Type implements Comparable<Type> {
 
-    private Object datatype;
+    private Linker datatype;
 
     private final String variableName;
 
     private int variableIdx;
 
-    public Type(Object datatype, String variableName, int variableIdx) {
+    public Type(Linker datatype, String variableName, int variableIdx) {
         this.variableName = variableName;
         setDatatype(datatype, variableIdx);
     }
 
-    public Object getDatatype() {
+    public Linker getDatatype() {
         return datatype;
     }
 
@@ -33,10 +34,29 @@ public class Type implements Comparable<Type> {
         return variableIdx;
     }
 
-    public void setDatatype(Object datatype, int variableIdx) {
+    public void setDatatype(Linker datatype, int variableIdx) {
         this.datatype = datatype;
         this.variableIdx = variableIdx;
     }
+
+    public boolean addType(Type o) {
+        return datatype.add(o.getDatatype());
+    }
+
+    public boolean removeType(Type o) {
+        return datatype.remove(o.getDatatype());
+    }
+
+    /*
+    Will create a method that passes an enum and a value with it
+    this will allow utilizing attributes for various Linkers to work with
+
+    ex:
+    public boolean editAttr(Enum e, int val)
+    public boolean editAttr(Enum e, String str)
+    public boolean editAttr(Enum e, boolean flag)
+
+     */
 
     @Override
     public int compareTo(Type o) {
@@ -45,16 +65,6 @@ public class Type implements Comparable<Type> {
 
     @Override
     public String toString() {
-        switch(variableIdx) {
-            case 0:
-                return ((Task) datatype).toString();
-            case 1:
-                return ((Label) datatype).toString();
-            case 2:
-                return ((CheckList) datatype).toString();
-            case 3:
-                return ((Card) datatype).toString();
-        }
-        return null;
+        return datatype.toString();
     }
 }

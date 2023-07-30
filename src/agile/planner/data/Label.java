@@ -1,6 +1,6 @@
 package agile.planner.data;
 
-public class Label {
+public class Label implements Linker {
 
     private int id;
     private String name;
@@ -20,5 +20,18 @@ public class Label {
         return name;
     }
 
-    //TODO each label needs a string and a color
+    @Override
+    public boolean add(Linker o) {
+        return false;
+    }
+
+    @Override
+    public boolean remove(Linker o) {
+        return false;
+    }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

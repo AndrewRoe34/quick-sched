@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Andrew Roe
  */
-public class Card {
+public class Card implements Linker{
 
     /** Label for Card */
     private String title;
@@ -106,5 +106,25 @@ public class Card {
 
     public boolean addLabelList(List<Label> labels) {
         return cardLabels.addAll(labels);
+    }
+
+    @Override
+    public boolean add(Linker o) {
+        if(o instanceof Task) {
+            return cardTasks.add((Task) o);
+        } else if(o instanceof Label) {
+            return cardLabels.add((Label) o);
+        }
+        return false;
+    }
+
+    @Override
+    public boolean remove(Linker o) {
+        if(o instanceof Task) {
+            return cardTasks.remove((Task) o);
+        } else if(o instanceof Label) {
+            return cardLabels.remove((Label) o);
+        }
+        return false;
     }
 }

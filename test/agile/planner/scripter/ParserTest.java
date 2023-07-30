@@ -68,6 +68,7 @@ public class ParserTest {
         assertEquals("\"Chemistry\"", cl2.getName());
         Type t1 = p.getVariable(1);
         System.out.println(t1.getVariableName());
+        System.out.println(t1);
     }
 
     @Test

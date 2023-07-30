@@ -1,5 +1,7 @@
 package agile.planner.util;
 
+import agile.planner.data.Linker;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,7 +11,7 @@ import java.util.List;
  * @author Andrew Roe
  * @author Lucia Langaney
  */
-public class CheckList {
+public class CheckList implements Linker {
 
     /** Name for CheckList */
     private String name;
@@ -176,6 +178,16 @@ public class CheckList {
      */
     public int getPercentage() {
         return list.size() == 0 ? 0 : (int) (completed * 1.0f / list.size() * 100);
+    }
+
+    @Override
+    public boolean add(Linker o) {
+        return false;
+    }
+
+    @Override
+    public boolean remove(Linker o) {
+        return false;
     }
 
     @Override

@@ -2,6 +2,7 @@ package agile.planner.scripter;
 
 import agile.planner.data.Card;
 import agile.planner.data.Label;
+import agile.planner.data.Linker;
 import agile.planner.data.Task;
 import agile.planner.scripter.exception.InvalidGrammarException;
 import agile.planner.scripter.exception.InvalidPairingException;
@@ -207,32 +208,6 @@ public class Parser {
 //        resetVariables();
     }
 
-    private boolean parseFunction(String line) { //todo might not need this actually
-        Scanner tokenScanner = new Scanner(line);
-        String type = tokenScanner.next();
-        switch(type) {
-            case "print:":
-                new PrintState().processFunc(line);
-                break;
-            case "add:":
-                return parseAddFunc(line);
-            case "edit:":
-                new EditState().processFunc(line);
-                break;
-            case "remove:":
-                new RemoveState().processFunc(line);
-                break;
-            default:
-//                if(funcMap.containsKey(type)) {
-//                    new FunctionState().processFunc(line);
-//                } else if(type.charAt(0) != '#') {
-//                    throw new UnknownClassException();
-//                }
-                break;
-        }
-        return false;
-    }
-
     public void parseIf(String line) {
         String[] tokens = line.split("and | or");
         //if(true and false or true)
@@ -262,142 +237,6 @@ public class Parser {
         //
         //need a way to look up variable quickly (will not worry about locality of variables for the moment)
         //TODO we could use a heap to represent variables (offers O(logn) lookup and O(logn) removal/insertion)
-    }
-
-    public boolean parseAddFunc(String line) {
-        String[] tokens = processArguments(line, 2, ",");
-        Type[] types = lookupVariablePair(tokens[0], tokens[1]);
-        if(types == null) {
-            throw new InvalidGrammarException();
-        }
-
-        /*
-            0. Task
-            1. Label
-            2. Checklist
-            3. Card
-            4. Board
-            5. List<Task>
-            6. List<Label>
-            7. List<CheckList>
-            8. List<Card>
-            9. List<Board>
-            10. Item
-            11. List<Item>
-            12. String
-            13. Integer
-            14. Boolean
-
-
-            1. Find out if variable exists
-            2. Determine the type and cast it to another variable
-            3. Perform the addition operation
-     */
-
-        boolean flag = true;
-        switch(types[1].getVariableIdx()) {
-            case 0:
-                Task task = (Task) types[1].getDatatype();
-                switch(types[0].getVariableIdx()) {
-                    case 1:
-                        return task.addLabel((Label) types[0].getDatatype());
-                    case 2:
-                        return task.addCheckList((CheckList) types[0].getDatatype());
-                    case 6:
-                        return task.addLabelList((List<Label>) types[0].getDatatype());
-                    default:
-                        throw new InvalidPairingException();
-                }
-            case 2:
-                CheckList checkList = (CheckList) types[1].getDatatype();
-                switch(types[0].getVariableIdx()) {
-                    case 10:
-                        return checkList.addItem((CheckList.Item) types[0].getDatatype());
-                    case 11:
-                        return checkList.addItemList((List<CheckList.Item>) types[0].getDatatype());
-                    case 12:
-                        return checkList.addItem((String) types[0].getDatatype());
-                    default:
-                        throw new InvalidPairingException();
-                }
-            case 3:
-                Card card = (Card) types[1].getDatatype();
-                switch(types[0].getVariableIdx()) {
-                    case 1:
-                        return card.addLabel((Label) types[0].getDatatype());
-                    case 6:
-                        return card.addLabelList((List<Label>) types[0].getDatatype());
-                    default:
-                        throw new InvalidPairingException();
-                }
-            case 4:
-                //todo will add once Board is finally complete
-                break;
-            case 5:
-                List<Task> tasks = (List<Task>) types[1].getDatatype();
-                switch(types[0].getVariableIdx()) {
-                    case 1:
-                        for(Task t : tasks) {
-                            flag &= t.addLabel((Label) types[0].getDatatype());
-                        }
-                        return flag;
-                    case 2:
-                        for(Task t : tasks) {
-                            flag &= t.addCheckList((CheckList) types[0].getDatatype());
-                        }
-                        return flag;
-                    case 6:
-                        for(Task t : tasks) {
-                            flag &= t.addLabelList((List<Label>) types[0].getDatatype());
-                        }
-                        return flag;
-                    default:
-                        throw new InvalidPairingException();
-                }
-            case 7:
-                List<CheckList> checkLists = (List<CheckList>) types[1].getDatatype();
-                switch(types[0].getVariableIdx()) {
-                    case 10:
-                        for(CheckList cl : checkLists) {
-                            flag &= cl.addItem((CheckList.Item) types[0].getDatatype());
-                        }
-                        return flag;
-                    case 11:
-                        for(CheckList cl : checkLists) {
-                            flag &= cl.addItemList((List<CheckList.Item>) types[0].getDatatype());
-                        }
-                        return flag;
-                    case 12:
-                        for(CheckList cl : checkLists) {
-                            flag &= cl.addItem((String) types[0].getDatatype());
-                        }
-                        return flag;
-                    default:
-                        throw new InvalidPairingException();
-                }
-            case 8:
-                List<Card> cards = (List<Card>) types[1].getDatatype();
-                switch(types[0].getVariableIdx()) {
-                    case 1:
-                        for(Card c : cards) {
-                            flag &= c.addLabel((Label) types[0].getDatatype());
-                        }
-                        return flag;
-                    case 6:
-                        for(Card c : cards) {
-                            flag &= c.addLabelList((List<Label>) types[0].getDatatype());
-                        }
-                        return flag;
-                    default:
-                        throw new InvalidPairingException();
-                }
-            case 9:
-                //todo will do once board is finished
-                break;
-            default:
-                throw new InvalidPairingException();
-        }
-        return false;
     }
 
     private Type lookupVariable(String token) {
@@ -598,7 +437,7 @@ public class Parser {
         if(t1 == null) {
             variables.add(new Type(l1, varName, 1));
         } else {
-            t1.setDatatype(t1, 1);
+            t1.setDatatype((Linker) t1, 1);
         }
         return l1;
 
