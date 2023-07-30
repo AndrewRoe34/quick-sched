@@ -47,16 +47,17 @@ public class Type implements Comparable<Type> {
         return datatype.remove(o.getDatatype());
     }
 
-    /*
-    Will create a method that passes an enum and a value with it
-    this will allow utilizing attributes for various Linkers to work with
+    public boolean editAttr(Enum e, Object val) {
+        /*
+        Will create a method that passes an enum and a value with it
+        this will allow utilizing attributes for various Linkers to work with
 
-    ex:
-    public boolean editAttr(Enum e, int val)
-    public boolean editAttr(Enum e, String str)
-    public boolean editAttr(Enum e, boolean flag)
+        ex:
+        public boolean editAttr(Enum e, Object val)
 
-     */
+        */
+        return false;
+    }
 
     @Override
     public int compareTo(Type o) {
