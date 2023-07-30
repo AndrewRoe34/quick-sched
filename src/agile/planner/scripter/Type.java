@@ -1,25 +1,26 @@
 package agile.planner.scripter;
 
-import agile.planner.data.Card;
-import agile.planner.data.Label;
 import agile.planner.data.Linker;
-import agile.planner.data.Task;
-import agile.planner.scripter.exception.InvalidPairingException;
-import agile.planner.util.CheckList;
-
-import java.util.List;
 
 public class Type implements Comparable<Type> {
+
+    public enum TypeId {
+        BOARD,
+        CARD,
+        TASK,
+        LABEL,
+        CHECKLIST
+    }
 
     private Linker datatype;
 
     private final String variableName;
 
-    private int variableIdx;
+    private TypeId type;
 
-    public Type(Linker datatype, String variableName, int variableIdx) {
+    public Type(Linker datatype, String variableName, TypeId type) {
         this.variableName = variableName;
-        setDatatype(datatype, variableIdx);
+        setDatatype(datatype, type);
     }
 
     public Linker getDatatype() {
@@ -30,13 +31,13 @@ public class Type implements Comparable<Type> {
         return variableName;
     }
 
-    public int getVariableIdx() {
-        return variableIdx;
+    public TypeId getVariableIdx() {
+        return type;
     }
 
-    public void setDatatype(Linker datatype, int variableIdx) {
+    public void setDatatype(Linker datatype, TypeId type) {
         this.datatype = datatype;
-        this.variableIdx = variableIdx;
+        this.type = type;
     }
 
     public boolean addType(Type o) {

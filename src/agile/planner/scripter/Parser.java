@@ -318,9 +318,9 @@ public class Parser {
         Card c1 = new Card(tokens[0]);
         Type t1 = lookupVariable(varName);
         if(t1 == null) {
-            variables.add(new Type(c1, varName, 3));
+            variables.add(new Type(c1, varName, Type.TypeId.CARD));
         } else {
-            t1.setDatatype(c1, 3);
+            t1.setDatatype(c1, Type.TypeId.CARD);
         }
         return c1;
 
@@ -403,9 +403,9 @@ public class Parser {
         CheckList cl = new CheckList(0, tokens[0]);
         Type t1 = lookupVariable(varName);
         if(t1 == null) {
-            variables.add(new Type(cl, varName, 2));
+            variables.add(new Type(cl, varName, Type.TypeId.CHECKLIST));
         } else {
-            t1.setDatatype(cl, 2);
+            t1.setDatatype(cl, Type.TypeId.CHECKLIST);
         }
         return cl;
 
@@ -435,9 +435,9 @@ public class Parser {
         Label l1 = new Label(0, tokens[0], Integer.parseInt(tokens[1]));
         Type t1 = lookupVariable(varName);
         if(t1 == null) {
-            variables.add(new Type(l1, varName, 1));
+            variables.add(new Type(l1, varName, Type.TypeId.LABEL));
         } else {
-            t1.setDatatype((Linker) t1, 1);
+            t1.setDatatype((Linker) t1, Type.TypeId.LABEL);
         }
         return l1;
 
@@ -467,9 +467,9 @@ public class Parser {
         Task t1 = new Task(0, tokens[0], Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
         Type type1 = lookupVariable(varName);
         if(type1 == null) {
-            variables.add(new Type(t1, varName, 1));
+            variables.add(new Type(t1, varName, Type.TypeId.TASK));
         } else {
-            type1.setDatatype(t1, 0);
+            type1.setDatatype(t1, Type.TypeId.TASK);
         }
         return t1;
 
