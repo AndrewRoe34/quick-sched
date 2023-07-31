@@ -424,14 +424,8 @@ public class Parser {
         return t1.attrSet(attr, null);
     } //todo need to create another method that involves returning an Attribute instance
 
-    public Attributes parseAttributes(String line) {
-        String[] tokens = line.split("\\.");
-        String varName = tokens[0];
 
-        //split it up again
-        String[] args = tokens[1].split(",");
-        return new Attributes(varName, args[1], args);
-    }
+
 
     // if it ends with ':', it's variable assignment
     // if it ends with ')', it's a function or attribute
@@ -452,6 +446,33 @@ public class Parser {
 
 
 
+
+    public Attributes parseAttributes(String line) {
+        int startIdx = skipWhiteSpace(line, 0);
+        int endIdx = startIdx;
+        for(; endIdx < line.length(); endIdx++) {
+            if(line.charAt(endIdx) == '.')
+                break;
+        }
+        String varName = line.substring(startIdx, endIdx);
+        startIdx = skipWhiteSpace(line, endIdx + 1);
+        if(startIdx - endIdx > 1) return null;
+        endIdx++;
+        for(; endIdx < line.length(); endIdx++) {
+            if(line.charAt(endIdx) == '(')
+                break;
+        }
+        String attr = line.substring(startIdx, endIdx);
+
+        try {
+            String[] args = Objects
+                    .requireNonNull(verifyArgument(line, endIdx))
+                    .split(FUNC_REGEX, -1);
+            return new Attributes(varName, attr, args);
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
 
     public ClassInstance parseClassInstance(String line) {
         // skips whitespace between beginning of line and variable
@@ -495,11 +516,32 @@ public class Parser {
                 inst = parseCheckList(arguments);
                 break;
             default:
-                //need to check if it's a string, int, or bool
+                return null;
         }
         if(inst == null) return null;
         inst.setVarName(varName);
         return inst;
+    }
+
+    private CardInstance parseCard(String args) {
+        String[] arguments = args.split(FUNC_REGEX, -1);
+        return arguments.length == 1 ? new CardInstance(arguments[0]) : null;
+    }
+
+    private TaskInstance parseTask(String args) {
+        String[] arguments = args.split(FUNC_REGEX, -1);
+        return arguments.length == 3 ? new TaskInstance(arguments[0],
+                Integer.parseInt(arguments[1]), Integer.parseInt(arguments[2])) : null;
+    }
+
+    private LabelInstance parseLabel(String args) {
+        String[] arguments = args.split(FUNC_REGEX, -1);
+        return arguments.length == 2 ? new LabelInstance(arguments[0], Integer.parseInt(arguments[1])) : null;
+    }
+
+    private ClassInstance parseCheckList(String args) {
+        String[] arguments = args.split(FUNC_REGEX, -1);
+        return arguments.length == 1 ? new CheckListInstance(arguments[0]) : null;
     }
 
     private int skipWhiteSpace(String line, int startIdx) {
@@ -523,26 +565,13 @@ public class Parser {
         return startIdx - beginIdx == 1 ? "" : line.substring(beginIdx, startIdx);
     }
 
-    private CardInstance parseCard(String args) {
-        String[] arguments = args.split(FUNC_REGEX, -1);
-        return arguments.length == 1 ? new CardInstance(arguments[0]) : null;
-    }
 
-    private TaskInstance parseTask(String args) {
-        String[] arguments = args.split(FUNC_REGEX, -1);
-        return arguments.length == 3 ? new TaskInstance(arguments[0],
-                Integer.parseInt(arguments[1]), Integer.parseInt(arguments[2])) : null;
-    }
 
-    private LabelInstance parseLabel(String args) {
-        String[] arguments = args.split(FUNC_REGEX, -1);
-        return arguments.length == 2 ? new LabelInstance(arguments[0], Integer.parseInt(arguments[1])) : null;
-    }
 
-    private ClassInstance parseCheckList(String args) {
-        String[] arguments = args.split(FUNC_REGEX, -1);
-        return arguments.length == 1 ? new CheckListInstance(arguments[0]) : null;
-    }
+
+
+
+
 
 
 
