@@ -19,7 +19,8 @@ public class Parser {
         FUNCTION,
         INSTANCE,
         ATTRIBUTE,
-        PRE_PROCESSOR
+        PRE_PROCESSOR,
+        RETURN
     }
 
     public void parsePreProcessor(String line) {
@@ -456,6 +457,8 @@ public class Parser {
     // Preprocessor handling      [TBD]
     // Custom function            [TBD]
     // Calling custom function    [TBD]
+    // Reading .func file         [TBD]
+    // Reading .attr file         [TBD]
 
 
 
@@ -633,25 +636,11 @@ public class Parser {
         return "total_hours=", .get_hours(), ", hours_remaining=", get_remaining_hours()
 
      print(t1.outputHours())
+
+
+     Will also need to provide the ".func" file for static functions
      */
 
-
-    /*
-    Will also have a ".func" file to store all created functions
-
-    Another idea is to store objects in various files (need to see if this is practical or not):
-
-    custom_type(x, y)
-
-    .foo()
-      return x
-
-    .boo()
-      return y
-
-    .string()
-      return x, y
-     */
 
 
 
