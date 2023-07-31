@@ -15,6 +15,13 @@ public class Parser {
     private int constructIdx;
     private static final String FUNC_REGEX = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
 
+    public enum Operation {
+        FUNCTION,
+        INSTANCE,
+        ATTRIBUTE,
+        PRE_PROCESSOR
+    }
+
     public void parsePreProcessor(String line) {
         String[] tokens = line.split(",");
 
@@ -427,6 +434,18 @@ public class Parser {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     // if it ends with ':', it's variable assignment
     // if it ends with ')', it's a function or attribute
 
@@ -434,6 +453,9 @@ public class Parser {
     // attribute handling         [DONE]
     // function calls             [DONE]
     // String/int/bool assignment [TBD]
+    // Preprocessor handling      [TBD]
+    // Custom function            [TBD]
+    // Calling custom function    [TBD]
 
 
 
@@ -442,13 +464,16 @@ public class Parser {
 
 
 
+    public Operation typeOfOperation(String line) {
 
+        return null;
+    }
 
 
     //todo need to include whatever data is available when possible (allows us to throw exceptions such as DereferenceNullPointer)
 
 
-    public StaticFunction parseStaticFunction(String line) {
+    public StaticFunction parseStaticFunction(String line) { //todo need to allow for custom functions as well
         int startIdx = skipWhiteSpace(line, 0);
         int endIdx = startIdx;
         for(; endIdx < line.length(); endIdx++) {
@@ -586,6 +611,51 @@ public class Parser {
         if(line.charAt(startIdx) != ' ' && line.charAt(startIdx) != '\t') return null;
         return startIdx - beginIdx == 1 ? "" : line.substring(beginIdx, startIdx);
     }
+
+
+
+
+
+
+
+    /*
+    Will be stored under the ".attr" file
+
+    .attr_task foo(sample_integer)
+       temp: .get_hours() - sample_integer
+       if(temp < 0)
+          return false
+       .set_hours(temp)
+       return true
+
+
+     .attr_task outputHours()
+        return "total_hours=", .get_hours(), ", hours_remaining=", get_remaining_hours()
+
+     print(t1.outputHours())
+     */
+
+
+    /*
+    Will also have a ".func" file to store all created functions
+
+    Another idea is to store objects in various files (need to see if this is practical or not):
+
+    custom_type(x, y)
+
+    .foo()
+      return x
+
+    .boo()
+      return y
+
+    .string()
+      return x, y
+     */
+
+
+
+
 
 
 
