@@ -430,6 +430,10 @@ public class Parser {
     // if it ends with ':', it's variable assignment
     // if it ends with ')', it's a function or attribute
 
+    // class instance assignment  [DONE]
+    // attribute handling         [DONE]
+    // function calls             [DONE]
+    // String/int/bool assignment [TBD]
 
 
 
@@ -441,11 +445,29 @@ public class Parser {
 
 
 
+    //todo need to include whatever data is available when possible (allows us to throw exceptions such as DereferenceNullPointer)
 
 
-
-
-
+    public StaticFunction parseStaticFunction(String line) {
+        int startIdx = skipWhiteSpace(line, 0);
+        int endIdx = startIdx;
+        for(; endIdx < line.length(); endIdx++) {
+            if(line.charAt(endIdx) == '(')
+                break;
+        }
+        String funcName = line.substring(startIdx, endIdx);
+        switch(funcName) {
+            case "print":
+            case "build":
+            case "import":
+            case "export":
+                String arguments = verifyArgument(line, endIdx);
+                if(arguments == null) return null;
+                return new StaticFunction(funcName, arguments.split(FUNC_REGEX, -1));
+            default:
+                return null;
+        }
+    }
 
     public Attributes parseAttributes(String line) {
         int startIdx = skipWhiteSpace(line, 0);
