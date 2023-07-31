@@ -1,9 +1,7 @@
 package agile.planner.scripter;
 
-import agile.planner.data.Card;
-import agile.planner.data.Label;
-import agile.planner.data.Linker;
-import agile.planner.data.Task;
+import agile.planner.data.*;
+import agile.planner.scripter.exception.DereferenceNullException;
 import agile.planner.scripter.exception.InvalidGrammarException;
 import agile.planner.scripter.exception.InvalidPairingException;
 import agile.planner.util.CheckList;
@@ -239,7 +237,7 @@ public class Parser {
         //TODO we could use a heap to represent variables (offers O(logn) lookup and O(logn) removal/insertion)
     }
 
-    private Type lookupVariable(String token) {
+    public Type lookupVariable(String token) {
         for(Type t : variables) {
             if(token.equals(t.getVariableName())) {
                 return t;
@@ -248,7 +246,7 @@ public class Parser {
         return null;
     }
 
-    private Type[] lookupVariablePair(String token1, String token2) {
+    public Type[] lookupVariablePair(String token1, String token2) {
         Type[] types = new Type[2];
         for(Type t : variables) {
             if (token1.equals(t.getVariableName())) {
@@ -305,7 +303,7 @@ public class Parser {
      * </pre></blockquote>
      * @param line code being processes
      */
-    public Card parseCard(String line) {
+    public Card parseCardOld(String line) {
         String varName = processVariable(line);
         if(varName == null) return null;
         if(!processType(line, 3, varNameLength)) return null;
@@ -390,7 +388,177 @@ public class Parser {
                 ? line.substring(startIdx, endIdx) : null;
     }
 
-    public CheckList parseCheckList(String line) {
+
+
+
+
+
+
+
+
+    public Object parseAttr(String line) {
+        /*
+        String: c1.title
+        Tokenize by '.': [c1, title]
+        Lookup c1 for actual variable reference
+            If exists, continue
+            Else, null pointer
+        Tokenize by ',' for attr operation: []
+        Use switch logic to find correct enum value for attr operation
+        Call 'attrSet' with enum value and array of arguments
+
+        t1.label: COLOR, 3
+        vs
+        t1.edit_label(COLOR, 3)
+         */
+        String[] tokens = line.split("\\."); //todo will need to update so it doesn't include . inside " "
+        Type t1 = lookupVariable(tokens[0].trim());
+        if(t1 == null) throw new DereferenceNullException();
+        DataAttr attr = null;
+        switch(tokens[1]) {
+            case "title":
+                attr = DataAttr.GET_TITLE;
+                break;
+        }
+        if(attr == null) throw new DereferenceNullException();
+        return t1.attrSet(attr, null);
+    } //todo need to create another method that involves returning an Attribute instance
+
+    public Attributes parseAttributes(String line) {
+        String[] tokens = line.split("\\.");
+        String varName = tokens[0];
+
+        //split it up again
+        String[] args = tokens[1].split(",");
+        return new Attributes(varName, args[1], args);
+    }
+
+    // if it ends with ':', it's variable assignment
+    // if it ends with ')', it's a function or attribute
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public ClassInstance parseClassInstance(String line) {
+        // skips whitespace between beginning of line and variable
+        //    t1: task("HW", 3, 0)
+        int startIdx = skipWhiteSpace(line, 0);
+        int endIdx = startIdx;
+        // parses the variable name
+        for(; endIdx < line.length(); endIdx++) {
+            if(line.charAt(endIdx) == ':')
+                break;
+        }
+        String varName = line.substring(startIdx, endIdx);
+
+        // skips whitespace between variable and class instance:
+        endIdx = skipWhiteSpace(line, endIdx);
+        startIdx = endIdx;
+        // parses class instance type
+        for(; endIdx < line.length(); endIdx++) {
+            if(line.charAt(endIdx) == '(')
+                break;
+        }
+        String instanceType = line.substring(startIdx, endIdx);
+
+        // parses arguments in between parentheses (...)
+        String arguments = verifyArgument(line, endIdx);
+        if(arguments == null) return null;
+
+        // verifies parsed class instance exists and returns correct ClassInstance child class
+        ClassInstance inst = null;
+        switch(instanceType) {
+            case "card":
+                inst = parseCard(arguments);
+                break;
+            case "task":
+                inst = parseTask(arguments);
+                break;
+            case "label":
+                inst = parseLabel(arguments);
+                break;
+            case "checklist":
+                inst = parseCheckList(arguments);
+                break;
+            default:
+                //need to check if it's a string, int, or bool
+        }
+        if(inst == null) return null;
+        inst.setVarName(varName);
+        return inst;
+    }
+
+    private int skipWhiteSpace(String line, int startIdx) {
+        for(; startIdx < line.length(); startIdx++) {
+            if(line.charAt(startIdx) != ' ' && line.charAt(startIdx) != '\t')
+                break;
+        }
+        return startIdx;
+    }
+
+    private String verifyArgument(String line, int startIdx) {
+        startIdx = skipWhiteSpace(line, startIdx);
+        if(line.charAt(startIdx) != '(') return null;
+        int beginIdx = startIdx;
+        for(; startIdx < line.length(); startIdx++) {
+            if(line.charAt(startIdx) == ')')
+                break;
+        }
+        skipWhiteSpace(line, startIdx);
+        if(line.charAt(startIdx) != ' ' && line.charAt(startIdx) != '\t') return null;
+        return startIdx - beginIdx == 1 ? "" : line.substring(beginIdx, startIdx);
+    }
+
+    private CardInstance parseCard(String args) {
+        String[] arguments = args.split(FUNC_REGEX, -1);
+        return arguments.length == 1 ? new CardInstance(arguments[0]) : null;
+    }
+
+    private TaskInstance parseTask(String args) {
+        String[] arguments = args.split(FUNC_REGEX, -1);
+        return arguments.length == 3 ? new TaskInstance(arguments[0],
+                Integer.parseInt(arguments[1]), Integer.parseInt(arguments[2])) : null;
+    }
+
+    private LabelInstance parseLabel(String args) {
+        String[] arguments = args.split(FUNC_REGEX, -1);
+        return arguments.length == 2 ? new LabelInstance(arguments[0], Integer.parseInt(arguments[1])) : null;
+    }
+
+    private ClassInstance parseCheckList(String args) {
+        String[] arguments = args.split(FUNC_REGEX, -1);
+        return arguments.length == 1 ? new CheckListInstance(arguments[0]) : null;
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    public CheckList parseCheckListOld(String line) {
         String varName = processVariable(line);
         if(varName == null) return null;
         if(!processType(line, 2, varNameLength)) return null;
@@ -422,7 +590,7 @@ public class Parser {
 //        }
     }
 
-    public Label parseLabel(String line) {
+    public Label parseLabelOld(String line) {
         String varName = processVariable(line);
         if(varName == null) return null;
         if(!processType(line, 1, varNameLength)) return null;
@@ -454,7 +622,7 @@ public class Parser {
 //        }
     }
 
-    public Task parseTask(String line) {
+    public Task parseTaskOld(String line) {
         String varName = processVariable(line);
         if(varName == null) return null;
         if(!processType(line, 0, varNameLength)) return null;

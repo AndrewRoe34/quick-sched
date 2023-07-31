@@ -44,7 +44,7 @@ public class Card implements Linker{
      *
      * @param title title for Card
      */
-    public void setLabel(String title) {
+    public void setTitle(String title) {
         this.title = title;
     }
 

@@ -1,6 +1,9 @@
 package agile.planner.scripter;
 
+import agile.planner.data.Card;
+import agile.planner.data.DataAttr;
 import agile.planner.data.Linker;
+import agile.planner.scripter.exception.InvalidGrammarException;
 
 public class Type implements Comparable<Type> {
 
@@ -40,24 +43,58 @@ public class Type implements Comparable<Type> {
         this.type = type;
     }
 
-    public boolean addType(Type o) {
+    private boolean addType(Type o) {
         return datatype.add(o.getDatatype());
     }
 
-    public boolean removeType(Type o) {
+    private boolean removeType(Type o) {
         return datatype.remove(o.getDatatype());
     }
 
-    public boolean editAttr(Enum e, Object val) {
-        /*
-        Will create a method that passes an enum and a value with it
-        this will allow utilizing attributes for various Linkers to work with
+    /*
+        Categories when using "." operator:
+        t1.<retrieval> [t1.title, t1.hours]
+        t1.<edit>      [t1.title: "HW", t1.hours: 3]
+        t1.<add>
+        t1.<removal>
+        t1.<func>
 
-        ex:
-        public boolean editAttr(Enum e, Object val)
-
-        */
-        return false;
+        String: c1.title
+        Tokenize by '.': [c1, title]
+        Lookup c1 for actual variable reference
+            If exists, continue
+            Else, null pointer
+        Tokenize by ',' for attr operation: []
+        Use switch logic to find correct enum value for attr operation
+        Call 'attrSet' with enum value and array of arguments
+     */
+    public Object attrSet(DataAttr attr, String[] val) {
+        switch(type) {
+            case BOARD:
+            case CARD:
+                switch(attr) {
+                    case SET_TITLE:
+                        assert val.length == 1;
+                        ((Card) datatype).setTitle(val[0]);
+                        return null;
+                    case GET_TITLE:
+                        assert val.length == 0;
+                        return ((Card) datatype).getTitle();
+                    case ADD:
+                        assert val.length == 1 && val[0] instanceof Type;
+                        return addType((Type) val[0]);
+                    case REMOVE:
+                        assert val.length == 1 && val[0] instanceof Type;
+                        return removeType((Type) val[0]);
+                    default:
+                        throw new InvalidGrammarException();
+                }
+            case TASK:
+            case LABEL:
+            case CHECKLIST:
+            default:
+                return false;
+        }
     }
 
     @Override
