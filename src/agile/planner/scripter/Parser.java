@@ -20,7 +20,11 @@ public class Parser {
         INSTANCE,
         ATTRIBUTE,
         PRE_PROCESSOR,
-        RETURN
+        RETURN,
+        FUNC_FILE,
+        ATTR_FILE,
+        SETUP_CUST_FUNC,
+        CALL_CUST_FUNC
     }
 
     public void parsePreProcessor(String line) {
@@ -437,6 +441,138 @@ public class Parser {
 
 
 
+    /*
+    print(task("HW", 3, 1).foo(), "it works...")
+
+    print ["task("HW", 3, 1).foo(), "it works...""]
+
+    print ["task("HW", 3, 1).foo()", "it works...""]
+
+    [task("HW", 3, 1), foo()]
+
+    [foo()]
+
+    //print result of foo()
+
+    //start with next token
+
+    //Example 2:
+
+    str: task("HW", 3, 1).format()
+
+    [str, task("HW", 3, 1).format()]
+
+    //verify variable (create new one if necessary)
+
+    [task("HW", 3, 1), format()]
+
+    //determine whether there is any chaining involved (if so, tokenize it)
+
+    [format()]
+
+    //execute each token and utilize return value for next dot operator (if it cannot work, throw exception)
+    //exceptions include: calling method with a void type, unknown method call (i.e. wrong class usage)
+
+     */
+
+    /*
+        Steps for how to do the above:
+
+        1. Parse the entire statement
+        2. Separate by variable (or static function).
+        3. Parse the variable or function type
+        4. If variable, tokenize by ":"
+        5. If a function, parse arguments
+        6. If a variable, tokenize by "."
+        7. If a function, tokenize by ","
+        8. If a variable, return results
+        9. If a function, tokenize by "."
+        10. If a function, return results (will need to repeat steps 7 and 9)
+
+        t1: ...
+        func(...)
+        t1.foo(...)
+
+        Statement (not a ControlStatement such as if/foreach)
+
+        1. Attempt to tokenize by ":"
+            i. If successful, this falls under parseAssignment()
+            ii. Return an instance of AssignmentStatement
+        2. Attempt to tokenize by "." at the very beginning
+            i. If successful, this falls under parseMethod()
+            ii. Return an instance of AssignmentStatement (but using null as the variable name)
+        3. Attempt to tokenize by "()"
+            i. If successful, this falls under parseFunction()
+            ii. Return an instance of FunctionStatement
+
+
+        // str: c1.get_task(0).get_name()
+        AssignmentStatement:
+            -varName: String    // str
+            -args: String[]     // [c1, get_task(0), get_name()]
+
+
+        // print(c1.get_task(0).get_name())
+        FunctionStatement:
+            -funcName: String   // print
+            -args: String[]     // [c1.get_task(0).get_name()]
+
+        // print(my_card: c1.get_task(0).get_name(), c1.get_name())
+        1. FunctionStatement:
+            -funcName: print
+            -args: [my_card: c1.get_task(0).get_name(), c1.get_name())
+        2. AssignmentStatement(FS.args[0])
+            -varName: my_card
+            -args: [c1,get_task(0),get_name()]
+        3. FSMState then processes the return value and stores the ultimate return value in "my_card"
+        4. AssignmentStatement(FS.args[1])
+            -varName: null
+            -args: [c1,get_name()]
+        5. FSMState then processes the return value and stores it in a "dummy" local variable (will be destroyed afterwards)
+        6. Using the two variables, execute the print() function
+
+        Will need to continually break each token down to its most bare component each time
+        This implementation is similar to how MergeSort works the array down to its finest parts
+        Will need to make sure the two methods below are well tested as they will likely be called many many many times
+
+
+        t1.foo( b1.get( boards_last_index() ).get_first_task() )
+        1. AssignmentStatement:
+            -varName: null
+            -args: [foo( b1.get( boards_last_index() ).get_first_task() )]
+        2. AssignmentStatement on AS[0]
+            -varName: null
+            -args: [foo( b1.get( boards_last_index() ), get_first_task() )
+        3. AssignmentStatement on AS[0] arguments
+            -varName: null
+            -args: [b1, get( boards_last_index()]
+        4. Store return value of b1.get( boards_last_index() ) in local variable with null varName
+        5. Process get_first_task() and store in local var
+        6. Call foo
+
+        Notes: Focus on "," and THEN "." with tokenizing
+
+        Think of it like a Tree where you have 4 nodes from one branch and then 1 or 3 or 2.
+        Ideally, utilize recursion when solving this problem (will make it easier)
+        The number of tokens by "," are the number of children you have
+        Processing all the children means you can return the value
+        But, you will need to handle ".", which means making more recursive calls
+
+        Will need to make sure that assignment is handled properly:
+        bloop.add(z: t1.foo( y: b1.get( x: boards_last_index() ).get_first_task() ))
+     */
+
+
+
+    public Statement parseMethod(String line) {
+        String varName = null;
+
+        return new AssignmentState(null, null);
+    }
+
+    public Statement parseFunction(String line) {
+
+    }
 
 
 
@@ -444,11 +580,6 @@ public class Parser {
 
 
 
-
-
-
-    // if it ends with ':', it's variable assignment
-    // if it ends with ')', it's a function or attribute
 
     // class instance assignment  [DONE]
     // attribute handling         [DONE]
@@ -459,22 +590,15 @@ public class Parser {
     // Calling custom function    [TBD]
     // Reading .func file         [TBD]
     // Reading .attr file         [TBD]
+    // foreach loop               [TBD]
+    // if condition               [TBD]
 
-
-
-
-
-
-
+    //todo need to include whatever data is available when possible (allows us to throw exceptions such as DereferenceNullPointer)
 
     public Operation typeOfOperation(String line) {
 
         return null;
     }
-
-
-    //todo need to include whatever data is available when possible (allows us to throw exceptions such as DereferenceNullPointer)
-
 
     public StaticFunction parseStaticFunction(String line) { //todo need to allow for custom functions as well
         int startIdx = skipWhiteSpace(line, 0);
@@ -614,11 +738,6 @@ public class Parser {
         if(line.charAt(startIdx) != ' ' && line.charAt(startIdx) != '\t') return null;
         return startIdx - beginIdx == 1 ? "" : line.substring(beginIdx, startIdx);
     }
-
-
-
-
-
 
 
     /*

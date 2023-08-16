@@ -14,3 +14,6 @@ t1: get_all_tasks()
 t1: get_first_task()
 
 t1: get_last_task()
+
+
+t1: add(get_first_card().get_first_task(), get_last_card())
