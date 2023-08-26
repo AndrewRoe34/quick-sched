@@ -8,10 +8,6 @@ public class ParserTest {
 
     Parser parser = new Parser();
 
-    @Before
-    public void setUp() {
-    }
-
     @Test
     public void testParsePreProcessor() {
         //Valid test case
@@ -34,10 +30,6 @@ public class ParserTest {
         String ppBad3 = "include: __CURR_CONFIG__, _DEBUG__";
         assertNull(parser.parsePreProcessor(ppBad3));
 
-    }
-
-    @Test
-    public void parseMethod() {
     }
 
     @Test
@@ -88,9 +80,19 @@ public class ParserTest {
 
     @Test
     public void parseAttributes() {
+        String method1 = "c1.get_attr()";
+        Attributes attr = parser.parseAttributes(method1);
+        int x = 3;
+        //todo NOTE: smpl won't allow calling functions as arguments except for getters
+        //todo example: print(c1.get_name())
+        //todo getters are not allowed to have function calls as their arguments
+        //todo restrict to attribute method calls as function arguments
     }
 
     @Test
     public void parseClassInstance() {
+        String inst1 = "t1: task(\"HW\", 3, 2)";
+        ClassInstance ci1 = parser.parseClassInstance(inst1);
+        int x = 3;
     }
 }

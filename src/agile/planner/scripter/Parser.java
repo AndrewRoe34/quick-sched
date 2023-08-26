@@ -4,21 +4,14 @@ import java.util.*;
 
 public class Parser {
 
-    private List<Type> variables = new ArrayList<>();
-    private int varNameLength;
-    private int constructIdx;
     private static final String FUNC_REGEX = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
 
     public enum Operation {
-        FUNCTION,
-        INSTANCE,
-        ATTRIBUTE,
-        PRE_PROCESSOR,
-        RETURN,
-        FUNC_FILE,
-        ATTR_FILE,
-        SETUP_CUST_FUNC,
-        CALL_CUST_FUNC
+        FUNCTION,        // <foo>()
+        INSTANCE,        // <var>: <type>
+        ATTRIBUTE,       // <var>.<attr>
+        PRE_PROCESSOR,   // include: ..
+        SETUP_CUST_FUNC, // func ..
     }
 
     public PreProcessor parsePreProcessor(String line) {
@@ -36,54 +29,53 @@ public class Parser {
             boolean exprt = false;
             boolean build = false;
             boolean stats = false;
-            for(int i = 0; i < tokens.length; i++) {
-                String s = tokens[i];
-                switch(tokens[i].trim()) {
+            for (String s : tokens) {
+                switch (s.trim()) {
                     case "__CURR_CONFIG__":
-                        if(config) {
+                        if (config) {
                             return null;
                         }
                         config = true;
                         break;
                     case "__DEF_CONFIG__":
-                        if(config) {
+                        if (config) {
                             return null;
                         }
                         config = true;
                         defConfig = true;
                         break;
                     case "__DEBUG__":
-                        if(debug) {
+                        if (debug) {
                             return null;
                         }
                         debug = true;
                         break;
                     case "__LOG__":
-                        if(log) {
+                        if (log) {
                             return null;
                         }
                         log = true;
                         break;
                     case "__IMPORT__":
-                        if(imprt) {
+                        if (imprt) {
                             return null;
                         }
                         imprt = true;
                         break;
                     case "__EXPORT__":
-                        if(exprt) {
+                        if (exprt) {
                             return null;
                         }
                         exprt = true;
                         break;
                     case "__BUILD__":
-                        if(build) {
+                        if (build) {
                             return null;
                         }
                         build = true;
                         break;
                     case "__STATS__":
-                        if(stats) {
+                        if (stats) {
                             return null;
                         }
                         stats = true;
@@ -97,26 +89,40 @@ public class Parser {
         return null;
     }
 
-    public Statement parseMethod(String line) {
-        String varName = null;
-
-        return new AssignmentState(null, null);
-    }
-
     // class instance assignment  [DONE]
     // attribute handling         [DONE]
     // function calls             [DONE]
     // String/int/bool assignment [TBD]
     // Preprocessor handling      [DONE]
-    // Custom function            [TBD]
+    // Create custom function     [TBD]
     // Calling custom function    [TBD]
     // Reading .func file         [TBD]
 
-    //todo need to include whatever data is available when possible (allows us to throw exceptions such as DereferenceNullPointer)
-
     public Operation typeOfOperation(String line) {
-
-        return null;
+        String[] tokens = line.trim().split("\\s");
+        switch(tokens[0]) {
+            case "include:":
+                return Operation.PRE_PROCESSOR;
+            case "func":
+                return Operation.SETUP_CUST_FUNC;
+            default:
+                switch(tokens[0].charAt(tokens.length - 1)) {
+                    case ':':
+                        return Operation.INSTANCE;
+                    case '.':
+                        return Operation.ATTRIBUTE;
+                    default:
+                        if(tokens.length > 1 && tokens[1].length() > 0 && tokens[1].charAt(0) == '.') {
+                            return Operation.ATTRIBUTE;
+                        } else {
+                            String finalToken = tokens[tokens.length - 1].trim();
+                            if(finalToken.charAt(finalToken.length() - 1) == ')') {
+                                return Operation.FUNCTION;
+                            }
+                            return null;
+                        }
+                }
+        }
     }
 
     public StaticFunction parseCustomFunction(String[] lines) {
@@ -136,10 +142,18 @@ public class Parser {
             case "build":
             case "import":
             case "export":
+            case "serialize_data":
+            case "write_file":
+            case "read_file":
+            case "encrypt_data":
+            case "decrypt_data":
+            case "get_task_by_name":
+            case "get_task_by_id": //todo need to add more functions
                 String arguments = verifyArgument(line, endIdx);
                 if(arguments == null) return null;
                 return new StaticFunction(funcName, "".equals(arguments.trim()) ? null : arguments.split(FUNC_REGEX, -1));
             default:
+                //todo need to use a map to locate custom functions
                 return null;
         }
     }
@@ -165,6 +179,9 @@ public class Parser {
             String[] args = Objects
                     .requireNonNull(verifyArgument(line, endIdx))
                     .split(FUNC_REGEX, -1);
+            if(args.length == 1 && "".equals(args[0])) {
+                args = null;
+            }
             return new Attributes(varName, attr, args);
         } catch (NullPointerException e) {
             return null;
@@ -191,14 +208,14 @@ public class Parser {
             if(line.charAt(endIdx) == '(')
                 break;
         }
-        String instanceType = line.substring(startIdx, endIdx);
+        String instanceType = line.substring(startIdx + 1, endIdx).trim();
 
         // parses arguments in between parentheses (...)
         String arguments = verifyArgument(line, endIdx);
         if(arguments == null) return null;
 
         // verifies parsed class instance exists and returns correct ClassInstance child class
-        ClassInstance inst = null;
+        ClassInstance inst;
         switch(instanceType) {
             case "card":
                 inst = parseCard(arguments);
@@ -227,8 +244,8 @@ public class Parser {
 
     private TaskInstance parseTask(String args) {
         String[] arguments = args.split(FUNC_REGEX, -1);
-        return arguments.length == 3 ? new TaskInstance(arguments[0],
-                Integer.parseInt(arguments[1]), Integer.parseInt(arguments[2])) : null;
+        return arguments.length == 3 ? new TaskInstance(arguments[0].trim(),
+                Integer.parseInt(arguments[1].trim()), Integer.parseInt(arguments[2].trim())) : null;
     }
 
     private LabelInstance parseLabel(String args) {
