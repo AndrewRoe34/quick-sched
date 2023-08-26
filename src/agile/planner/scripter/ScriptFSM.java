@@ -18,30 +18,30 @@ public class ScriptFSM {
 
     public void executeScript() throws FileNotFoundException {
         Scanner scriptScanner = new Scanner(new File("fun1.smpl"));
-        while(scriptScanner.hasNextLine()) {
+        while (scriptScanner.hasNextLine()) {
             String line = scriptScanner.nextLine();
             Parser.Operation operation = parser.typeOfOperation(line);
-            switch(operation) {
+            switch (operation) {
                 case COMMENT:
                     break;
                 case PRE_PROCESSOR:
                     PreProcessor preProcessor = parser.parsePreProcessor(line);
-                    if(preProcessor == null) throw new InvalidPreProcessorException();
+                    if (preProcessor == null) throw new InvalidPreProcessorException();
                     processPreProcessor(preProcessor);
                     break;
                 case ATTRIBUTE:
                     Attributes attr = parser.parseAttributes(line);
-                    if(attr == null) throw new InvalidFunctionException();
+                    if (attr == null) throw new InvalidFunctionException();
                     processAttribute(attr);
                     break;
                 case FUNCTION:
                     StaticFunction func = parser.parseStaticFunction(line);
-                    if(func == null) throw new InvalidFunctionException();
+                    if (func == null) throw new InvalidFunctionException();
                     processStaticFunction(func);
                     break;
                 case INSTANCE:
                     ClassInstance classInstance = parser.parseClassInstance(line);
-                    if(classInstance == null) {
+                    if (classInstance == null) {
                         //todo then it is a static function attempting to return a value
                         // also need to separate the tokens from the variable and the function
                     } else {
@@ -66,14 +66,13 @@ public class ScriptFSM {
     }
 
     protected void processClassInstance(ClassInstance classInstance) {
-        Type[] args = processArguments(classInstance.getArgs());
         //todo will need to update ClassInstance types to hold String[] args
 
-        if(classInstance instanceof CardInstance) {
+        if (classInstance instanceof CardInstance) {
 
-        } else if(classInstance instanceof TaskInstance) {
+        } else if (classInstance instanceof TaskInstance) {
 
-        } else if(classInstance instanceof LabelInstance) {
+        } else if (classInstance instanceof LabelInstance) {
 
         } else {
 
@@ -87,7 +86,7 @@ public class ScriptFSM {
          */
         Type[] args = processArgumentsHelper(attr.getArguments());
         Type t1 = lookupVariable(attr.getVarName());
-        if(t1 == null) throw new DereferenceNullException();
+        if (t1 == null) throw new DereferenceNullException();
         Parser.AttrFunc func = parser.determineAttrFunc(attr.getAttr());
         return t1.attrSet(func, args);
     }
@@ -99,12 +98,12 @@ public class ScriptFSM {
         3. Call function with the specified arguments
          */
         Type[] args = processArguments(func.getArgs());
-        switch(func.getFuncName()) {
+        switch (func.getFuncName()) {
             case "build":
                 funcBuild();
                 return null;
             case "print":
-                for(Type t : args)
+                for (Type t : args)
                     System.out.print(t.toString());
                 return null;
             default:
@@ -114,8 +113,8 @@ public class ScriptFSM {
     }
 
     public Type lookupVariable(String token) {
-        for(Type t : variableList) {
-            if(token.equals(t.getVariableName())) {
+        for (Type t : variableList) {
+            if (token.equals(t.getVariableName())) {
                 return t;
             }
         }
@@ -129,53 +128,53 @@ public class ScriptFSM {
         3. Return value
          */
         Type[] types = new Type[args.length];
-        for(int i = 0; i < args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             Parser.Operation operation = parser.typeOfOperation(args[i]);
-            switch(operation) {
+            switch (operation) {
                 case CONSTANT:
                     types[i] = parser.parseConstant(args[i]);
                 case VARIABLE:
                     Type t1 = lookupVariable(args[i]);
-                    if(t1 == null) throw new DereferenceNullException();
+                    if (t1 == null) throw new DereferenceNullException();
                     types[i] = t1;
                 default:
                     throw new InvalidFunctionException();
+            }
         }
         return types;
     }
 
     protected Type[] processArguments(String[] args) {
         /**
-        1. Verify each argument is either a Type or an Attr
-        2. If Attr, call processArgumentsHelper() and store return value
-        3. If Type, simply store value
-        4. Call appropriate method
-        5. Return value
+         1. Verify each argument is either a Type or an Attr
+         2. If Attr, call processArgumentsHelper() and store return value
+         3. If Type, simply store value
+         4. Call appropriate method
+         5. Return value
          */
         Type[] types = new Type[args.length];
-        for(int i = 0; i < args.length; i++) {
+        for (int i = 0; i < args.length; i++) {
             Parser.Operation operation = parser.typeOfOperation(args[i]);
-            switch(operation) {
+            switch (operation) {
                 case ATTRIBUTE:
                     Attributes attr = parser.parseAttributes(args[i]);
                     Type[] temp = processArgumentsHelper(attr.getArguments());
-
                     //Lookup variable (if null, throw exception)
                     Type t1 = lookupVariable(attr.getVarName());
-                    if(t1 == null) throw new DereferenceNullException();
+                    if (t1 == null) throw new DereferenceNullException();
                     //Determine AttrFunc
                     Parser.AttrFunc func = parser.determineAttrFunc(attr.getAttr());
-                    if(func == null) throw new InvalidGrammarException();
+                    if (func == null) throw new InvalidGrammarException();
                     //Make method call with 'temp'
                     Type ret = t1.attrSet(func, temp);
                     //if e is null, throw exception here
-                    if(ret == null) throw new InvalidFunctionException();
+                    if (ret == null) throw new InvalidFunctionException();
                     //else, store value in types[i]
                     types[i] = ret;
                 case CONSTANT:
                     types[i] = parser.parseConstant(args[i]);
                 case VARIABLE:
-                    types[i] = parser.parseVariable(args[i]);
+                    //types[i] = parser.parseVariable(args[i]);
                 default:
                     throw new InvalidFunctionException();
             }
