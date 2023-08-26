@@ -1,5 +1,6 @@
 package agile.planner.scripter;
 
+import agile.planner.data.Card;
 import agile.planner.scripter.exception.DereferenceNullException;
 import agile.planner.scripter.exception.InvalidFunctionException;
 import agile.planner.scripter.exception.InvalidGrammarException;
@@ -66,10 +67,10 @@ public class ScriptFSM {
     }
 
     protected void processClassInstance(ClassInstance classInstance) {
-        //todo will need to update ClassInstance types to hold String[] args
-
         if (classInstance instanceof CardInstance) {
-
+            CardInstance card = (CardInstance) classInstance;
+            Type t1 = new Type(new Card(card.getTitle()), card.getVarName(), Type.TypeId.CARD);
+            variableList.add(t1);
         } else if (classInstance instanceof TaskInstance) {
 
         } else if (classInstance instanceof LabelInstance) {
