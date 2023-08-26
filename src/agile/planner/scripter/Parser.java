@@ -201,15 +201,15 @@ public class Parser {
         String trimmed = line.trim();
         try {
             int val = Integer.parseInt(trimmed);
-            return new Type(val, null, Type.TypeId.INTEGER);
+            return new Type(val, null);
         } catch(Exception e) {
             //process string now
             if(line.charAt(0) == '"' && line.charAt(line.length() - 1) == '"') {
-                return new Type(line, null, Type.TypeId.STRING);
+                return new Type(line, null);
             } else if("true".equals(line)) {
-                return new Type(true, null, Type.TypeId.BOOLEAN);
+                return new Type(true, null);
             } else if("false".equals(line)) {
-                return new Type(false, null, Type.TypeId.BOOLEAN);
+                return new Type(false, null);
             } else {
                 return null;
             }

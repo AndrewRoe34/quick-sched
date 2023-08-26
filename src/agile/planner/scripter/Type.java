@@ -31,32 +31,66 @@ public class Type implements Comparable<Type> {
 
     public Type(Linker datatype, String variableName, TypeId type) {
         this.variableName = variableName;
-        setDatatype(datatype, type);
+        setLinkerData(datatype, type);
     }
 
-    public Linker getDatatype() {
+    public Type(Integer intConstant, String variableName) {
+        this.variableName = variableName;
+        setIntConstant(intConstant);
+    }
+
+    public Type(Boolean boolConstant, String variableName) {
+        this.variableName = variableName;
+        setBoolConstant(boolConstant);
+    }
+
+    public Type(String stringConstant, String variableName) {
+        this.variableName = variableName;
+        setStringConstant(stringConstant);
+    }
+
+    public Linker getLinkerData() {
         return datatype;
+    }
+
+    public void setLinkerData(Linker datatype, TypeId type) {
+        this.datatype = datatype;
+        this.type = type;
     }
 
     public String getVariableName() {
         return variableName;
     }
 
-    public TypeId getVariableIdx() {
+    public TypeId getVariabTypeId() {
         return type;
     }
 
-    public void setDatatype(Linker datatype, TypeId type) {
-        this.datatype = datatype;
-        this.type = type;
+    public Integer getIntConstant() {
+        return intConstant;
     }
 
-    private boolean addType(Type o) {
-        return datatype.add(o.getDatatype());
+    public void setIntConstant(Integer intConstant) {
+        this.intConstant = intConstant;
+        type = TypeId.INTEGER;
     }
 
-    private boolean removeType(Type o) {
-        return datatype.remove(o.getDatatype());
+    public Boolean getBoolConstant() {
+        return boolConstant;
+    }
+
+    public void setBoolConstant(Boolean boolConstant) {
+        this.boolConstant = boolConstant;
+        type = TypeId.BOOLEAN;
+    }
+
+    public String getStringConstant() {
+        return stringConstant;
+    }
+
+    public void setStringConstant(String stringConstant) {
+        this.stringConstant = stringConstant;
+        type = TypeId.STRING;
     }
 
     /*
@@ -76,18 +110,26 @@ public class Type implements Comparable<Type> {
         Use switch logic to find correct enum value for attr operation
         Call 'attrSet' with enum value and array of arguments
      */
-    public Object attrSet(Parser.AttrFunc attr, String[] val) {
+    public Type attrSet(Parser.AttrFunc attr, Type[] args) {
+        //these constants CANNOT use attribute functions
+        switch(type) {
+            case INTEGER:
+            case STRING:
+            case BOOLEAN:
+                throw new InvalidGrammarException();
+        }
+
         switch(type) {
             case BOARD:
             case CARD:
                 switch(attr) {
                     case SET_TITLE:
-                        assert val.length == 1;
-                        ((Card) datatype).setTitle(val[0]);
+                        assert args.length == 1 && args[0].getStringConstant() != null;
+                        ((Card) datatype).setTitle(args[0].getStringConstant());
                         return null;
                     case GET_TITLE:
-                        assert val.length == 0;
-                        return ((Card) datatype).getTitle();
+                        assert args.length == 0;
+                        return new Type(((Card) datatype).getTitle(), null);
 //                    case ADD: todo need to uncomment
 //                        assert val.length == 1 && val[0] instanceof Type;
 //                        return addType((Type) val[0]);
@@ -103,6 +145,14 @@ public class Type implements Comparable<Type> {
             default:
                 return false;
         }
+    }
+
+    private boolean addType(Type o) {
+        return datatype.add(o.getLinkerData());
+    }
+
+    private boolean removeType(Type o) {
+        return datatype.remove(o.getLinkerData());
     }
 
     @Override

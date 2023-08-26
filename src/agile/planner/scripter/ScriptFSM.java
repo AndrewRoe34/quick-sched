@@ -43,13 +43,7 @@ public class ScriptFSM {
                     ClassInstance classInstance = parser.parseClassInstance(line);
                     if(classInstance == null) {
                         //todo then it is a static function attempting to return a value
-                        func = parser.parseStaticFunction(line);
-                        if(func == null) throw new InvalidFunctionException();
-                        Type type = processStaticFunction(func);
-                        if(type == null) {
-                            //todo need to throw an exception since void functions cannot return values
-                        }
-                        //todo need to finish here...
+                        // also need to separate the tokens from the variable and the function
                     } else {
                         processClassInstance(classInstance);
                     }
@@ -92,9 +86,10 @@ public class ScriptFSM {
         2. Attempt to call the method via the Type method attrSet()
          */
         Type[] args = processArgumentsHelper(attr.getArguments());
-        //todo call correct function and return value
-        // (use the Type method call, need to update it so that it works with Types and not String[] args)
-        return null;
+        Type t1 = lookupVariable(attr.getVarName());
+        if(t1 == null) throw new DereferenceNullException();
+        Parser.AttrFunc func = parser.determineAttrFunc(attr.getAttr());
+        return t1.attrSet(func, args);
     }
 
     protected Type processStaticFunction(StaticFunction func) {
