@@ -68,7 +68,7 @@ public class Type implements Comparable<Type> {
         Use switch logic to find correct enum value for attr operation
         Call 'attrSet' with enum value and array of arguments
      */
-    public Object attrSet(DataAttr attr, String[] val) {
+    public Object attrSet(Parser.AttrFunc attr, String[] val) {
         switch(type) {
             case BOARD:
             case CARD:

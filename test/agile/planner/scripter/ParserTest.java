@@ -34,6 +34,9 @@ public class ParserTest {
 
     @Test
     public void typeOfOperation() {
+        String pp = "include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__, __STATS__";
+        Parser.Operation operation = parser.typeOfOperation(pp);
+        //todo need to finish
     }
 
     @Test
@@ -87,6 +90,7 @@ public class ParserTest {
         //todo example: print(c1.get_name())
         //todo getters are not allowed to have function calls as their arguments
         //todo restrict to attribute method calls as function arguments
+        //todo in short, static functions can have method calls as arguments (but those method calls cannot have anything else but simple types)
     }
 
     @Test

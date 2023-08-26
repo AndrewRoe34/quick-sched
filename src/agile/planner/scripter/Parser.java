@@ -6,12 +6,35 @@ public class Parser {
 
     private static final String FUNC_REGEX = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
 
+    public enum AttrFunc {
+        GET_ID,
+        SET_ID,
+        GET_TITLE,
+        SET_TITLE,
+        GET_COLOR,
+        SET_COLOR,
+        GET_DUE_DATE,
+        SET_DUE_DATE,
+        //todo need to finish (don't worry about working with Lists yet, focus on single objects)
+        TOTAL_HOURS,
+        SUB_TOTAL_HOURS,
+        AVG_HOURS,
+        TASKS,
+        CHECKLIST,
+        LABELS,
+        ADD,
+        REMOVE
+    }
+
     public enum Operation {
         FUNCTION,        // <foo>()
         INSTANCE,        // <var>: <type>
         ATTRIBUTE,       // <var>.<attr>
         PRE_PROCESSOR,   // include: ..
         SETUP_CUST_FUNC, // func ..
+        COMMENT,         // #
+        CONSTANT,        // # or "abc" or true/false
+        VARIABLE         // anything besides the above
     }
 
     public PreProcessor parsePreProcessor(String line) {
@@ -96,15 +119,18 @@ public class Parser {
     // Preprocessor handling      [DONE]
     // Create custom function     [TBD]
     // Calling custom function    [TBD]
-    // Reading .func file         [TBD]
 
     public Operation typeOfOperation(String line) {
         String[] tokens = line.trim().split("\\s");
+        if(tokens[0].charAt(0) == '#') return Operation.COMMENT;
         switch(tokens[0]) {
             case "include:":
                 return Operation.PRE_PROCESSOR;
             case "func":
                 return Operation.SETUP_CUST_FUNC;
+            case "true":
+            case "false":
+                return Operation.CONSTANT;
             default:
                 switch(tokens[0].charAt(tokens.length - 1)) {
                     case ':':
@@ -114,14 +140,27 @@ public class Parser {
                     default:
                         if(tokens.length > 1 && tokens[1].length() > 0 && tokens[1].charAt(0) == '.') {
                             return Operation.ATTRIBUTE;
+                        } else if(tokens[0].charAt(0) == '"' && tokens[tokens.length - 1].charAt(tokens[tokens.length - 1].length() - 1) == '"') {
+                            return Operation.CONSTANT;
+                        } else if(containsInteger(line.trim())) {
+                            return Operation.CONSTANT;
                         } else {
                             String finalToken = tokens[tokens.length - 1].trim();
                             if(finalToken.charAt(finalToken.length() - 1) == ')') {
                                 return Operation.FUNCTION;
                             }
-                            return null;
+                            return Operation.VARIABLE;
                         }
                 }
+        }
+    }
+
+    private boolean containsInteger(String line) {
+        try {
+            Integer.parseInt(line.trim());
+            return true;
+        } catch(Exception e) {
+            return false;
         }
     }
 
@@ -278,6 +317,29 @@ public class Parser {
         int idx = skipWhiteSpace(line, startIdx);
         if(idx != startIdx && line.charAt(idx) != ' ' && line.charAt(idx) != '\t') return null;
         return startIdx - beginIdx == 1 ? "" : line.substring(beginIdx + 1, startIdx);
+    }
+
+    public AttrFunc determineAttrFunc(String attr) {
+        switch(attr) {
+            case "get_id":
+                return AttrFunc.GET_ID;
+            case "set_id":
+                return AttrFunc.SET_ID;
+            case "get_title":
+                return AttrFunc.GET_TITLE;
+            case "set_title":
+                return AttrFunc.SET_TITLE;
+            case "get_color":
+                return AttrFunc.GET_COLOR;
+            case "set_color":
+                return AttrFunc.SET_COLOR;
+            case "get_due_date":
+                return AttrFunc.GET_DUE_DATE;
+            case "set_due_date":
+                return AttrFunc.SET_DUE_DATE;
+            default:
+                return null;
+        }
     }
 
 
