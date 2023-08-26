@@ -57,6 +57,10 @@ public class ScriptFSM {
                 case SETUP_CUST_FUNC:
                     //todo will work on later
                     break;
+                case VARIABLE:
+                case CONSTANT:
+                    //do nothing here
+                    break;
                 default:
                     throw new InvalidGrammarException();
             }
@@ -136,7 +140,9 @@ public class ScriptFSM {
                 case CONSTANT:
                     types[i] = parser.parseConstant(args[i]);
                 case VARIABLE:
-                    types[i] = parser.parseVariable(args[i]);
+                    Type t1 = lookupVariable(args[i]);
+                    if(t1 == null) throw new DereferenceNullException();
+                    types[i] = t1;
                 default:
                     throw new InvalidFunctionException();
         }

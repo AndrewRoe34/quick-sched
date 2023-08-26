@@ -1,7 +1,6 @@
 package agile.planner.scripter;
 
 import agile.planner.data.Card;
-import agile.planner.data.DataAttr;
 import agile.planner.data.Linker;
 import agile.planner.scripter.exception.InvalidGrammarException;
 
@@ -12,10 +11,19 @@ public class Type implements Comparable<Type> {
         CARD,
         TASK,
         LABEL,
-        CHECKLIST
+        CHECKLIST,
+        INTEGER,
+        BOOLEAN,
+        STRING
     }
 
     private Linker datatype;
+
+    private Integer intConstant;
+
+    private Boolean boolConstant;
+
+    private String stringConstant;
 
     private final String variableName;
 

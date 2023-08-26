@@ -197,6 +197,26 @@ public class Parser {
         }
     }
 
+    public Type parseConstant(String line) {
+        String trimmed = line.trim();
+        try {
+            int val = Integer.parseInt(trimmed);
+            return new Type(val, null, Type.TypeId.INTEGER);
+        } catch(Exception e) {
+            //process string now
+            if(line.charAt(0) == '"' && line.charAt(line.length() - 1) == '"') {
+                return new Type(line, null, Type.TypeId.STRING);
+            } else if("true".equals(line)) {
+                return new Type(true, null, Type.TypeId.BOOLEAN);
+            } else if("false".equals(line)) {
+                return new Type(false, null, Type.TypeId.BOOLEAN);
+            } else {
+                return null;
+            }
+        }
+
+    }
+
     public Attributes parseAttributes(String line) {
         int startIdx = skipWhiteSpace(line, 0);
         int endIdx = startIdx;
