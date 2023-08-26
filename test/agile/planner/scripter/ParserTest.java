@@ -1,81 +1,96 @@
 package agile.planner.scripter;
 
-import agile.planner.data.Card;
-import agile.planner.io.IOProcessing;
-import agile.planner.util.CheckList;
+import org.junit.Before;
 import org.junit.Test;
-
 import static org.junit.Assert.*;
 
 public class ParserTest {
 
-    private Parser p = new Parser();
+    Parser parser = new Parser();
 
-    @Test
-    public void parsePreProcessor() {
+    @Before
+    public void setUp() {
     }
 
     @Test
-    public void parseCallCustomFunc() {
+    public void testParsePreProcessor() {
+        //Valid test case
+        String pp = "include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__, __STATS__";
+        PreProcessor preProcessor = parser.parsePreProcessor(pp);
+        assertNotNull(preProcessor);
+        assertFalse(preProcessor.isDefaultConfig());
+        assertTrue(preProcessor.isLog());
+        assertTrue(preProcessor.isLog());
+        assertTrue(preProcessor.isImprt());
+        assertTrue(preProcessor.isExprt());
+        assertTrue(preProcessor.isBuild());
+        assertTrue(preProcessor.isStats());
+
+        //Invalid test cases
+        String ppBad1 = "include __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__, __STATS__";
+        assertNull(parser.parsePreProcessor(ppBad1));
+        String ppBad2 = "include: __CURR_CONFIG__ __DEBUG__";
+        assertNull(parser.parsePreProcessor(ppBad2));
+        String ppBad3 = "include: __CURR_CONFIG__, _DEBUG__";
+        assertNull(parser.parsePreProcessor(ppBad3));
+
     }
 
     @Test
-    public void parseIf() {
+    public void parseMethod() {
     }
 
     @Test
-    public void parseForEach() {
+    public void typeOfOperation() {
     }
 
     @Test
-    public void parseAddFunc() {
+    public void parseCustomFunction() {
     }
 
     @Test
-    public void parsePrintFunc() {
-        String line = "c1: card(\"Math\")";
-        String line2 = "c2: card(\"Chemistry\")";
-        p.parseCard(line);
-        p.parseCard(line2);
-        String line3 = "println(\"c1=\", c1, \", c2=\", c2)";
-        p.parsePrintFunc(line3);
-        p.parsePrintFunc("println(\"It worked!\")");
+    public void parseStaticFunction() {
+        //Valid test cases
+        String func1 = "print(\"Hello World\")";
+        StaticFunction sf = parser.parseStaticFunction(func1);
+        assertEquals("print", sf.getFuncName());
+        assertEquals(1, sf.getArgs().length);
+        assertEquals("\"Hello World\"", sf.getArgs()[0]);
+
+        String func2 = "build()";
+        sf = parser.parseStaticFunction(func2);
+        assertEquals("build", sf.getFuncName());
+        assertNull(sf.getArgs());
+
+        String func3 = "import()";
+        sf = parser.parseStaticFunction(func3);
+        assertEquals("import", sf.getFuncName());
+        assertNull(sf.getArgs());
+
+        String func4 = "export()";
+        sf = parser.parseStaticFunction(func4);
+        assertEquals("export", sf.getFuncName());
+        assertNull(sf.getArgs());
+
+        //Invalid test cases
+        String func1Bad = "print(\"Hello World\"";
+        sf = parser.parseStaticFunction(func1Bad);
+        assertNull(sf);
+
+        String func2Bad = "build)";
+        sf = parser.parseStaticFunction(func2Bad);
+        assertNull(sf);
+
+        String func3Bad = "import";
+        sf = parser.parseStaticFunction(func3Bad);
+        assertNull(sf);
     }
 
     @Test
-    public void parseCard() {
-        String line = "c1: card(\"Math\")";
-        String line2 = "c1: card(\"Chemistry\")";
-        Card c1 = p.parseCard(line);
-        Card c2 = p.parseCard(line2);
-        assertNotNull(c1);
-        assertEquals("\"Math\"", c1.getTitle());
-        assertNotNull(c2);
-        assertEquals("\"Chemistry\"", c2.getTitle());
-        Type t1 = p.getVariable(0);
-        System.out.println(t1.getDatatype());
+    public void parseAttributes() {
     }
 
     @Test
-    public void parseCheckList() {
-        String line = "cl: checklist(\"Math\", 3)";
-        String line2 = "my_cl: checklist(\"Chemistry\", 4)";
-        CheckList cl1 = p.parseCheckList(line);
-        CheckList cl2 = p.parseCheckList(line2);
-        assertNotNull(cl1);
-        assertEquals("\"Math\"", cl1.getName());
-        assertNotNull(cl2);
-        assertEquals("\"Chemistry\"", cl2.getName());
-        Type t1 = p.getVariable(1);
-        System.out.println(t1.getVariableName());
-        System.out.println(t1);
-    }
-
-    @Test
-    public void parseLabel() {
-    }
-
-    @Test
-    public void parseTask() {
+    public void parseClassInstance() {
     }
 }

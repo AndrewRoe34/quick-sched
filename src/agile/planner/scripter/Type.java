@@ -80,12 +80,12 @@ public class Type implements Comparable<Type> {
                     case GET_TITLE:
                         assert val.length == 0;
                         return ((Card) datatype).getTitle();
-                    case ADD:
-                        assert val.length == 1 && val[0] instanceof Type;
-                        return addType((Type) val[0]);
-                    case REMOVE:
-                        assert val.length == 1 && val[0] instanceof Type;
-                        return removeType((Type) val[0]);
+//                    case ADD: todo need to uncomment
+//                        assert val.length == 1 && val[0] instanceof Type;
+//                        return addType((Type) val[0]);
+//                    case REMOVE:
+//                        assert val.length == 1 && val[0] instanceof Type;
+//                        return removeType((Type) val[0]);
                     default:
                         throw new InvalidGrammarException();
                 }
