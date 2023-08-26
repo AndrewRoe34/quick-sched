@@ -142,9 +142,11 @@ public class Type implements Comparable<Type> {
             case TASK:
             case LABEL:
             case CHECKLIST:
+                break;
             default:
-                return false;
+                return new Type(false, null);
         }
+        return null;
     }
 
     private boolean addType(Type o) {
