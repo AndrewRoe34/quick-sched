@@ -129,7 +129,7 @@ public class Type implements Comparable<Type> {
                         ((Card) datatype).setTitle(args[0].getStringConstant());
                         return null;
                     case GET_TITLE:
-                        assert args.length == 0;
+                        assert args == null;
                         return new Type(((Card) datatype).getTitle(), null);
 //                    case ADD: todo need to uncomment
 //                        assert val.length == 1 && val[0] instanceof Type;
