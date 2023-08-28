@@ -241,14 +241,11 @@ public class Parser {
             if(line.charAt(endIdx) == '(')
                 break;
         }
-        String attr = line.substring(startIdx, endIdx);
 
-        try {
-            String[] args = verifyArgument(line, endIdx);
-            return new Attributes(varName, attr, args);
-        } catch (NullPointerException e) {
-            return null;
-        }
+        String attr = line.substring(startIdx, endIdx);
+        String[] args = verifyArgument(line, endIdx);
+
+        return new Attributes(varName, attr, args);
     }
 
     public ClassInstance parseClassInstance(String line) {

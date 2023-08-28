@@ -106,7 +106,7 @@ public class ParserTest {
 
     @Test
     public void parseAttributes() {
-        String method1 = "c1.get_attr(t1.get_attr(cl.get_attr(), y, z), 3, true)";
+        String method1 = "c.a()";
         Attributes attr = parser.parseAttributes(method1);
         int x = 3;
 
