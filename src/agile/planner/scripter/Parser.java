@@ -1,5 +1,7 @@
 package agile.planner.scripter;
 
+import agile.planner.scripter.exception.InvalidGrammarException;
+
 import java.util.*;
 
 public class Parser {
@@ -196,9 +198,8 @@ public class Parser {
             case "decrypt_data":
             case "get_task_by_name":
             case "get_task_by_id": //todo need to add more functions
-                String arguments = verifyArgument(line, endIdx);
-                if(arguments == null) return null;
-                return new StaticFunction(funcName, "".equals(arguments.trim()) ? null : arguments.split(FUNC_REGEX, -1));
+                String[] arguments = verifyArgument(line, endIdx);
+                return new StaticFunction(funcName, arguments);
             default:
                 //todo need to use a map to locate custom functions
                 return null;
@@ -243,13 +244,7 @@ public class Parser {
         String attr = line.substring(startIdx, endIdx);
 
         try {
-            //todo need to fix
-            String[] args = Objects
-                    .requireNonNull(verifyArgument(line, endIdx))
-                    .split(FUNC_REGEX, -1);
-            if(args.length == 1 && "".equals(args[0])) {
-                args = null;
-            }
+            String[] args = verifyArgument(line, endIdx);
             return new Attributes(varName, attr, args);
         } catch (NullPointerException e) {
             return null;
@@ -279,8 +274,7 @@ public class Parser {
         String instanceType = line.substring(startIdx + 1, endIdx).trim();
 
         // parses arguments in between parentheses (...)
-        String arguments = verifyArgument(line, endIdx);
-        if(arguments == null) return null;
+        String[] arguments = verifyArgument(line, endIdx);
 
         // verifies parsed class instance exists and returns correct ClassInstance child class
         ClassInstance inst;
@@ -305,25 +299,27 @@ public class Parser {
         return inst;
     }
 
-    private CardInstance parseCard(String args) {
-        String[] arguments = args.split(FUNC_REGEX, -1);
-        return arguments.length == 1 ? new CardInstance(arguments[0]) : null;
+    private CardInstance parseCard(String[] args) {
+//        String[] arguments = args.split(FUNC_REGEX, -1);
+//        return arguments.length == 1 ? new CardInstance(arguments[0]) : null;
+        return args.length == 1 ? new CardInstance(args[0]) : null;
     }
 
-    private TaskInstance parseTask(String args) {
-        String[] arguments = args.split(FUNC_REGEX, -1);
-        return arguments.length == 3 ? new TaskInstance(arguments[0].trim(),
-                Integer.parseInt(arguments[1].trim()), Integer.parseInt(arguments[2].trim())) : null;
+    private TaskInstance parseTask(String[] args) {
+//        String[] arguments = args.split(FUNC_REGEX, -1);
+//        return arguments.length == 3 ? new TaskInstance(arguments[0].trim(),
+//                Integer.parseInt(arguments[1].trim()), Integer.parseInt(arguments[2].trim())) : null;
+        return args.length == 3 ? new TaskInstance(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2])) : null;
     }
 
-    private LabelInstance parseLabel(String args) {
-        String[] arguments = args.split(FUNC_REGEX, -1);
-        return arguments.length == 2 ? new LabelInstance(arguments[0], Integer.parseInt(arguments[1])) : null;
+    private LabelInstance parseLabel(String[] args) {
+//        String[] arguments = args.split(FUNC_REGEX, -1);
+        return args.length == 2 ? new LabelInstance(args[0], Integer.parseInt(args[1])) : null;
     }
 
-    private ClassInstance parseCheckList(String args) {
-        String[] arguments = args.split(FUNC_REGEX, -1);
-        return arguments.length == 1 ? new CheckListInstance(arguments[0]) : null;
+    private ClassInstance parseCheckList(String[] args) {
+//        String[] arguments = args.split(FUNC_REGEX, -1);
+        return args.length == 1 ? new CheckListInstance(args[0]) : null;
     }
 
     private int skipWhiteSpace(String line, int startIdx) {
@@ -334,22 +330,53 @@ public class Parser {
         return startIdx;
     }
 
-    //todo need to fix
-    private String verifyArgument(String line, int startIdx) {
-        startIdx = skipWhiteSpace(line, startIdx);
-        if(startIdx >= line.length() || line.charAt(startIdx) != '(') return null;
-        int beginIdx = startIdx;
-        for(; startIdx < line.length(); startIdx++) {
-            if(line.charAt(startIdx) == ')')
-                break;
+    private String[] verifyArgument(String line, int startIdx) {
+        String trimmed = line.trim();
+        if(startIdx >= trimmed.length() || trimmed.charAt(startIdx) != '(') throw new InvalidGrammarException();
+        String str =  trimmed.charAt(trimmed.length() - 1) == ')' ? trimmed.substring(startIdx + 1, trimmed.length() - 1) : null;
+        if(str == null) {
+            throw new InvalidGrammarException();
         }
-        if(startIdx >= line.length() || line.charAt(startIdx) != ')') return null;
-        int idx = skipWhiteSpace(line, startIdx);
-        if(idx != startIdx && line.charAt(idx) != ' ' && line.charAt(idx) != '\t') return null;
-        return startIdx - beginIdx == 1 ? "" : line.substring(beginIdx + 1, startIdx + 1);
+        List<String> list = new ArrayList<>();
+        int start = 0;
+        boolean quote = false;
+        Stack<Boolean> paren = new Stack<>();
+        int i = 0;
+        for(; i < str.length(); i++) {
+            if(str.charAt(i) == ',' && !quote && paren.isEmpty()) {
+                list.add(str.substring(start, i));
+                start = i + 1;
+            } else if(str.charAt(i) == '"') {
+                quote = !quote;
+            } else if(str.charAt(i) == '(') {
+                paren.push(true);
+            } else if(str.charAt(i) == ')') {
+                if(paren.isEmpty()) {
+                    throw new InvalidGrammarException();
+                }
+                paren.pop();
+            }
+        }
+        if(i > start) list.add(str.substring(start, i));
+        String[] args = new String[list.size()];
+        for(int j = 0; j < list.size(); j++)
+            args[j] = list.get(j).trim();
+
+        return args;
+
+//        if(startIdx >= line.length() || line.charAt(startIdx) != '(') return null;
+//        int beginIdx = startIdx;
+//        for(; startIdx < line.length(); startIdx++) {
+//            if(line.charAt(startIdx) == ')')
+//                break;
+//        }
+//        if(startIdx >= line.length() || line.charAt(startIdx) != ')') return null;
+//        int idx = skipWhiteSpace(line, startIdx);
+//        if(idx != startIdx && line.charAt(idx) != ' ' && line.charAt(idx) != '\t') return null;
+//        return startIdx - beginIdx == 1 ? "" : line.substring(beginIdx + 1, startIdx + 1);
     }
 
-    public AttrFunc determineAttrFunc(String attr) {
+    public AttrFunc determineAttrFunc(String attr) { //todo need to finish this before working on Type attrSet()
         switch(attr) {
             case "get_id":
                 return AttrFunc.GET_ID;

@@ -1,5 +1,6 @@
 package agile.planner.scripter;
 
+import agile.planner.scripter.exception.InvalidGrammarException;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -67,35 +68,45 @@ public class ParserTest {
         String func2 = "build()";
         sf = parser.parseStaticFunction(func2);
         assertEquals("build", sf.getFuncName());
-        assertNull(sf.getArgs());
+        assertEquals(0, sf.getArgs().length);
 
         String func3 = "import()";
         sf = parser.parseStaticFunction(func3);
         assertEquals("import", sf.getFuncName());
-        assertNull(sf.getArgs());
+        assertEquals(0, sf.getArgs().length);
 
         String func4 = "export()";
         sf = parser.parseStaticFunction(func4);
         assertEquals("export", sf.getFuncName());
-        assertNull(sf.getArgs());
+        assertEquals(0, sf.getArgs().length);
 
         //Invalid test cases
         String func1Bad = "print(\"Hello World\"";
-        sf = parser.parseStaticFunction(func1Bad);
-        assertNull(sf);
+        try {
+            sf = parser.parseStaticFunction(func1Bad);
+            fail();
+        } catch(Exception e) {
+            assertTrue(e instanceof InvalidGrammarException);
+        }
 
         String func2Bad = "build)";
-        sf = parser.parseStaticFunction(func2Bad);
-        assertNull(sf);
+        try {
+            sf = parser.parseStaticFunction(func2Bad);
+        } catch(Exception e) {
+            assertTrue(e instanceof InvalidGrammarException);
+        }
 
         String func3Bad = "import";
-        sf = parser.parseStaticFunction(func3Bad);
-        assertNull(sf);
+        try {
+            sf = parser.parseStaticFunction(func3Bad);
+        } catch(Exception e) {
+            assertTrue(e instanceof InvalidGrammarException);
+        }
     }
 
     @Test
     public void parseAttributes() {
-        String method1 = "c1.get_attr(t1.get_attr(x, y, z), 3, true)";
+        String method1 = "c1.get_attr(t1.get_attr(cl.get_attr(), y, z), 3, true)";
         Attributes attr = parser.parseAttributes(method1);
         int x = 3;
 

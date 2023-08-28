@@ -78,6 +78,8 @@ public class TypeTest {
         Type t1 = new Type(c1, "c1", Type.TypeId.CARD);
         Type ret = t1.attrSet(Parser.AttrFunc.GET_TITLE, null);
         assertEquals("MA", ret.getStringConstant());
+
+        //need to finish here
     }
 
     @Test
