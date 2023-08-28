@@ -1,6 +1,7 @@
 package agile.planner.scripter;
 
 import agile.planner.data.Card;
+import agile.planner.data.Label;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -8,19 +9,71 @@ import static org.junit.Assert.*;
 public class TypeTest {
 
     @Test
-    public void getDatatype() {
-//        Type t1 = new Type(new Card("HW"), "c1", 3);
-//        System.out.println(t1.getVariableName());
-//        Card c1 = (Card) t1.getDatatype();
-//        System.out.println(c1);
+    public void getLinkerData() {
+        Card c1 = new Card("MA");
+        Type t1 = new Type(c1, "c1", Type.TypeId.CARD);
+        assertEquals(c1, t1.getLinkerData());
+
+        t1 = new Type("Hello", null);
+        assertNull(t1.getLinkerData());
+    }
+
+    @Test
+    public void setLinkerData() {
+        Card c1 = new Card("MA");
+        Type t1 = new Type(c1, "c1", Type.TypeId.CARD);
+        assertEquals(c1, t1.getLinkerData());
+        Label label = new Label(0, "Math", 3);
+        t1.setLinkerData(label, Type.TypeId.LABEL);
+        assertEquals(label, t1.getLinkerData());
     }
 
     @Test
     public void getVariableName() {
+        Card c1 = new Card("MA");
+        Type t1 = new Type(c1, "c1", Type.TypeId.CARD);
+        assertEquals("c1", t1.getVariableName());
+
+        t1 = new Type("Hello", null);
+        assertNull(t1.getVariableName());
     }
 
     @Test
-    public void getVariableIdx() {
+    public void getVariabTypeId() {
+        Card c1 = new Card("MA");
+        Type t1 = new Type(c1, "c1", Type.TypeId.CARD);
+        assertEquals(Type.TypeId.CARD, t1.getVariabTypeId());
+
+        t1 = new Type("Hello", null);
+        assertEquals(Type.TypeId.STRING, t1.getVariabTypeId());
+    }
+
+    @Test
+    public void getIntConstant() {
+    }
+
+    @Test
+    public void setIntConstant() {
+    }
+
+    @Test
+    public void getBoolConstant() {
+    }
+
+    @Test
+    public void setBoolConstant() {
+    }
+
+    @Test
+    public void getStringConstant() {
+    }
+
+    @Test
+    public void setStringConstant() {
+    }
+
+    @Test
+    public void attrSet() {
     }
 
     @Test

@@ -132,13 +132,13 @@ public class Parser {
             case "false":
                 return Operation.CONSTANT;
             default:
-                switch(tokens[0].charAt(tokens.length - 1)) {
+                switch(tokens[0].charAt(tokens[0].length() - 1)) {
                     case ':':
                         return Operation.INSTANCE;
                     case '.':
                         return Operation.ATTRIBUTE;
                     default:
-                        if(tokens.length > 1 && tokens[1].length() > 0 && tokens[1].charAt(0) == '.') {
+                        if(tokens.length > 1 && tokens[1].length() > 0 && tokens[1].charAt(0) == '.' || verifyAttr(line)) {
                             return Operation.ATTRIBUTE;
                         } else if(tokens[0].charAt(0) == '"' && tokens[tokens.length - 1].charAt(tokens[tokens.length - 1].length() - 1) == '"') {
                             return Operation.CONSTANT;
@@ -153,6 +153,14 @@ public class Parser {
                         }
                 }
         }
+    }
+
+    private boolean verifyAttr(String line) {
+        int startIdx = skipWhiteSpace(line, 0);
+        for(int i = startIdx; i < line.length(); i++) {
+            if(line.charAt(i) == '.') return true;
+        }
+        return false;
     }
 
     private boolean containsInteger(String line) {
@@ -235,6 +243,7 @@ public class Parser {
         String attr = line.substring(startIdx, endIdx);
 
         try {
+            //todo need to fix
             String[] args = Objects
                     .requireNonNull(verifyArgument(line, endIdx))
                     .split(FUNC_REGEX, -1);
@@ -325,6 +334,7 @@ public class Parser {
         return startIdx;
     }
 
+    //todo need to fix
     private String verifyArgument(String line, int startIdx) {
         startIdx = skipWhiteSpace(line, startIdx);
         if(startIdx >= line.length() || line.charAt(startIdx) != '(') return null;
@@ -336,7 +346,7 @@ public class Parser {
         if(startIdx >= line.length() || line.charAt(startIdx) != ')') return null;
         int idx = skipWhiteSpace(line, startIdx);
         if(idx != startIdx && line.charAt(idx) != ' ' && line.charAt(idx) != '\t') return null;
-        return startIdx - beginIdx == 1 ? "" : line.substring(beginIdx + 1, startIdx);
+        return startIdx - beginIdx == 1 ? "" : line.substring(beginIdx + 1, startIdx + 1);
     }
 
     public AttrFunc determineAttrFunc(String attr) {

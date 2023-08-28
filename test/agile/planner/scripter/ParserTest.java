@@ -1,6 +1,5 @@
 package agile.planner.scripter;
 
-import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -35,8 +34,21 @@ public class ParserTest {
     @Test
     public void typeOfOperation() {
         String pp = "include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__, __STATS__";
-        Parser.Operation operation = parser.typeOfOperation(pp);
-        //todo need to finish
+        assertEquals(Parser.Operation.PRE_PROCESSOR, parser.typeOfOperation(pp));
+        String str = "\"Test\"";
+        assertEquals(Parser.Operation.CONSTANT, parser.typeOfOperation(str));
+        String num = " 34 ";
+        assertEquals(Parser.Operation.CONSTANT, parser.typeOfOperation(num));
+        String attr = "c1.foo()";
+        assertEquals(Parser.Operation.ATTRIBUTE, parser.typeOfOperation(attr));
+        String fals = "false";
+        assertEquals(Parser.Operation.CONSTANT, parser.typeOfOperation(fals));
+        String tru = "true";
+        assertEquals(Parser.Operation.CONSTANT, parser.typeOfOperation(tru));
+        String inst = "c1: f";
+        assertEquals(Parser.Operation.INSTANCE, parser.typeOfOperation(inst));
+        String func = "func foo()";
+        assertEquals(Parser.Operation.SETUP_CUST_FUNC, parser.typeOfOperation(func));
     }
 
     @Test
@@ -83,14 +95,10 @@ public class ParserTest {
 
     @Test
     public void parseAttributes() {
-        String method1 = "c1.get_attr()";
+        String method1 = "c1.get_attr(t1.get_attr(x, y, z), 3, true)";
         Attributes attr = parser.parseAttributes(method1);
         int x = 3;
-        //todo NOTE: smpl won't allow calling functions as arguments except for getters
-        //todo example: print(c1.get_name())
-        //todo getters are not allowed to have function calls as their arguments
-        //todo restrict to attribute method calls as function arguments
-        //todo in short, static functions can have method calls as arguments (but those method calls cannot have anything else but simple types)
+
     }
 
     @Test
@@ -98,5 +106,22 @@ public class ParserTest {
         String inst1 = "t1: task(\"HW\", 3, 2)";
         ClassInstance ci1 = parser.parseClassInstance(inst1);
         int x = 3;
+    }
+
+    @Test
+    public void parseConstant() {
+        String num = " 34";
+        assertEquals(34, (int) parser.parseConstant(num).getIntConstant());
+        String tru = "true";
+        assertTrue(parser.parseConstant(tru).getBoolConstant());
+        String fal = "false";
+        assertFalse(parser.parseConstant(fal).getBoolConstant());
+        String str = "\"hello\"";
+        assertEquals("\"hello\"", parser.parseConstant(str).getStringConstant());
+    }
+
+    @Test
+    public void determineAttrFunc() {
+
     }
 }

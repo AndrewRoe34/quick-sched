@@ -112,6 +112,7 @@ public class Type implements Comparable<Type> {
      */
     public Type attrSet(Parser.AttrFunc attr, Type[] args) {
         //these constants CANNOT use attribute functions
+        //update: they can (we will need to work on it now)
         switch(type) {
             case INTEGER:
             case STRING:
