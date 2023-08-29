@@ -111,43 +111,117 @@ public class Type implements Comparable<Type> {
         Call 'attrSet' with enum value and array of arguments
      */
     public Type attrSet(Parser.AttrFunc attr, Type[] args) {
-        //these constants CANNOT use attribute functions
-        //update: they can (we will need to work on it now)
-        switch(type) {
-            case INTEGER:
-            case STRING:
-            case BOOLEAN:
-                throw new InvalidGrammarException();
-        }
-
         switch(type) {
             case BOARD:
             case CARD:
                 switch(attr) {
                     case SET_TITLE:
-                        assert args.length == 1 && args[0].getStringConstant() != null;
+                        if(args.length != 1) throw new InvalidGrammarException();
                         ((Card) datatype).setTitle(args[0].getStringConstant());
                         return null;
                     case GET_TITLE:
-                        assert args == null;
+                        if(args.length != 0) throw new InvalidGrammarException();
                         return new Type(((Card) datatype).getTitle(), null);
-//                    case ADD: todo need to uncomment
-//                        assert val.length == 1 && val[0] instanceof Type;
-//                        return addType((Type) val[0]);
-//                    case REMOVE:
-//                        assert val.length == 1 && val[0] instanceof Type;
-//                        return removeType((Type) val[0]);
                     default:
                         throw new InvalidGrammarException();
                 }
             case TASK:
             case LABEL:
             case CHECKLIST:
-                break;
+            case INTEGER:
+                switch(attr) {
+                    case ADD:
+                        if(args.length == 0) throw new InvalidGrammarException();
+                        for(Type t : args) {
+                            if(t.getVariabTypeId() == TypeId.INTEGER) {
+                                this.intConstant += t.getIntConstant();
+                                return null;
+                            } else {
+                                throw new InvalidGrammarException();
+                            }
+                        }
+                        break;
+                    case SUBTRACT:
+                        if(args.length == 0) throw new InvalidGrammarException();
+                        for(Type t : args) {
+                            if(t.getVariabTypeId() == TypeId.INTEGER) {
+                                this.intConstant -= t.getIntConstant();
+                                return null;
+                            } else {
+                                throw new InvalidGrammarException();
+                            }
+                        }
+                        break;
+                    case DIVIDE:
+                        if(args.length == 0) throw new InvalidGrammarException();
+                        for(Type t : args) {
+                            if(t.getVariabTypeId() == TypeId.INTEGER) {
+                                this.intConstant /= t.getIntConstant();
+                                return null;
+                            } else {
+                                throw new InvalidGrammarException();
+                            }
+                        }
+                        break;
+                    case MULTIPLY:
+                        if(args.length == 0) throw new InvalidGrammarException();
+                        for(Type t : args) {
+                            if(t.getVariabTypeId() == TypeId.INTEGER) {
+                                this.intConstant *= t.getIntConstant();
+                                return null;
+                            } else {
+                                throw new InvalidGrammarException();
+                            }
+                        }
+                        break;
+                    case MOD:
+                        if(args.length == 0) throw new InvalidGrammarException();
+                        for(Type t : args) {
+                            if(t.getVariabTypeId() == TypeId.INTEGER) {
+                                this.intConstant %= t.getIntConstant();
+                                return null;
+                            } else {
+                                throw new InvalidGrammarException();
+                            }
+                        }
+                        break;
+                }
+            case STRING:
+                switch(attr) {
+                    case ADD:
+                        if(args.length == 0) throw new InvalidGrammarException();
+                        StringBuilder sb = new StringBuilder(this.stringConstant);
+                        for(Type t : args) {
+                            sb.append(t.toString()); //todo need to add toString for Int, String, and Bool
+                        }
+                        setStringConstant(sb.toString());
+                        return null;
+                    case LENGTH:
+                        if(args.length != 0) throw new InvalidGrammarException();
+                        return new Type(this.stringConstant.length(), null);
+                    case PARSE_INT:
+                        if(args.length != 0) throw new InvalidGrammarException();
+                        return new Type(Integer.parseInt(this.stringConstant), null);
+                    case PARSE_BOOL:
+                        if(args.length != 0) throw new InvalidGrammarException();
+                        return new Type(Boolean.parseBoolean(this.stringConstant), null);
+                    case SUB_STRING:
+                        if(args.length == 0 || args.length > 2 || args[0].getVariabTypeId() != TypeId.INTEGER
+                                || args.length == 2 && args[1].getVariabTypeId() != TypeId.INTEGER) {
+                            throw new InvalidGrammarException();
+                        }
+                        if(args.length == 1) {
+                            return new Type(this.stringConstant.substring(args[0].getIntConstant()), null);
+                        } else {
+                            return new Type(this.stringConstant.substring(args[0].getIntConstant(),
+                                    args[1].getIntConstant()), null);
+                        }
+                }
+            case BOOLEAN:
+                throw new InvalidGrammarException();
             default:
                 return new Type(false, null);
         }
-        return null;
     }
 
     private boolean addType(Type o) {
@@ -165,6 +239,14 @@ public class Type implements Comparable<Type> {
 
     @Override
     public String toString() {
+        switch(type) {
+            case STRING:
+                return stringConstant;
+            case INTEGER:
+                return "" + intConstant;
+            case BOOLEAN:
+                return "" + boolConstant;
+        }
         return datatype.toString();
     }
 }

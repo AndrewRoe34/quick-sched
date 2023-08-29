@@ -5,6 +5,7 @@ import agile.planner.scripter.exception.DereferenceNullException;
 import agile.planner.scripter.exception.InvalidFunctionException;
 import agile.planner.scripter.exception.InvalidGrammarException;
 import agile.planner.scripter.exception.InvalidPreProcessorException;
+import agile.planner.scripter.tools.ScriptLog;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -16,6 +17,7 @@ public class ScriptFSM {
 
     private List<Type> variableList = new LinkedList<>();
     private final Parser parser = new Parser();
+    private final ScriptLog scriptLog = new ScriptLog();
 
     public void executeScript() throws FileNotFoundException {
         Scanner scriptScanner = new Scanner(new File("fun1.smpl"));
@@ -71,6 +73,7 @@ public class ScriptFSM {
             CardInstance card = (CardInstance) classInstance;
             Type t1 = new Type(new Card(card.getTitle()), card.getVarName(), Type.TypeId.CARD);
             variableList.add(t1);
+            scriptLog.reportCardCreation(0, card.getTitle()); //todo might want to include variable name (or not)
         } else if (classInstance instanceof TaskInstance) {
 
         } else if (classInstance instanceof LabelInstance) {
@@ -104,8 +107,23 @@ public class ScriptFSM {
                 funcBuild();
                 return null;
             case "print":
-                for (Type t : args)
-                    System.out.print(t.toString());
+                for (Type t : args) {
+                    if(t.getVariabTypeId() == Type.TypeId.STRING && "\n".equals(t.getStringConstant())) {
+                        System.out.println();
+                    } else {
+                        System.out.print(t.toString()); //todo doesn't fix cases where '\n' is within the string (only works when it's by itself
+                    }
+                }
+                return null;
+            case "println":
+                for (Type t : args) {
+                    if(t.getVariabTypeId() == Type.TypeId.STRING && "\n".equals(t.getStringConstant())) {
+                        System.out.println();
+                    } else {
+                        System.out.print(t.toString()); //todo doesn't fix cases where '\n' is within the string (only works when it's by itself
+                    }
+                }
+                System.out.println();
                 return null;
             default:
 

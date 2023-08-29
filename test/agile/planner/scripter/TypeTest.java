@@ -76,10 +76,40 @@ public class TypeTest {
     public void attrSet() {
         Card c1 = new Card("MA");
         Type t1 = new Type(c1, "c1", Type.TypeId.CARD);
-        Type ret = t1.attrSet(Parser.AttrFunc.GET_TITLE, null);
+        Type[] args = new Type[0];
+        Type ret = t1.attrSet(Parser.AttrFunc.GET_TITLE, args);
         assertEquals("MA", ret.getStringConstant());
 
-        //need to finish here
+        //String attr functions
+        Type t2 = new Type("hello world", null);
+        args = new Type[0];
+        ret = t2.attrSet(Parser.AttrFunc.LENGTH, args);
+        assertEquals(11, (int) ret.getIntConstant());
+
+        args = new Type[]{new Type(", i can read", null)};
+        t2.attrSet(Parser.AttrFunc.ADD, args);
+        assertEquals("hello world, i can read", t2.getStringConstant());
+
+        t2 = new Type("34", null);
+        args = new Type[0];
+        ret = t2.attrSet(Parser.AttrFunc.PARSE_INT, args);
+        assertEquals(34, (int) ret.getIntConstant());
+
+        t2 = new Type("true", null);
+        ret = t2.attrSet(Parser.AttrFunc.PARSE_BOOL, args);
+        assertTrue(ret.getBoolConstant());
+
+        t2 = new Type("false", null);
+        ret = t2.attrSet(Parser.AttrFunc.PARSE_BOOL, args);
+        assertFalse(ret.getBoolConstant());
+
+        args = new Type[1];
+        args[0] = new Type(1, null);
+        ret = t2.attrSet(Parser.AttrFunc.SUB_STRING, args);
+        assertEquals("alse", ret.getStringConstant());
+
+        //Integer attr functions
+
     }
 
     @Test

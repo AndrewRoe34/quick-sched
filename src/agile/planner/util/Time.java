@@ -37,6 +37,13 @@ public class Time {
         return date;
     }
 
+    /**
+     * Gets a formatted instance of a Calendar object utilizing the specified date as the starting parameter.
+     *
+     * @param date starting date
+     * @param days number of days from current day
+     * @return
+     */
     public static Calendar getFormattedCalendarInstance(Calendar date, int days) {
         Calendar curr = (Calendar) date.clone();
         curr.add(Calendar.DAY_OF_MONTH, days);

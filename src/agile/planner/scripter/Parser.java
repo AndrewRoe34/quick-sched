@@ -6,7 +6,7 @@ import java.util.*;
 
 public class Parser {
 
-    private static final String FUNC_REGEX = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
+//    private static final String FUNC_REGEX = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
 
     public enum AttrFunc {
         GET_ID,
@@ -25,7 +25,24 @@ public class Parser {
         CHECKLIST,
         LABELS,
         ADD,
-        REMOVE
+        REMOVE,
+
+        //Integer
+        SUBTRACT,
+        DIVIDE,
+        MULTIPLY,
+        MOD,
+
+        //String
+        LENGTH,
+        PARSE_INT,
+        PARSE_BOOL,
+        SUB_STRING,
+
+        //Bool
+        AND,
+        OR,
+        XOR
     }
 
     public enum Operation {
@@ -117,7 +134,7 @@ public class Parser {
     // class instance assignment  [DONE]
     // attribute handling         [DONE]
     // function calls             [DONE]
-    // String/int/bool assignment [TBD]
+    // String/int/bool assignment [DONE]
     // Preprocessor handling      [DONE]
     // Create custom function     [TBD]
     // Calling custom function    [TBD]
@@ -226,6 +243,13 @@ public class Parser {
 
     }
 
+    /**
+     * Parses the {@link Attributes} for a given {@link ClassInstance} in order to return formatted data to allow
+     * access to the object's data or functionality.
+     *
+     * @param line unprocessed attribute line and arguments
+     * @return formatted {@link Attributes}
+     */
     public Attributes parseAttributes(String line) {
         int startIdx = skipWhiteSpace(line, 0);
         int endIdx = startIdx;
@@ -248,6 +272,13 @@ public class Parser {
         return new Attributes(varName, attr, args);
     }
 
+    /**
+     * Parses a specific {@link ClassInstance} while verifying it to be valid both from its structure
+     * and argument types and amounts.
+     *
+     * @param line unprocessed class instance and assignment line
+     * @return formatted {@link ClassInstance}
+     */
     public ClassInstance parseClassInstance(String line) {
         // skips whitespace between beginning of line and variable
         //    t1: task("HW", 3, 0)
@@ -296,12 +327,24 @@ public class Parser {
         return inst;
     }
 
+    /**
+     * Parses an instance of {@link agile.planner.data.Card} and wraps it around {@link CardInstance}
+     *
+     * @param args arguments for the given class
+     * @return formatted {@link CardInstance}
+     */
     private CardInstance parseCard(String[] args) {
 //        String[] arguments = args.split(FUNC_REGEX, -1);
 //        return arguments.length == 1 ? new CardInstance(arguments[0]) : null;
         return args.length == 1 ? new CardInstance(args[0]) : null;
     }
 
+    /**
+     * Parses an instance of {@link agile.planner.data.Task} and wraps it around {@link TaskInstance}
+     *
+     * @param args arguments for the given class
+     * @return formatted {@link TaskInstance}
+     */
     private TaskInstance parseTask(String[] args) {
 //        String[] arguments = args.split(FUNC_REGEX, -1);
 //        return arguments.length == 3 ? new TaskInstance(arguments[0].trim(),
@@ -309,11 +352,23 @@ public class Parser {
         return args.length == 3 ? new TaskInstance(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2])) : null;
     }
 
+    /**
+     * Parses an instance of {@link agile.planner.data.Label} and wraps it around {@link LabelInstance}
+     *
+     * @param args arguments for the given class
+     * @return formatted {@link LabelInstance}
+     */
     private LabelInstance parseLabel(String[] args) {
 //        String[] arguments = args.split(FUNC_REGEX, -1);
         return args.length == 2 ? new LabelInstance(args[0], Integer.parseInt(args[1])) : null;
     }
 
+    /**
+     * Parses an instance of {@link agile.planner.util.CheckList} and wraps it around {@link CheckListInstance}
+     *
+     * @param args arguments for the given class
+     * @return formatted {@link CheckListInstance}
+     */
     private ClassInstance parseCheckList(String[] args) {
 //        String[] arguments = args.split(FUNC_REGEX, -1);
         return args.length == 1 ? new CheckListInstance(args[0]) : null;
@@ -327,6 +382,13 @@ public class Parser {
         return startIdx;
     }
 
+    /**
+     * Verifies the arguments of the given parameters to a given function or method
+     *
+     * @param line unprocessed line of arguments
+     * @param startIdx beginning index where {@code '('} starts
+     * @return String array of formatted arguments
+     */
     private String[] verifyArgument(String line, int startIdx) {
         String trimmed = line.trim();
         if(startIdx >= trimmed.length() || trimmed.charAt(startIdx) != '(') throw new InvalidGrammarException();
@@ -373,24 +435,65 @@ public class Parser {
 //        return startIdx - beginIdx == 1 ? "" : line.substring(beginIdx + 1, startIdx + 1);
     }
 
+    /**
+     * Determines the attribute function for the given class instance
+     *
+     * @param attr attribute function for the specified instance
+     * @return {@link AttrFunc} enumeration of the operation type
+     */
     public AttrFunc determineAttrFunc(String attr) { //todo need to finish this before working on Type attrSet()
         switch(attr) {
             case "get_id":
+            case "id":
                 return AttrFunc.GET_ID;
             case "set_id":
                 return AttrFunc.SET_ID;
             case "get_title":
+            case "title":
                 return AttrFunc.GET_TITLE;
             case "set_title":
                 return AttrFunc.SET_TITLE;
             case "get_color":
+            case "color":
                 return AttrFunc.GET_COLOR;
             case "set_color":
                 return AttrFunc.SET_COLOR;
             case "get_due_date":
+            case "due_date":
                 return AttrFunc.GET_DUE_DATE;
             case "set_due_date":
                 return AttrFunc.SET_DUE_DATE;
+            case "add":
+            case "+":
+                return AttrFunc.ADD;
+            case "subtract":
+            case "-":
+                return AttrFunc.SUBTRACT;
+            case "divide":
+            case "/":
+                return AttrFunc.DIVIDE;
+            case "multiply":
+            case "*":
+                return AttrFunc.MULTIPLY;
+            case "mod":
+            case "%":
+                return AttrFunc.MOD;
+            case "length":
+                return AttrFunc.LENGTH;
+            case "parse_int":
+                return AttrFunc.PARSE_INT;
+            case "parse_bool":
+                return AttrFunc.PARSE_BOOL;
+            case "sub_string":
+                return AttrFunc.SUB_STRING;
+            case "and":
+            case "^":
+                return AttrFunc.AND;
+            case "or":
+            case "|":
+                return AttrFunc.OR;
+            case "xor": //todo need to find symbol
+                return AttrFunc.XOR;
             default:
                 return null;
         }
