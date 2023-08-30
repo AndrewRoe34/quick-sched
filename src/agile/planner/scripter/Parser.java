@@ -39,11 +39,6 @@ public class Parser {
         PARSE_BOOL,
         SUB_STRING,
 
-        //Bool
-        AND,
-        OR,
-        XOR,
-
         //Checklist
         ADD_ITEM,
         REMOVE_ITEM_BY_ID,
@@ -227,7 +222,6 @@ public class Parser {
         switch(funcName) {
             case "print":
             case "println":
-            case "build":
             case "import":
             case "export":
             case "serialize_data":
@@ -525,14 +519,6 @@ public class Parser {
                 return AttrFunc.PARSE_BOOL;
             case "sub_string":
                 return AttrFunc.SUB_STRING;
-            case "and":
-            case "^":
-                return AttrFunc.AND;
-            case "or":
-            case "|":
-                return AttrFunc.OR;
-            case "xor": //todo need to find symbol
-                return AttrFunc.XOR;
             //CheckList attr functions
             case "add_item":
                 return AttrFunc.ADD_ITEM;

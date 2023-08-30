@@ -1,6 +1,7 @@
 package agile.planner.scripter;
 
 import agile.planner.data.Card;
+import agile.planner.data.Label;
 import agile.planner.data.Linker;
 import agile.planner.scripter.exception.InvalidGrammarException;
 import agile.planner.util.CheckList;
@@ -139,6 +140,16 @@ public class Type implements Comparable<Type> {
                 }
             case TASK:
             case LABEL:
+                switch(attr) {
+                    case GET_TITLE:
+                        if(args.length != 0) throw new InvalidGrammarException();
+                        return new Type(((Label) datatype).getName(), null);
+                    case GET_COLOR:
+                        if(args.length != 0) throw new InvalidGrammarException();
+                        return new Type(((Label) datatype).getColor(), null);
+                    default:
+                        throw new InvalidGrammarException();
+                }
             case CHECKLIST:
                 switch(attr) {
                     case GET_ID:

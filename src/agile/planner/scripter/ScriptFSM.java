@@ -1,6 +1,7 @@
 package agile.planner.scripter;
 
 import agile.planner.data.Card;
+import agile.planner.data.Label;
 import agile.planner.scripter.exception.DereferenceNullException;
 import agile.planner.scripter.exception.InvalidFunctionException;
 import agile.planner.scripter.exception.InvalidGrammarException;
@@ -97,7 +98,14 @@ public class ScriptFSM {
                 t1.setLinkerData(new CheckList(0, cl.getTitle()), Type.TypeId.CHECKLIST);
             }
         } else if (classInstance instanceof LabelInstance) {
-
+            LabelInstance label = (LabelInstance) classInstance;
+            Type t1 = lookupVariable(label.getVarName());
+            if(t1 == null) {
+                t1 = new Type(new Label(0, label.getName(), label.getColor()), label.getVarName(), Type.TypeId.LABEL);
+                variableList.add(t1);
+            } else {
+                t1.setLinkerData(new Label(0, label.getName(), label.getColor()), Type.TypeId.LABEL);
+            }
         } else if (classInstance instanceof StringInstance) {
             StringInstance str = (StringInstance) classInstance;
             Type t1 = lookupVariable(str.getVarName());
