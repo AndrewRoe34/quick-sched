@@ -262,7 +262,7 @@ public class Task implements Comparable<Task>, Linker {
      * @return Item removed from the CheckList
      */
     public CheckList.Item removeItem(int idx) {
-        return checkList != null ? checkList.removeItem(idx) : null;
+        return checkList != null ? checkList.removeItemById(idx) : null;
     }
 
     /**
@@ -289,7 +289,7 @@ public class Task implements Comparable<Task>, Linker {
      */
     public boolean markItem(int idx, boolean flag) {
         if(checkList != null) {
-            checkList.markItem(idx, flag);
+            checkList.markItemById(idx, flag);
             return true;
         }
         return false;

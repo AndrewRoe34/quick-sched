@@ -42,7 +42,15 @@ public class Parser {
         //Bool
         AND,
         OR,
-        XOR
+        XOR,
+
+        //Checklist
+        ADD_ITEM,
+        REMOVE_ITEM_BY_ID,
+        REMOVE_ITEM_BY_NAME,
+        MARK_ITEM_BY_ID,
+        MARK_ITEM_BY_NAME,
+        GET_PERCENT
     }
 
     public enum Operation {
@@ -245,7 +253,7 @@ public class Parser {
         } catch(Exception e) {
             //process string now
             if(line.charAt(0) == '"' && line.charAt(line.length() - 1) == '"') {
-                return new Type(line, null);
+                return new Type(line.substring(1, line.length() - 1), null);
             } else if("true".equals(line)) {
                 return new Type(true, null);
             } else if("false".equals(line)) {
@@ -331,6 +339,7 @@ public class Parser {
                 inst = parseLabel(arguments);
                 break;
             case "checklist":
+            case "cl":
                 inst = parseCheckList(arguments);
                 break;
             case "string":
@@ -499,19 +508,14 @@ public class Parser {
             case "set_due_date":
                 return AttrFunc.SET_DUE_DATE;
             case "add":
-            case "+":
                 return AttrFunc.ADD;
-            case "subtract":
-            case "-":
+            case "sub":
                 return AttrFunc.SUBTRACT;
-            case "divide":
-            case "/":
+            case "div":
                 return AttrFunc.DIVIDE;
-            case "multiply":
-            case "*":
+            case "mul":
                 return AttrFunc.MULTIPLY;
             case "mod":
-            case "%":
                 return AttrFunc.MOD;
             case "length":
                 return AttrFunc.LENGTH;
@@ -529,6 +533,19 @@ public class Parser {
                 return AttrFunc.OR;
             case "xor": //todo need to find symbol
                 return AttrFunc.XOR;
+            //CheckList attr functions
+            case "add_item":
+                return AttrFunc.ADD_ITEM;
+            case "remove_item_by_id":
+                return AttrFunc.REMOVE_ITEM_BY_ID;
+            case "remove_item_by_name":
+                return AttrFunc.REMOVE_ITEM_BY_NAME;
+            case "mark_item_by_id":
+                return AttrFunc.MARK_ITEM_BY_ID;
+            case "mark_item_by_name":
+                return AttrFunc.MARK_ITEM_BY_NAME;
+            case "get_percent":
+                return AttrFunc.GET_PERCENT;
             default:
                 return null;
         }

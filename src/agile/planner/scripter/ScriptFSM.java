@@ -6,6 +6,7 @@ import agile.planner.scripter.exception.InvalidFunctionException;
 import agile.planner.scripter.exception.InvalidGrammarException;
 import agile.planner.scripter.exception.InvalidPreProcessorException;
 import agile.planner.scripter.tools.ScriptLog;
+import agile.planner.util.CheckList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -24,43 +25,48 @@ public class ScriptFSM {
         while (scriptScanner.hasNextLine()) {
             String line = scriptScanner.nextLine().trim();
             Parser.Operation operation = parser.typeOfOperation(line);
-            switch (operation) {
-                case COMMENT:
-                    break;
-                case PRE_PROCESSOR:
-                    PreProcessor preProcessor = parser.parsePreProcessor(line);
-                    if (preProcessor == null) throw new InvalidPreProcessorException();
-                    processPreProcessor(preProcessor);
-                    break;
-                case ATTRIBUTE:
-                    Attributes attr = parser.parseAttributes(line);
-                    if (attr == null) throw new InvalidFunctionException();
-                    processAttribute(attr);
-                    break;
-                case FUNCTION:
-                    StaticFunction func = parser.parseStaticFunction(line);
-                    if (func == null) throw new InvalidFunctionException();
-                    processStaticFunction(func);
-                    break;
-                case INSTANCE:
-                    ClassInstance classInstance = parser.parseClassInstance(line);
-                    if (classInstance == null) {
-                        //todo then it is a static function attempting to return a value
-                        // also need to separate the tokens from the variable and the function
-                    } else {
-                        processClassInstance(classInstance);
-                    }
-                    break;
-                case SETUP_CUST_FUNC:
-                    //todo will work on later
-                    break;
-                case VARIABLE:
-                case CONSTANT:
-                    //do nothing here
-                    break;
-                default:
-                    throw new InvalidGrammarException();
+            try {
+                switch (operation) {
+                    case COMMENT:
+                        break;
+                    case PRE_PROCESSOR:
+                        PreProcessor preProcessor = parser.parsePreProcessor(line);
+                        if (preProcessor == null) throw new InvalidPreProcessorException();
+                        processPreProcessor(preProcessor);
+                        break;
+                    case ATTRIBUTE:
+                        Attributes attr = parser.parseAttributes(line);
+                        if (attr == null) throw new InvalidFunctionException();
+                        processAttribute(attr);
+                        break;
+                    case FUNCTION:
+                        StaticFunction func = parser.parseStaticFunction(line);
+                        if (func == null) throw new InvalidFunctionException();
+                        processStaticFunction(func);
+                        break;
+                    case INSTANCE:
+                        ClassInstance classInstance = parser.parseClassInstance(line);
+                        if (classInstance == null) {
+                            //todo then it is a static function attempting to return a value
+                            // also need to separate the tokens from the variable and the function
+                        } else {
+                            processClassInstance(classInstance);
+                        }
+                        break;
+                    case SETUP_CUST_FUNC:
+                        //todo will work on later
+                        break;
+                    case VARIABLE:
+                    case CONSTANT:
+                        //do nothing here
+                        break;
+                    default:
+                        throw new InvalidGrammarException();
+                }
+            } catch (Exception e) {
+                System.out.println("\u001B[31m" + e.getClass() + "\u001B[0m" + ": " + e.getMessage());
             }
+
         }
     }
 
@@ -71,17 +77,54 @@ public class ScriptFSM {
     protected void processClassInstance(ClassInstance classInstance) {
         if (classInstance instanceof CardInstance) {
             CardInstance card = (CardInstance) classInstance;
-            Type t1 = new Type(new Card(card.getTitle()), card.getVarName(), Type.TypeId.CARD);
-            variableList.add(t1);
+            Type t1 = lookupVariable(card.getVarName());
+            if(t1 == null) {
+                t1 = new Type(new Card(card.getTitle().substring(1, card.getTitle().length() - 1)), card.getVarName(), Type.TypeId.CARD);
+                variableList.add(t1);
+            } else {
+                t1.setLinkerData(new Card(card.getTitle()), Type.TypeId.CARD);
+            }
             scriptLog.reportCardCreation(0, card.getTitle()); //todo might want to include variable name (or not)
         } else if (classInstance instanceof TaskInstance) {
 
+        } else if(classInstance instanceof CheckListInstance) {
+            CheckListInstance cl = (CheckListInstance) classInstance;
+            Type t1 = lookupVariable(cl.getVarName());
+            if(t1 == null) {
+                t1 = new Type(new CheckList(0, cl.getTitle()), cl.getVarName(), Type.TypeId.CHECKLIST);
+                variableList.add(t1);
+            } else {
+                t1.setLinkerData(new CheckList(0, cl.getTitle()), Type.TypeId.CHECKLIST);
+            }
         } else if (classInstance instanceof LabelInstance) {
 
         } else if (classInstance instanceof StringInstance) {
             StringInstance str = (StringInstance) classInstance;
-            Type t1 = new Type(str.getStr(), str.getVarName());
-            variableList.add(t1);
+            Type t1 = lookupVariable(str.getVarName());
+            if(t1 == null) {
+                t1 = new Type(str.getStr(), str.getVarName());
+                variableList.add(t1);
+            } else {
+                t1.setStringConstant(str.getStr());
+            }
+        } else if(classInstance instanceof IntegerInstance) {
+            IntegerInstance i = (IntegerInstance) classInstance;
+            Type t1 = lookupVariable(i.getVarName());
+            if(t1 == null) {
+                t1 = new Type(i.getVal(), i.getVarName());
+                variableList.add(t1);
+            } else {
+                t1.setIntConstant(i.getVal());
+            }
+        } else if(classInstance instanceof BoolInstance) {
+            BoolInstance bool = (BoolInstance) classInstance;
+            Type t1 = lookupVariable(bool.getVarName());
+            if(t1 == null) {
+                t1 = new Type(bool.isVal(), bool.getVarName());
+                variableList.add(t1);
+            } else {
+                t1.setBoolConstant(bool.isVal());
+            }
         }
     }
 

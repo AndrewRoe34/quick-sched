@@ -103,11 +103,23 @@ public class CheckList implements Linker {
      * @param idx index of CheckList
      * @return removed Item
      */
-    public Item removeItem(int idx) {
+    public Item removeItemById(int idx) {
         if(verifyIndex(idx) == -1) {
             throw new IllegalArgumentException("Invalid index for checklist");
         }
-        return list.remove(idx);
+        Item i = list.remove(idx);
+        if(i.isComplete()) completed--;
+        return i;
+    }
+
+    public void removeItemByName(String name) {
+        for(int i = 0; i < list.size(); i++) {
+            if(name.equals(list.get(i).getDescription())) {
+                Item item = list.remove(i);
+                if(item.isComplete()) completed--;
+                i--;
+            }
+        }
     }
 
     /**
@@ -142,7 +154,7 @@ public class CheckList implements Linker {
      * @param idx index of Item
      * @param flag completion status flag
      */
-    public void markItem(int idx, boolean flag) {
+    public void markItemById(int idx, boolean flag) {
         if(verifyIndex(idx) == -1) {
             throw new IllegalArgumentException("Invalid index for checklist");
         }
@@ -153,6 +165,19 @@ public class CheckList implements Linker {
             completed--;
         }
         i1.setCompletionStatus(flag);
+    }
+
+    public void markItemByName(String name, boolean flag) {
+        for(Item i : list) {
+            if(name.equals(i.getDescription())) {
+                if(flag && !i.isComplete()) {
+                    completed++;
+                } else if(!flag && i.isComplete()) {
+                    completed--;
+                }
+                i.setCompletionStatus(flag);
+            }
+        }
     }
 
     /**

@@ -3,6 +3,7 @@ package agile.planner.scripter;
 import agile.planner.data.Card;
 import agile.planner.data.Linker;
 import agile.planner.scripter.exception.InvalidGrammarException;
+import agile.planner.util.CheckList;
 
 public class Type implements Comparable<Type> {
 
@@ -54,6 +55,7 @@ public class Type implements Comparable<Type> {
     }
 
     public void setLinkerData(Linker datatype, TypeId type) {
+        reset();
         this.datatype = datatype;
         this.type = type;
     }
@@ -71,6 +73,7 @@ public class Type implements Comparable<Type> {
     }
 
     public void setIntConstant(Integer intConstant) {
+        reset();
         this.intConstant = intConstant;
         type = TypeId.INTEGER;
     }
@@ -80,6 +83,7 @@ public class Type implements Comparable<Type> {
     }
 
     public void setBoolConstant(Boolean boolConstant) {
+        reset();
         this.boolConstant = boolConstant;
         type = TypeId.BOOLEAN;
     }
@@ -89,8 +93,16 @@ public class Type implements Comparable<Type> {
     }
 
     public void setStringConstant(String stringConstant) {
+        reset();
         this.stringConstant = stringConstant;
         type = TypeId.STRING;
+    }
+
+    public void reset() {
+        this.intConstant = null;
+        this.boolConstant = null;
+        this.stringConstant = null;
+        this.datatype = null;
     }
 
     /*
@@ -128,6 +140,39 @@ public class Type implements Comparable<Type> {
             case TASK:
             case LABEL:
             case CHECKLIST:
+                switch(attr) {
+                    case GET_ID:
+                        if(args.length != 0) throw new InvalidGrammarException();
+                        return new Type(((CheckList) datatype).getChecklistId(), null);
+                    case GET_TITLE:
+                        if(args.length != 0) throw new InvalidGrammarException();
+                        return new Type(((CheckList) datatype).getName(), null);
+                    case GET_PERCENT:
+                        if(args.length != 0) throw new InvalidGrammarException();
+                        return new Type(((CheckList) datatype).getPercentage(), null);
+                    case ADD_ITEM:
+                        if(args.length != 1) throw new InvalidGrammarException();
+                        boolean status = ((CheckList) datatype).addItem(args[0].getStringConstant());
+                        return new Type(status, null);
+                    case REMOVE_ITEM_BY_ID:
+                        if(args.length != 1) throw new InvalidGrammarException();
+                        ((CheckList) datatype).removeItemById(args[0].getIntConstant());
+                        return null;
+                    case REMOVE_ITEM_BY_NAME:
+                        if(args.length != 1) throw new InvalidGrammarException();
+                        ((CheckList) datatype).removeItemByName(args[0].getStringConstant());
+                        return null;
+                    case MARK_ITEM_BY_ID:
+                        if(args.length != 2) throw new InvalidGrammarException();
+                        ((CheckList) datatype).markItemById(args[0].getIntConstant(), args[1].getBoolConstant());
+                        return null;
+                    case MARK_ITEM_BY_NAME:
+                        if(args.length != 2) throw new InvalidGrammarException();
+                        ((CheckList) datatype).markItemByName(args[0].getStringConstant(), args[1].getBoolConstant());
+                        return null;
+                    default:
+                        throw new InvalidGrammarException();
+                }
             case INTEGER:
                 switch(attr) {
                     case ADD:

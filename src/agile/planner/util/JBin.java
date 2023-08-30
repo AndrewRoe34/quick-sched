@@ -277,7 +277,7 @@ public class JBin {
                                 item = item.substring(0, item.length() - 1);
                             }
                             checkLists.get(checkLists.size() - 1).addItem(item.trim());
-                            checkLists.get(checkLists.size() - 1).markItem(itemId++, complete);
+                            checkLists.get(checkLists.size() - 1).markItemById(itemId++, complete);
                         }
                     }
                 }

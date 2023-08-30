@@ -40,6 +40,6 @@ public class DereferenceNullException extends RuntimeException {
      * Constructs a new {@code DereferenceNullException} with {@code null} as its detailed message
      */
     public DereferenceNullException() {
-        super("Attempts to make calls to other custom functions within custom function");
+        super("Attempts to call attribute function with a null reference");
     }
 }
