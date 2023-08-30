@@ -154,10 +154,12 @@ public class ScriptFSM {
             switch (operation) {
                 case CONSTANT:
                     types[i] = parser.parseConstant(args[i]);
+                    break;
                 case VARIABLE:
                     Type t1 = lookupVariable(args[i]);
                     if (t1 == null) throw new DereferenceNullException();
                     types[i] = t1;
+                    break;
                 default:
                     throw new InvalidFunctionException();
             }

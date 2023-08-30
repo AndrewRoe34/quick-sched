@@ -158,26 +158,38 @@ public class Parser {
                     case '.':
                         return Operation.ATTRIBUTE;
                     default:
-                        if(tokens.length > 1 && tokens[1].length() > 0 && tokens[1].charAt(0) == '.' || verifyAttr(line)) {
+                        if(verifyFunc(line)) {
+                            return Operation.FUNCTION;
+                        } else if(tokens.length > 1 && tokens[1].length() > 0 && tokens[1].charAt(0) == '.' || verifyAttr(line)) {
                             return Operation.ATTRIBUTE;
                         } else if(tokens[0].charAt(0) == '"' && tokens[tokens.length - 1].charAt(tokens[tokens.length - 1].length() - 1) == '"') {
                             return Operation.CONSTANT;
                         } else if(containsInteger(line.trim())) {
                             return Operation.CONSTANT;
                         } else {
-                            String finalToken = tokens[tokens.length - 1].trim();
-                            if(finalToken.charAt(finalToken.length() - 1) == ')') {
-                                return Operation.FUNCTION;
-                            }
+//                            String finalToken = tokens[tokens.length - 1].trim();
+//                            if(finalToken.charAt(finalToken.length() - 1) == ')') {
+//                                return Operation.FUNCTION;
+//                            }
                             return Operation.VARIABLE;
                         }
                 }
         }
     }
 
+    private boolean verifyFunc(String line) {
+        String trimmed = line.trim();
+        for(int i = 0; i < trimmed.length(); i++) {
+            if(trimmed.charAt(i) == '.') return false;
+            if(trimmed.charAt(i) == '(') break;
+        }
+        return trimmed.charAt(trimmed.length() - 1) == ')';
+    }
+
     private boolean verifyAttr(String line) {
-        int startIdx = skipWhiteSpace(line, 0);
-        for(int i = startIdx; i < line.length(); i++) {
+        String trimmed = line.trim();
+        if(line.charAt(0) == '"') return false;
+        for(int i = 0; i < trimmed.length(); i++) {
             if(line.charAt(i) == '.') return true;
         }
         return false;

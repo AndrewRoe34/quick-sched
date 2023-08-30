@@ -106,9 +106,13 @@ public class ParserTest {
 
     @Test
     public void parseAttributes() {
-        String method1 = "c.a()";
+        Type str = new Type("book", "str");
+        String method1 = "str.length()";
         Attributes attr = parser.parseAttributes(method1);
-        int x = 3;
+        Parser.AttrFunc func = parser.determineAttrFunc(attr.getAttr());
+        Type ret = str.attrSet(func, new Type[0]);
+//        ScriptFSM fsm = new ScriptFSM();
+//        fsm.processAttribute(attr);
 
     }
 
