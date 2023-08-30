@@ -2,6 +2,7 @@ package agile.planner.scripter;
 
 import agile.planner.data.Card;
 import agile.planner.data.Label;
+import agile.planner.scripter.exception.InvalidGrammarException;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -108,8 +109,93 @@ public class TypeTest {
         ret = t2.attrSet(Parser.AttrFunc.SUB_STRING, args);
         assertEquals("alse", ret.getStringConstant());
 
-        //Integer attr functions
+        //String exception checks todo
 
+        //Integer attr functions
+        args = new Type[1];
+        args[0] = new Type(32, null);
+        Type t3 = new Type(2, null);
+        ret = t3.attrSet(Parser.AttrFunc.ADD, args);
+        assertEquals(34, (int) t3.getIntConstant());
+        assertNull(ret);
+
+        args = new Type[1];
+        args[0] = new Type(2, null);
+        t3 = new Type(2, null);
+        ret = t3.attrSet(Parser.AttrFunc.SUBTRACT, args);
+        assertEquals(0, (int) t3.getIntConstant());
+        assertNull(ret);
+
+        args = new Type[2];
+        args[0] = new Type(2, null);
+        args[1] = new Type(3, null);
+        t3 = new Type(2, null);
+        ret = t3.attrSet(Parser.AttrFunc.MULTIPLY, args);
+        assertEquals(12, (int) t3.getIntConstant());
+        assertNull(ret);
+
+        args = new Type[1];
+        args[0] = new Type(2, null);
+        t3 = new Type(2, null);
+        ret = t3.attrSet(Parser.AttrFunc.DIVIDE, args);
+        assertEquals(1, (int) t3.getIntConstant());
+        assertNull(ret);
+
+        args = new Type[1];
+        args[0] = new Type(3, null);
+        t3 = new Type(5, null);
+        ret = t3.attrSet(Parser.AttrFunc.MOD, args);
+        assertEquals(2, (int) t3.getIntConstant());
+        assertNull(ret);
+
+        //Integer exception checks
+        args = new Type[1];
+        args[0] = new Type(true, null);
+        t3 = new Type(2, null);
+        try {
+            ret = t3.attrSet(Parser.AttrFunc.ADD, args);
+            fail();
+        } catch (Exception e) {
+            assertTrue(e instanceof InvalidGrammarException);
+        }
+
+        try {
+            ret = t3.attrSet(Parser.AttrFunc.SUBTRACT, args);
+            fail();
+        } catch (Exception e) {
+            assertTrue(e instanceof InvalidGrammarException);
+        }
+
+        try {
+            ret = t3.attrSet(Parser.AttrFunc.MULTIPLY, args);
+            fail();
+        } catch (Exception e) {
+            assertTrue(e instanceof InvalidGrammarException);
+        }
+
+        try {
+            ret = t3.attrSet(Parser.AttrFunc.DIVIDE, args);
+            fail();
+        } catch (Exception e) {
+            assertTrue(e instanceof InvalidGrammarException);
+        }
+
+        try {
+            ret = t3.attrSet(Parser.AttrFunc.MOD, args);
+            fail();
+        } catch (Exception e) {
+            assertTrue(e instanceof InvalidGrammarException);
+        }
+
+        //Boolean attr func
+        Type t4 = new Type(true, null);
+        try {
+            args = new Type[0];
+            ret = t4.attrSet(Parser.AttrFunc.ADD, args);
+            fail();
+        } catch (Exception e) {
+            assertTrue(e instanceof InvalidGrammarException);
+        }
     }
 
     @Test

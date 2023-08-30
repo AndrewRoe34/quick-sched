@@ -135,56 +135,51 @@ public class Type implements Comparable<Type> {
                         for(Type t : args) {
                             if(t.getVariabTypeId() == TypeId.INTEGER) {
                                 this.intConstant += t.getIntConstant();
-                                return null;
                             } else {
                                 throw new InvalidGrammarException();
                             }
                         }
-                        break;
+                        return null;
                     case SUBTRACT:
                         if(args.length == 0) throw new InvalidGrammarException();
                         for(Type t : args) {
                             if(t.getVariabTypeId() == TypeId.INTEGER) {
                                 this.intConstant -= t.getIntConstant();
-                                return null;
                             } else {
                                 throw new InvalidGrammarException();
                             }
                         }
-                        break;
+                        return null;
                     case DIVIDE:
                         if(args.length == 0) throw new InvalidGrammarException();
                         for(Type t : args) {
                             if(t.getVariabTypeId() == TypeId.INTEGER) {
                                 this.intConstant /= t.getIntConstant();
-                                return null;
                             } else {
                                 throw new InvalidGrammarException();
                             }
                         }
-                        break;
+                        return null;
                     case MULTIPLY:
                         if(args.length == 0) throw new InvalidGrammarException();
                         for(Type t : args) {
                             if(t.getVariabTypeId() == TypeId.INTEGER) {
                                 this.intConstant *= t.getIntConstant();
-                                return null;
                             } else {
                                 throw new InvalidGrammarException();
                             }
                         }
-                        break;
+                        return null;
                     case MOD:
                         if(args.length == 0) throw new InvalidGrammarException();
                         for(Type t : args) {
                             if(t.getVariabTypeId() == TypeId.INTEGER) {
                                 this.intConstant %= t.getIntConstant();
-                                return null;
                             } else {
                                 throw new InvalidGrammarException();
                             }
                         }
-                        break;
+                        return null;
                 }
             case STRING:
                 switch(attr) {
@@ -218,9 +213,8 @@ public class Type implements Comparable<Type> {
                         }
                 }
             case BOOLEAN:
-                throw new InvalidGrammarException();
             default:
-                return new Type(false, null);
+                throw new InvalidGrammarException();
         }
     }
 

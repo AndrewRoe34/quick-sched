@@ -140,6 +140,7 @@ public class Parser {
     // Calling custom function    [TBD]
 
     public Operation typeOfOperation(String line) {
+        if("".equals(line)) return Operation.COMMENT;
         String[] tokens = line.trim().split("\\s");
         if(tokens[0].charAt(0) == '#') return Operation.COMMENT;
         switch(tokens[0]) {
@@ -205,6 +206,7 @@ public class Parser {
         String funcName = line.substring(startIdx, endIdx);
         switch(funcName) {
             case "print":
+            case "println":
             case "build":
             case "import":
             case "export":
@@ -319,12 +321,33 @@ public class Parser {
             case "checklist":
                 inst = parseCheckList(arguments);
                 break;
+            case "string":
+                inst = parseString(arguments);
+                break;
+            case "int":
+                inst = parseInteger(arguments);
+                break;
+            case "bool":
+                inst = parseBool(arguments);
+                break;
             default:
                 return null;
         }
         if(inst == null) return null;
         inst.setVarName(varName);
         return inst;
+    }
+
+    private BoolInstance parseBool(String[] args) {
+        return args.length == 1 ? new BoolInstance(Boolean.parseBoolean(args[0])) : null;
+    }
+
+    private IntegerInstance parseInteger(String[] args) {
+        return args.length == 1 ? new IntegerInstance(Integer.parseInt(args[0])) : null;
+    }
+
+    private StringInstance parseString(String[] args) {
+        return args.length == 1 ? new StringInstance(args[0]) : null;
     }
 
     /**

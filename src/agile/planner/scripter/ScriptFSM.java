@@ -20,9 +20,9 @@ public class ScriptFSM {
     private final ScriptLog scriptLog = new ScriptLog();
 
     public void executeScript() throws FileNotFoundException {
-        Scanner scriptScanner = new Scanner(new File("fun1.smpl"));
+        Scanner scriptScanner = new Scanner(new File("data/fun1.smpl"));
         while (scriptScanner.hasNextLine()) {
-            String line = scriptScanner.nextLine();
+            String line = scriptScanner.nextLine().trim();
             Parser.Operation operation = parser.typeOfOperation(line);
             switch (operation) {
                 case COMMENT:
@@ -78,8 +78,10 @@ public class ScriptFSM {
 
         } else if (classInstance instanceof LabelInstance) {
 
-        } else {
-
+        } else if (classInstance instanceof StringInstance) {
+            StringInstance str = (StringInstance) classInstance;
+            Type t1 = new Type(str.getStr(), str.getVarName());
+            variableList.add(t1);
         }
     }
 
@@ -190,10 +192,18 @@ public class ScriptFSM {
                     if (ret == null) throw new InvalidFunctionException();
                     //else, store value in types[i]
                     types[i] = ret;
+                    break;
                 case CONSTANT:
                     types[i] = parser.parseConstant(args[i]);
+                    break;
                 case VARIABLE:
-                    //types[i] = parser.parseVariable(args[i]);
+                    for(Type t : variableList) {
+                        if(t.getVariableName() != null && args[i].equals(t.getVariableName())) {
+                            types[i] = t;
+                            break;
+                        }
+                    }
+                    break;
                 default:
                     throw new InvalidFunctionException();
             }
