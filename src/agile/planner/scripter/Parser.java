@@ -236,8 +236,36 @@ public class Parser {
     }
 
     public CustomFunction parseCustomFunction(String line) {
-        
-        return null;
+        int numSpaces = 0;
+        int numTabs = 0;
+        for(int i = 0; i < line.length(); i++) {
+            if(line.charAt(i) == ' ')
+                numSpaces++;
+            else if(line.charAt(i) == '\t')
+                numTabs++;
+            else break;
+        }
+
+        int whitespaceCount = numSpaces + numTabs;
+        int nonWhiteSpace = whitespaceCount + 4;
+
+        String[] tokens = line.substring(whitespaceCount).trim().split("\\s");
+        if(tokens.length < 2 || !"func".equals(tokens[0])) {
+            return null;
+        }
+
+        int idx = line.indexOf("func") + 4;
+        int start = idx;
+        for(; idx < line.length(); idx++) {
+            if(line.charAt(idx) == '(') {
+                break;
+            } else if(line.charAt(idx) == ')') return null;
+        }
+
+        String name = line.substring(start, idx);
+
+        String[] args = verifyArgument(line, idx);
+        return new CustomFunction(name, args);
     }
 
     public Type parseConstant(String line) {

@@ -6,12 +6,17 @@ import java.util.List;
 public class CustomFunction extends StaticFunction {
 
     private List<String> lines;
-    public CustomFunction(String funcName, String[] args, List<String> lines) {
+    public CustomFunction(String funcName, String[] args) {
         super(funcName, args);
-        this.lines = lines;
+        this.lines = new ArrayList<>();
     }
 
     public List<String> getLines() {
         return lines;
+    }
+
+
+    public boolean addLine(String line) {
+        return lines.add(line);
     }
 }
