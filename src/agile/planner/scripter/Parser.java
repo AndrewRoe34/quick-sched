@@ -207,10 +207,6 @@ public class Parser {
         }
     }
 
-    public StaticFunction parseCustomFunction(String[] lines) {
-        return null;
-    }
-
     public StaticFunction parseStaticFunction(String line) {
         int startIdx = skipWhiteSpace(line, 0);
         int endIdx = startIdx;
@@ -237,6 +233,11 @@ public class Parser {
                 //todo need to use a map to locate custom functions
                 return null;
         }
+    }
+
+    public CustomFunction parseCustomFunction(String line) {
+        
+        return null;
     }
 
     public Type parseConstant(String line) {

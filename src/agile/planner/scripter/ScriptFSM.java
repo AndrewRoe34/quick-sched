@@ -11,6 +11,7 @@ import agile.planner.util.CheckList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Scanner;
@@ -20,6 +21,12 @@ public class ScriptFSM {
     private List<Type> variableList = new LinkedList<>();
     private final Parser parser = new Parser();
     private final ScriptLog scriptLog = new ScriptLog();
+    private List<Type> checklistVariables = new ArrayList<>();
+    private List<Type> labelVariables = new ArrayList<>();
+    private List<Type> taskVariables = new ArrayList<>();
+    private List<Type> cardVariables = new ArrayList<>();
+    private List<Type> primitiveVariables = new ArrayList<>();
+    private boolean ppStatus = false;
 
     public void executeScript() throws FileNotFoundException {
         Scanner scriptScanner = new Scanner(new File("data/fun1.smpl"));
@@ -34,18 +41,22 @@ public class ScriptFSM {
                         PreProcessor preProcessor = parser.parsePreProcessor(line);
                         if (preProcessor == null) throw new InvalidPreProcessorException();
                         processPreProcessor(preProcessor);
+                        ppStatus = true;
                         break;
                     case ATTRIBUTE:
+                        if(!ppStatus) throw new InvalidPreProcessorException();
                         Attributes attr = parser.parseAttributes(line);
                         if (attr == null) throw new InvalidFunctionException();
                         processAttribute(attr);
                         break;
                     case FUNCTION:
+                        if(!ppStatus) throw new InvalidPreProcessorException();
                         StaticFunction func = parser.parseStaticFunction(line);
                         if (func == null) throw new InvalidFunctionException();
                         processStaticFunction(func);
                         break;
                     case INSTANCE:
+                        if(!ppStatus) throw new InvalidPreProcessorException();
                         ClassInstance classInstance = parser.parseClassInstance(line);
                         if (classInstance == null) {
                             //todo then it is a static function attempting to return a value
@@ -55,12 +66,12 @@ public class ScriptFSM {
                         }
                         break;
                     case SETUP_CUST_FUNC:
-                        //todo will work on later
+                        if(!ppStatus) throw new InvalidPreProcessorException();
+                        processCustomFunction(line);
                         break;
                     case VARIABLE:
                     case CONSTANT:
-                        //do nothing here
-                        break;
+                        if(!ppStatus) throw new InvalidPreProcessorException();
                     default:
                         throw new InvalidGrammarException();
                 }
@@ -69,6 +80,14 @@ public class ScriptFSM {
             }
 
         }
+    }
+
+    protected processCustomFunction(String line) {
+        String[] func = processFunctionHeader(line);
+
+    }
+
+    private String[] processFunctionHeader(String line) {
     }
 
     protected void processPreProcessor(PreProcessor preProcessor) {
