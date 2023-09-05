@@ -215,6 +215,7 @@ public class Parser {
                 break;
         }
         String funcName = line.substring(startIdx, endIdx);
+        String[] arguments = verifyArgument(line, endIdx);
         switch(funcName) {
             case "print":
             case "println":
@@ -227,11 +228,9 @@ public class Parser {
             case "decrypt_data":
             case "get_task_by_name":
             case "get_task_by_id": //todo need to add more functions
-                String[] arguments = verifyArgument(line, endIdx);
-                return new StaticFunction(funcName, arguments);
+                return new StaticFunction(funcName, arguments, true);
             default:
-                //todo need to use a map to locate custom functions
-                return null;
+                return new StaticFunction(funcName, arguments, false);
         }
     }
 
@@ -247,7 +246,6 @@ public class Parser {
         }
 
         int whitespaceCount = numSpaces + numTabs;
-        int nonWhiteSpace = whitespaceCount + 4;
 
         String[] tokens = line.substring(whitespaceCount).trim().split("\\s");
         if(tokens.length < 2 || !"func".equals(tokens[0])) {

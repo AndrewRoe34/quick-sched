@@ -7,7 +7,7 @@ public class CustomFunction extends StaticFunction {
 
     private List<String> lines;
     public CustomFunction(String funcName, String[] args) {
-        super(funcName, args);
+        super(funcName, args, false);
         this.lines = new ArrayList<>();
     }
 

@@ -11,10 +11,7 @@ import agile.planner.util.CheckList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class ScriptFSM {
 
@@ -26,12 +23,15 @@ public class ScriptFSM {
     private List<Type> taskVariables = new ArrayList<>();
     private List<Type> cardVariables = new ArrayList<>();
     private List<Type> primitiveVariables = new ArrayList<>();
+    private Map<String, CustomFunction> funcMap = new HashMap<>();
     private boolean ppStatus = false;
+    private Scanner scriptScanner;
 
     public void executeScript() throws FileNotFoundException {
-        Scanner scriptScanner = new Scanner(new File("data/fun1.smpl"));
+        scriptScanner = new Scanner(new File("data/fun1.smpl"));
         while (scriptScanner.hasNextLine()) {
-            String line = scriptScanner.nextLine().trim();
+            String untrimmed = scriptScanner.nextLine();
+            String line = untrimmed.trim();
             Parser.Operation operation = parser.typeOfOperation(line);
             try {
                 switch (operation) {
@@ -52,7 +52,7 @@ public class ScriptFSM {
                     case FUNCTION:
                         if(!ppStatus) throw new InvalidPreProcessorException();
                         StaticFunction func = parser.parseStaticFunction(line);
-                        if (func == null) throw new InvalidFunctionException();
+                        if (!funcMap.containsKey(func.getFuncName())) throw new InvalidFunctionException();
                         processStaticFunction(func);
                         break;
                     case INSTANCE:
@@ -67,7 +67,12 @@ public class ScriptFSM {
                         break;
                     case SETUP_CUST_FUNC:
                         if(!ppStatus) throw new InvalidPreProcessorException();
-                        processCustomFunction(line);
+                        CustomFunction customFunction = parser.parseCustomFunction(untrimmed);
+                        if(customFunction == null) {
+                            throw new InvalidFunctionException();
+                        } else {
+                            processCustomFunction(customFunction);
+                        }
                         break;
                     case VARIABLE:
                     case CONSTANT:
@@ -82,12 +87,14 @@ public class ScriptFSM {
         }
     }
 
-    protected processCustomFunction(String line) {
-        String[] func = processFunctionHeader(line);
-
-    }
-
-    private String[] processFunctionHeader(String line) {
+    protected void processCustomFunction(CustomFunction customFunction) {
+        while(scriptScanner.hasNextLine()) {
+            String line = scriptScanner.nextLine();
+            customFunction.addLine(line);
+            //todo need to finish and check for attributes that make this code part of the function
+            break;
+        }
+        funcMap.put(customFunction.getFuncName(), customFunction);
     }
 
     protected void processPreProcessor(PreProcessor preProcessor) {
@@ -198,7 +205,7 @@ public class ScriptFSM {
                 System.out.println();
                 return null;
             default:
-
+                //todo use this for custom functions
         }
         return null;
     }

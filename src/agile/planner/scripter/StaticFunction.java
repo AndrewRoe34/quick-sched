@@ -6,9 +6,12 @@ public class StaticFunction {
 
     private final String[] args;
 
-    public StaticFunction(String funcName, String[] args) {
+    private final boolean builtInFunc;
+
+    public StaticFunction(String funcName, String[] args, boolean builtInFunc) {
         this.funcName = funcName;
         this.args = args;
+        this.builtInFunc = builtInFunc;
     }
 
     public String getFuncName() {
@@ -17,5 +20,9 @@ public class StaticFunction {
 
     public String[] getArgs() {
         return args;
+    }
+
+    public boolean getBuiltInFunc() {
+        return builtInFunc;
     }
 }
