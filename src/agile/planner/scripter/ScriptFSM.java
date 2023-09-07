@@ -331,10 +331,6 @@ public class ScriptFSM {
 
     }
 
-    protected Type variableLookup(String name) {
-        return null;
-    }
-
     //todo add your static functions down here...
 
 
