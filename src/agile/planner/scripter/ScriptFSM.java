@@ -33,68 +33,98 @@ public class ScriptFSM {
             String untrimmed = scriptScanner.nextLine();
             String line = untrimmed.trim();
             Parser.Operation operation = parser.typeOfOperation(line);
-            try {
-                switch (operation) {
-                    case COMMENT:
-                        break;
-                    case PRE_PROCESSOR:
-                        PreProcessor preProcessor = parser.parsePreProcessor(line);
-                        if (preProcessor == null) throw new InvalidPreProcessorException();
-                        processPreProcessor(preProcessor);
-                        ppStatus = true;
-                        break;
-                    case ATTRIBUTE:
-                        if(!ppStatus) throw new InvalidPreProcessorException();
-                        Attributes attr = parser.parseAttributes(line);
-                        if (attr == null) throw new InvalidFunctionException();
-                        processAttribute(attr);
-                        break;
-                    case FUNCTION:
-                        if(!ppStatus) throw new InvalidPreProcessorException();
-                        StaticFunction func = parser.parseStaticFunction(line);
-                        if (!funcMap.containsKey(func.getFuncName())) throw new InvalidFunctionException();
-                        processStaticFunction(func);
-                        break;
-                    case INSTANCE:
-                        if(!ppStatus) throw new InvalidPreProcessorException();
-                        ClassInstance classInstance = parser.parseClassInstance(line);
-                        if (classInstance == null) {
-                            //todo then it is a static function attempting to return a value
-                            // also need to separate the tokens from the variable and the function
-                        } else {
-                            processClassInstance(classInstance);
-                        }
-                        break;
-                    case SETUP_CUST_FUNC:
-                        if(!ppStatus) throw new InvalidPreProcessorException();
-                        CustomFunction customFunction = parser.parseCustomFunction(untrimmed);
-                        if(customFunction == null) {
-                            throw new InvalidFunctionException();
-                        } else {
-                            processCustomFunction(customFunction);
-                        }
-                        break;
-                    case VARIABLE:
-                    case CONSTANT:
-                        if(!ppStatus) throw new InvalidPreProcessorException();
-                    default:
-                        throw new InvalidGrammarException();
+            boolean status = true;
+            while(status) {
+                try {
+                    switch (operation) {
+                        case COMMENT:
+                            break;
+                        case PRE_PROCESSOR:
+                            PreProcessor preProcessor = parser.parsePreProcessor(line);
+                            if (preProcessor == null) throw new InvalidPreProcessorException();
+                            processPreProcessor(preProcessor);
+                            ppStatus = true;
+                            break;
+                        case ATTRIBUTE:
+                            if(!ppStatus) throw new InvalidPreProcessorException();
+                            Attributes attr = parser.parseAttributes(line);
+                            if (attr == null) throw new InvalidFunctionException();
+                            processAttribute(attr);
+                            break;
+                        case FUNCTION:
+                            if(!ppStatus) throw new InvalidPreProcessorException();
+                            StaticFunction func = parser.parseStaticFunction(line);
+                            if (!funcMap.containsKey(func.getFuncName())) throw new InvalidFunctionException();
+                            processStaticFunction(func);
+                            break;
+                        case INSTANCE:
+                            if(!ppStatus) throw new InvalidPreProcessorException();
+                            ClassInstance classInstance = parser.parseClassInstance(line);
+                            if (classInstance == null) {
+                                //todo then it is a static function attempting to return a value
+                                // also need to separate the tokens from the variable and the function
+                            } else {
+                                processClassInstance(classInstance);
+                            }
+                            break;
+                        case SETUP_CUST_FUNC:
+                            if(!ppStatus) throw new InvalidPreProcessorException();
+                            CustomFunction customFunction = parser.parseCustomFunction(untrimmed);
+                            if(customFunction == null) {
+                                throw new InvalidFunctionException();
+                            } else {
+                                untrimmed = processCustomFunction(customFunction);
+                                if(untrimmed != null) {
+                                    line = untrimmed.trim();
+                                    status = true;
+                                }
+                            }
+                            break;
+                        case VARIABLE:
+                        case CONSTANT:
+                            if(!ppStatus) throw new InvalidPreProcessorException();
+                            break;
+                        default:
+                            throw new InvalidGrammarException();
+                    }
+                } catch (Exception e) {
+                    System.out.println("\u001B[31m" + e.getClass() + "\u001B[0m" + ": " + e.getMessage());
                 }
-            } catch (Exception e) {
-                System.out.println("\u001B[31m" + e.getClass() + "\u001B[0m" + ": " + e.getMessage());
+                if(operation != Parser.Operation.SETUP_CUST_FUNC) {
+                    status = false;
+                }
             }
 
         }
     }
 
-    protected void processCustomFunction(CustomFunction customFunction) {
+    protected String processCustomFunction(CustomFunction customFunction) {
+        String line = null;
+        boolean flag = false;
         while(scriptScanner.hasNextLine()) {
-            String line = scriptScanner.nextLine();
-            customFunction.addLine(line);
-            //todo need to finish and check for attributes that make this code part of the function
-            break;
+            line = scriptScanner.nextLine();
+            int spacing = numSpaces(line);
+            if(spacing <= customFunction.getNumSpaces()) {
+                flag = true;
+                break;
+            }
+            customFunction.addLine(line.trim());
         }
         funcMap.put(customFunction.getFuncName(), customFunction);
+        return flag ? line : null;
+    }
+
+    private int numSpaces(String line) {
+        int count = 0;
+        int idx = 0;
+        for(; idx < line.length(); idx++) {
+            if (line.charAt(idx) == ' ') {
+                count++;
+            } else if(line.charAt(idx) == '\t') {
+                count += 4;
+            } else break;
+        }
+        return count;
     }
 
     protected void processPreProcessor(PreProcessor preProcessor) {
