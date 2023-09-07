@@ -32,9 +32,9 @@ public class ScriptFSM {
         while (scriptScanner.hasNextLine()) {
             String untrimmed = scriptScanner.nextLine();
             String line = untrimmed.trim();
-            Parser.Operation operation = parser.typeOfOperation(line);
             boolean status = true;
             while(status) {
+                Parser.Operation operation = parser.typeOfOperation(line);
                 try {
                     switch (operation) {
                         case COMMENT:
@@ -54,7 +54,6 @@ public class ScriptFSM {
                         case FUNCTION:
                             if(!ppStatus) throw new InvalidPreProcessorException();
                             StaticFunction func = parser.parseStaticFunction(line);
-                            if (!funcMap.containsKey(func.getFuncName())) throw new InvalidFunctionException();
                             processStaticFunction(func);
                             break;
                         case INSTANCE:
