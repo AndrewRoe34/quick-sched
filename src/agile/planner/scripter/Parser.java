@@ -263,7 +263,7 @@ public class Parser {
         String name = line.substring(start, idx);
 
         String[] args = verifyArgument(line, idx);
-        return new CustomFunction(name, args);
+        return new CustomFunction(name, args, numSpaces + 4 * numTabs);
     }
 
     public Type parseConstant(String line) {
