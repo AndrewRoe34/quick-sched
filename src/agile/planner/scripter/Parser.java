@@ -139,8 +139,8 @@ public class Parser {
     // function calls             [DONE]
     // String/int/bool assignment [DONE]
     // Preprocessor handling      [DONE]
-    // Create custom function     [TBD]
-    // Calling custom function    [TBD]
+    // Create custom function     [DONE]
+    // Calling custom function    [DONE]
 
     public Operation typeOfOperation(String line) {
         if("".equals(line)) return Operation.COMMENT;

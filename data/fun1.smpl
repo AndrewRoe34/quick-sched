@@ -1,7 +1,8 @@
 #Sample script
 include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__, __STATS__
 
-# import("helper.func", "schedule.jbin", "car.attr")
+# import_func("helper.func")
+# import_schedule("schedule.jbin")
 
 # creates data types
 val: string("3400")
@@ -29,3 +30,6 @@ foo(my_cl, status)
 println("checklist_id=", my_cl.id(), ", checklist_name=", my_cl.get_title(), ", checklist_percent=", my_cl.get_percent(), "%")
 println(my_cl)
 println("")
+
+# export_schedule()
+# export_jbin()
