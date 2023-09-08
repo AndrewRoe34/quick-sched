@@ -27,7 +27,7 @@ public class Type implements Comparable<Type> {
 
     private String stringConstant;
 
-    private final String variableName;
+    private String variableName;
 
     private TypeId type;
 
@@ -51,6 +51,27 @@ public class Type implements Comparable<Type> {
         setStringConstant(stringConstant);
     }
 
+    public void setData(Type ret) {
+        switch(ret.getVariabTypeId()) {
+            case INTEGER:
+                setIntConstant(ret.getIntConstant());
+                break;
+            case STRING:
+                setStringConstant(ret.getStringConstant());
+                break;
+            case BOOLEAN:
+                setBoolConstant(ret.getBoolConstant());
+                break;
+            case CARD:
+            case LABEL:
+            case CHECKLIST:
+            case TASK:
+            case BOARD:
+                setLinkerData(ret.getLinkerData(), ret.getVariabTypeId());
+                break;
+        }
+    }
+
     public Linker getLinkerData() {
         return datatype;
     }
@@ -63,6 +84,10 @@ public class Type implements Comparable<Type> {
 
     public String getVariableName() {
         return variableName;
+    }
+
+    public void setVariableName(String name) {
+        this.variableName = name;
     }
 
     public TypeId getVariabTypeId() {

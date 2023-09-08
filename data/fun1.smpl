@@ -5,6 +5,10 @@ include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__,
 val: string("3400")
 c1: card("HW")
 
+func foo()
+  #test
+  println("Hello World")
+
 # outputs data
 println("length=", val.length(), ", int_val=", val.parse_int(), ", substring(1)=", val.sub_string(1))
 println("")
@@ -27,4 +31,9 @@ println("")
 
 # creates a label and outputs it
 my_label: label("MA", 3)
-println("label_name=", my_label.title(), ", label_color=", my_label.color())
+x: my_label.title()
+println(x)
+
+foo()
+
+###TODO: Need to finish adding functionality to allow storage of variables for arguments to functions while maintaining the same reference###

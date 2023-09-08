@@ -2,10 +2,7 @@ package agile.planner.scripter;
 
 import agile.planner.data.Card;
 import agile.planner.data.Label;
-import agile.planner.scripter.exception.DereferenceNullException;
-import agile.planner.scripter.exception.InvalidFunctionException;
-import agile.planner.scripter.exception.InvalidGrammarException;
-import agile.planner.scripter.exception.InvalidPreProcessorException;
+import agile.planner.scripter.exception.*;
 import agile.planner.scripter.tools.ScriptLog;
 import agile.planner.util.CheckList;
 
@@ -24,8 +21,10 @@ public class ScriptFSM {
     private List<Type> cardVariables = new ArrayList<>();
     private List<Type> primitiveVariables = new ArrayList<>();
     private Map<String, CustomFunction> funcMap = new HashMap<>();
+    private List<Type> localStack = new ArrayList<>();
     private boolean ppStatus = false;
     private Scanner scriptScanner;
+    private boolean inFunction;
 
     public void executeScript() throws FileNotFoundException {
         scriptScanner = new Scanner(new File("data/fun1.smpl"));
@@ -62,6 +61,36 @@ public class ScriptFSM {
                             if (classInstance == null) {
                                 //todo then it is a static function attempting to return a value
                                 // also need to separate the tokens from the variable and the function
+                                int i = 0;
+                                for(; i < line.length(); i++) {
+                                    if(line.charAt(i) == ':')
+                                        break;
+                                }
+                                String varName = line.substring(0, i);
+                                String trimmed = line.substring(i + 1).trim();
+                                Parser.Operation op = parser.typeOfOperation(trimmed);
+                                Type t1 = lookupVariable(varName);
+                                Type ret = null;
+                                switch (op) {
+                                    case ATTRIBUTE:
+                                        Attributes atr = parser.parseAttributes(trimmed);
+                                        if (atr == null) throw new InvalidFunctionException();
+                                        ret = processAttribute(atr);
+                                        break;
+                                    case FUNCTION:
+                                        StaticFunction fnc = parser.parseStaticFunction(trimmed);
+                                        ret = processStaticFunction(fnc);
+                                        break;
+                                    default:
+                                        throw new InvalidPairingException();
+                                }
+                                if(ret == null) throw new InvalidGrammarException();
+                                if(t1 == null) {
+                                    ret.setVariableName(varName);
+                                    variableList.add(ret);
+                                } else {
+                                    t1.setData(ret);
+                                }
                             } else {
                                 processClassInstance(classInstance);
                             }
@@ -72,7 +101,7 @@ public class ScriptFSM {
                             if(customFunction == null) {
                                 throw new InvalidFunctionException();
                             } else {
-                                untrimmed = processCustomFunction(customFunction);
+                                untrimmed = setupCustomFunction(customFunction);
                                 if(untrimmed != null) {
                                     line = untrimmed.trim();
                                     status = true;
@@ -97,7 +126,7 @@ public class ScriptFSM {
         }
     }
 
-    protected String processCustomFunction(CustomFunction customFunction) {
+    protected String setupCustomFunction(CustomFunction customFunction) {
         String line = null;
         boolean flag = false;
         while(scriptScanner.hasNextLine()) {
@@ -109,7 +138,7 @@ public class ScriptFSM {
             }
             customFunction.addLine(line.trim());
         }
-        funcMap.put(customFunction.getFuncName(), customFunction);
+        funcMap.put(customFunction.getFuncName().trim(), customFunction);
         return flag ? line : null;
     }
 
@@ -197,7 +226,12 @@ public class ScriptFSM {
         2. Attempt to call the method via the Type method attrSet()
          */
         Type[] args = processArgumentsHelper(attr.getArguments());
-        Type t1 = lookupVariable(attr.getVarName());
+        Type t1 = null;
+        if(inFunction) {
+            t1 = lookupLocalVariable(attr.getVarName());
+        } else {
+            t1 =  lookupVariable(attr.getVarName());
+        }
         if (t1 == null) throw new DereferenceNullException();
         Parser.AttrFunc func = parser.determineAttrFunc(attr.getAttr());
         return t1.attrSet(func, args);
@@ -233,14 +267,109 @@ public class ScriptFSM {
                 }
                 System.out.println();
                 return null;
+            case "import":
+                if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.STRING) throw new InvalidFunctionException();
+                funcImport(args[0].getStringConstant());
             default:
-                //todo use this for custom functions
+                processCustomFunction(func, args);
         }
         return null;
     }
 
+    protected void processCustomFunction(StaticFunction func, Type[] args) {
+        CustomFunction customFunction = funcMap.get(func.getFuncName());
+        localStack = new ArrayList<>();
+        if(func.getArgs().length != args.length) throw new InvalidFunctionException();
+        String[] originalVarNames = new String[args.length];
+
+        for(int i = 0; i < args.length; i++) {
+            originalVarNames[i] = args[i].getVariableName();
+            args[i].setVariableName(customFunction.getArgs()[i]);
+            localStack.add(args[i]);
+        }
+
+        inFunction = true;
+        for(String line : customFunction.getLines()) {
+            line = line.trim();
+            Parser.Operation operation = parser.typeOfOperation(line);
+            try {
+                switch (operation) {
+                    case COMMENT:
+                        break;
+                    case ATTRIBUTE:
+                        if(!ppStatus) throw new InvalidPreProcessorException();
+                        Attributes attr = parser.parseAttributes(line);
+                        if (attr == null) throw new InvalidFunctionException();
+                        processAttribute(attr);
+                        break;
+                    case FUNCTION:
+                        if(!ppStatus) throw new InvalidPreProcessorException();
+                        StaticFunction myfunc = parser.parseStaticFunction(line);
+                        processStaticFunction(myfunc);
+                        break;
+                    case INSTANCE:
+                        if(!ppStatus) throw new InvalidPreProcessorException();
+                        ClassInstance classInstance = parser.parseClassInstance(line);
+                        if (classInstance == null) {
+                            int i = 0;
+                            for(; i < line.length(); i++) {
+                                if(line.charAt(i) == ':')
+                                    break;
+                            }
+                            String varName = line.substring(0, i);
+                            String trimmed = line.substring(i + 1).trim();
+                            Parser.Operation op = parser.typeOfOperation(trimmed);
+                            Type t1 = lookupVariable(varName);
+                            Type ret = null;
+                            switch (op) {
+                                case ATTRIBUTE:
+                                    Attributes atr = parser.parseAttributes(trimmed);
+                                    if (atr == null) throw new InvalidFunctionException();
+                                    ret = processAttribute(atr);
+                                    break;
+                                case FUNCTION:
+                                    StaticFunction fnc = parser.parseStaticFunction(trimmed);
+                                    ret = processStaticFunction(fnc);
+                                    break;
+                                default:
+                                    throw new InvalidPairingException();
+                            }
+                            if(ret == null) throw new InvalidGrammarException();
+                            if(t1 == null) {
+                                ret.setVariableName(varName);
+                                variableList.add(ret);
+                            } else {
+                                t1.setData(ret);
+                            }
+                        } else {
+                            processClassInstance(classInstance);
+                        }
+                        break;
+                    default:
+                        throw new InvalidGrammarException();
+                }
+            } catch (Exception e) {
+                System.out.println("\u001B[31m" + e.getClass() + "\u001B[0m" + ": " + e.getMessage());
+            }
+        }
+
+        //resets the variable naming to before
+        for(int i = 0; i < args.length; i++) {
+            args[i].setVariableName(originalVarNames[i]);
+        }
+    }
+
     public Type lookupVariable(String token) {
         for (Type t : variableList) {
+            if (token.equals(t.getVariableName())) {
+                return t;
+            }
+        }
+        return null;
+    }
+
+    protected Type lookupLocalVariable(String token) {
+        for(Type t : localStack) {
             if (token.equals(t.getVariableName())) {
                 return t;
             }
@@ -262,7 +391,12 @@ public class ScriptFSM {
                     types[i] = parser.parseConstant(args[i]);
                     break;
                 case VARIABLE:
-                    Type t1 = lookupVariable(args[i]);
+                    Type t1 = null;
+                    if(inFunction) {
+                        t1 = lookupLocalVariable(args[i]);
+                    } else {
+                        t1 = lookupVariable(args[i]);
+                    }
                     if (t1 == null) throw new DereferenceNullException();
                     types[i] = t1;
                     break;
@@ -289,7 +423,12 @@ public class ScriptFSM {
                     Attributes attr = parser.parseAttributes(args[i]);
                     Type[] temp = processArgumentsHelper(attr.getArguments());
                     //Lookup variable (if null, throw exception)
-                    Type t1 = lookupVariable(attr.getVarName());
+                    Type t1 = null;
+                    if(inFunction) {
+                        t1 = lookupLocalVariable(attr.getVarName());
+                    } else {
+                        t1 = lookupVariable(attr.getVarName());
+                    }
                     if (t1 == null) throw new DereferenceNullException();
                     //Determine AttrFunc
                     Parser.AttrFunc func = parser.determineAttrFunc(attr.getAttr());
@@ -324,6 +463,10 @@ public class ScriptFSM {
     }
 
     protected void funcImport(String file) {
+        //will need to offer two categories
+        //jbin and func
+        //jbin loads in data
+        //func offers additional static functions for the script to use
 
     }
 
