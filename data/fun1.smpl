@@ -5,9 +5,13 @@ include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__,
 val: string("3400")
 c1: card("HW")
 
-func foo(lbl)
-  #test
-  println("label_name=", lbl.title(), ", label_color=", lbl.color())
+func foo(cl, flag)
+  cl.add_item("Step 1")
+  cl.add_item("Step 2")
+  cl.add_item("Step 3")
+  cl.mark_item_by_id(0, flag)
+  cl.mark_item_by_name("Step 2", flag)
+  cl.mark_item_by_id(2, flag)
 
 # outputs data
 println("length=", val.length(), ", int_val=", val.parse_int(), ", substring(1)=", val.sub_string(1))
@@ -15,22 +19,13 @@ println("")
 println("card_name=", c1.get_title())
 
 # creates and modifies a checklist
-flag: bool(true)
+status: bool(true)
 my_cl: cl("List")
-my_cl.add_item("Step 1")
-my_cl.add_item("Step 2")
-my_cl.add_item("Step 3")
-my_cl.mark_item_by_id(0, flag)
-my_cl.mark_item_by_name("Step 2", flag)
-my_cl.mark_item_by_id(2, flag)
+foo(my_cl, status)
 
 # outputs the checklist data
 println("checklist_id=", my_cl.id(), ", checklist_name=", my_cl.get_title(), ", checklist_percent=", my_cl.get_percent(), "%")
 println(my_cl)
 println("")
-
-# creates a label and outputs it
-my_label: label("MA", 3)
-foo(my_label)
 
 ###TODO: Need to finish adding functionality to allow storage of variables for arguments to functions while maintaining the same reference###
