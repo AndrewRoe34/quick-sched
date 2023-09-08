@@ -51,7 +51,12 @@ public class Type implements Comparable<Type> {
         setStringConstant(stringConstant);
     }
 
-    public void setData(Type ret) {
+    public Type(Type t1, String variableName) {
+        this.variableName = variableName;
+        setTypeVal(t1);
+    }
+
+    public void setTypeVal(Type ret) {
         switch(ret.getVariabTypeId()) {
             case INTEGER:
                 setIntConstant(ret.getIntConstant());

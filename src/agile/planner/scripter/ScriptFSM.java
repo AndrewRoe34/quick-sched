@@ -59,8 +59,6 @@ public class ScriptFSM {
                             if(!ppStatus) throw new InvalidPreProcessorException();
                             ClassInstance classInstance = parser.parseClassInstance(line);
                             if (classInstance == null) {
-                                //todo then it is a static function attempting to return a value
-                                // also need to separate the tokens from the variable and the function
                                 int i = 0;
                                 for(; i < line.length(); i++) {
                                     if(line.charAt(i) == ':')
@@ -89,7 +87,7 @@ public class ScriptFSM {
                                     ret.setVariableName(varName);
                                     variableList.add(ret);
                                 } else {
-                                    t1.setData(ret);
+                                    t1.setTypeVal(ret);
                                 }
                             } else {
                                 processClassInstance(classInstance);
@@ -279,14 +277,15 @@ public class ScriptFSM {
     protected void processCustomFunction(StaticFunction func, Type[] args) {
         CustomFunction customFunction = funcMap.get(func.getFuncName());
         localStack = new ArrayList<>();
-        if(func.getArgs().length != args.length) throw new InvalidFunctionException();
-        String[] originalVarNames = new String[args.length];
+        if(customFunction.getArgs().length != args.length) throw new InvalidFunctionException();
 
-        for(int i = 0; i < args.length; i++) {
-            originalVarNames[i] = args[i].getVariableName();
-            args[i].setVariableName(customFunction.getArgs()[i]);
-            localStack.add(args[i]);
+        //todo need to add constructor for Type to include another Type (will maintain referencing easily
+        int j = 0;
+        for(Type t : args) {
+            localStack.add(new Type(t, customFunction.getArgs()[j]));
+            j++;
         }
+
 
         inFunction = true;
         for(String line : customFunction.getLines()) {
@@ -308,43 +307,43 @@ public class ScriptFSM {
                         processStaticFunction(myfunc);
                         break;
                     case INSTANCE:
-                        if(!ppStatus) throw new InvalidPreProcessorException();
-                        ClassInstance classInstance = parser.parseClassInstance(line);
-                        if (classInstance == null) {
-                            int i = 0;
-                            for(; i < line.length(); i++) {
-                                if(line.charAt(i) == ':')
-                                    break;
-                            }
-                            String varName = line.substring(0, i);
-                            String trimmed = line.substring(i + 1).trim();
-                            Parser.Operation op = parser.typeOfOperation(trimmed);
-                            Type t1 = lookupVariable(varName);
-                            Type ret = null;
-                            switch (op) {
-                                case ATTRIBUTE:
-                                    Attributes atr = parser.parseAttributes(trimmed);
-                                    if (atr == null) throw new InvalidFunctionException();
-                                    ret = processAttribute(atr);
-                                    break;
-                                case FUNCTION:
-                                    StaticFunction fnc = parser.parseStaticFunction(trimmed);
-                                    ret = processStaticFunction(fnc);
-                                    break;
-                                default:
-                                    throw new InvalidPairingException();
-                            }
-                            if(ret == null) throw new InvalidGrammarException();
-                            if(t1 == null) {
-                                ret.setVariableName(varName);
-                                variableList.add(ret);
-                            } else {
-                                t1.setData(ret);
-                            }
-                        } else {
-                            processClassInstance(classInstance);
-                        }
-                        break;
+//                        if(!ppStatus) throw new InvalidPreProcessorException();
+//                        ClassInstance classInstance = parser.parseClassInstance(line);
+//                        if (classInstance == null) {
+//                            int i = 0;
+//                            for(; i < line.length(); i++) {
+//                                if(line.charAt(i) == ':')
+//                                    break;
+//                            }
+//                            String varName = line.substring(0, i);
+//                            String trimmed = line.substring(i + 1).trim();
+//                            Parser.Operation op = parser.typeOfOperation(trimmed);
+//                            Type t1 = lookupVariable(varName);
+//                            Type ret = null;
+//                            switch (op) {
+//                                case ATTRIBUTE:
+//                                    Attributes atr = parser.parseAttributes(trimmed);
+//                                    if (atr == null) throw new InvalidFunctionException();
+//                                    ret = processAttribute(atr);
+//                                    break;
+//                                case FUNCTION:
+//                                    StaticFunction fnc = parser.parseStaticFunction(trimmed);
+//                                    ret = processStaticFunction(fnc);
+//                                    break;
+//                                default:
+//                                    throw new InvalidPairingException();
+//                            }
+//                            if(ret == null) throw new InvalidGrammarException();
+//                            if(t1 == null) {
+//                                ret.setVariableName(varName);
+//                                variableList.add(ret);
+//                            } else {
+//                                t1.setTypeVal(ret);
+//                            }
+//                        } else {
+//                            processClassInstance(classInstance);
+//                        }
+//                        break;
                     default:
                         throw new InvalidGrammarException();
                 }
@@ -352,11 +351,7 @@ public class ScriptFSM {
                 System.out.println("\u001B[31m" + e.getClass() + "\u001B[0m" + ": " + e.getMessage());
             }
         }
-
-        //resets the variable naming to before
-        for(int i = 0; i < args.length; i++) {
-            args[i].setVariableName(originalVarNames[i]);
-        }
+        inFunction = false;
     }
 
     public Type lookupVariable(String token) {
@@ -444,7 +439,8 @@ public class ScriptFSM {
                     types[i] = parser.parseConstant(args[i]);
                     break;
                 case VARIABLE:
-                    for(Type t : variableList) {
+                    List<Type> tempList = inFunction ? localStack : variableList;
+                    for(Type t : tempList) {
                         if(t.getVariableName() != null && args[i].equals(t.getVariableName())) {
                             types[i] = t;
                             break;
