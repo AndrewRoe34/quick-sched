@@ -219,8 +219,8 @@ public class Parser {
         switch(funcName) {
             case "print":
             case "println":
-            case "import":
-            case "export":
+            case "import_schedule":
+            case "export_schedule":
             case "serialize_data":
             case "write_file":
             case "read_file":

@@ -1,13 +1,14 @@
 #Sample script
 include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__, __STATS__
 
-# import_func("helper.func")
-# import_schedule("schedule.jbin")
+#Imports schedule data from prior session
+import_schedule("data/week.jbin")
 
-# creates data types
+#Constructs class instances
 val: string("3400")
 c1: card("HW")
 
+#Custom function to modify checklist instance with parameter references
 func foo(cl, flag)
   cl.add_item("Step 1")
   cl.add_item("Step 2")
@@ -16,20 +17,20 @@ func foo(cl, flag)
   cl.mark_item_by_name("Step 2", flag)
   cl.mark_item_by_id(2, flag)
 
-# outputs data
+#Outputs the class data
 println("length=", val.length(), ", int_val=", val.parse_int(), ", substring(1)=", val.sub_string(1))
 println("")
 println("card_name=", c1.get_title())
 
-# creates and modifies a checklist
+#Creates and modifies a checklist
 status: bool(true)
 my_cl: cl("List")
 foo(my_cl, status)
 
-# outputs the checklist data
+#Outputs the checklist data to showcase Simple's data referencing system
 println("checklist_id=", my_cl.id(), ", checklist_name=", my_cl.get_title(), ", checklist_percent=", my_cl.get_percent(), "%")
 println(my_cl)
 println("")
 
+#Exports the schedule for later usage
 # export_schedule()
-# export_jbin()

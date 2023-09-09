@@ -42,12 +42,30 @@ public class ScriptLog {
         sb.append(", NAME=").append(name).append("\n");
     }
 
-    public void reportTaskEdit() {
-
+    public void reportTaskAttr(int id, String attr, String[] args) {
+        sb.append("TASK_ID: ID=").append(id);
+        sb.append(", ATTR=").append(attr);
+        sb.append(", ARGS=[");
+        for(int i = 0; i < args.length; i++) {
+            if(i > 0) {
+                sb.append(", ");
+            }
+            sb.append(args[i]);
+        }
+        sb.append("]\n");
     }
 
-    public void reportLabelEdit() {
-
+    public void reportLabelAttr(int id, String attr, String[] args) {
+        sb.append("LABEL_ID: ID=").append(id);
+        sb.append(", ATTR=").append(attr);
+        sb.append(", ARGS=[");
+        for(int i = 0; i < args.length; i++) {
+            if(i > 0) {
+                sb.append(", ");
+            }
+            sb.append(args[i]);
+        }
+        sb.append("]\n");
     }
 
     public void reportCheckListEdit() {
@@ -59,10 +77,6 @@ public class ScriptLog {
     }
 
     public void reportAddFunc() {
-
-    }
-
-    public void reportEditFunc() {
 
     }
 

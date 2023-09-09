@@ -2,6 +2,7 @@ package agile.planner.scripter;
 
 import agile.planner.data.Card;
 import agile.planner.data.Label;
+import agile.planner.io.IOProcessing;
 import agile.planner.scripter.exception.*;
 import agile.planner.scripter.tools.ScriptLog;
 import agile.planner.util.CheckList;
@@ -265,9 +266,10 @@ public class ScriptFSM {
                 }
                 System.out.println();
                 return null;
-            case "import":
+            case "import_schedule":
                 if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.STRING) throw new InvalidFunctionException();
-                funcImport(args[0].getStringConstant());
+                funcImportSchedule(args[0].getStringConstant());
+                return null;
             default:
                 processCustomFunction(func, args);
         }
@@ -458,12 +460,8 @@ public class ScriptFSM {
 
     }
 
-    protected void funcImport(String file) {
-        //will need to offer two categories
-        //jbin and func
-        //jbin loads in data
-        //func offers additional static functions for the script to use
-
+    protected void funcImportSchedule(String filename) {
+        IOProcessing.readJBinFile(filename);
     }
 
     protected void funcExport(String file) {
