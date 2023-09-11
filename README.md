@@ -1,6 +1,7 @@
-# Agile Planner
+## Agile Planner
 
-## Summary
+### <ins>Summary</ins>
+
 Agile Planner is an easy to use CLI that offers configurable scheduling capabilities to minimize the hassles as a college student as well as providing custom scripting language integration. Here's a brief summary of what this system offers: 
 
 * Designed and developed a highly adaptable scheduling system, accommodating diverse scheduling requirements.
@@ -9,7 +10,8 @@ Agile Planner is an easy to use CLI that offers configurable scheduling capabili
 * Employed Java binary serialization for efficient storage and retrieval of scheduling data, optimizing system performance.
 
 
-## Scheduling Algorithms
+### <ins>Scheduling Algorithms</ins>
+
 My system offers two core scheduling algorithms at the moment for user convenience:
 * Compact Scheduling
 * Dynamic Scheduling
@@ -18,4 +20,92 @@ Compact Scheduling, deals with LJF (Largest Jobs First) scheduling, whereby task
 
 Dynamic Scheduling, is a mixture of LRTF (Largest Remaining Time First) and Round Robin so as to equally distribute all the tasks within the system while ensuring the user has enough time to complete said tasks. I am currently working on optimization algorithms to provide clients more feedback as to how they can configure their schedule for better success.
 
-## Scripting Languages
+### <ins>Scripting Languages</ins>
+
+The goal of the scripting language was to offer the user more efficiency in terms of interacting with the system in comparison to the current CLI (Command Line Interface). At the moment, there are two working versions at hand (though, both utilize completely different paradigms).
+
+#### Functional Paradigm:
+This version utlizes the State Pattern for performing context switches between each operation that it parses. A basic script is provided below:
+```
+#Preprocessor setup
+START:
+  __CURR_CONFIG__
+  __DEBUG__
+  __LOG__
+  __IMPORT__
+  __EXPORT__
+  __BUILD__
+END:
+
+#Creates a Task (<name>, <hours>, <due_date>)
+task: a, 3, 2
+task: b, 2, 1
+task: c, 1, 0
+
+#Creates a Card (<name>)
+card: homework
+
+#Calls functions on the data, which are referenced by providing an '_' in front of the type to access the top of the Stack
+#In the first example, the most recent task and card are used in the function 
+add: _task, _card
+#In the second example, we provide a number to access a specific index of the Stack
+add: _task 1, _card
+
+#Exports the scheduling data to a jbin file (Java Binary Serialization that I developed)
+export: update6.jbin
+```
+While this iteration was very simple since it utilized dynamic memory and required no variable naming, it resulted in increased complexity with edit operations and recursive routines. As a result, I ended development with this version and moved on to my next iteration.
+
+#### Object Oriented Paradigm:
+
+This version of my scripting language required a complete overhaul in design and approach. I opted for a Parser class to manage categorizing data and returning that to my ScriptFSM, which would then interpret the parsed data. The syntax of my language is very similar to Python for ease of access to more people. Here's a code snippet below:
+
+```
+#Sample script
+include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__, __STATS__
+
+#Imports schedule data from prior session
+import_schedule("data/week.jbin")
+
+#Constructs class instances
+val: string("3400")
+c1: card("HW")
+
+#Custom function to modify checklist instance with parameter references
+func foo(cl, flag)
+  cl.add_item("Step 1")
+  cl.add_item("Step 2")
+  cl.add_item("Step 3")
+  cl.mark_item_by_id(0, flag)
+  cl.mark_item_by_name("Step 2", flag)
+  cl.mark_item_by_id(2, flag)
+
+#Outputs the class data
+println("length=", val.length(), ", int_val=", val.parse_int(), ", substring(1)=", val.sub_string(1))
+println("")
+println("card_name=", c1.get_title())
+
+#Creates and modifies a checklist
+status: bool(true)
+my_cl: cl("List")
+foo(my_cl, status)
+
+#Outputs the checklist data to showcase Simple's data referencing system
+println("checklist_id=", my_cl.id(), ", checklist_name=", my_cl.get_title(), ", checklist_percent=", my_cl.get_percent(), "%")
+println(my_cl)
+println("")
+
+#Exports the schedule for later usage
+export_schedule("fun_week.jbin")
+```
+In stark contrast to before, this language allows for more flexibility with function calls, accessing class methods and attributes, managing a Stack of variables (which are dynamic like Python), and much more. It is essentially Python but for Agile Planner.
+
+
+
+
+
+
+
+
+
+
