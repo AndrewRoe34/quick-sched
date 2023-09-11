@@ -100,7 +100,7 @@ export_schedule("fun_week.jbin")
 ```
 In stark contrast to before, this language allows for more flexibility with function calls, accessing class methods and attributes, managing a Stack of variables (which are dynamic like Python), and much more. It is essentially Python but for Agile Planner.
 
-### <ins>Logging System</ins>
+### <ins>Logging Mechanics</ins>
 
 Agile Planner currently offers logging mechanisms for two areas: System and Scripting.
 
