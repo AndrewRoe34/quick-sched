@@ -100,12 +100,32 @@ export_schedule("fun_week.jbin")
 ```
 In stark contrast to before, this language allows for more flexibility with function calls, accessing class methods and attributes, managing a Stack of variables (which are dynamic like Python), and much more. It is essentially Python but for Agile Planner.
 
+### <ins>Logging System</ins>
 
+Agile Planner currently offers logging mechanisms for two areas: System and Scripting.
 
+#### System:
+All core system actions, events, and exceptions are reported on a date/time perspective when they occurr. The goal is to allow the user to report any errors or issues similar to Epic Game's logging system. Here's an example below:
+```
+[28-08-2023] Log of all activities from current session: 
 
+[01:07:42] Current session has begun...
+[01:07:42] Reading Config: FILE=profile.cfg
+[01:07:45] JBIN FILE CREATED
+[01:07:45] WRITE(JBIN): FILE=data/update6.jbin
+[01:07:45] ADD(TASK):  ID=0, NAME=a, HOURS=3, DUE_DATE=08-30-2023
+[01:07:45] ADD(TASK):  ID=1, NAME=b, HOURS=2, DUE_DATE=08-29-2023
+[01:07:45] ADD(TASK):  ID=2, NAME=c, HOURS=1, DUE_DATE=08-28-2023
+[01:07:45] Scheduling has begun...
+[01:07:45] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=7, HOURS_FILLED=1, TASK ADDED=2, OVERFLOW=false
+[01:07:45] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=5, HOURS_FILLED=3, TASK ADDED=1, OVERFLOW=false
+[01:07:45] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=2, HOURS_FILLED=6, TASK ADDED=0, OVERFLOW=false
+[01:07:45] Scheduling has finished...
+[01:07:45] Display Schedule: DAYS=1, NUM_TASKS=3, STDOUT=true
+[01:07:45] JBIN FILE CREATED
+[01:07:45] WRITE(JBIN): FILE=data/default.jbin
+```
 
-
-
-
+#### Scripting:
 
 
