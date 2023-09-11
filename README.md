@@ -20,7 +20,7 @@ Compact Scheduling, deals with LJF (Largest Jobs First) scheduling, whereby task
 
 Dynamic Scheduling, is a mixture of LRTF (Largest Remaining Time First) and Round Robin so as to equally distribute all the tasks within the system while ensuring the user has enough time to complete said tasks. I am currently working on optimization algorithms to provide clients more feedback as to how they can configure their schedule for better success.
 
-### <ins>Scripting Languages</ins>
+### <ins>Custom Scripting Languages</ins>
 
 The goal of the scripting language was to offer the user more efficiency in terms of interacting with the system in comparison to the current CLI (Command Line Interface). At the moment, there are two working versions at hand (though, both utilize completely different paradigms).
 
