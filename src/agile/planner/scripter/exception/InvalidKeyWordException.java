@@ -27,7 +27,6 @@ package agile.planner.scripter.exception;
  *
  * @author Andrew Roe
  * @since 1.0
- * @deprecated
  */
 public class InvalidKeyWordException extends RuntimeException {
     public InvalidKeyWordException(String s) {
