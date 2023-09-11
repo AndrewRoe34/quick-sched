@@ -128,4 +128,34 @@ All core system actions, events, and exceptions are reported on a date/time pers
 
 #### Scripting:
 
+NOTE: The original framework was developed for the Functional Paradigm and is currently being ported over to the Object Oriented version. More info will be added later.
 
+### <ins>Java Binary Serialization</ins>
+
+The goal of JBIN was to maintain data persistence while being able to easily store the data in a structured and efficient manner. Inspiration from JSON was used when developing JBIN.
+```
+LABEL {
+  LOL, 3
+  Party, 4
+  math, 3
+  lol, 8
+}
+
+CHECKLIST {
+  To Do, Item 1, Item 2
+}
+
+TASK {
+  Read, 4, 4, L0
+  Write, 2, 2, CL0
+  suffer, 5, 5, L2, L3
+  based, 3, 3, L2, L3
+}
+
+CARD {
+  HW, T0, T1, L0, L1
+  MA, T2, T3, L2, L3
+  SCIENCE, T2, T3, L2, L3
+}
+```
+Data is written in this format in order to allow reconstruction from top to bottom for an efficient time complexity. We start off with Label and CheckList, but Task is where we begin to store those Labels and CheckLists (hence the variable naming and index values). Cards have their name at the beginning followed by the Task and Label indices of what they store. I am currently seeking encyrption/decryption options to secure the data for the end user.
