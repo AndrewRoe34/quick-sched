@@ -22,7 +22,7 @@ public class PrintState extends State {
         String s = verifyString(line);
         if(s != null) {
             System.out.println(s);
-            scriptLog.reportPrintFunc(false, s);
+            //scriptLog.reportPrintFunc(false, s);
             return;
         }
         String[] tokens = processArguments(line, 2, null);
@@ -109,7 +109,7 @@ public class PrintState extends State {
                 throw new InvalidGrammarException("Invalid input. Expected [print: <class>]");
         }
 
-        scriptLog.reportPrintFunc(true, tokens[0] + (tokens[1] == null ? "" : " " + tokens[1]));
+        //scriptLog.reportPrintFunc(true, tokens[0] + (tokens[1] == null ? "" : " " + tokens[1]));
     }
 
     private String verifyString(String line) {

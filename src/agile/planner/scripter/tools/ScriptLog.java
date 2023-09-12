@@ -1,5 +1,8 @@
 package agile.planner.scripter.tools;
 
+import agile.planner.scripter.ScriptFSM;
+import agile.planner.scripter.Type;
+
 public class ScriptLog {
 
     private StringBuilder sb;
@@ -86,19 +89,24 @@ public class ScriptLog {
         sb.append("FILES_LINKED: FILE=").append(name).append("\n");
     }
 
-    public void reportPrintFunc(boolean type, String data) {
-        if(type) {
-            sb.append("PRINTS_CLASS: CLASS=").append(data).append("\n");
-        } else {
-            sb.append("PRINTS_STRNG: STRING=").append("\"").append(data).append("\"").append("\n");
+    public void reportPrintFunc(Type[] args) {
+        sb.append("PRINTS: ARGS=[");
+        if(args.length > 1) {
+            sb.append(args[0].getVariableName() == null ? "NULL": args[0].getVariableName());
         }
+        for(int i = 1; i < args.length; i++) {
+            sb.append(", ");
+            sb.append(args[i].getVariableName() == null ? "NULL": args[0].getVariableName());
+        }
+        sb.append("]\n");
     }
 
     public void reportPreProcessorSetup() {
-        sb.append("PREPROC_ATTR: DEF_CONFIG=").append(State.isDefConfigPP());
-        sb.append(", DEBUG=").append(State.isDebugPP());
-        sb.append(", LOG=").append(State.isLogPP());
-        sb.append(", BUILD=").append(State.isBuildPP()).append("\n");
+        sb.append("PREPROC_ATTR: DEF_CONFIG=").append(ScriptFSM.isDefConfigPP());
+        sb.append(", DEBUG=").append(ScriptFSM.isDebugPP());
+        sb.append(", LOG=").append(ScriptFSM.isLogPP());
+        sb.append(", BUILD=").append(ScriptFSM.isBuildPP());
+        sb.append(", STATS=").append(ScriptFSM.isStatsPP()).append("\n");
     }
 
     public void reportFunctionSetup(String definition) {

@@ -116,6 +116,7 @@ public class ScriptFSM {
                     }
                 } catch (Exception e) {
                     System.out.println("\u001B[31m" + e.getClass() + "\u001B[0m" + ": " + e.getMessage());
+                    scriptLog.reportException(e);
                 }
                 if(operation != Parser.Operation.SETUP_CUST_FUNC) {
                     status = false;
@@ -123,6 +124,7 @@ public class ScriptFSM {
             }
 
         }
+        System.out.println(scriptLog);
     }
 
     protected String setupCustomFunction(CustomFunction customFunction) {
@@ -469,6 +471,27 @@ public class ScriptFSM {
     }
 
     //todo add your static functions down here...
+
+
+    public static boolean isDefConfigPP() {
+        return false;
+    }
+
+    public static boolean isDebugPP() {
+        return false;
+    }
+
+    public static boolean isLogPP() {
+        return false;
+    }
+
+    public static boolean isBuildPP() {
+        return false;
+    }
+
+    public static boolean isStatsPP() {
+        return false;
+    }
 
 
 }
