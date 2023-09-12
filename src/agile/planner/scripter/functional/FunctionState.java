@@ -137,7 +137,7 @@ public class FunctionState extends State {
             parseFunction(statement);
         }
 
-        scriptLog.reportFunctionCall(line);
+//        scriptLog.reportFunctionCall(line);
 
         //reset all the variables
         resetVariables();

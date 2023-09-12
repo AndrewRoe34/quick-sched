@@ -248,7 +248,7 @@ public class ScriptContext {
             }
         }
 
-        scriptLog.reportFunctionSetup(funcDefinition);
+//        scriptLog.reportFunctionSetup(funcDefinition);
 
         State.funcMap.put(funcName, sb.toString());
         if(flag && !funcFile && !currState.isNewValidFunction(line)) {

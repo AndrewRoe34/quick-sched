@@ -1,6 +1,8 @@
 package agile.planner.scripter.tools;
 
+import agile.planner.scripter.CustomFunction;
 import agile.planner.scripter.ScriptFSM;
+import agile.planner.scripter.StaticFunction;
 import agile.planner.scripter.Type;
 
 public class ScriptLog {
@@ -9,7 +11,7 @@ public class ScriptLog {
 
     public ScriptLog() {
         sb = new StringBuilder();
-        sb.append("\nSCRIPT_LOG:\n");
+        sb.append("SCRIPT_LOG:\n");
     }
 
     /**
@@ -114,12 +116,30 @@ public class ScriptLog {
         sb.append(", STATS=").append(ScriptFSM.isStatsPP()).append("\n");
     }
 
-    public void reportFunctionSetup(String definition) {
-        sb.append("FUNCTN_SETUP: DEF=").append(definition).append("\n");
+    public void reportFunctionSetup(CustomFunction customFunction) {
+        sb.append("FUNC_SETUP: NAME=").append(customFunction.getFuncName());
+        sb.append(", PARAM=[");
+        if(customFunction.getArgs().length > 1) {
+            sb.append(customFunction.getArgs()[0].trim());
+        }
+        for(int i = 1; i < customFunction.getArgs().length; i++) {
+            sb.append(", ");
+            sb.append(customFunction.getArgs()[i].trim());
+        }
+        sb.append("]\n");
     }
 
-    public void reportFunctionCall(String definition) {
-        sb.append("FUNCTN_CALLS: DEF=").append(definition).append("\n");
+    public void reportFunctionCall(StaticFunction func) {
+        sb.append("FUNC_CALLS: NAME=").append(func.getFuncName().trim());
+        sb.append(", ARGS=[");
+        if(func.getArgs().length > 1) {
+            sb.append(func.getArgs()[0].trim());
+        }
+        for(int i = 1; i < func.getArgs().length; i++) {
+            sb.append(", ");
+            sb.append(func.getArgs()[i].trim());
+        }
+        sb.append("]\n");
     }
 
     /**
@@ -127,7 +147,7 @@ public class ScriptLog {
      *
      * @param e {@code Exception} thrown
      */
-    public void reportException(Exception e) {
+    public void reportException(Throwable e) {
         sb.append("EXCEPTION=").append(e.getMessage()).append("\n");
     }
 

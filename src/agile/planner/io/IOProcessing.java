@@ -216,4 +216,9 @@ public class IOProcessing {
             sb.append((char) bytes[i]);
         }
     }
+
+    public static void writeStringToFile(String str) throws FileNotFoundException {
+        PrintStream outputStream = new PrintStream(new File("scripter.log"));
+        outputStream.print(str);
+    }
 }

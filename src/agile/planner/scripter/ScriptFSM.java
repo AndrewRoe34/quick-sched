@@ -28,7 +28,7 @@ public class ScriptFSM {
     private boolean inFunction;
 
     public void executeScript() throws FileNotFoundException {
-        scriptScanner = new Scanner(new File("data/fun2.smpl"));
+        scriptScanner = new Scanner(new File("data/fun1.smpl"));
         while (scriptScanner.hasNextLine()) {
             String untrimmed = scriptScanner.nextLine();
             String line = untrimmed.trim();
@@ -55,6 +55,7 @@ public class ScriptFSM {
                             if(!ppStatus) throw new InvalidPreProcessorException();
                             StaticFunction func = parser.parseStaticFunction(line);
                             processStaticFunction(func);
+                            scriptLog.reportFunctionCall(func);
                             break;
                         case INSTANCE:
                             if(!ppStatus) throw new InvalidPreProcessorException();
@@ -106,6 +107,7 @@ public class ScriptFSM {
                                     status = true;
                                 }
                             }
+                            scriptLog.reportFunctionSetup(customFunction);
                             break;
                         case CONSTANT:
                             if(!ppStatus) throw new InvalidPreProcessorException();
@@ -115,15 +117,19 @@ public class ScriptFSM {
                     }
                 } catch (Throwable e) {
                     System.out.println("\u001B[31m" + e.getClass() + "\u001B[0m" + ": " + e.getMessage());
-//                    scriptLog.reportException(e);
-//                    System.out.println(scriptLog);
+                    scriptLog.reportException(e);
+                    if(isLogPP()) {
+                        IOProcessing.writeStringToFile(scriptLog.toString());
+                    }
                     System.exit(1);
                 }
                 if(operation != Parser.Operation.SETUP_CUST_FUNC) {
                     status = false;
                 }
             }
-
+        }
+        if(!isLogPP()) {
+            IOProcessing.writeStringToFile(scriptLog.toString());
         }
     }
 
