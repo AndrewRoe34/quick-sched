@@ -128,7 +128,39 @@ All core system actions, events, and exceptions are reported on a date/time pers
 
 #### Scripting:
 
-NOTE: The original framework was developed for the Functional Paradigm and is currently being ported over to the Object Oriented version. More info will be added later.
+NOTE: The original framework was developed for the Functional Paradigm and is currently being ported over to the Object Oriented version. This is a work in progress below:
+```
+SCRIPT_LOG:
+FUNC_CALLS: NAME=import_schedule, ARGS=[]
+CARD_CREATED: ID=0, NAME="HW"
+FUNC_SETUP: NAME= foo, PARAM=[cl, flag]
+ATTR_CALL: VAR_NAME=val, NAME=length, ARGS[]
+ATTR_CALL: VAR_NAME=val, NAME=parse_int, ARGS[]
+ATTR_CALL: VAR_NAME=val, NAME=sub_string, ARGS[]
+PRINTS: ARGS=["length=", "4", ", int_val=", "3400", ", substring(1)=", "400"]
+FUNC_CALLS: NAME=println, ARGS=["length=", val.length(), ", int_val=", val.parse_int(), ", substring(1)=", val.sub_string(1)]
+PRINTS: ARGS=[]
+FUNC_CALLS: NAME=println, ARGS=[]
+ATTR_CALL: VAR_NAME=c1, NAME=get_title, ARGS[]
+PRINTS: ARGS=["card_name=", "HW"]
+FUNC_CALLS: NAME=println, ARGS=["card_name=", c1.get_title()]
+ATTR_CALL: VAR_NAME=cl, NAME=add_item, ARGS[]
+ATTR_CALL: VAR_NAME=cl, NAME=add_item, ARGS[]
+ATTR_CALL: VAR_NAME=cl, NAME=add_item, ARGS[]
+ATTR_CALL: VAR_NAME=cl, NAME=mark_item_by_id, ARGS[0, flag]
+ATTR_CALL: VAR_NAME=cl, NAME=mark_item_by_name, ARGS["Step 2", flag]
+ATTR_CALL: VAR_NAME=cl, NAME=mark_item_by_id, ARGS[2, flag]
+FUNC_CALLS: NAME=foo, ARGS=[my_cl, status]
+ATTR_CALL: VAR_NAME=my_cl, NAME=id, ARGS[]
+ATTR_CALL: VAR_NAME=my_cl, NAME=get_title, ARGS[]
+ATTR_CALL: VAR_NAME=my_cl, NAME=get_percent, ARGS[]
+PRINTS: ARGS=["checklist_id=", "0", ", checklist_name=", ""List"", ", checklist_percent=", "100", "%"]
+FUNC_CALLS: NAME=println, ARGS=["checklist_id=", my_cl.id(), ", checklist_name=", my_cl.get_title(), ", checklist_percent=", my_cl.get_percent(), "%"]
+PRINTS: ARGS=[]
+FUNC_CALLS: NAME=println, ARGS=[]
+PRINTS: ARGS=[]
+FUNC_CALLS: NAME=println, ARGS=[]
+```
 
 ### <ins>Java Binary Serialization</ins>
 
