@@ -1,4 +1,4 @@
-package agile.planner.scripter;
+package agile.planner.scripter.functional;
 
 public class BoardState extends State {
     @Override

@@ -1,6 +1,6 @@
 package agile.planner.scripter.tools;
 
-import agile.planner.scripter.State;
+import agile.planner.scripter.functional.State;
 
 public class ScriptLog {
 

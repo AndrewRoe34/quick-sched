@@ -1,4 +1,4 @@
-package agile.planner.scripter;
+package agile.planner.scripter.functional;
 
 public class RemoveState extends State {
     @Override

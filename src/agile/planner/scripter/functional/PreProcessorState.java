@@ -1,9 +1,6 @@
-package agile.planner.scripter;
+package agile.planner.scripter.functional;
 
 import agile.planner.user.UserConfig;
-import agile.planner.util.EventLog;
-
-import java.io.FileNotFoundException;
 
 public class PreProcessorState extends State {
 

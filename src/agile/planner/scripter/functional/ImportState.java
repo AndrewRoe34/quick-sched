@@ -1,10 +1,6 @@
-package agile.planner.scripter;
+package agile.planner.scripter.functional;
 
 import agile.planner.scripter.exception.InvalidPreProcessorException;
-
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.Locale;
 
 public class ImportState extends State {
 

@@ -1,4 +1,4 @@
-package agile.planner.scripter;
+package agile.planner.scripter.functional;
 
 import agile.planner.data.Task;
 import agile.planner.manager.ScheduleManager;

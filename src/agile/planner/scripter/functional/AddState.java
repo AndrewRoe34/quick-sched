@@ -1,4 +1,4 @@
-package agile.planner.scripter;
+package agile.planner.scripter.functional;
 
 import agile.planner.data.Card;
 import agile.planner.data.Label;

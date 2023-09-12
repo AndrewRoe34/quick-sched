@@ -1,4 +1,6 @@
-package agile.planner.scripter;
+package agile.planner.scripter.functional;
+
+import agile.planner.scripter.Statement;
 
 public class AssignmentState implements Statement {
 

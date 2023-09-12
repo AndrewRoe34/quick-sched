@@ -1,4 +1,4 @@
-package agile.planner.scripter;
+package agile.planner.scripter.functional;
 
 import agile.planner.scripter.exception.InvalidFunctionException;
 import agile.planner.scripter.exception.InvalidPreProcessorException;
@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static agile.planner.scripter.State.scriptLog;
+import static agile.planner.scripter.functional.State.scriptLog;
 
 /**
  * The class {@code ScriptContext} serves as a manager of the {@link State} through its focus on
