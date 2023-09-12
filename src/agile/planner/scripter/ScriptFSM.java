@@ -28,7 +28,7 @@ public class ScriptFSM {
     private boolean inFunction;
 
     public void executeScript() throws FileNotFoundException {
-        scriptScanner = new Scanner(new File("data/fun1.smpl"));
+        scriptScanner = new Scanner(new File("data/fun2.smpl"));
         while (scriptScanner.hasNextLine()) {
             String untrimmed = scriptScanner.nextLine();
             String line = untrimmed.trim();
@@ -107,14 +107,13 @@ public class ScriptFSM {
                                 }
                             }
                             break;
-                        case VARIABLE:
                         case CONSTANT:
                             if(!ppStatus) throw new InvalidPreProcessorException();
                             break;
                         default:
                             throw new InvalidGrammarException();
                     }
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     System.out.println("\u001B[31m" + e.getClass() + "\u001B[0m" + ": " + e.getMessage());
 //                    scriptLog.reportException(e);
 //                    System.out.println(scriptLog);
