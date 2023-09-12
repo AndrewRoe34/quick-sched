@@ -22,7 +22,7 @@ public class Attributes {
         return attr;
     }
 
-    public String[] getArguments() {
+    public String[] getArgs() {
         return arguments;
     }
 }

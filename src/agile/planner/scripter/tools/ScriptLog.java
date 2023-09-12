@@ -1,9 +1,6 @@
 package agile.planner.scripter.tools;
 
-import agile.planner.scripter.CustomFunction;
-import agile.planner.scripter.ScriptFSM;
-import agile.planner.scripter.StaticFunction;
-import agile.planner.scripter.Type;
+import agile.planner.scripter.*;
 
 public class ScriptLog {
 
@@ -138,6 +135,20 @@ public class ScriptLog {
         for(int i = 1; i < func.getArgs().length; i++) {
             sb.append(", ");
             sb.append(func.getArgs()[i].trim());
+        }
+        sb.append("]\n");
+    }
+
+    public void reportAttrFunc(Attributes attr) {
+        sb.append("ATTR_CALL: VAR_NAME=").append(attr.getVarName());
+        sb.append(", NAME=").append(attr.getAttr());
+        sb.append(", ARGS[");
+        if(attr.getArgs().length > 1) {
+            sb.append(attr.getArgs()[0].trim());
+        }
+        for(int i = 1; i < attr.getArgs().length; i++) {
+            sb.append(", ");
+            sb.append(attr.getArgs()[i].trim());
         }
         sb.append("]\n");
     }

@@ -50,6 +50,7 @@ public class ScriptFSM {
                             Attributes attr = parser.parseAttributes(line);
                             if (attr == null) throw new InvalidFunctionException();
                             processAttribute(attr);
+                            scriptLog.reportAttrFunc(attr);
                             break;
                         case FUNCTION:
                             if(!ppStatus) throw new InvalidPreProcessorException();
@@ -232,7 +233,7 @@ public class ScriptFSM {
         1. Lookup the variable
         2. Attempt to call the method via the Type method attrSet()
          */
-        Type[] args = processArgumentsHelper(attr.getArguments());
+        Type[] args = processArgumentsHelper(attr.getArgs());
         Type t1 = null;
         if(inFunction) {
             t1 = lookupLocalVariable(attr.getVarName());
@@ -312,11 +313,13 @@ public class ScriptFSM {
                         Attributes attr = parser.parseAttributes(line);
                         if (attr == null) throw new InvalidFunctionException();
                         processAttribute(attr);
+                        scriptLog.reportAttrFunc(attr);
                         break;
                     case FUNCTION:
                         if(!ppStatus) throw new InvalidPreProcessorException();
                         StaticFunction myfunc = parser.parseStaticFunction(line);
                         processStaticFunction(myfunc);
+                        scriptLog.reportFunctionCall(myfunc);
                         break;
                     case INSTANCE:
 //                        if(!ppStatus) throw new InvalidPreProcessorException();
@@ -428,7 +431,7 @@ public class ScriptFSM {
             switch (operation) {
                 case ATTRIBUTE:
                     Attributes attr = parser.parseAttributes(args[i]);
-                    Type[] temp = processArgumentsHelper(attr.getArguments());
+                    Type[] temp = processArgumentsHelper(attr.getArgs());
                     //Lookup variable (if null, throw exception)
                     Type t1 = null;
                     if(inFunction) {
@@ -442,6 +445,7 @@ public class ScriptFSM {
                     if (func == null) throw new InvalidGrammarException();
                     //Make method call with 'temp'
                     Type ret = t1.attrSet(func, temp);
+                    scriptLog.reportAttrFunc(attr);
                     //if e is null, throw exception here
                     if (ret == null) throw new InvalidFunctionException();
                     //else, store value in types[i]
