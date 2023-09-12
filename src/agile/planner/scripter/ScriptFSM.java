@@ -116,7 +116,9 @@ public class ScriptFSM {
                     }
                 } catch (Exception e) {
                     System.out.println("\u001B[31m" + e.getClass() + "\u001B[0m" + ": " + e.getMessage());
-                    scriptLog.reportException(e);
+//                    scriptLog.reportException(e);
+//                    System.out.println(scriptLog);
+                    System.exit(1);
                 }
                 if(operation != Parser.Operation.SETUP_CUST_FUNC) {
                     status = false;
@@ -124,7 +126,6 @@ public class ScriptFSM {
             }
 
         }
-        System.out.println(scriptLog);
     }
 
     protected String setupCustomFunction(CustomFunction customFunction) {
