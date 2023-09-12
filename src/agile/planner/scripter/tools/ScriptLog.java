@@ -92,11 +92,16 @@ public class ScriptLog {
     public void reportPrintFunc(Type[] args) {
         sb.append("PRINTS: ARGS=[");
         if(args.length > 1) {
-            sb.append(args[0].getVariableName() == null ? "NULL": args[0].getVariableName());
+//            sb.append(args[0].getVariableName() == null ? "NULL": args[0].getVariableName());
+            sb.append("\"");
+            sb.append(args[0].toString());
+            sb.append("\"");
         }
         for(int i = 1; i < args.length; i++) {
-            sb.append(", ");
-            sb.append(args[i].getVariableName() == null ? "NULL": args[0].getVariableName());
+            sb.append(", \"");
+//            sb.append(args[i].getVariableName() == null ? "NULL": args[0].getVariableName());
+            sb.append(args[i].toString());
+            sb.append("\"");
         }
         sb.append("]\n");
     }

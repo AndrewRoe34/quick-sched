@@ -257,6 +257,7 @@ public class ScriptFSM {
                         System.out.print(t.toString()); //todo doesn't fix cases where '\n' is within the string (only works when it's by itself
                     }
                 }
+                scriptLog.reportPrintFunc(args);
                 return null;
             case "println":
                 for (Type t : args) {
@@ -267,6 +268,7 @@ public class ScriptFSM {
                     }
                 }
                 System.out.println();
+                scriptLog.reportPrintFunc(args);
                 return null;
             case "import_schedule":
                 if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.STRING) throw new InvalidFunctionException();
