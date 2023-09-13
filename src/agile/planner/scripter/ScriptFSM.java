@@ -129,7 +129,7 @@ public class ScriptFSM {
                 }
             }
         }
-        if(!isLogPP()) {
+        if(isLogPP()) {
             IOProcessing.writeStringToFile(scriptLog.toString());
         }
     }
