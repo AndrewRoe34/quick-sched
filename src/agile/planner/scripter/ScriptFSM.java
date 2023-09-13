@@ -189,6 +189,7 @@ public class ScriptFSM {
             } else {
                 t1.setLinkerData(new CheckList(0, cl.getTitle()), Type.TypeId.CHECKLIST);
             }
+            scriptLog.reportCheckListCreation(0, cl.getTitle());
         } else if (classInstance instanceof LabelInstance) {
             LabelInstance label = (LabelInstance) classInstance;
             Type t1 = lookupVariable(label.getVarName());
@@ -198,6 +199,7 @@ public class ScriptFSM {
             } else {
                 t1.setLinkerData(new Label(0, label.getName(), label.getColor()), Type.TypeId.LABEL);
             }
+            scriptLog.reportLabelCreation(0, label.getName(), label.getColor());
         } else if (classInstance instanceof StringInstance) {
             StringInstance str = (StringInstance) classInstance;
             Type t1 = lookupVariable(str.getVarName());
