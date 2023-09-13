@@ -144,6 +144,7 @@ FUNC_CALLS: NAME=println, ARGS=[]
 ATTR_CALL: VAR_NAME=c1, NAME=get_title, ARGS[]
 PRINTS: ARGS=["card_name=", "HW"]
 FUNC_CALLS: NAME=println, ARGS=["card_name=", c1.get_title()]
+CHECKLIST_CREATED: ID=0, NAME="List"
 ATTR_CALL: VAR_NAME=cl, NAME=add_item, ARGS[]
 ATTR_CALL: VAR_NAME=cl, NAME=add_item, ARGS[]
 ATTR_CALL: VAR_NAME=cl, NAME=add_item, ARGS[]
