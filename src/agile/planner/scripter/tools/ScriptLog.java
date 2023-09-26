@@ -71,48 +71,6 @@ public class ScriptLog {
         sb.append(", NAME=").append(c.getTitle()).append("\n");
     }
 
-    public void reportTaskAttr(int id, String attr, String[] args) {
-        sb.append("TASK_ID: ID=").append(id);
-        sb.append(", ATTR=").append(attr);
-        sb.append(", ARGS=[");
-        for(int i = 0; i < args.length; i++) {
-            if(i > 0) {
-                sb.append(", ");
-            }
-            sb.append(args[i]);
-        }
-        sb.append("]\n");
-    }
-
-    public void reportLabelAttr(int id, String attr, String[] args) {
-        sb.append("LABEL_ID: ID=").append(id);
-        sb.append(", ATTR=").append(attr);
-        sb.append(", ARGS=[");
-        for(int i = 0; i < args.length; i++) {
-            if(i > 0) {
-                sb.append(", ");
-            }
-            sb.append(args[i]);
-        }
-        sb.append("]\n");
-    }
-
-    public void reportCheckListEdit() {
-
-    }
-
-    public void reportCardEdit() {
-
-    }
-
-    public void reportAddFunc() {
-
-    }
-
-    public void reportRemoveFunc() {
-
-    }
-
     public void reportLinkFile(String name) {
         sb.append("FILES_LINKED: FILE=").append(name).append("\n");
     }

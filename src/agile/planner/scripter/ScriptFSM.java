@@ -179,7 +179,7 @@ public class ScriptFSM {
                 t1.setLinkerData(new Card(card.getTitle()), Type.TypeId.CARD);
             }
         } else if (classInstance instanceof TaskInstance) {
-
+            //todo need to add
         } else if(classInstance instanceof CheckListInstance) {
             CheckListInstance cl = (CheckListInstance) classInstance;
             t1 = lookupVariable(cl.getVarName());
