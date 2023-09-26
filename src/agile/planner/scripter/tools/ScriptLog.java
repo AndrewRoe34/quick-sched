@@ -92,12 +92,13 @@ public class ScriptLog {
         sb.append("]\n");
     }
 
-    public void reportPreProcessorSetup() {
-        sb.append("PREPROC_ATTR: DEF_CONFIG=").append(ScriptFSM.isDefConfigPP());
-        sb.append(", DEBUG=").append(ScriptFSM.isDebugPP());
-        sb.append(", LOG=").append(ScriptFSM.isLogPP());
-        sb.append(", BUILD=").append(ScriptFSM.isBuildPP());
-        sb.append(", STATS=").append(ScriptFSM.isStatsPP()).append("\n");
+    public void reportPreProcessorSetup(PreProcessor preProcessor) {
+        sb.append("PREPROC_ATTR: DEF_CONFIG=").append(preProcessor.isDefaultConfig());
+        sb.append(", IMPORT=").append(preProcessor.isImprt());
+        sb.append(", EXPORT=").append(preProcessor.isExprt());
+        sb.append(", LOG=").append(preProcessor.isLog());
+        sb.append(", BUILD=").append(preProcessor.isBuild());
+        sb.append(", STATS=").append(preProcessor.isStats()).append("\n");
     }
 
     public void reportFunctionSetup(CustomFunction customFunction) {

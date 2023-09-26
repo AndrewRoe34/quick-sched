@@ -269,7 +269,7 @@ public class ScriptContext {
         Scanner scriptScanner = new Scanner(script);
         try {
             preProcessorSetup(scriptScanner);
-            scriptLog.reportPreProcessorSetup();
+//            scriptLog.reportPreProcessorSetup();
 
             while(scriptScanner.hasNextLine()) {
                 String statement = scriptScanner.nextLine();

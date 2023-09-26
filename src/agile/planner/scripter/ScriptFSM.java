@@ -23,6 +23,7 @@ public class ScriptFSM {
     private List<Type> primitiveVariables = new ArrayList<>();
     private Map<String, CustomFunction> funcMap = new HashMap<>();
     private List<Type> localStack = new ArrayList<>();
+    private PreProcessor preProcessor = null;
     private boolean ppStatus = false;
     private Scanner scriptScanner;
     private boolean inFunction;
@@ -42,8 +43,9 @@ public class ScriptFSM {
                         case PRE_PROCESSOR:
                             PreProcessor preProcessor = parser.parsePreProcessor(line);
                             if (preProcessor == null) throw new InvalidPreProcessorException();
-                            processPreProcessor(preProcessor);
+                            this.preProcessor = preProcessor;
                             ppStatus = true;
+                            scriptLog.reportPreProcessorSetup(preProcessor);
                             break;
                         case ATTRIBUTE:
                             if(!ppStatus) throw new InvalidPreProcessorException();
@@ -94,6 +96,7 @@ public class ScriptFSM {
                                 }
                             } else {
                                 processClassInstance(classInstance);
+                                //scriptlog function performed inside processClassInstance() method
                             }
                             break;
                         case SETUP_CUST_FUNC:
@@ -119,7 +122,7 @@ public class ScriptFSM {
                 } catch (Throwable e) {
                     System.out.println("\u001B[31m" + e.getClass() + "\u001B[0m" + ": " + e.getMessage());
                     scriptLog.reportException(e);
-                    if(isLogPP()) {
+                    if(preProcessor.isLog()) {
                         IOProcessing.writeStringToFile(scriptLog.toString());
                     }
                     System.exit(1);
@@ -129,7 +132,7 @@ public class ScriptFSM {
                 }
             }
         }
-        if(isLogPP()) {
+        if(preProcessor.isLog()) {
             IOProcessing.writeStringToFile(scriptLog.toString());
         }
     }
@@ -161,10 +164,6 @@ public class ScriptFSM {
             } else break;
         }
         return count;
-    }
-
-    protected void processPreProcessor(PreProcessor preProcessor) {
-
     }
 
     protected void processClassInstance(ClassInstance classInstance) {
@@ -484,27 +483,4 @@ public class ScriptFSM {
     }
 
     //todo add your static functions down here...
-
-
-    public static boolean isDefConfigPP() {
-        return false;
-    }
-
-    public static boolean isDebugPP() {
-        return false;
-    }
-
-    public static boolean isLogPP() {
-        return false;
-    }
-
-    public static boolean isBuildPP() {
-        return false;
-    }
-
-    public static boolean isStatsPP() {
-        return false;
-    }
-
-
 }
