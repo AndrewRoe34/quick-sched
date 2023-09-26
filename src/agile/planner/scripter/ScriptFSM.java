@@ -168,41 +168,39 @@ public class ScriptFSM {
     }
 
     protected void processClassInstance(ClassInstance classInstance) {
+        Type t1 = null;
         if (classInstance instanceof CardInstance) {
             CardInstance card = (CardInstance) classInstance;
-            Type t1 = lookupVariable(card.getVarName());
+            t1 = lookupVariable(card.getVarName());
             if(t1 == null) {
                 t1 = new Type(new Card(card.getTitle().substring(1, card.getTitle().length() - 1)), card.getVarName(), Type.TypeId.CARD);
                 variableList.add(t1);
             } else {
                 t1.setLinkerData(new Card(card.getTitle()), Type.TypeId.CARD);
             }
-            scriptLog.reportCardCreation(0, card.getTitle()); //todo might want to include variable name (or not)
         } else if (classInstance instanceof TaskInstance) {
 
         } else if(classInstance instanceof CheckListInstance) {
             CheckListInstance cl = (CheckListInstance) classInstance;
-            Type t1 = lookupVariable(cl.getVarName());
+            t1 = lookupVariable(cl.getVarName());
             if(t1 == null) {
                 t1 = new Type(new CheckList(0, cl.getTitle()), cl.getVarName(), Type.TypeId.CHECKLIST);
                 variableList.add(t1);
             } else {
                 t1.setLinkerData(new CheckList(0, cl.getTitle()), Type.TypeId.CHECKLIST);
             }
-            scriptLog.reportCheckListCreation(0, cl.getTitle());
         } else if (classInstance instanceof LabelInstance) {
             LabelInstance label = (LabelInstance) classInstance;
-            Type t1 = lookupVariable(label.getVarName());
+            t1 = lookupVariable(label.getVarName());
             if(t1 == null) {
                 t1 = new Type(new Label(0, label.getName(), label.getColor()), label.getVarName(), Type.TypeId.LABEL);
                 variableList.add(t1);
             } else {
                 t1.setLinkerData(new Label(0, label.getName(), label.getColor()), Type.TypeId.LABEL);
             }
-            scriptLog.reportLabelCreation(0, label.getName(), label.getColor());
         } else if (classInstance instanceof StringInstance) {
             StringInstance str = (StringInstance) classInstance;
-            Type t1 = lookupVariable(str.getVarName());
+            t1 = lookupVariable(str.getVarName());
             if(t1 == null) {
                 t1 = new Type(str.getStr(), str.getVarName());
                 variableList.add(t1);
@@ -211,7 +209,7 @@ public class ScriptFSM {
             }
         } else if(classInstance instanceof IntegerInstance) {
             IntegerInstance i = (IntegerInstance) classInstance;
-            Type t1 = lookupVariable(i.getVarName());
+            t1 = lookupVariable(i.getVarName());
             if(t1 == null) {
                 t1 = new Type(i.getVal(), i.getVarName());
                 variableList.add(t1);
@@ -220,7 +218,7 @@ public class ScriptFSM {
             }
         } else if(classInstance instanceof BoolInstance) {
             BoolInstance bool = (BoolInstance) classInstance;
-            Type t1 = lookupVariable(bool.getVarName());
+            t1 = lookupVariable(bool.getVarName());
             if(t1 == null) {
                 t1 = new Type(bool.isVal(), bool.getVarName());
                 variableList.add(t1);
@@ -228,6 +226,7 @@ public class ScriptFSM {
                 t1.setBoolConstant(bool.isVal());
             }
         }
+        scriptLog.reportInstantiation(t1);
     }
 
     protected Type processAttribute(Attributes attr) {

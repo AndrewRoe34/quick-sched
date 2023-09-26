@@ -1,6 +1,10 @@
 package agile.planner.scripter.tools;
 
+import agile.planner.data.Card;
+import agile.planner.data.Label;
+import agile.planner.data.Task;
 import agile.planner.scripter.*;
+import agile.planner.util.CheckList;
 
 public class ScriptLog {
 
@@ -11,6 +15,27 @@ public class ScriptLog {
         sb.append("SCRIPT_LOG:\n");
     }
 
+    public void reportInstantiation(Type t) {
+        switch(t.getVariabTypeId()) {
+            case BOARD:
+                break;
+            case TASK:
+                reportTaskCreation(t);
+                break;
+            case CHECKLIST:
+                reportCheckListCreation(t);
+                break;
+            case LABEL:
+                reportLabelCreation(t);
+                break;
+            case CARD:
+                reportCardCreation(t);
+                break;
+            default:
+                sb.append("Constant data type\n");
+        }
+    }
+
     /**
      * Reports the creation of a {@code Task} via its core attributes
      *
@@ -19,27 +44,31 @@ public class ScriptLog {
      * @param hours number of hours
      * @param dueDate number of days till due date
      */
-    public void reportTaskCreation(int id, String name, int hours, int dueDate) {
-        sb.append("TASK_CREATED: ID=").append(id);
-        sb.append(", NAME=").append(name);
-        sb.append(", HOURS=").append(hours);
-        sb.append(", DUE=").append(dueDate).append("\n");
+    private void reportTaskCreation(Type t) {
+        sb.append("TASK_CREATED: VAR=").append(t.getVariableName());
+        Task task = (Task) t.getLinkerData();
+        sb.append(", NAME=").append(task.getName());
+        sb.append(", HOURS=").append(task.getTotalHours()).append("\n");
+//        sb.append(", DUE=").append(task.).append("\n");
     }
 
-    public void reportLabelCreation(int id, String name, int color) {
-        sb.append("LABL_CREATED: ID=").append(id);
-        sb.append(", NAME=").append(name);
-        sb.append(", COLOR=").append(color).append("\n");
+    private void reportLabelCreation(Type t) {
+        sb.append("LABL_CREATED: VAR=").append(t.getVariableName());
+        Label l = (Label) t.getLinkerData();
+        sb.append(", NAME=").append(l.getName());
+        sb.append(", COLOR=").append(l.getColor()).append("\n");
     }
 
-    public void reportCheckListCreation(int id, String name) {
-        sb.append("CHECKLIST_CREATED: ID=").append(id);
-        sb.append(", NAME=").append(name).append("\n");
+    private void reportCheckListCreation(Type t) {
+        sb.append("CHECKLIST_CREATED: VAR=").append(t.getVariableName());
+        CheckList cl = (CheckList) t.getLinkerData();
+        sb.append(", NAME=").append(cl.getName()).append("\n");
     }
 
-    public void reportCardCreation(int id, String name) {
-        sb.append("CARD_CREATED: ID=").append(id);
-        sb.append(", NAME=").append(name).append("\n");
+    private void reportCardCreation(Type t) {
+        sb.append("CARD_CREATED: VAR=").append(t.getVariableName());
+        Card c = (Card) t.getLinkerData();
+        sb.append(", NAME=").append(c.getTitle()).append("\n");
     }
 
     public void reportTaskAttr(int id, String attr, String[] args) {

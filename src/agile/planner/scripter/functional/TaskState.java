@@ -25,7 +25,7 @@ public class TaskState extends State {
             int days = Integer.parseInt(tokens[2]);
             Task t = new Task(id, tokens[0], hours, days);
             taskList.add(t);
-            scriptLog.reportTaskCreation(id, tokens[0], hours, days);
+//            scriptLog.reportTaskCreation(id, tokens[0], hours, days);
             System.out.println("Task added.. [T" + (scheduleManager.getLastTaskId() + taskList.size() - 1) + "]");
             //adds task to default card
             cardList.get(0).addTask(t);

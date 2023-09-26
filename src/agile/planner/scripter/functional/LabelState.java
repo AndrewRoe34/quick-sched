@@ -19,7 +19,7 @@ public class LabelState extends State {
             String name = tokens[0];
             int color = Integer.parseInt(tokens[1]);
             labelList.add(new Label(id, name, color));
-            scriptLog.reportLabelCreation(id, name, color);
+//            scriptLog.reportLabelCreation(id, name, color);
             System.out.println("Label added.. [L" + (scheduleManager.getLastLabelId() + labelList.size() - 1) + "]");
         } catch(Exception e) {
             throw new InvalidGrammarException("Invalid input. Expected[label: <name: string>, <color: int>]");

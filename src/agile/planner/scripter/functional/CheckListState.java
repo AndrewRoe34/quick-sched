@@ -12,7 +12,7 @@ public class CheckListState extends State {
             int id = scheduleManager.getLastCLId() + clList.size();
             String name = tokens[0];
             clList.add(new CheckList(id, name));
-            scriptLog.reportCheckListCreation(id, name);
+//            scriptLog.reportCheckListCreation(id, name);
             System.out.println("Checklist added.. [C" + (scheduleManager.getLastCLId() + clList.size() - 1) + "]");
         } catch(Exception e) {
             throw new InvalidGrammarException("Invalid input. Expected[checklist: <name: string>]");
