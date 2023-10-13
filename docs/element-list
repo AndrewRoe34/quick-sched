@@ -5,6 +5,7 @@ agile.planner.schedule
 agile.planner.schedule.day
 agile.planner.scripter
 agile.planner.scripter.exception
+agile.planner.scripter.functional
 agile.planner.scripter.tools
 agile.planner.ui
 agile.planner.user

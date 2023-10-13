@@ -3,9 +3,11 @@ package agile.planner.scripter;
 import agile.planner.data.Card;
 import agile.planner.data.Label;
 import agile.planner.io.IOProcessing;
+import agile.planner.manager.ScheduleManager;
 import agile.planner.scripter.exception.*;
 import agile.planner.scripter.tools.ScriptLog;
 import agile.planner.util.CheckList;
+import agile.planner.util.JBin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -27,6 +29,7 @@ public class ScriptFSM {
     private boolean ppStatus = false;
     private Scanner scriptScanner;
     private boolean inFunction;
+    private ScheduleManager scheduleManager = ScheduleManager.getScheduleManager();
 
     public void executeScript() throws FileNotFoundException {
         scriptScanner = new Scanner(new File("data/fun1.smpl"));
@@ -95,8 +98,8 @@ public class ScriptFSM {
                                     t1.setTypeVal(ret);
                                 }
                             } else {
-                                processClassInstance(classInstance);
-                                //scriptlog function performed inside processClassInstance() method
+                                Type t1 = processClassInstance(classInstance);
+                                scriptLog.reportInstantiation(t1);
                             }
                             break;
                         case SETUP_CUST_FUNC:
@@ -166,7 +169,7 @@ public class ScriptFSM {
         return count;
     }
 
-    protected void processClassInstance(ClassInstance classInstance) {
+    protected Type processClassInstance(ClassInstance classInstance) {
         Type t1 = null;
         if (classInstance instanceof CardInstance) {
             CardInstance card = (CardInstance) classInstance;
@@ -225,7 +228,7 @@ public class ScriptFSM {
                 t1.setBoolConstant(bool.isVal());
             }
         }
-        scriptLog.reportInstantiation(t1);
+        return t1;
     }
 
     protected Type processAttribute(Attributes attr) {
@@ -475,11 +478,15 @@ public class ScriptFSM {
     }
 
     protected void funcImportSchedule(String filename) {
-        IOProcessing.readJBinFile(filename);
+        if(preProcessor.isBuild()) {
+            //scheduleManager.processJBinFile(filename);
+        } else {
+            //do nothing since there's nothing we can really do with it
+        }
     }
 
-    protected void funcExport(String file) {
-
+    protected void funcExport(String filename) {
+        //IOProcessing.writeJBinFile(file, JBin.createJBin());
     }
 
     //todo add your static functions down here...

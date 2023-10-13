@@ -40,3 +40,6 @@ println("")
 # export_schedule("fun_week.jbin")
 
 test("Hello World")
+
+#We will store all the created variables and use them with the build operation
+#build()
