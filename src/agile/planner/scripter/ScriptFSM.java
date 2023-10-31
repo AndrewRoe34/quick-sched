@@ -2,12 +2,12 @@ package agile.planner.scripter;
 
 import agile.planner.data.Card;
 import agile.planner.data.Label;
+import agile.planner.data.Task;
 import agile.planner.io.IOProcessing;
 import agile.planner.manager.ScheduleManager;
 import agile.planner.scripter.exception.*;
 import agile.planner.scripter.tools.ScriptLog;
 import agile.planner.util.CheckList;
-import agile.planner.util.JBin;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -21,6 +21,7 @@ public class ScriptFSM {
     private List<Type> checklistVariables = new ArrayList<>();
     private List<Type> labelVariables = new ArrayList<>();
     private List<Type> taskVariables = new ArrayList<>();
+    private List<Task> taskList = new ArrayList<>();
     private List<Type> cardVariables = new ArrayList<>();
     private List<Type> primitiveVariables = new ArrayList<>();
     private Map<String, CustomFunction> funcMap = new HashMap<>();
@@ -135,6 +136,9 @@ public class ScriptFSM {
                 }
             }
         }
+        if(preProcessor.isBuild()) {
+            scheduleManager.outputScheduleToConsole();
+        }
         if(preProcessor.isLog()) {
             IOProcessing.writeStringToFile(scriptLog.toString());
         }
@@ -181,7 +185,16 @@ public class ScriptFSM {
                 t1.setLinkerData(new Card(card.getTitle()), Type.TypeId.CARD);
             }
         } else if (classInstance instanceof TaskInstance) {
-            //todo need to add
+            TaskInstance task = (TaskInstance) classInstance;
+            t1 = lookupVariable(task.getVarName());
+            Task createdTask = new Task(0, task.getName(), task.getTotalHours(), task.getDueDate());
+            if(t1 == null) {
+                t1 = new Type(createdTask, task.getVarName(), Type.TypeId.TASK);
+                variableList.add(t1);
+            } else {
+                t1.setLinkerData(createdTask, Type.TypeId.TASK);
+            }
+            taskList.add(createdTask);
         } else if(classInstance instanceof CheckListInstance) {
             CheckListInstance cl = (CheckListInstance) classInstance;
             t1 = lookupVariable(cl.getVarName());
@@ -474,8 +487,8 @@ public class ScriptFSM {
     }
 
     protected void funcBuild() {
+        scheduleManager.addTaskList(taskList);
         scheduleManager.buildSchedule();
-
     }
 
     protected void funcImportSchedule(String filename) {

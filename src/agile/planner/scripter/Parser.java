@@ -207,6 +207,22 @@ public class Parser {
         }
     }
 
+    /*
+    public IfCondition parseIfCondition(String line) {
+        1. Parse arguments (should be only 1 expression)
+        2. Parse number of whitespace
+        3. Return IfCondition instance
+        return null;
+    }
+
+    public ForLoop parseForLoop(String line) {
+        1. Parse arguments (only 2)
+        2. Parse number of whitespace
+        3. Return ForLoop instance
+        return null;
+    }
+     */
+
     public StaticFunction parseStaticFunction(String line) {
         int startIdx = skipWhiteSpace(line, 0);
         int endIdx = startIdx;

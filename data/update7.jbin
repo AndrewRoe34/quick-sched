@@ -1,4 +1,4 @@
-01-11-2023
+31-10-2023
 
 TASK {
   a, 3, 2
@@ -8,5 +8,4 @@ TASK {
 
 CARD {
   Default, T0, T1, T2
-  Default
 }
