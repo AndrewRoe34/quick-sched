@@ -111,3 +111,34 @@ __include__ <script.asl>
 Config Enum:
 DEFAULT_CONFIG
 CURRENT_CONFIG
+
+
+
+
+
+Man Notes:
+
+//////////////////////////////////////////////////////////////
+	Task
+
+.get_id() <-- Returns the id of the given Task instance
+
+Args: None
+
+Returns: Integer
+
+//////////////////////////////////////////////////////////////
+	Integer
+
+.add(x) <-- Returns a new instance but with the added result
+
+Args: Integer
+
+Returns: Integer
+
+
+.mark_item_by_id(id, bool)
+
+Args: Integer, Bool
+
+Returns: Void
