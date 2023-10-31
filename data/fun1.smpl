@@ -43,3 +43,13 @@ test("Hello World")
 
 #We will store all the created variables and use them with the build operation
 #build()
+
+#func build_pyramid(i)
+#  if(i.equals(0))
+#    return
+#  for(0, i)
+#    print("*")
+#  build_pyramid(i.minus(1))
+
+#my_list.add(task("A", 3, 2))
+#build(my_list)

@@ -474,14 +474,13 @@ public class ScriptFSM {
     }
 
     protected void funcBuild() {
+        scheduleManager.buildSchedule();
 
     }
 
     protected void funcImportSchedule(String filename) {
         if(preProcessor.isBuild()) {
             scheduleManager.processJBinFile(filename);
-        } else {
-            //do nothing since there's nothing we can really do with it
         }
     }
 
