@@ -479,7 +479,7 @@ public class ScriptFSM {
 
     protected void funcImportSchedule(String filename) {
         if(preProcessor.isBuild()) {
-            //scheduleManager.processJBinFile(filename);
+            scheduleManager.processJBinFile(filename);
         } else {
             //do nothing since there's nothing we can really do with it
         }

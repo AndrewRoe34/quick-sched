@@ -2,7 +2,7 @@
 include: __CURR_CONFIG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__, __STATS__
 
 #Imports schedule data from prior session
-import_schedule("data/week.jbin")
+import_schedule("data/update7.jbin")
 
 #Constructs class instances
 val: string("3400")
