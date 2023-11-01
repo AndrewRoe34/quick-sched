@@ -15,6 +15,7 @@ import java.util.*;
 
 public class ScriptFSM {
 
+    private Scanner inputScanner = new Scanner(System.in);
     private List<Type> variableList = new LinkedList<>();
     private final Parser parser = new Parser();
     private final ScriptLog scriptLog = new ScriptLog();
@@ -512,6 +513,25 @@ public class ScriptFSM {
         if(preProcessor.isExprt()) {
             scheduleManager.exportJBinFile(filename);
         }
+    }
+
+    protected void funcInputTasks(int num) {
+        System.out.println("Task [Name, Hours, Due_Date]");
+        for(int i = 0; i < num; i++) {
+            if(inputScanner.hasNextLine()) {
+                String line = inputScanner.nextLine();
+                //todo finish the rest and maybe give option to provide variable for label or checklist (maybe)
+                String[] tokens = line.split(",");
+                if(tokens.length > 3) {
+                    throw new InvalidGrammarException();
+                }
+
+            }
+        }
+    }
+
+    protected void funcUpdateProfile() {
+
     }
 
     //todo add your static functions down here...
