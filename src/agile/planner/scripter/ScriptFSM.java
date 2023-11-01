@@ -32,8 +32,8 @@ public class ScriptFSM {
     private boolean inFunction;
     private ScheduleManager scheduleManager = ScheduleManager.getScheduleManager();
 
-    public void executeScript() throws FileNotFoundException {
-        scriptScanner = new Scanner(new File("data/fun1.smpl"));
+    public void executeScript(String filename) throws FileNotFoundException {
+        scriptScanner = new Scanner(new File(filename));
         while (scriptScanner.hasNextLine()) {
             String untrimmed = scriptScanner.nextLine();
             String line = untrimmed.trim();
@@ -301,6 +301,10 @@ public class ScriptFSM {
                 if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.STRING) throw new InvalidFunctionException();
                 funcExportSchedule(args[0].getStringConstant());
                 return null;
+            case "add_all_tasks":
+                if(args.length != 0) throw new InvalidFunctionException();
+                funcAddAllTasks();
+                return null;
             default:
                 processCustomFunction(func, args);
         }
@@ -490,8 +494,11 @@ public class ScriptFSM {
         return types;
     }
 
-    protected void funcBuild() {
+    protected void funcAddAllTasks() {
         scheduleManager.addTaskList(taskList);
+    }
+
+    protected void funcBuild() {
         scheduleManager.buildSchedule();
     }
 

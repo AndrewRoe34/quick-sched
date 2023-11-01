@@ -4,7 +4,7 @@ include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__,
 
 
 # Custom function
-func edit_task: task_name, new_duration, new_priority
+func edit_task(task_name, new_duration, new_priority)
   # Get the task from the system using its name
   task_to_edit: get_task_by_name(task_name)
 
