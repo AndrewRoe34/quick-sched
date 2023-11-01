@@ -531,7 +531,54 @@ public class ScriptFSM {
     }
 
     protected void funcUpdateProfile() {
+        /*
+        set_schedule_alg(x)
+        set_overflow(flag)
+        ...
 
+        This way, we can have a piece of software for editing the user's settings
+
+        Goal is to have 2 core files:
+        1. Managing system settings/configurations
+        2. Data entry and viewing the schedule
+
+
+        Sample code for File1.simpl:
+        import: __CURR_CONFIG__
+
+        func prompt()
+          println("Would you like to update a setting?")
+          println("1. user_name=null")
+          println("2. user_email=null")
+          println("3. max_days=14")
+          println("4. archive_days=14")
+          println("5. priority=false")
+          println("6. overflow=true")
+          println("7. fit_schedule=false")
+          println("8. schedule_algorithm=1")
+          println("9. min_hours=1")
+          println("10. exit()")
+
+        for(true)
+          prompt()
+          x: input_int()
+          if(x.equals(1))
+            str: input_word()
+            set_user_name(str)
+          if(x.equals(2))
+            ...
+          ...
+
+        update_settings()
+
+
+
+
+
+
+
+
+         */
     }
 
     //todo add your static functions down here...
