@@ -297,6 +297,10 @@ public class ScriptFSM {
                 if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.STRING) throw new InvalidFunctionException();
                 funcImportSchedule(args[0].getStringConstant());
                 return null;
+            case "export_schedule":
+                if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.STRING) throw new InvalidFunctionException();
+                funcExportSchedule(args[0].getStringConstant());
+                return null;
             default:
                 processCustomFunction(func, args);
         }
@@ -493,12 +497,14 @@ public class ScriptFSM {
 
     protected void funcImportSchedule(String filename) {
         if(preProcessor.isBuild()) {
-            scheduleManager.processJBinFile(filename);
+            scheduleManager.importJBinFile(filename);
         }
     }
 
-    protected void funcExport(String filename) {
-        //IOProcessing.writeJBinFile(file, JBin.createJBin());
+    protected void funcExportSchedule(String filename) {
+        if(preProcessor.isExprt()) {
+            scheduleManager.exportJBinFile(filename);
+        }
     }
 
     //todo add your static functions down here...

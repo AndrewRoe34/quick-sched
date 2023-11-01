@@ -10,7 +10,7 @@ public class ImportState extends State {
             throw new InvalidPreProcessorException("No imports are allowed due to the absence of the __IMPORT__ flag");
         }
         String[] token = processArguments(line, 1, null);
-        scheduleManager.processJBinFile("data/" + token[0]);
+        scheduleManager.importJBinFile("data/" + token[0]);
         importPP = false;
 //        LocalDate ld = LocalDate.parse("");
 //        ld.get

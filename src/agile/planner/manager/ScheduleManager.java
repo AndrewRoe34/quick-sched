@@ -141,7 +141,7 @@ public class ScheduleManager {
 //        }
 //    }
     
-    public boolean processJBinFile(String filename) {
+    public boolean importJBinFile(String filename) {
         String binStr = IOProcessing.readJBinFile(filename);
         if(binStr != null) {
             eventLog.reportReadJBinFile(filename);
@@ -152,11 +152,17 @@ public class ScheduleManager {
         return false;
     }
 
-    public void createJBinFile(String filename, List<Card> cards2) {
+    public void exportJBinFile(String filename, List<Card> cards2) {
         eventLog.reportCreateJBin();
         List<Card> cardSet = new ArrayList<>(cards);
         cardSet.addAll(cards2);
         IOProcessing.writeJBinFile(filename, JBin.createJBin(cardSet));
+        eventLog.reportWriteJBinFile(filename);
+    }
+
+    public void exportJBinFile(String filename) {
+        eventLog.reportCreateJBin();
+        IOProcessing.writeJBinFile(filename, JBin.createJBin(cards));
         eventLog.reportWriteJBinFile(filename);
     }
 

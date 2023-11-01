@@ -11,6 +11,6 @@ public class ExportState extends State {
         }
         String[] token = processArguments(line, 1, null);
 //        scheduleManager.addCardList(cardList);
-        scheduleManager.createJBinFile("data/" + token[0], cardList);
+        scheduleManager.exportJBinFile("data/" + token[0], cardList);
     }
 }

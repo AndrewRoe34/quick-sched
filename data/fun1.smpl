@@ -38,7 +38,7 @@ println(my_cl)
 println("")
 
 #Exports the schedule for later usage
-# export_schedule("fun_week.jbin")
+#export_schedule("fun_week.jbin")
 
 test("Hello World")
 
