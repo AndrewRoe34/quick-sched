@@ -37,17 +37,4 @@ println("checklist_id=", my_cl.id(), ", checklist_name=", my_cl.get_title(), ", 
 println(my_cl)
 println("")
 
-#Exports the schedule for later usage
-#export_schedule("fun_week.jbin")
-
-test("Hello World")
-
-#We will store all the created variables and use them with the build operation
 build()
-
-#func build_pyramid(i)
-#  if(i.equals(0))
-#    return
-#  for(0, i)
-#    print("*")
-#  build_pyramid(i.minus(1))

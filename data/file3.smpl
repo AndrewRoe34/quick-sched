@@ -1,0 +1,32 @@
+#Sample script
+include: __CURR_CONFIG__, __LOG__, __BUILD__
+
+# this is my comment
+str: string("Hello World")
+
+println("string=", str, ", length=", str.length())
+
+cl: checklist("My Amazing Checklist!")
+
+func edit_custom_checklist(cl, flag)
+  cl.add_item("Step 1")
+  cl.add_item("Step 2")
+  cl.add_item("Step 3")
+  cl.add_item("Step 4")
+  cl.mark_item_by_id(0, flag)
+  cl.mark_item_by_name("Step 2", flag)
+  cl.mark_item_by_id(2, flag)
+
+edit_custom_checklist(cl, true)
+
+println(cl)
+
+
+# integer, string, bool, card, task, checklist, label
+
+t1: task("A", 3, 1)
+t1: task("B", 5, 0)
+t1: task("C", 2, 2)
+t1: task("D", 7, 3)
+
+build()
