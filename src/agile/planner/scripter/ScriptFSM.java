@@ -546,6 +546,8 @@ public class ScriptFSM {
         Sample code for File1.simpl:
         import: __CURR_CONFIG__
 
+        reset_curr_settings()
+
         func prompt()
           println("Would you like to update a setting?")
           println("1. user_name=null")
@@ -569,15 +571,7 @@ public class ScriptFSM {
             ...
           ...
 
-        update_settings()
-
-
-
-
-
-
-
-
+        update_curr_settings()
          */
     }
 
