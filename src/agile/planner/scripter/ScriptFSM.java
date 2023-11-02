@@ -121,6 +121,16 @@ public class ScriptFSM {
                         case CONSTANT:
                             if(!ppStatus) throw new InvalidPreProcessorException();
                             break;
+                        case FOR_LOOP:
+                            if(!ppStatus) throw new InvalidPreProcessorException();
+                            customFunction = parser.parseForLoop(untrimmed);
+                            if(customFunction == null) {
+                                throw new InvalidFunctionException();
+                            } else {
+                                executeForLoop(customFunction);
+                            }
+                            //scriptLog.reportFunctionSetup(customFunction);
+                            break;
                         default:
                             throw new InvalidGrammarException();
                     }
@@ -142,6 +152,32 @@ public class ScriptFSM {
         }
         if(preProcessor.isLog()) {
             IOProcessing.writeStringToFile(scriptLog.toString());
+        }
+    }
+
+    protected void executeForLoop(CustomFunction customFunction) {
+        if(customFunction.getArgs().length == 1 && "true".equals(customFunction.getArgs()[0])) {
+            while(true) {
+                for(String s : customFunction.getLines()) {
+                    parser.typeOfOperation(s);
+                    //todo need to make method out of the above code that determines the type of operation and calls the relevant functions
+                }
+            }
+        } else if(customFunction.getArgs().length == 3 || customFunction.getArgs().length == 4) {
+            //todo need  to finish here
+            //for(i, 0, 3)
+            //for(i, 0, 3, 2)
+            Type[] args = processArguments(customFunction.getArgs());
+            Type[] incrArg = new Type[1];
+            incrArg[0] = new Type(1, null);
+            for(; args[0].getIntConstant() < args[2].getIntConstant(); args[0].attrSet(Parser.AttrFunc.ADD, incrArg)) {
+                for(String s : customFunction.getLines()) {
+                    parser.typeOfOperation(s);
+                    //todo need to make method out of the above code that determines the type of operation and calls the relevant functions
+                }
+            }
+        } else {
+            throw new InvalidGrammarException();
         }
     }
 
@@ -306,6 +342,13 @@ public class ScriptFSM {
                 if(args.length != 0) throw new InvalidFunctionException();
                 funcAddAllTasks();
                 return null;
+            case "input_tasks":
+                if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.INTEGER) throw new InvalidFunctionException();
+                funcInputTasks(args[0].getIntConstant());
+                return null;
+            case "input_int":
+                if(args.length != 0) throw new InvalidFunctionException();
+                return funcInputInt();
             default:
                 processCustomFunction(func, args);
         }
@@ -516,8 +559,9 @@ public class ScriptFSM {
     }
 
     protected void funcInputTasks(int num) {
-        System.out.println("Task [Name, Hours, Due_Date]");
+        System.out.println("Enter " + num + " Tasks: name, hours, due_date");
         for(int i = 0; i < num; i++) {
+            System.out.print("> ");
             if(inputScanner.hasNextLine()) {
                 String line = inputScanner.nextLine();
                 //todo finish the rest and maybe give option to provide variable for label or checklist (maybe)
@@ -525,8 +569,20 @@ public class ScriptFSM {
                 if(tokens.length > 3) {
                     throw new InvalidGrammarException();
                 }
-
+                scheduleManager.addTask(tokens[0].trim(), Integer.parseInt(tokens[1].trim()), Integer.parseInt(tokens[2].trim()));
             }
+        }
+    }
+
+    protected Type funcInputInt() {
+        System.out.println("Enter number:");
+        System.out.print("> ");
+        if(inputScanner.hasNextInt()) {
+            Type localType = new Type(inputScanner.nextInt(), null);
+            if(inputScanner.hasNextLine()) inputScanner.nextLine();
+            return localType;
+        } else {
+            throw new InvalidGrammarException();
         }
     }
 

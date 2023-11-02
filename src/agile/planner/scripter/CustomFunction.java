@@ -17,7 +17,6 @@ public class CustomFunction extends StaticFunction {
         return lines;
     }
 
-
     public boolean addLine(String line) {
         return lines.add(line);
     }

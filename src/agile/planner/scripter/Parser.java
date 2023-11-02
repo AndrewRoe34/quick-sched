@@ -56,7 +56,8 @@ public class Parser {
         SETUP_CUST_FUNC, // func ..
         COMMENT,         // #
         CONSTANT,        // # or "abc" or true/false
-        VARIABLE         // anything besides the above
+        VARIABLE,        // anything besides the above
+        FOR_LOOP
     }
 
     public PreProcessor parsePreProcessor(String line) {
@@ -154,6 +155,8 @@ public class Parser {
             case "true":
             case "false":
                 return Operation.CONSTANT;
+            case "for":
+                return Operation.FOR_LOOP;
             default:
                 switch(tokens[0].charAt(tokens[0].length() - 1)) {
                     case ':':
@@ -162,7 +165,11 @@ public class Parser {
                         return Operation.ATTRIBUTE;
                     default:
                         if(verifyFunc(line)) {
-                            return Operation.FUNCTION;
+                            if("for".equals(tokens[0].substring(0, 3))) {
+                                return Operation.FOR_LOOP;
+                            } else {
+                                return Operation.FUNCTION;
+                            }
                         } else if(tokens.length > 1 && tokens[1].length() > 0 && tokens[1].charAt(0) == '.' || verifyAttr(line)) {
                             return Operation.ATTRIBUTE;
                         } else if(tokens[0].charAt(0) == '"' && tokens[tokens.length - 1].charAt(tokens[tokens.length - 1].length() - 1) == '"') {
@@ -214,14 +221,36 @@ public class Parser {
         3. Return IfCondition instance
         return null;
     }
+    */
+    public CustomFunction parseForLoop(String line) {
+        int numSpaces = 0;
+        int numTabs = 0;
+        for(int i = 0; i < line.length(); i++) {
+            if(line.charAt(i) == ' ')
+                numSpaces++;
+            else if(line.charAt(i) == '\t')
+                numTabs++;
+            else break;
+        }
 
-    public ForLoop parseForLoop(String line) {
-        1. Parse arguments (only 2)
-        2. Parse number of whitespace
-        3. Return ForLoop instance
-        return null;
+        int whitespaceCount = numSpaces + numTabs;
+
+//        String[] tokens = line.substring(whitespaceCount).trim().split("\\s");
+//        if(tokens.length < 1 || !"for".equals(tokens[0])) {
+//            return null;
+//        }
+
+        int idx = line.indexOf("for") + 3;
+        int start = idx;
+        for(; idx < line.length(); idx++) {
+            if(line.charAt(idx) == '(') {
+                break;
+            } else if(line.charAt(idx) == ')') return null;
+        }
+
+        String[] args = verifyArgument(line, idx);
+        return new CustomFunction("for", args, numSpaces + 3 * numTabs);
     }
-     */
 
     public StaticFunction parseStaticFunction(String line) {
         int startIdx = skipWhiteSpace(line, 0);
@@ -243,7 +272,10 @@ public class Parser {
             case "encrypt_data":
             case "decrypt_data":
             case "get_task_by_name":
-            case "get_task_by_id": //todo need to add more functions
+            case "get_task_by_id":
+            case "add_all_tasks":
+            case "input_tasks":
+            case "input_int": //todo need to add more functions
                 return new StaticFunction(funcName, arguments, true);
             default:
                 return new StaticFunction(funcName, arguments, false);
