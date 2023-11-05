@@ -184,6 +184,8 @@ public class ScriptFSM {
      *   x: 3
      *   for(...)
      *     print(..)
+     *   for(...)
+     *     exe(..)
      *
      *
      * 0 -> for(...)
