@@ -34,16 +34,6 @@ println(str)
 add_all_tasks()
 build()
 
-
-
-# For loop notes (var, init_val, max_val, incr/decr)
-#for(i, 0, j, 2)
-#  cl.mark_item_by_id(i, flag)
-
-# If condition notes (uses only AND operations)
-# if(not x, y, z)
-#   cl.mark_item_by_id(i, flag)
-
 # Need a form of input from the user (allows for automation down the road and less need for recoding)
 # str: input_word()
 # str: input_line()
@@ -68,29 +58,6 @@ build()
 # ...
 # Would you like to export a jbin?
 # ...
-
-
-# Sample pyramid program with for loops
-# for(i, 0, n)
-#   for(j, i, i)
-#     print("*")
-#   println("")
-
-
-# println("Welcome to Banking Express...")
-# println("")
-# println("Choose one of the following options")
-# println("1. Deposit")
-# println("2. Withdraw")
-#
-# if(pw.!equals(secret_code))
-#   println("Invalid")
-#   exit()
-#
-# str: input_line()
-# for(INF)
-#   if(true)
-#     break
 
 
 # Need to showcase 3 examples of how the scripting language benefits:
