@@ -122,16 +122,16 @@ public class ScriptFSM {
                         case CONSTANT:
                             if(!ppStatus) throw new InvalidPreProcessorException();
                             break;
-                        case FOR_LOOP:
-                            if(!ppStatus) throw new InvalidPreProcessorException();
-                            customFunction = parser.parseForLoop(untrimmed);
-                            if(customFunction == null) {
-                                throw new InvalidFunctionException();
-                            } else {
-                                executeForLoop(customFunction);
-                            }
-                            //scriptLog.reportFunctionSetup(customFunction);
-                            break;
+//                        case FOR_LOOP:
+//                            if(!ppStatus) throw new InvalidPreProcessorException();
+//                            customFunction = parser.parseForLoop(untrimmed);
+//                            if(customFunction == null) {
+//                                throw new InvalidFunctionException();
+//                            } else {
+//                                executeForLoop(customFunction);
+//                            }
+//                            //scriptLog.reportFunctionSetup(customFunction);
+//                            break;
                         default:
                             throw new InvalidGrammarException();
                     }
@@ -156,70 +156,70 @@ public class ScriptFSM {
         }
     }
 
-    protected void executeForLoop(CustomFunction customFunction) {
-        extractForLoopStatements(customFunction);
-        if(customFunction.getArgs().length == 1 && "true".equals(customFunction.getArgs()[0])) {
-            while(true) {
-                for(String s : customFunction.getLines()) {
-                    //executeStatement(s);
-                }
-            }
-        } else if(customFunction.getArgs().length == 3 || customFunction.getArgs().length == 4) {
-            Type[] args = processArguments(customFunction.getArgs());
-            Type[] incrArg = new Type[1];
-            incrArg[0] = new Type(1, null);
-            args[0] = new Type(args[1].getIntConstant(), "i");
-            for(; args[0].getIntConstant() < args[2].getIntConstant(); args[0].attrSet(Parser.AttrFunc.ADD, incrArg)) {
-                for(String s : customFunction.getLines()) {
-                    //executeStatement(s);
-                }
-            }
-        } else {
-            throw new InvalidGrammarException();
-        }
-    }
-
-    /**
-     * for(...)
-     *   x: 3
-     *   for(...)
-     *     print(..)
-     *   for(...)
-     *     exe(..)
-     *
-     *
-     * 0 -> for(...)
-     * 1 ->   x: 3
-     * 2 ->   for(...)
-     * 3 ->     print(..)
-     *
-     *
-     *
-     *
-     *
-     * List<ForLoop>
-     *
-     * List<IfCond>
-     *
-     *
-     *
-     *
-     *
-     * 1. Scan and store all the lines as the first for loop
-     * 2. Find the next for loop
-     * 3. Find out when that for loop ends
-     * 4. Repeat steps 2-3
-     * 5. Each time a for loop ends, store it in the List<ForLoop> loopStack
-     */
-    private void extractForLoopStatements(CustomFunction customFunction) {
-        while(scriptScanner.hasNextLine()) {
-            String line = scriptScanner.nextLine();
-            //if line has correct number of spacing
-            //  add to list
-            //else
-            //  store data in 'bufferedLine' variable
-        }
-    }
+//    protected void executeForLoop(CustomFunction customFunction) {
+//        extractForLoopStatements(customFunction);
+//        if(customFunction.getArgs().length == 1 && "true".equals(customFunction.getArgs()[0])) {
+//            while(true) {
+//                for(String s : customFunction.getLines()) {
+//                    //executeStatement(s);
+//                }
+//            }
+//        } else if(customFunction.getArgs().length == 3 || customFunction.getArgs().length == 4) {
+//            Type[] args = processArguments(customFunction.getArgs());
+//            Type[] incrArg = new Type[1];
+//            incrArg[0] = new Type(1, null);
+//            args[0] = new Type(args[1].getIntConstant(), "i");
+//            for(; args[0].getIntConstant() < args[2].getIntConstant(); args[0].attrSet(Parser.AttrFunc.ADD, incrArg)) {
+//                for(String s : customFunction.getLines()) {
+//                    //executeStatement(s);
+//                }
+//            }
+//        } else {
+//            throw new InvalidGrammarException();
+//        }
+//    }
+//
+//    /**
+//     * for(...)
+//     *   x: 3
+//     *   for(...)
+//     *     print(..)
+//     *   for(...)
+//     *     exe(..)
+//     *
+//     *
+//     * 0 -> for(...)
+//     * 1 ->   x: 3
+//     * 2 ->   for(...)
+//     * 3 ->     print(..)
+//     *
+//     *
+//     *
+//     *
+//     *
+//     * List<ForLoop>
+//     *
+//     * List<IfCond>
+//     *
+//     *
+//     *
+//     *
+//     *
+//     * 1. Scan and store all the lines as the first for loop
+//     * 2. Find the next for loop
+//     * 3. Find out when that for loop ends
+//     * 4. Repeat steps 2-3
+//     * 5. Each time a for loop ends, store it in the List<ForLoop> loopStack
+//     */
+//    private void extractForLoopStatements(CustomFunction customFunction) {
+//        while(scriptScanner.hasNextLine()) {
+//            String line = scriptScanner.nextLine();
+//            //if line has correct number of spacing
+//            //  add to list
+//            //else
+//            //  store data in 'bufferedLine' variable
+//        }
+//    }
 
     protected String setupCustomFunction(CustomFunction customFunction) {
         String line = null;

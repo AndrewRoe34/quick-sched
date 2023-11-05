@@ -214,42 +214,42 @@ public class Parser {
         }
     }
 
-    /*
-    public IfCondition parseIfCondition(String line) {
-        1. Parse arguments (should be only 1 expression)
-        2. Parse number of whitespace
-        3. Return IfCondition instance
-        return null;
-    }
-    */
-    public CustomFunction parseForLoop(String line) {
-        int numSpaces = 0;
-        int numTabs = 0;
-        for(int i = 0; i < line.length(); i++) {
-            if(line.charAt(i) == ' ')
-                numSpaces++;
-            else if(line.charAt(i) == '\t')
-                numTabs++;
-            else break;
-        }
-
-//        int whitespaceCount = numSpaces + numTabs;
-//
-//        String[] tokens = line.substring(whitespaceCount).trim().split("\\s");
-//        if(tokens.length < 1 || !"for".equals(tokens[0])) {
-//            return null;
+//    /*
+//    public IfCondition parseIfCondition(String line) {
+//        1. Parse arguments (should be only 1 expression)
+//        2. Parse number of whitespace
+//        3. Return IfCondition instance
+//        return null;
+//    }
+//    */
+//    public CustomFunction parseForLoop(String line) {
+//        int numSpaces = 0;
+//        int numTabs = 0;
+//        for(int i = 0; i < line.length(); i++) {
+//            if(line.charAt(i) == ' ')
+//                numSpaces++;
+//            else if(line.charAt(i) == '\t')
+//                numTabs++;
+//            else break;
 //        }
-
-        int idx = line.indexOf("for") + 3;
-        for(; idx < line.length(); idx++) {
-            if(line.charAt(idx) == '(') {
-                break;
-            } else if(line.charAt(idx) == ')') return null;
-        }
-
-        String[] args = verifyArgument(line, idx);
-        return new CustomFunction("for", args, numSpaces + 3 * numTabs);
-    }
+//
+////        int whitespaceCount = numSpaces + numTabs;
+////
+////        String[] tokens = line.substring(whitespaceCount).trim().split("\\s");
+////        if(tokens.length < 1 || !"for".equals(tokens[0])) {
+////            return null;
+////        }
+//
+//        int idx = line.indexOf("for") + 3;
+//        for(; idx < line.length(); idx++) {
+//            if(line.charAt(idx) == '(') {
+//                break;
+//            } else if(line.charAt(idx) == ')') return null;
+//        }
+//
+//        String[] args = verifyArgument(line, idx);
+//        return new CustomFunction("for", args, numSpaces + 3 * numTabs);
+//    }
 
     public StaticFunction parseStaticFunction(String line) {
         int startIdx = skipWhiteSpace(line, 0);
