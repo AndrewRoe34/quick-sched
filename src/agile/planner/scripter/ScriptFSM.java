@@ -32,6 +32,7 @@ public class ScriptFSM {
     private Scanner scriptScanner;
     private boolean inFunction;
     private ScheduleManager scheduleManager = ScheduleManager.getScheduleManager();
+    private String bufferedLine = null;
 
     public void executeScript(String filename) throws FileNotFoundException {
         scriptScanner = new Scanner(new File(filename));
@@ -156,6 +157,7 @@ public class ScriptFSM {
     }
 
     protected void executeForLoop(CustomFunction customFunction) {
+        extractForLoopStatements(customFunction);
         if(customFunction.getArgs().length == 1 && "true".equals(customFunction.getArgs()[0])) {
             while(true) {
                 for(String s : customFunction.getLines()) {
@@ -174,6 +176,46 @@ public class ScriptFSM {
             }
         } else {
             throw new InvalidGrammarException();
+        }
+    }
+
+    /**
+     * for(...)
+     *   x: 3
+     *   for(...)
+     *     print(..)
+     *
+     *
+     * 0 -> for(...)
+     * 1 ->   x: 3
+     * 2 ->   for(...)
+     * 3 ->     print(..)
+     *
+     *
+     *
+     *
+     *
+     * List<ForLoop>
+     *
+     * List<IfCond>
+     *
+     *
+     *
+     *
+     *
+     * 1. Scan and store all the lines as the first for loop
+     * 2. Find the next for loop
+     * 3. Find out when that for loop ends
+     * 4. Repeat steps 2-3
+     * 5. Each time a for loop ends, store it in the List<ForLoop> loopStack
+     */
+    private void extractForLoopStatements(CustomFunction customFunction) {
+        while(scriptScanner.hasNextLine()) {
+            String line = scriptScanner.nextLine();
+            //if line has correct number of spacing
+            //  add to list
+            //else
+            //  store data in 'bufferedLine' variable
         }
     }
 
