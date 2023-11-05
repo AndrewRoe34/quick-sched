@@ -1,0 +1,5 @@
+#Sample script
+include: __CURR_CONFIG__, __LOG__, __BUILD__
+
+for(i, 0, 3)
+  cl.mark_item_by_id(i, flag)

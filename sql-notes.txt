@@ -78,24 +78,3 @@ Key objectives:
 - Will need to integrate with the scripting language (least of our worries)
 
 Question: How much extra credit is this worth?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

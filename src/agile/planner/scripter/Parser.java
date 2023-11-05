@@ -233,15 +233,14 @@ public class Parser {
             else break;
         }
 
-        int whitespaceCount = numSpaces + numTabs;
-
+//        int whitespaceCount = numSpaces + numTabs;
+//
 //        String[] tokens = line.substring(whitespaceCount).trim().split("\\s");
 //        if(tokens.length < 1 || !"for".equals(tokens[0])) {
 //            return null;
 //        }
 
         int idx = line.indexOf("for") + 3;
-        int start = idx;
         for(; idx < line.length(); idx++) {
             if(line.charAt(idx) == '(') {
                 break;

@@ -1,4 +1,100 @@
+#Sample script
 include: __CURR_CONFIG__, __LOG__, __BUILD__
 
-for(true)
-  println("Hello World")
+# this is my comment
+str: string("Hello World")
+
+println("string=", str, ", length=", str.length())
+
+cl: checklist("My Amazing Checklist!")
+
+func edit_custom_checklist(cl, flag)
+  cl.add_item("Step 1")
+  cl.add_item("Step 2")
+  cl.add_item("Step 3")
+  cl.add_item("Step 4")
+  cl.mark_item_by_id(0, flag)
+  cl.mark_item_by_name("Step 2", flag)
+  cl.mark_item_by_id(2, flag)
+
+edit_custom_checklist(cl, true)
+
+println(cl)
+
+# integer, string, bool, card, task, checklist, label
+
+t1: task("A", 3, 1)
+t1: task("B", 5, 0)
+t1: task("C", 2, 2)
+t1: task("D", 7, 3)
+
+str.add("!!!")
+println(str)
+
+add_all_tasks()
+build()
+
+
+
+# For loop notes (var, init_val, max_val, incr/decr)
+#for(i, 0, j, 2)
+#  cl.mark_item_by_id(i, flag)
+
+# If condition notes (uses only AND operations)
+# if(not x, y, z)
+#   cl.mark_item_by_id(i, flag)
+
+# Need a form of input from the user (allows for automation down the road and less need for recoding)
+# str: input_word()
+# str: input_line()
+# val: input_int()
+# flg: input_bool()
+# t1: input_task()
+# c1: input_card()
+# cl: input_cl()
+# lb: input_label()
+
+# Example of using the above:
+# How many new tasks?
+# 3
+# Enter 3 tasks
+# How many new labels?
+# ...
+# Would you like to add a checklist?
+# ...
+# Would you like to see your schedule?
+# ...
+# Would you like to import a jbin?
+# ...
+# Would you like to export a jbin?
+# ...
+
+
+# Sample pyramid program with for loops
+# for(i, 0, n)
+#   for(j, i, i)
+#     print("*")
+#   println("")
+
+
+# println("Welcome to Banking Express...")
+# println("")
+# println("Choose one of the following options")
+# println("1. Deposit")
+# println("2. Withdraw")
+#
+# if(pw.!equals(secret_code))
+#   println("Invalid")
+#   exit()
+#
+# str: input_line()
+# for(INF)
+#   if(true)
+#     break
+
+
+# Need to showcase 3 examples of how the scripting language benefits:
+# 1. Formatting the scheduling platform (label/card/board creation, customization of the system, etc.)
+# 2. Automating data entry (refer to the "input" examples above)
+# 3. Creating custom programs irrelevant to the system (showcases the flexibility of your design, e.g. bank software/pyramid of stars)
+

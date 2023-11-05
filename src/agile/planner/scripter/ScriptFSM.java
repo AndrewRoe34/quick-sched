@@ -159,21 +159,17 @@ public class ScriptFSM {
         if(customFunction.getArgs().length == 1 && "true".equals(customFunction.getArgs()[0])) {
             while(true) {
                 for(String s : customFunction.getLines()) {
-                    parser.typeOfOperation(s);
-                    //todo need to make method out of the above code that determines the type of operation and calls the relevant functions
+                    //executeStatement(s);
                 }
             }
         } else if(customFunction.getArgs().length == 3 || customFunction.getArgs().length == 4) {
-            //todo need  to finish here
-            //for(i, 0, 3)
-            //for(i, 0, 3, 2)
             Type[] args = processArguments(customFunction.getArgs());
             Type[] incrArg = new Type[1];
             incrArg[0] = new Type(1, null);
+            args[0] = new Type(args[1].getIntConstant(), "i");
             for(; args[0].getIntConstant() < args[2].getIntConstant(); args[0].attrSet(Parser.AttrFunc.ADD, incrArg)) {
                 for(String s : customFunction.getLines()) {
-                    parser.typeOfOperation(s);
-                    //todo need to make method out of the above code that determines the type of operation and calls the relevant functions
+                    //executeStatement(s);
                 }
             }
         } else {
