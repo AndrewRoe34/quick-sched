@@ -64,7 +64,7 @@ ScriptLogID | ScriptLog                                                 | Date
 2           | SCRIPT_LOG:\nPREPROC_ATTR: DEF_CONFIG=false, IMPORT=f...  |  10/16/2023
 
 If the user wishes to see the entire ScriptLog, they can specify:
-str: db.retrieve_scrlog(0)
+str: db.retrieve_scrlog(script_log_id)
 
 
 str: db.retrieve_custom("select scriptlogid, scriptlog, email, pw, date from ...")

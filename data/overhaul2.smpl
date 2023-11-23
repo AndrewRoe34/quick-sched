@@ -7,8 +7,8 @@ func edit_task(task_name, new_duration, new_priority)
   task_to_edit: get_task_by_name(task_name)
 
   # Update the task properties
-  task_to_edit.duration: new_duration
-  task_to_edit.priority: new_priority
+  task_to_edit.set_duration(new_duration)
+  task_to_edit.set_priority(new_priority)
 
   # Save the changes to the system
   save_changes()

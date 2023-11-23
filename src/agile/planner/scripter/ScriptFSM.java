@@ -119,19 +119,23 @@ public class ScriptFSM {
                             }
                             scriptLog.reportFunctionSetup(customFunction);
                             break;
+                        case IF_CONDITION:
+                            if(!ppStatus) throw new InvalidPreProcessorException();
+                            customFunction = parser.parseIfCondition(untrimmed);
+                            if(customFunction == null) {
+                                throw new InvalidFunctionException();
+                            } else {
+                                untrimmed = executeIfCondition(customFunction);
+                                if(untrimmed != null) {
+                                    line = untrimmed.trim();
+                                    status = true;
+                                }
+                            }
+                            scriptLog.reportFunctionSetup(customFunction);
+                            break;
                         case CONSTANT:
                             if(!ppStatus) throw new InvalidPreProcessorException();
                             break;
-//                        case FOR_LOOP:
-//                            if(!ppStatus) throw new InvalidPreProcessorException();
-//                            customFunction = parser.parseForLoop(untrimmed);
-//                            if(customFunction == null) {
-//                                throw new InvalidFunctionException();
-//                            } else {
-//                                executeForLoop(customFunction);
-//                            }
-//                            //scriptLog.reportFunctionSetup(customFunction);
-//                            break;
                         default:
                             throw new InvalidGrammarException();
                     }
@@ -156,70 +160,41 @@ public class ScriptFSM {
         }
     }
 
-//    protected void executeForLoop(CustomFunction customFunction) {
-//        extractForLoopStatements(customFunction);
-//        if(customFunction.getArgs().length == 1 && "true".equals(customFunction.getArgs()[0])) {
-//            while(true) {
-//                for(String s : customFunction.getLines()) {
-//                    //executeStatement(s);
-//                }
-//            }
-//        } else if(customFunction.getArgs().length == 3 || customFunction.getArgs().length == 4) {
-//            Type[] args = processArguments(customFunction.getArgs());
-//            Type[] incrArg = new Type[1];
-//            incrArg[0] = new Type(1, null);
-//            args[0] = new Type(args[1].getIntConstant(), "i");
-//            for(; args[0].getIntConstant() < args[2].getIntConstant(); args[0].attrSet(Parser.AttrFunc.ADD, incrArg)) {
-//                for(String s : customFunction.getLines()) {
-//                    //executeStatement(s);
-//                }
-//            }
-//        } else {
-//            throw new InvalidGrammarException();
-//        }
-//    }
-//
-//    /**
-//     * for(...)
-//     *   x: 3
-//     *   for(...)
-//     *     print(..)
-//     *   for(...)
-//     *     exe(..)
-//     *
-//     *
-//     * 0 -> for(...)
-//     * 1 ->   x: 3
-//     * 2 ->   for(...)
-//     * 3 ->     print(..)
-//     *
-//     *
-//     *
-//     *
-//     *
-//     * List<ForLoop>
-//     *
-//     * List<IfCond>
-//     *
-//     *
-//     *
-//     *
-//     *
-//     * 1. Scan and store all the lines as the first for loop
-//     * 2. Find the next for loop
-//     * 3. Find out when that for loop ends
-//     * 4. Repeat steps 2-3
-//     * 5. Each time a for loop ends, store it in the List<ForLoop> loopStack
-//     */
-//    private void extractForLoopStatements(CustomFunction customFunction) {
-//        while(scriptScanner.hasNextLine()) {
-//            String line = scriptScanner.nextLine();
-//            //if line has correct number of spacing
-//            //  add to list
-//            //else
-//            //  store data in 'bufferedLine' variable
-//        }
-//    }
+    private void executeStructureBlock(Parser.Operation operation, String line) {
+        switch (operation) {
+            case COMMENT:
+            case CONSTANT:
+                break;
+            case PRE_PROCESSOR:
+                throw new InvalidPreProcessorException();
+            case ATTRIBUTE:
+                Attributes attr = parser.parseAttributes(line);
+                if (attr == null) throw new InvalidFunctionException();
+                processAttribute(attr);
+                scriptLog.reportAttrFunc(attr);
+                break;
+            case FUNCTION:
+                StaticFunction func = parser.parseStaticFunction(line);
+                processStaticFunction(func);
+                scriptLog.reportFunctionCall(func);
+                break;
+            default:
+                throw new InvalidGrammarException();
+        }
+    }
+
+    protected String executeIfCondition(CustomFunction ifCondition) {
+        String line = setupCustomFunction(ifCondition);
+        Type[] args = processArguments(ifCondition.getArgs());
+        if(args.length != 1) throw new InvalidGrammarException();
+        //need to execute the code here
+        if(args[0].getBoolConstant()) {
+            for(String s : ifCondition.getLines()) {
+                executeStructureBlock(parser.typeOfOperation(s), s.trim());
+            }
+        }
+        return line;
+    }
 
     protected String setupCustomFunction(CustomFunction customFunction) {
         String line = null;
@@ -398,18 +373,25 @@ public class ScriptFSM {
     protected void processCustomFunction(StaticFunction func, Type[] args) {
         CustomFunction customFunction = funcMap.get(func.getFuncName());
         localStack = new ArrayList<>();
-        if(customFunction.getArgs().length != args.length) throw new InvalidFunctionException();
+        if(!"if".equals(func.getFuncName()) && customFunction.getArgs().length != args.length) throw new InvalidFunctionException();
 
-        //todo need to add constructor for Type to include another Type (will maintain referencing easily
-        int j = 0;
-        for(Type t : args) {
-            localStack.add(new Type(t, customFunction.getArgs()[j]));
-            j++;
+        //add constructor for Type to include another Type (will maintain referencing easily
+        if(!"if".equals(func.getFuncName())) {
+            int j = 0;
+            for(Type t : args) {
+                localStack.add(new Type(t, customFunction.getArgs()[j]));
+                j++;
+            }
         }
 
+        if(!"if".equals(func.getFuncName())) {
+            inFunction = true;
+        }
 
-        inFunction = true;
+        int lineIdx = -1;
         for(String line : customFunction.getLines()) {
+            lineIdx++;
+            String untrimmed = line;
             line = line.trim();
             Parser.Operation operation = parser.typeOfOperation(line);
             try {
@@ -428,6 +410,24 @@ public class ScriptFSM {
                         StaticFunction myfunc = parser.parseStaticFunction(line);
                         processStaticFunction(myfunc);
                         scriptLog.reportFunctionCall(myfunc);
+                        break;
+                    case IF_CONDITION:
+                        if(!ppStatus) throw new InvalidPreProcessorException();
+                        if("if".equals(func.getFuncName())) throw new InvalidGrammarException();
+                        CustomFunction ifCondition = parser.parseIfCondition(untrimmed);
+                        if(ifCondition == null) throw new InvalidGrammarException();
+                        args = processArguments(ifCondition.getArgs());
+                        if(args.length != 1) throw new InvalidGrammarException();
+                        if(args[0].getBoolConstant()) {
+//                            for(int i = lineIdx; i < customFunction.getLines().size(); i++) {
+//                                if(numSpaces(customFunction.getLines().get(i)) > ifCondition.getNumSpaces()) {
+//                                    //todo
+//                                }
+//                            }
+                            executeIfCondition(customFunction);
+                        }
+
+//                        scriptLog.reportFunctionCall(myfunc);
                         break;
                     case INSTANCE:
 //                        if(!ppStatus) throw new InvalidPreProcessorException();

@@ -32,6 +32,7 @@ public class Parser {
         DIVIDE,
         MULTIPLY,
         MOD,
+        EQUALS,
 
         //String
         LENGTH,
@@ -57,7 +58,7 @@ public class Parser {
         COMMENT,         // #
         CONSTANT,        // # or "abc" or true/false
         VARIABLE,        // anything besides the above
-        FOR_LOOP
+        IF_CONDITION     // if(...)
     }
 
     public PreProcessor parsePreProcessor(String line) {
@@ -155,8 +156,8 @@ public class Parser {
             case "true":
             case "false":
                 return Operation.CONSTANT;
-            case "for":
-                return Operation.FOR_LOOP;
+            case "if":
+                return Operation.IF_CONDITION;
             default:
                 switch(tokens[0].charAt(tokens[0].length() - 1)) {
                     case ':':
@@ -165,8 +166,8 @@ public class Parser {
                         return Operation.ATTRIBUTE;
                     default:
                         if(verifyFunc(line)) {
-                            if("for".equals(tokens[0].substring(0, 3))) {
-                                return Operation.FOR_LOOP;
+                            if("if".equals(tokens[0].substring(0, 2))) {
+                                return Operation.IF_CONDITION;
                             } else {
                                 return Operation.FUNCTION;
                             }
@@ -214,42 +215,27 @@ public class Parser {
         }
     }
 
-//    /*
-//    public IfCondition parseIfCondition(String line) {
-//        1. Parse arguments (should be only 1 expression)
-//        2. Parse number of whitespace
-//        3. Return IfCondition instance
-//        return null;
-//    }
-//    */
-//    public CustomFunction parseForLoop(String line) {
-//        int numSpaces = 0;
-//        int numTabs = 0;
-//        for(int i = 0; i < line.length(); i++) {
-//            if(line.charAt(i) == ' ')
-//                numSpaces++;
-//            else if(line.charAt(i) == '\t')
-//                numTabs++;
-//            else break;
-//        }
-//
-////        int whitespaceCount = numSpaces + numTabs;
-////
-////        String[] tokens = line.substring(whitespaceCount).trim().split("\\s");
-////        if(tokens.length < 1 || !"for".equals(tokens[0])) {
-////            return null;
-////        }
-//
-//        int idx = line.indexOf("for") + 3;
-//        for(; idx < line.length(); idx++) {
-//            if(line.charAt(idx) == '(') {
-//                break;
-//            } else if(line.charAt(idx) == ')') return null;
-//        }
-//
-//        String[] args = verifyArgument(line, idx);
-//        return new CustomFunction("for", args, numSpaces + 3 * numTabs);
-//    }
+    public CustomFunction parseIfCondition(String line) {
+        int numSpaces = 0;
+        int numTabs = 0;
+        for(int i = 0; i < line.length(); i++) {
+            if(line.charAt(i) == ' ')
+                numSpaces++;
+            else if(line.charAt(i) == '\t')
+                numTabs++;
+            else break;
+        }
+
+        int idx = line.indexOf("if") + 2;
+        for(; idx < line.length(); idx++) {
+            if(line.charAt(idx) == '(') {
+                break;
+            } else if(line.charAt(idx) == ')') return null;
+        }
+
+        String[] args = verifyArgument(line, idx);
+        return new CustomFunction("if", args, numSpaces + 4 * numTabs);
+    }
 
     public StaticFunction parseStaticFunction(String line) {
         int startIdx = skipWhiteSpace(line, 0);
@@ -606,6 +592,9 @@ public class Parser {
                 return AttrFunc.MARK_ITEM_BY_NAME;
             case "get_percent":
                 return AttrFunc.GET_PERCENT;
+            case "=":
+            case "equals":
+                    return AttrFunc.EQUALS;
             default:
                 return null;
         }

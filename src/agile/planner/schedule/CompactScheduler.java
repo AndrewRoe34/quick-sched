@@ -34,6 +34,7 @@ public class CompactScheduler implements Scheduler {
 
     @Override
     public int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager) {
+        //Note: We do not need to worry about 'min_hours' since CompactScheduler focuses on filling up each day with tasks
         PriorityQueue<Task> incomplete = new PriorityQueue<>();
         int numErrors = errorCount;
         while(day.hasSpareHours() && taskManager.size() > 0) {

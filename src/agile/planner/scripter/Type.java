@@ -265,7 +265,9 @@ public class Type implements Comparable<Type> {
                                 throw new InvalidGrammarException();
                             }
                         }
-                        return null;
+                    case EQUALS:
+                        if(args.length != 1) throw new InvalidGrammarException();
+                        return new Type(this.intConstant.equals(args[0].getIntConstant()), null);
                 }
             case STRING:
                 switch(attr) {

@@ -34,44 +34,6 @@ println(str)
 add_all_tasks()
 build()
 
-# Need a form of input from the user (allows for automation down the road and less need for recoding)
-# str: input_word()
-# str: input_line()
-# val: input_int()
-# flg: input_bool()
-# t1: input_task()
-# c1: input_card()
-# cl: input_cl()
-# lb: input_label()
-
-# Example of using the above:
-# How many new tasks?
-# 3
-# Enter 3 tasks
-# How many new labels?
-# ...
-# Would you like to add a checklist?
-# ...
-# Would you like to see your schedule?
-# ...
-# Would you like to import a jbin?
-# ...
-# Would you like to export a jbin?
-# ...
-
-# Sample code:
-#
-# println("Would you like to add a Task?")
-# print("> ")
-# str: input_str()
-# if(str.equals("yes"))
-#   println("How many?")
-#   x: input_int()
-#   println("Please enter ", x, " Tasks")
-#   input_task(x)
-
-
-
 # Need to showcase 3 examples of how the scripting language benefits:
 # 1. Formatting the scheduling platform (label/card/board creation, customization of the system, etc.)
 # 2. Automating data entry (refer to the "input" examples above)
