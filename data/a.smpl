@@ -1,9 +1,11 @@
 include: __CURR_CONFIG__, __LOG__, __BUILD__
 func foo(x)
-  if(x.=(0))
+  if(x.=(11))
     return
   println(x)
-  x.-(1)
+  x.+(1)
   foo(x)
 
-foo(3)
+y: 1
+foo(y)
+println(y)

@@ -614,13 +614,16 @@ public class Parser {
             case "set_due_date":
                 return AttrFunc.SET_DUE_DATE;
             case "add":
+            case "+":
                 return AttrFunc.ADD;
             case "sub":
             case "-":
                 return AttrFunc.SUBTRACT;
             case "div":
+            case "/":
                 return AttrFunc.DIVIDE;
             case "mul":
+            case "*":
                 return AttrFunc.MULTIPLY;
             case "mod":
                 return AttrFunc.MOD;
