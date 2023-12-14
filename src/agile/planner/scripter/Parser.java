@@ -58,7 +58,8 @@ public class Parser {
         COMMENT,         // #
         CONSTANT,        // # or "abc" or true/false
         VARIABLE,        // anything besides the above
-        IF_CONDITION     // if(...)
+        IF_CONDITION,     // if(...)
+        RETURN
     }
 
     public PreProcessor parsePreProcessor(String line) {
@@ -149,6 +150,8 @@ public class Parser {
         String[] tokens = line.trim().split("\\s");
         if(tokens[0].charAt(0) == '#') return Operation.COMMENT;
         switch(tokens[0]) {
+            case "return":
+                return Operation.RETURN;
             case "include:":
                 return Operation.PRE_PROCESSOR;
             case "func":
@@ -233,7 +236,7 @@ public class Parser {
             } else if(line.charAt(idx) == ')') return null;
         }
 
-        String[] args = verifyArgument(line, idx);
+        String[] args = verifyArgument(line.substring(idx), 0);
         return new CustomFunction("if", args, numSpaces + 4 * numTabs);
     }
 
@@ -369,7 +372,29 @@ public class Parser {
 
         // skips whitespace between variable and class instance:
         endIdx = skipWhiteSpace(line, endIdx);
-        startIdx = endIdx;
+        startIdx = endIdx + 1;
+        String token = line.substring((startIdx)).trim();
+        ClassInstance constantType;
+        switch(token) {
+            case "true":
+            case "false":
+                constantType = new BoolInstance("true".equals(token));
+                constantType.setVarName(varName);
+                return constantType;
+            default:
+                try {
+                    int x = Integer.parseInt(token);
+                    constantType = new IntegerInstance(x);
+                    constantType.setVarName(varName);
+                    return constantType;
+                } catch (NumberFormatException e) {
+                    if(token.charAt(0) == '"' && token.charAt(token.length() - 1) == '"') {
+                        constantType = new StringInstance(token);
+                        constantType.setVarName(varName);
+                        return constantType;
+                    }
+                }
+        }
         // parses class instance type
         for(; endIdx < line.length(); endIdx++) {
             if(line.charAt(endIdx) == '(')
@@ -396,33 +421,12 @@ public class Parser {
             case "cl":
                 inst = parseCheckList(arguments);
                 break;
-            case "string":
-                inst = parseString(arguments);
-                break;
-            case "int":
-                inst = parseInteger(arguments);
-                break;
-            case "bool":
-                inst = parseBool(arguments);
-                break;
             default:
                 return null;
         }
         if(inst == null) return null;
         inst.setVarName(varName);
         return inst;
-    }
-
-    private BoolInstance parseBool(String[] args) {
-        return args.length == 1 ? new BoolInstance(Boolean.parseBoolean(args[0])) : null;
-    }
-
-    private IntegerInstance parseInteger(String[] args) {
-        return args.length == 1 ? new IntegerInstance(Integer.parseInt(args[0])) : null;
-    }
-
-    private StringInstance parseString(String[] args) {
-        return args.length == 1 ? new StringInstance(args[0]) : null;
     }
 
     /**
@@ -533,6 +537,54 @@ public class Parser {
 //        return startIdx - beginIdx == 1 ? "" : line.substring(beginIdx + 1, startIdx + 1);
     }
 
+
+    private String[] verifyIfArgument(String line, int startIdx) {
+        String trimmed = line.trim();
+        if(startIdx >= trimmed.length() || trimmed.charAt(startIdx) != '(') throw new InvalidGrammarException();
+        String str =  trimmed.charAt(trimmed.length() - 1) == ')' ? trimmed.substring(startIdx + 1, trimmed.length() - 1) : null;
+        if(str == null) {
+            throw new InvalidGrammarException();
+        }
+        List<String> list = new ArrayList<>();
+        int start = 0;
+        boolean quote = false;
+        Stack<Boolean> paren = new Stack<>();
+        int i = 0;
+        for(; i < str.length(); i++) {
+            if(str.charAt(i) == ',' && !quote && paren.isEmpty()) {
+                list.add(str.substring(start, i));
+                start = i + 1;
+            } else if(str.charAt(i) == '"') {
+                quote = !quote;
+            } else if(str.charAt(i) == '(') {
+                paren.push(true);
+            } else if(str.charAt(i) == ')') {
+                if(paren.isEmpty()) {
+                    throw new InvalidGrammarException();
+                }
+                paren.pop();
+            }
+        }
+        if(i > start) list.add(str.substring(start, i));
+        String[] args = new String[list.size()];
+        for(int j = 0; j < list.size(); j++)
+            args[j] = list.get(j).trim();
+
+        return args;
+
+//        if(startIdx >= line.length() || line.charAt(startIdx) != '(') return null;
+//        int beginIdx = startIdx;
+//        for(; startIdx < line.length(); startIdx++) {
+//            if(line.charAt(startIdx) == ')')
+//                break;
+//        }
+//        if(startIdx >= line.length() || line.charAt(startIdx) != ')') return null;
+//        int idx = skipWhiteSpace(line, startIdx);
+//        if(idx != startIdx && line.charAt(idx) != ' ' && line.charAt(idx) != '\t') return null;
+//        return startIdx - beginIdx == 1 ? "" : line.substring(beginIdx + 1, startIdx + 1);
+    }
+
+
     /**
      * Determines the attribute function for the given class instance
      *
@@ -564,6 +616,7 @@ public class Parser {
             case "add":
                 return AttrFunc.ADD;
             case "sub":
+            case "-":
                 return AttrFunc.SUBTRACT;
             case "div":
                 return AttrFunc.DIVIDE;

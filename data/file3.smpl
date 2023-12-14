@@ -1,8 +1,13 @@
-#Sample script
 include: __CURR_CONFIG__, __LOG__, __BUILD__
 
+func test()
+  if(true)
+    println("It worked")
+
+test()
+
 # this is my comment
-str: string("Hello World")
+str: "Hello World"
 
 println("string=", str, ", length=", str.length())
 

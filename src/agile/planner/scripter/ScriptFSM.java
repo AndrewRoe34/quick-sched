@@ -26,7 +26,6 @@ public class ScriptFSM {
     private List<Type> cardVariables = new ArrayList<>();
     private List<Type> primitiveVariables = new ArrayList<>();
     private Map<String, CustomFunction> funcMap = new HashMap<>();
-    private List<Type> localStack = new ArrayList<>();
     private PreProcessor preProcessor = null;
     private boolean ppStatus = false;
     private Scanner scriptScanner;
@@ -57,13 +56,13 @@ public class ScriptFSM {
                             if(!ppStatus) throw new InvalidPreProcessorException();
                             Attributes attr = parser.parseAttributes(line);
                             if (attr == null) throw new InvalidFunctionException();
-                            processAttribute(attr);
+                            processAttribute(attr, null);
                             scriptLog.reportAttrFunc(attr);
                             break;
                         case FUNCTION:
                             if(!ppStatus) throw new InvalidPreProcessorException();
                             StaticFunction func = parser.parseStaticFunction(line);
-                            processStaticFunction(func);
+                            processStaticFunction(func, null);
                             scriptLog.reportFunctionCall(func);
                             break;
                         case INSTANCE:
@@ -84,11 +83,11 @@ public class ScriptFSM {
                                     case ATTRIBUTE:
                                         Attributes atr = parser.parseAttributes(trimmed);
                                         if (atr == null) throw new InvalidFunctionException();
-                                        ret = processAttribute(atr);
+                                        ret = processAttribute(atr, null);
                                         break;
                                     case FUNCTION:
                                         StaticFunction fnc = parser.parseStaticFunction(trimmed);
-                                        ret = processStaticFunction(fnc);
+                                        ret = processStaticFunction(fnc, null);
                                         break;
                                     default:
                                         throw new InvalidPairingException();
@@ -160,7 +159,7 @@ public class ScriptFSM {
         }
     }
 
-    private void executeStructureBlock(Parser.Operation operation, String line) {
+    private void executeStructureBlock(Parser.Operation operation, String line, List<Type> localStack) {
         switch (operation) {
             case COMMENT:
             case CONSTANT:
@@ -170,12 +169,12 @@ public class ScriptFSM {
             case ATTRIBUTE:
                 Attributes attr = parser.parseAttributes(line);
                 if (attr == null) throw new InvalidFunctionException();
-                processAttribute(attr);
+                processAttribute(attr, localStack);
                 scriptLog.reportAttrFunc(attr);
                 break;
             case FUNCTION:
                 StaticFunction func = parser.parseStaticFunction(line);
-                processStaticFunction(func);
+                processStaticFunction(func, localStack);
                 scriptLog.reportFunctionCall(func);
                 break;
             default:
@@ -183,14 +182,27 @@ public class ScriptFSM {
         }
     }
 
-    protected String executeIfCondition(CustomFunction ifCondition) {
-        String line = setupCustomFunction(ifCondition);
-        Type[] args = processArguments(ifCondition.getArgs());
+    protected boolean executeIfConditionFunc(CustomFunction ifCondition, List<Type> localStack) {
+        Type[] args = processArguments(ifCondition.getArgs(), localStack);
         if(args.length != 1) throw new InvalidGrammarException();
         //need to execute the code here
         if(args[0].getBoolConstant()) {
             for(String s : ifCondition.getLines()) {
-                executeStructureBlock(parser.typeOfOperation(s), s.trim());
+                if(parser.typeOfOperation(s) == Parser.Operation.RETURN) return true;
+                executeStructureBlock(parser.typeOfOperation(s), s.trim(), localStack);
+            }
+        }
+        return false;
+    }
+
+    protected String executeIfCondition(CustomFunction ifCondition) {
+        String line = setupCustomFunction(ifCondition);
+        Type[] args = processArguments(ifCondition.getArgs(), null);
+        if(args.length != 1) throw new InvalidGrammarException();
+        //need to execute the code here
+        if(args[0].getBoolConstant()) {
+            for(String s : ifCondition.getLines()) {
+                executeStructureBlock(parser.typeOfOperation(s), s.trim(), null);
             }
         }
         return line;
@@ -206,7 +218,7 @@ public class ScriptFSM {
                 flag = true;
                 break;
             }
-            customFunction.addLine(line.trim());
+            customFunction.addLine(line); //todo need to trim elsewhere due to if condition parsing
         }
         funcMap.put(customFunction.getFuncName().trim(), customFunction);
         return flag ? line : null;
@@ -296,15 +308,15 @@ public class ScriptFSM {
         return t1;
     }
 
-    protected Type processAttribute(Attributes attr) {
+    protected Type processAttribute(Attributes attr, List<Type> localStack) {
         /*
         1. Lookup the variable
         2. Attempt to call the method via the Type method attrSet()
          */
-        Type[] args = processArgumentsHelper(attr.getArgs());
+        Type[] args = processArgumentsHelper(attr.getArgs(), localStack);
         Type t1 = null;
         if(inFunction) {
-            t1 = lookupLocalVariable(attr.getVarName());
+            t1 = lookupLocalVariable(attr.getVarName(), localStack);
         } else {
             t1 =  lookupVariable(attr.getVarName());
         }
@@ -313,13 +325,13 @@ public class ScriptFSM {
         return t1.attrSet(func, args);
     }
 
-    protected Type processStaticFunction(StaticFunction func) {
+    protected Type processStaticFunction(StaticFunction func, List<Type> localStack) {
         /*
         1. Lookup correct function
         2. Call processArguments() for Type array
         3. Call function with the specified arguments
          */
-        Type[] args = processArguments(func.getArgs());
+        Type[] args = processArguments(func.getArgs(), localStack);
         switch (func.getFuncName()) {
             case "build":
                 funcBuild();
@@ -372,7 +384,7 @@ public class ScriptFSM {
 
     protected void processCustomFunction(StaticFunction func, Type[] args) {
         CustomFunction customFunction = funcMap.get(func.getFuncName());
-        localStack = new ArrayList<>();
+        List<Type> localStack = new ArrayList<>();
         if(!"if".equals(func.getFuncName()) && customFunction.getArgs().length != args.length) throw new InvalidFunctionException();
 
         //add constructor for Type to include another Type (will maintain referencing easily
@@ -388,9 +400,8 @@ public class ScriptFSM {
             inFunction = true;
         }
 
-        int lineIdx = -1;
-        for(String line : customFunction.getLines()) {
-            lineIdx++;
+        for(int lineIdx = 0; lineIdx < customFunction.getLines().size(); lineIdx++) {
+            String line = customFunction.getLines().get(lineIdx);
             String untrimmed = line;
             line = line.trim();
             Parser.Operation operation = parser.typeOfOperation(line);
@@ -398,17 +409,19 @@ public class ScriptFSM {
                 switch (operation) {
                     case COMMENT:
                         break;
+                    case RETURN:
+                        return;
                     case ATTRIBUTE:
                         if(!ppStatus) throw new InvalidPreProcessorException();
                         Attributes attr = parser.parseAttributes(line);
                         if (attr == null) throw new InvalidFunctionException();
-                        processAttribute(attr);
+                        processAttribute(attr, localStack);
                         scriptLog.reportAttrFunc(attr);
                         break;
                     case FUNCTION:
                         if(!ppStatus) throw new InvalidPreProcessorException();
                         StaticFunction myfunc = parser.parseStaticFunction(line);
-                        processStaticFunction(myfunc);
+                        processStaticFunction(myfunc, localStack);
                         scriptLog.reportFunctionCall(myfunc);
                         break;
                     case IF_CONDITION:
@@ -416,18 +429,18 @@ public class ScriptFSM {
                         if("if".equals(func.getFuncName())) throw new InvalidGrammarException();
                         CustomFunction ifCondition = parser.parseIfCondition(untrimmed);
                         if(ifCondition == null) throw new InvalidGrammarException();
-                        args = processArguments(ifCondition.getArgs());
-                        if(args.length != 1) throw new InvalidGrammarException();
-                        if(args[0].getBoolConstant()) {
-//                            for(int i = lineIdx; i < customFunction.getLines().size(); i++) {
-//                                if(numSpaces(customFunction.getLines().get(i)) > ifCondition.getNumSpaces()) {
-//                                    //todo
-//                                }
-//                            }
-                            executeIfCondition(customFunction);
+                        lineIdx++;
+                        for(; lineIdx < customFunction.getLines().size(); lineIdx++) {
+                            if(numSpaces(customFunction.getLines().get(lineIdx)) > ifCondition.getNumSpaces()) {
+                                ifCondition.addLine(customFunction.getLines().get(lineIdx));
+                            } else {
+                                break;
+                            }
                         }
-
+                        boolean status = executeIfConditionFunc(ifCondition, localStack);
+                        if(status) return;
 //                        scriptLog.reportFunctionCall(myfunc);
+                        lineIdx--;
                         break;
                     case INSTANCE:
 //                        if(!ppStatus) throw new InvalidPreProcessorException();
@@ -486,7 +499,7 @@ public class ScriptFSM {
         return null;
     }
 
-    protected Type lookupLocalVariable(String token) {
+    protected Type lookupLocalVariable(String token, List<Type> localStack) {
         for(Type t : localStack) {
             if (token.equals(t.getVariableName())) {
                 return t;
@@ -495,7 +508,7 @@ public class ScriptFSM {
         return null;
     }
 
-    private Type[] processArgumentsHelper(String[] args) {
+    private Type[] processArgumentsHelper(String[] args, List<Type> localStack) {
         /*
         1. Verify that arguments are none or Type (nothing else)
         2. Call appropriate method
@@ -511,7 +524,7 @@ public class ScriptFSM {
                 case VARIABLE:
                     Type t1 = null;
                     if(inFunction) {
-                        t1 = lookupLocalVariable(args[i]);
+                        t1 = lookupLocalVariable(args[i], localStack);
                     } else {
                         t1 = lookupVariable(args[i]);
                     }
@@ -525,7 +538,7 @@ public class ScriptFSM {
         return types;
     }
 
-    protected Type[] processArguments(String[] args) {
+    protected Type[] processArguments(String[] args, List<Type> localStack) {
         /**
          1. Verify each argument is either a Type or an Attr
          2. If Attr, call processArgumentsHelper() and store return value
@@ -539,11 +552,11 @@ public class ScriptFSM {
             switch (operation) {
                 case ATTRIBUTE:
                     Attributes attr = parser.parseAttributes(args[i]);
-                    Type[] temp = processArgumentsHelper(attr.getArgs());
+                    Type[] temp = processArguments(attr.getArgs(), localStack);
                     //Lookup variable (if null, throw exception)
                     Type t1 = null;
                     if(inFunction) {
-                        t1 = lookupLocalVariable(attr.getVarName());
+                        t1 = lookupLocalVariable(attr.getVarName(), localStack);
                     } else {
                         t1 = lookupVariable(attr.getVarName());
                     }

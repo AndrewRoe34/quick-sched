@@ -1,0 +1,3 @@
+include: __CURR_CONFIG__, __LOG__, __BUILD__
+val: string("0002")
+println(val.sub_string(val.parse_int()).parse_int())

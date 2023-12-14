@@ -6,7 +6,7 @@ if(true)
   import_schedule("data/update7.jbin")
 
 #Constructs class instances
-val: string("3400")
+val: "3400"
 c1: card("HW")
 
 #Custom function to modify checklist instance with parameter references
@@ -29,7 +29,7 @@ println("")
 println("card_name=", c1.get_title())
 
 #Creates and modifies a checklist
-status: bool(true)
+status: true
 my_cl: cl("List")
 foo(my_cl, status)
 
@@ -37,5 +37,8 @@ foo(my_cl, status)
 println("checklist_id=", my_cl.id(), ", checklist_name=", my_cl.get_title(), ", checklist_percent=", my_cl.get_percent(), "%")
 println(my_cl)
 println("")
+
+val: "0002"
+# For this to work [println(val.sub_string(val.parse_int()).parse_int())], you need to separate it by 'val', 'sub_string(val.parse_int())', and 'parse_int()'
 
 build()
