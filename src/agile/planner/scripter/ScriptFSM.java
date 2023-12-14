@@ -579,16 +579,20 @@ public class ScriptFSM {
                     break;
                 case VARIABLE:
                     List<Type> tempList = inFunction ? localStack : variableList;
+                    boolean flag = false;
                     for(Type t : tempList) {
                         if(t.getVariableName() != null && args[i].equals(t.getVariableName())) {
                             types[i] = t;
+                            flag = true;
                             break;
                         }
                     }
-                    for(Type t : variableList) {
-                        if(t.getVariableName() != null && args[i].equals(t.getVariableName())) {
-                            types[i] = t;
-                            break;
+                    if(!flag) {
+                        for(Type t : variableList) {
+                            if(t.getVariableName() != null && args[i].equals(t.getVariableName())) {
+                                types[i] = t;
+                                break;
+                            }
                         }
                     }
                     break;
