@@ -15,4 +15,4 @@ func base(x)
   x.-(1)
   base(x)
 
-base(4)
+base(10)
