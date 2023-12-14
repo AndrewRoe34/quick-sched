@@ -585,6 +585,12 @@ public class ScriptFSM {
                             break;
                         }
                     }
+                    for(Type t : variableList) {
+                        if(t.getVariableName() != null && args[i].equals(t.getVariableName())) {
+                            types[i] = t;
+                            break;
+                        }
+                    }
                     break;
                 default:
                     throw new InvalidFunctionException();
