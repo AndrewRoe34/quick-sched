@@ -1,0 +1,23 @@
+include: __CURR_CONFIG__, __LOG__, __BUILD__
+
+x: 2
+x.++(2)
+println("Adds but does not stores: ", x.+(1))
+println("Adds but does store: ", x)
+println()
+
+func display_employee(x, y, z)
+  println("name=", x, ", age=", y, " job=", z)
+
+name: "John"
+age: 23
+job: "IT"
+
+display_employee(name, age, job)
+
+rand: input_int()
+
+if(rand.=(12))
+  println("You win!")
+
+println("test")

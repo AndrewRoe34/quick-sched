@@ -28,6 +28,12 @@ public class Parser {
         REMOVE,
 
         //Integer
+        ADD_TO,
+        SUB_TO,
+        MUL_TO,
+        DIV_TO,
+        ADD_ONE,
+        SUBTRACT_ONE,
         SUBTRACT,
         DIVIDE,
         MULTIPLY,
@@ -613,19 +619,19 @@ public class Parser {
                 return AttrFunc.GET_DUE_DATE;
             case "set_due_date":
                 return AttrFunc.SET_DUE_DATE;
-            case "add":
+            case "++":
+                return AttrFunc.ADD_ONE;
             case "+":
                 return AttrFunc.ADD;
-            case "sub":
+            case "--":
+                return AttrFunc.SUBTRACT_ONE;
             case "-":
                 return AttrFunc.SUBTRACT;
-            case "div":
             case "/":
                 return AttrFunc.DIVIDE;
-            case "mul":
             case "*":
                 return AttrFunc.MULTIPLY;
-            case "mod":
+            case "%":
                 return AttrFunc.MOD;
             case "length":
                 return AttrFunc.LENGTH;

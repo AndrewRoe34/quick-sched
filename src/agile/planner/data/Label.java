@@ -20,6 +20,14 @@ public class Label implements Linker {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setColor(int color) {
+        this.color = color;
+    }
+
     @Override
     public boolean add(Linker o) {
         return false;

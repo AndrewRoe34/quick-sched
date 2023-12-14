@@ -3,7 +3,7 @@ func foo(x)
   if(x.=(0))
     return
   println(x)
-  x.-(1)
+  x.--()
   foo(x)
 
 foo(3)

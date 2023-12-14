@@ -4,7 +4,7 @@ func line(y)
   if(y.=(0))
     return
   print("*")
-  y.-(1)
+  y.--()
   line(y)
 
 func base(x)
@@ -12,7 +12,8 @@ func base(x)
     return
   line(x)
   println("")
-  x.-(1)
+  x.--()
   base(x)
 
-base(10)
+num: input_int()
+base(num)

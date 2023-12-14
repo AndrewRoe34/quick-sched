@@ -1,0 +1,21 @@
+include: __CURR_CONFIG__, __LOG__, __BUILD__
+
+#deposit()'s print statement fails because it is not locating the 'balance' variable (which is global)
+balance: 0
+
+func deposit(x)
+  balance.++(x)
+  println("Current savings: ", balance)
+
+func loop()
+  println("Welcome to Bank of America!")
+  deposit(100)
+
+loop()
+
+
+#ToDo
+    #Support calling functions inside the if condition for argument
+    #fix the above logic bug
+    #allow variable declaration inside custom functions
+    #add more static functions to system

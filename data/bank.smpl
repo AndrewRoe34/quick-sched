@@ -1,0 +1,42 @@
+include: __CURR_CONFIG__, __LOG__, __BUILD__
+
+# declaring and initializing variables
+balance: 1000
+password: "1234"
+
+# withdraws money from bank
+func withdraw(x)
+  balance.--(x)
+  println("Balance $", balance)
+
+# deposits money into bank
+func deposit(x)
+  balance.++(x)
+  println("Balance $", balance)
+
+# primary banking loop with options
+func loop()
+  println("Options:")
+  println("0: Withdraw")
+  println("1: Deposit")
+  println("2: Exit")
+  x: input_int()
+  if(x.=(0))
+    withdraw()
+  if(x.=(1))
+    deposit()
+  if(x.=(2))
+    return
+  loop()
+
+# prompts user with password
+func login()
+  println("Welcome to Banking 101! Please enter your password")
+  pw: input_str()
+  if(pw.=(password))
+    loop()
+  if(pw.!=(password))
+    println("Invalid password")
+
+
+login()
