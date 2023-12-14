@@ -1,11 +1,18 @@
 include: __CURR_CONFIG__, __LOG__, __BUILD__
-func foo(x)
-  if(x.=(11))
-    return
-  println(x)
-  x.+(1)
-  foo(x)
 
-y: 1
-foo(y)
-println(y)
+func line(y)
+  if(y.=(0))
+    return
+  print("*")
+  y.-(1)
+  line(y)
+
+func base(x)
+  if(x.=(0))
+    return
+  line(x)
+  println("")
+  x.-(1)
+  base(x)
+
+base(4)

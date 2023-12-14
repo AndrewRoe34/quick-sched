@@ -315,9 +315,10 @@ public class ScriptFSM {
          */
         Type[] args = processArgumentsHelper(attr.getArgs(), localStack);
         Type t1 = null;
-        if(inFunction) {
+        if(localStack != null) {
             t1 = lookupLocalVariable(attr.getVarName(), localStack);
-        } else {
+        }
+        if(t1 == null) {
             t1 =  lookupVariable(attr.getVarName());
         }
         if (t1 == null) throw new DereferenceNullException();
@@ -421,6 +422,7 @@ public class ScriptFSM {
                     case FUNCTION:
                         if(!ppStatus) throw new InvalidPreProcessorException();
                         StaticFunction myfunc = parser.parseStaticFunction(line);
+                        this.inFunction = true;
                         processStaticFunction(myfunc, localStack);
                         scriptLog.reportFunctionCall(myfunc);
                         break;
