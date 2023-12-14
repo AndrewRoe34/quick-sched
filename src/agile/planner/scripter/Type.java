@@ -352,7 +352,7 @@ public class Type implements Comparable<Type> {
                     case ADD_ONE: //todo need to integrate for -, /, *, %
                         if(args.length == 0) {
                             this.intConstant++;
-                            return null;
+                            return this;
                         }
                         for(Type t : args) {
                             if(t.getVariabTypeId() == TypeId.INTEGER) {
@@ -361,7 +361,7 @@ public class Type implements Comparable<Type> {
                                 throw new InvalidGrammarException();
                             }
                         }
-                        return null;
+                        return this;
                     case ADD:
                         if(args.length == 0) throw new InvalidGrammarException();
                         int sum = this.intConstant;

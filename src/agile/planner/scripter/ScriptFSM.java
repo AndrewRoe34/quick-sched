@@ -559,7 +559,8 @@ public class ScriptFSM {
                     Type t1 = null;
                     if(inFunction) {
                         t1 = lookupLocalVariable(attr.getVarName(), localStack);
-                    } else {
+                    }
+                    if (t1 == null) {
                         t1 = lookupVariable(attr.getVarName());
                     }
                     if (t1 == null) throw new DereferenceNullException();
