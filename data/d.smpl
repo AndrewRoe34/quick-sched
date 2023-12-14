@@ -13,6 +13,5 @@ loop()
 
 #ToDo
     #Support calling functions inside the if condition for argument
-    #fix the above logic bug
     #allow variable declaration inside custom functions
     #add more static functions to system

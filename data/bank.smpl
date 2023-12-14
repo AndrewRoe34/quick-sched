@@ -11,8 +11,7 @@ func withdraw(x)
 
 # deposits money into bank
 func deposit(x)
-  balance.++(x)
-  println("Balance $", balance)
+  println("Balance $", balance.++(x))
 
 # primary banking loop with options
 func loop()
