@@ -6,6 +6,10 @@ import agile.planner.data.Task;
 import agile.planner.scripter.*;
 import agile.planner.util.CheckList;
 
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Calendar;
+
 /**
  * One of the built-in tooling options that provides all relevant logging for the {@code Simple} scripting language. This involves
  * providing a clear summary of all functions called, object instances created, and exceptions thrown when encountered.
@@ -16,13 +20,16 @@ public class ScriptLog {
 
     /** Manages the construction of the {@code ScriptLog} */
     private StringBuilder sb;
+    private SimpleDateFormat sdf;
 
     /**
      * Creates an instance of ScriptLog as a tooling option for the {@code Simple} scripting language
      */
     public ScriptLog() {
         sb = new StringBuilder();
-        sb.append("SCRIPT_LOG:\n");
+        sb.append(new SimpleDateFormat("[dd-MM-yyyy]").format(Calendar.getInstance().getTime()))
+                .append(" Log of all activities from current session: \n\n");
+        sdf = new SimpleDateFormat("[HH:mm:ss]");
     }
 
     /**
@@ -31,6 +38,7 @@ public class ScriptLog {
      * @param t variable reference being reported
      */
     public void reportInstantiation(Type t) {
+        sb.append(sdf.format(Calendar.getInstance().getTime())).append(" ");
         switch(t.getVariabTypeId()) {
             case BOARD:
                 break;
@@ -70,7 +78,7 @@ public class ScriptLog {
      * @param t variable reference being reported
      */
     private void reportLabelCreation(Type t) {
-        sb.append("LABL_CREATED: VAR=").append(t.getVariableName());
+        sb.append("LABEL_CREATED: VAR=").append(t.getVariableName());
         Label l = (Label) t.getLinkerData();
         sb.append(", NAME=").append(l.getName());
         sb.append(", COLOR=").append(l.getColor()).append("\n");
@@ -104,6 +112,7 @@ public class ScriptLog {
      * @param name filename
      */
     public void reportLinkFile(String name) {
+        sb.append(sdf.format(Calendar.getInstance().getTime())).append(" ");
         sb.append("FILES_LINKED: FILE=").append(name).append("\n");
     }
 
@@ -113,6 +122,7 @@ public class ScriptLog {
      * @param args variable references being reported
      */
     public void reportPrintFunc(Type[] args) {
+        sb.append(sdf.format(Calendar.getInstance().getTime())).append(" ");
         sb.append("PRINTS: ARGS=[");
         if(args.length > 1) {
 //            sb.append(args[0].getVariableName() == null ? "NULL": args[0].getVariableName());
@@ -135,6 +145,7 @@ public class ScriptLog {
      * @param preProcessor all the core prerequisite values needed for the script to run
      */
     public void reportPreProcessorSetup(PreProcessor preProcessor) {
+        sb.append(sdf.format(Calendar.getInstance().getTime())).append(" ");
         sb.append("PREPROC_ATTR: DEF_CONFIG=").append(preProcessor.isDefaultConfig());
         sb.append(", IMPORT=").append(preProcessor.isImprt());
         sb.append(", EXPORT=").append(preProcessor.isExprt());
@@ -149,6 +160,7 @@ public class ScriptLog {
      * @param customFunction possesses a function name, parameters, code statements, and a possible return option
      */
     public void reportFunctionSetup(CustomFunction customFunction) {
+        sb.append(sdf.format(Calendar.getInstance().getTime())).append(" ");
         sb.append("FUNC_SETUP: NAME=").append(customFunction.getFuncName());
         sb.append(", PARAM=[");
         if(customFunction.getArgs().length > 1) {
@@ -167,6 +179,7 @@ public class ScriptLog {
      * @param func possesses a function name and arguments
      */
     public void reportFunctionCall(StaticFunction func) {
+        sb.append(sdf.format(Calendar.getInstance().getTime())).append(" ");
         sb.append("FUNC_CALLS: NAME=").append(func.getFuncName().trim());
         sb.append(", ARGS=[");
         if(func.getArgs().length > 0) {
@@ -185,6 +198,7 @@ public class ScriptLog {
      * @param attr possesses a method name and arguments
      */
     public void reportAttrFunc(Attributes attr) {
+        sb.append(sdf.format(Calendar.getInstance().getTime())).append(" ");
         sb.append("ATTR_CALL: VAR_NAME=").append(attr.getVarName());
         sb.append(", NAME=").append(attr.getAttr());
         sb.append(", ARGS[");
@@ -199,11 +213,27 @@ public class ScriptLog {
     }
 
     /**
+     * Reports the contents of an If Condition along with its boolean status
+     *
+     * @param args if condition arguments
+     * @param status boolean status of conditional test
+     */
+    public void reportIfCondition(String[] args, boolean status) {
+        sb.append(sdf.format(Calendar.getInstance().getTime())).append(" ");
+        sb.append("IF_CONDITION: ARGS=")
+                .append(Arrays.toString(args))
+                .append(", RESULT=")
+                .append(status)
+                .append("\n");
+    }
+
+    /**
      * Reports any exceptions thrown in the {@code Simple} language
      *
      * @param e {@code Exception} thrown
      */
     public void reportException(Throwable e) {
+        sb.append(sdf.format(Calendar.getInstance().getTime())).append(" ");
         sb.append("EXCEPTION=").append(e.getMessage()).append("\n");
     }
 

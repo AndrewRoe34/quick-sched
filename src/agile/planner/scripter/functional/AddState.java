@@ -16,7 +16,6 @@ public class AddState extends State {
         String[] tokens = processArguments(line, 2, ",");
         String[] arg1 = processTokens(tokens[0], 2, "\\s");
         String[] arg2 = processTokens(tokens[1], 2, "\\s");
-        //TODO will need to check for duplicates (not sure how to handle it for time being)
         switch(arg1[0]) {
             case "_task":
             case "task":

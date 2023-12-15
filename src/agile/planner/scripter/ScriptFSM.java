@@ -31,7 +31,6 @@ public class ScriptFSM {
     private Scanner scriptScanner;
     private boolean inFunction;
     private ScheduleManager scheduleManager = ScheduleManager.getScheduleManager();
-    private String bufferedLine = null;
 
     public void executeScript(String filename) throws FileNotFoundException {
         scriptScanner = new Scanner(new File(filename));
@@ -186,6 +185,7 @@ public class ScriptFSM {
         Type[] args = processArguments(ifCondition.getArgs(), localStack);
         if(args.length != 1) throw new InvalidGrammarException();
         //need to execute the code here
+        scriptLog.reportIfCondition(ifCondition.getArgs(), args[0].getBoolConstant());
         if(args[0].getBoolConstant()) {
             for(String s : ifCondition.getLines()) {
                 if(parser.typeOfOperation(s) == Parser.Operation.RETURN) return true;
@@ -200,6 +200,7 @@ public class ScriptFSM {
         Type[] args = processArguments(ifCondition.getArgs(), null);
         if(args.length != 1) throw new InvalidGrammarException();
         //need to execute the code here
+        scriptLog.reportIfCondition(ifCondition.getArgs(), args[0].getBoolConstant());
         if(args[0].getBoolConstant()) {
             for(String s : ifCondition.getLines()) {
                 executeStructureBlock(parser.typeOfOperation(s), s.trim(), null);
@@ -218,7 +219,7 @@ public class ScriptFSM {
                 flag = true;
                 break;
             }
-            customFunction.addLine(line); //todo need to trim elsewhere due to if condition parsing
+            customFunction.addLine(line);
         }
         funcMap.put(customFunction.getFuncName().trim(), customFunction);
         return flag ? line : null;
@@ -326,6 +327,24 @@ public class ScriptFSM {
         return t1.attrSet(func, args);
     }
 
+    private String formatString(String s) {
+        StringBuilder sb = new StringBuilder();
+        for(int i = 0; i < s.length(); i++) {
+            if(s.charAt(i) == '\\' && i + 1 < s.length()) {
+                if(s.charAt(i + 1) == 'n') {
+                    sb.append("\n");
+                    i++;
+                } else if(s.charAt(i + 1) == 't') {
+                    sb.append("\t");
+                    i++;
+                }
+            } else {
+                sb.append(s.charAt(i));
+            }
+        }
+        return sb.toString();
+    }
+
     protected Type processStaticFunction(StaticFunction func, List<Type> localStack) {
         /*
         1. Lookup correct function
@@ -342,7 +361,7 @@ public class ScriptFSM {
                     if(t.getVariabTypeId() == Type.TypeId.STRING && "\n".equals(t.getStringConstant())) {
                         System.out.println();
                     } else {
-                        System.out.print(t.toString()); //todo doesn't fix cases where '\n' is within the string (only works when it's by itself
+                        System.out.print(formatString(t.toString()));
                     }
                 }
                 scriptLog.reportPrintFunc(args);
@@ -352,7 +371,7 @@ public class ScriptFSM {
                     if(t.getVariabTypeId() == Type.TypeId.STRING && "\n".equals(t.getStringConstant())) {
                         System.out.println();
                     } else {
-                        System.out.print(t.toString()); //todo doesn't fix cases where '\n' is within the string (only works when it's by itself
+                        System.out.print(formatString(t.toString()));
                     }
                 }
                 System.out.println();
@@ -444,7 +463,7 @@ public class ScriptFSM {
 //                        scriptLog.reportFunctionCall(myfunc);
                         lineIdx--;
                         break;
-                    case INSTANCE: //todo need to format for function use below
+                    case INSTANCE:
                         if(!ppStatus) throw new InvalidPreProcessorException();
                         ClassInstance classInstance = parser.parseClassInstance(line);
                         if (classInstance == null) {
@@ -543,7 +562,7 @@ public class ScriptFSM {
     }
 
     protected Type[] processArguments(String[] args, List<Type> localStack) {
-        /**
+        /*
          1. Verify each argument is either a Type or an Attr
          2. If Attr, call processArgumentsHelper() and store return value
          3. If Type, simply store value
@@ -559,7 +578,7 @@ public class ScriptFSM {
                     Type[] temp = processArguments(attr.getArgs(), localStack);
                     //Lookup variable (if null, throw exception)
                     Type t1 = null;
-                    if(localStack.size() > 0) {
+                    if(localStack != null && localStack.size() > 0) {
                         t1 = lookupLocalVariable(attr.getVarName(), localStack);
                     }
                     if (t1 == null) {

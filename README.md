@@ -100,6 +100,52 @@ export_schedule("fun_week.jbin")
 ```
 In stark contrast to before, this language allows for more flexibility with function calls, accessing class methods and attributes, managing a Stack of variables (which are dynamic like Python), and much more. It is essentially Python but for Agile Planner.
 
+It also has the functionality needed to write non-scheduling related scripts as demonstrated below:
+```
+include: __CURR_CONFIG__, __LOG__, __BUILD__
+
+# declaring and initializing variables
+balance: 1000
+password: 1234
+
+# withdraws money from bank
+func withdraw()
+  print("Amount - ")
+  x: input_int()
+  println("Balance $", balance.--(x))
+
+# deposits money into bank
+func deposit()
+  print("Amount - ")
+  x: input_int()
+  println("Balance $", balance.++(x))
+
+# primary banking loop with options
+func loop()
+  println("Options:")
+  println("0 - Withdraw")
+  println("1 - Deposit")
+  println("2 - Exit")
+  print("> ")
+  x: input_int()
+  if(x.=(0))
+    withdraw()
+  if(x.=(1))
+    deposit()
+  if(x.=(2))
+    return
+  loop()
+
+# prompts user with password
+func login()
+  println("Welcome to Banking 101!")
+  print("Password - ")
+  pw: input_int()
+  if(pw.=(password))
+    loop()
+
+login()
+```
 ### <ins>Logging Mechanics</ins>
 
 Agile Planner currently offers logging mechanisms for two areas: System and Scripting.

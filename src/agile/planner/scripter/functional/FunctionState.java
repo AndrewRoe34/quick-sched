@@ -46,7 +46,6 @@ public class FunctionState extends State {
          */
 
 
-        //process arguments TODO (and ensure they match with parameters)
         String[] args = processArguments(line, 5, ",");
         for (String arg : args) {
             if (arg == null) {
@@ -125,7 +124,7 @@ public class FunctionState extends State {
                 default:
                     throw new InvalidFunctionException();
             }
-        } //TODO need to add "board" to the above argument processing
+        }
 
         Scanner strScanner = new Scanner(line);
         String script = funcMap.get(strScanner.next());

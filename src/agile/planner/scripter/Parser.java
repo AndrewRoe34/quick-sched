@@ -597,7 +597,7 @@ public class Parser {
      * @param attr attribute function for the specified instance
      * @return {@link AttrFunc} enumeration of the operation type
      */
-    public AttrFunc determineAttrFunc(String attr) { //todo need to finish this before working on Type attrSet()
+    public AttrFunc determineAttrFunc(String attr) {
         switch(attr) {
             case "get_id":
             case "id":

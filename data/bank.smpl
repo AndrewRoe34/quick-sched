@@ -18,10 +18,7 @@ func deposit()
 
 # primary banking loop with options
 func loop()
-  println("Options:")
-  println("0 - Withdraw")
-  println("1 - Deposit")
-  println("2 - Exit")
+  println("Options:\n0 - Withdraw\n1 - Deposit\n2 - Exit")
   print("> ")
   x: input_int()
   if(x.=(0))

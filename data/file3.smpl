@@ -33,7 +33,7 @@ t1: task("B", 5, 0)
 t1: task("C", 2, 2)
 t1: task("D", 7, 3)
 
-str.add("!!!")
+#str.add("!!!")
 println(str)
 
 add_all_tasks()
