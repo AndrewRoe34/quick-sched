@@ -5,22 +5,19 @@ include: __CURR_CONFIG__, __LOG__, __BUILD__
 func manage_tasks()
   print("Number of Tasks: ")
   x: input_int()
-  if(x.>(0))
-    input_tasks(x)
+  input_tasks(x)
 
 # Manages Card input
 func manage_cards()
   print("Number of Cards: ")
   x: input_int()
-  if(x.>(0))
-    input_cards(x)
+  input_cards(x)
 
 # Manages Label input
 func manage_labels()
   print("Number of Labels: ")
   x: input_int()
-  if(x.>(0))
-    input_labels(x)
+  input_labels(x)
 
 # Prompts the user to enter items
 func add_items()
@@ -29,11 +26,4 @@ func add_items()
   manage_labels()
   println("add_items() is complete...")
 
-# Adds all new items with each other
-func merge_new_items()
-  add_all_tasks(new_cards)
-  add_all_labels(new_tasks, new_cards)
-
 add_items()
-merge_new_items()
-build()

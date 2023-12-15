@@ -444,44 +444,46 @@ public class ScriptFSM {
 //                        scriptLog.reportFunctionCall(myfunc);
                         lineIdx--;
                         break;
-                    case INSTANCE:
-//                        if(!ppStatus) throw new InvalidPreProcessorException();
-//                        ClassInstance classInstance = parser.parseClassInstance(line);
-//                        if (classInstance == null) {
-//                            int i = 0;
-//                            for(; i < line.length(); i++) {
-//                                if(line.charAt(i) == ':')
-//                                    break;
-//                            }
-//                            String varName = line.substring(0, i);
-//                            String trimmed = line.substring(i + 1).trim();
-//                            Parser.Operation op = parser.typeOfOperation(trimmed);
-//                            Type t1 = lookupVariable(varName);
-//                            Type ret = null;
-//                            switch (op) {
-//                                case ATTRIBUTE:
-//                                    Attributes atr = parser.parseAttributes(trimmed);
-//                                    if (atr == null) throw new InvalidFunctionException();
-//                                    ret = processAttribute(atr);
-//                                    break;
-//                                case FUNCTION:
-//                                    StaticFunction fnc = parser.parseStaticFunction(trimmed);
-//                                    ret = processStaticFunction(fnc);
-//                                    break;
-//                                default:
-//                                    throw new InvalidPairingException();
-//                            }
-//                            if(ret == null) throw new InvalidGrammarException();
-//                            if(t1 == null) {
-//                                ret.setVariableName(varName);
-//                                variableList.add(ret);
-//                            } else {
-//                                t1.setTypeVal(ret);
-//                            }
-//                        } else {
-//                            processClassInstance(classInstance);
-//                        }
-//                        break;
+                    case INSTANCE: //todo need to format for function use below
+                        if(!ppStatus) throw new InvalidPreProcessorException();
+                        ClassInstance classInstance = parser.parseClassInstance(line);
+                        if (classInstance == null) {
+                            int i = 0;
+                            for(; i < line.length(); i++) {
+                                if(line.charAt(i) == ':')
+                                    break;
+                            }
+                            String varName = line.substring(0, i);
+                            String trimmed = line.substring(i + 1).trim();
+                            Parser.Operation op = parser.typeOfOperation(trimmed);
+                            Type t1 = lookupVariable(varName);
+                            Type ret = null;
+                            switch (op) {
+                                case ATTRIBUTE:
+                                    Attributes atr = parser.parseAttributes(trimmed);
+                                    if (atr == null) throw new InvalidFunctionException();
+                                    ret = processAttribute(atr, localStack);
+                                    break;
+                                case FUNCTION:
+                                    StaticFunction fnc = parser.parseStaticFunction(trimmed);
+                                    ret = processStaticFunction(fnc, localStack);
+                                    break;
+                                default:
+                                    throw new InvalidPairingException();
+                            }
+                            if(ret == null) throw new InvalidGrammarException();
+                            if(t1 == null) {
+                                ret.setVariableName(varName);
+                                localStack.add(ret);
+                            } else {
+                                t1.setTypeVal(ret);
+                            }
+                        } else {
+                            Type ret = processClassInstance(classInstance);
+                            localStack.add(ret);
+                            variableList.remove(ret);
+                        }
+                        break;
                     default:
                         throw new InvalidGrammarException();
                 }
@@ -557,7 +559,7 @@ public class ScriptFSM {
                     Type[] temp = processArguments(attr.getArgs(), localStack);
                     //Lookup variable (if null, throw exception)
                     Type t1 = null;
-                    if(inFunction) {
+                    if(localStack.size() > 0) {
                         t1 = lookupLocalVariable(attr.getVarName(), localStack);
                     }
                     if (t1 == null) {
@@ -641,8 +643,6 @@ public class ScriptFSM {
     }
 
     protected Type funcInputInt() {
-        System.out.println("Enter number:");
-        System.out.print("> ");
         if(inputScanner.hasNextInt()) {
             Type localType = new Type(inputScanner.nextInt(), null);
             if(inputScanner.hasNextLine()) inputScanner.nextLine();

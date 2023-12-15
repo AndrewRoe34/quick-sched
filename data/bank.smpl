@@ -2,22 +2,24 @@ include: __CURR_CONFIG__, __LOG__, __BUILD__
 
 # declaring and initializing variables
 balance: 1000
-password: "1234"
+password: 1234
 
 # withdraws money from bank
-func withdraw(x)
+func withdraw()
+  x: input_int()
   println("Balance $", balance.--(x))
 
 # deposits money into bank
-func deposit(x)
+func deposit()
+  x: input_int()
   println("Balance $", balance.++(x))
 
 # primary banking loop with options
 func loop()
   println("Options:")
-  println("0: Withdraw")
-  println("1: Deposit")
-  println("2: Exit")
+  println("0 - Withdraw")
+  println("1 - Deposit")
+  println("2 - Exit")
   x: input_int()
   if(x.=(0))
     withdraw()
@@ -30,11 +32,8 @@ func loop()
 # prompts user with password
 func login()
   println("Welcome to Banking 101! Please enter your password")
-  pw: input_str()
+  pw: input_int()
   if(pw.=(password))
     loop()
-  if(pw.!=(password))
-    println("Invalid password")
-
 
 login()
