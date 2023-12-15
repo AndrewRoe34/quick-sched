@@ -349,7 +349,7 @@ public class Type implements Comparable<Type> {
                 }
             case INTEGER:
                 switch(attr) {
-                    case ADD_ONE: //todo need to integrate for -, /, *, %
+                    case ADD_ONE: //todo need to integrate for /, *, %
                         if(args.length == 0) {
                             this.intConstant++;
                             return this;
@@ -374,11 +374,10 @@ public class Type implements Comparable<Type> {
                         }
                         return new Type(sum, null);
                     case SUBTRACT_ONE:
-                        if(args.length != 0) throw new InvalidGrammarException();
-                        this.intConstant--;
-                        return null;
-                    case SUBTRACT:
-                        if(args.length == 0) throw new InvalidGrammarException();
+                        if(args.length == 0) {
+                            this.intConstant--;
+                            return this;
+                        }
                         for(Type t : args) {
                             if(t.getVariabTypeId() == TypeId.INTEGER) {
                                 this.intConstant -= t.getIntConstant();
@@ -386,7 +385,18 @@ public class Type implements Comparable<Type> {
                                 throw new InvalidGrammarException();
                             }
                         }
-                        return null;
+                        return this;
+                    case SUBTRACT:
+                        if(args.length == 0) throw new InvalidGrammarException();
+                        sum = this.intConstant;
+                        for(Type t : args) {
+                            if(t.getVariabTypeId() == TypeId.INTEGER) {
+                                sum -= t.getIntConstant();
+                            } else {
+                                throw new InvalidGrammarException();
+                            }
+                        }
+                        return new Type(sum, null);
                     case DIVIDE:
                         if(args.length == 0) throw new InvalidGrammarException();
                         for(Type t : args) {

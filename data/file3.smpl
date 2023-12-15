@@ -41,6 +41,4 @@ build()
 
 # Need to showcase 3 examples of how the scripting language benefits:
 # 1. Formatting the scheduling platform (label/card/board creation, customization of the system, etc.)
-# 2. Automating data entry (refer to the "input" examples above)
-# 3. Creating custom programs irrelevant to the system (showcases the flexibility of your design, e.g. bank software/pyramid of stars)
 
