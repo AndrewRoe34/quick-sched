@@ -6,11 +6,13 @@ password: 1234
 
 # withdraws money from bank
 func withdraw()
+  print("Amount - ")
   x: input_int()
   println("Balance $", balance.--(x))
 
 # deposits money into bank
 func deposit()
+  print("Amount - ")
   x: input_int()
   println("Balance $", balance.++(x))
 
@@ -20,6 +22,7 @@ func loop()
   println("0 - Withdraw")
   println("1 - Deposit")
   println("2 - Exit")
+  print("> ")
   x: input_int()
   if(x.=(0))
     withdraw()
@@ -31,7 +34,8 @@ func loop()
 
 # prompts user with password
 func login()
-  println("Welcome to Banking 101! Please enter your password")
+  println("Welcome to Banking 101!")
+  print("Password - ")
   pw: input_int()
   if(pw.=(password))
     loop()
