@@ -29,7 +29,7 @@ public class EventLog {
      * @throws FileNotFoundException thrown if invalid file
      */
     private EventLog() throws FileNotFoundException {
-        output = new PrintStream("system.log");
+        output = new PrintStream("logs/system.log");
         output.print(new SimpleDateFormat("[dd-MM-yyyy]").format(Calendar.getInstance().getTime()));
         output.println(" Log of all activities from current session: \n");
     }

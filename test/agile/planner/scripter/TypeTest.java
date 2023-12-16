@@ -130,21 +130,21 @@ public class TypeTest {
         args[0] = new Type(2, null);
         args[1] = new Type(3, null);
         t3 = new Type(2, null);
-        ret = t3.attrSet(Parser.AttrFunc.MULTIPLY, args);
+        ret = t3.attrSet(Parser.AttrFunc.MULTIPLY_ONE, args);
         assertEquals(12, (int) t3.getIntConstant());
         assertNull(ret);
 
         args = new Type[1];
         args[0] = new Type(2, null);
         t3 = new Type(2, null);
-        ret = t3.attrSet(Parser.AttrFunc.DIVIDE, args);
+        ret = t3.attrSet(Parser.AttrFunc.DIVIDE_ONE, args);
         assertEquals(1, (int) t3.getIntConstant());
         assertNull(ret);
 
         args = new Type[1];
         args[0] = new Type(3, null);
         t3 = new Type(5, null);
-        ret = t3.attrSet(Parser.AttrFunc.MOD, args);
+        ret = t3.attrSet(Parser.AttrFunc.MOD_ONE, args);
         assertEquals(2, (int) t3.getIntConstant());
         assertNull(ret);
 
@@ -167,21 +167,21 @@ public class TypeTest {
         }
 
         try {
-            ret = t3.attrSet(Parser.AttrFunc.MULTIPLY, args);
+            ret = t3.attrSet(Parser.AttrFunc.MULTIPLY_ONE, args);
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof InvalidGrammarException);
         }
 
         try {
-            ret = t3.attrSet(Parser.AttrFunc.DIVIDE, args);
+            ret = t3.attrSet(Parser.AttrFunc.DIVIDE_ONE, args);
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof InvalidGrammarException);
         }
 
         try {
-            ret = t3.attrSet(Parser.AttrFunc.MOD, args);
+            ret = t3.attrSet(Parser.AttrFunc.MOD_ONE, args);
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof InvalidGrammarException);

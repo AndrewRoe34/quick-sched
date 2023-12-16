@@ -218,7 +218,7 @@ public class IOProcessing {
     }
 
     public static void writeStringToFile(String str) throws FileNotFoundException {
-        PrintStream outputStream = new PrintStream(new File("scripter.log"));
+        PrintStream outputStream = new PrintStream(new File("logs/scripter.log"));
         outputStream.print(str);
     }
 }

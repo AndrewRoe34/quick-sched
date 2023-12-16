@@ -35,9 +35,9 @@ public class Parser {
         ADD_ONE,
         SUBTRACT_ONE,
         SUBTRACT,
-        DIVIDE,
-        MULTIPLY,
-        MOD,
+        DIVIDE_ONE,
+        MULTIPLY_ONE,
+        MOD_ONE,
         EQUALS,
 
         //String
@@ -621,18 +621,14 @@ public class Parser {
                 return AttrFunc.SET_DUE_DATE;
             case "++":
                 return AttrFunc.ADD_ONE;
-            case "+":
-                return AttrFunc.ADD;
             case "--":
                 return AttrFunc.SUBTRACT_ONE;
-            case "-":
-                return AttrFunc.SUBTRACT;
-            case "/":
-                return AttrFunc.DIVIDE;
-            case "*":
-                return AttrFunc.MULTIPLY;
-            case "%":
-                return AttrFunc.MOD;
+            case "//":
+                return AttrFunc.DIVIDE_ONE;
+            case "**":
+                return AttrFunc.MULTIPLY_ONE;
+            case "%%":
+                return AttrFunc.MOD_ONE;
             case "length":
                 return AttrFunc.LENGTH;
             case "parse_int":
@@ -654,7 +650,7 @@ public class Parser {
                 return AttrFunc.MARK_ITEM_BY_NAME;
             case "get_percent":
                 return AttrFunc.GET_PERCENT;
-            case "=":
+            case "==":
             case "equals":
                     return AttrFunc.EQUALS;
             default:
