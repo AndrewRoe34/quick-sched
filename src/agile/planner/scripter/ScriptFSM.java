@@ -15,7 +15,7 @@ import java.util.*;
 
 public class ScriptFSM {
 
-    private Scanner inputScanner = new Scanner(System.in);
+    private final Scanner inputScanner = new Scanner(System.in);
     private List<Type> variableList = new LinkedList<>();
     private final Parser parser = new Parser();
     private final ScriptLog scriptLog = new ScriptLog();
@@ -25,17 +25,24 @@ public class ScriptFSM {
     private List<Task> taskList = new ArrayList<>();
     private List<Type> cardVariables = new ArrayList<>();
     private List<Type> primitiveVariables = new ArrayList<>();
-    private Map<String, CustomFunction> funcMap = new HashMap<>();
+    private final Map<String, CustomFunction> funcMap = new HashMap<>();
     private PreProcessor preProcessor = null;
     private boolean ppStatus = false;
     private Scanner scriptScanner;
     private boolean inFunction;
-    private ScheduleManager scheduleManager = ScheduleManager.getScheduleManager();
+    private List<String> injectScript = new ArrayList<>(); //todo need to integrate with system now
+    private int injectScriptIdx;
+    private final ScheduleManager scheduleManager = ScheduleManager.getScheduleManager();
 
     public void executeScript(String filename) throws FileNotFoundException {
         scriptScanner = new Scanner(new File(filename));
-        while (scriptScanner.hasNextLine()) {
-            String untrimmed = scriptScanner.nextLine();
+        while (scriptScanner.hasNextLine() || injectScript.size() > 0 && injectScriptIdx < injectScript.size()) {
+            String untrimmed;
+            if(injectScript.size() > 0 && injectScriptIdx < injectScript.size()) {
+                untrimmed = injectScript.get(injectScriptIdx++);
+            } else {
+                untrimmed = scriptScanner.nextLine();
+            }
             String line = untrimmed.trim();
             boolean status = true;
             while(status) {
@@ -396,6 +403,18 @@ public class ScriptFSM {
             case "input_int":
                 if(args.length != 0) throw new InvalidFunctionException();
                 return funcInputInt();
+            case "pause":
+                if(args.length != 0) throw new InvalidFunctionException();
+                funcPause();
+                return null;
+            case "view_interface":
+                if(args.length != 0) throw new InvalidFunctionException();
+                funcViewInterface();
+                return null;
+            case "inject_code":
+                if(localStack != null || args.length != 0) throw new InvalidFunctionException();
+                funcInjectCode();
+                return null;
             default:
                 processCustomFunction(func, args);
         }
@@ -668,6 +687,77 @@ public class ScriptFSM {
             return localType;
         } else {
             throw new InvalidGrammarException();
+        }
+    }
+
+    protected void funcPause() {
+        System.out.print("Enter 'y' to continue: ");
+        while(inputScanner.hasNextLine()) {
+            String line = inputScanner.nextLine().trim();
+            if(line.length() > 0 && line.charAt(0) == 'y') {
+                break;
+            }
+        }
+    }
+
+    /**
+     * Outputs a text based version of Cards as a UI
+     */
+    protected void funcViewInterface() {
+        List<Card> cards = scheduleManager.getCards();
+        // use foreach loop to determine max number of tasks while printing out the first line of Cards
+        int maxTasks = 0;
+        for(Card c1 : cards) {
+            maxTasks = Math.max(c1.getTask().size(), maxTasks);
+            if(c1.toString().length() > 25) {
+                System.out.print(c1.toString().substring(0, 25));
+            } else {
+                System.out.print(c1);
+                for(int i = c1.toString().length(); i < 25; i++) {
+                    System.out.print(" ");
+                }
+            }
+            System.out.print("|");
+        }
+
+        System.out.println();
+        for(int i = 0; i < cards.size(); i++) {
+            System.out.print("--------------------------"); //will print out this line for the number of cards there are
+        }
+
+        // use foreach loop inside a for loop to output the tasks
+        for(int i = 0; i < maxTasks; i++) {
+            System.out.println();
+            for(Card c1 : cards) {
+                if(i < c1.getTask().size()) {
+                    //print out the task (up to 18 characters)
+                    Task t1 = c1.getTask().get(i);
+                    String outputTask = t1.toString();
+                    if(outputTask.length() > 25) {
+                        System.out.print(outputTask.substring(0, 25));
+                    } else {
+                        System.out.print(outputTask);
+                        for(int j = outputTask.length(); j < 25; j++) {
+                            System.out.print(" ");
+                        }
+                    }
+                    System.out.print("|");
+                }
+            }
+        }
+        System.out.println();
+    }
+
+    protected void funcInjectCode() {
+        injectScriptIdx = 0;
+        System.out.println("__START__");
+        injectScript = new ArrayList<>();
+        while(inputScanner.hasNextLine()) {
+            String line = inputScanner.nextLine();
+            if("__END__".equals(line.trim())) {
+                break;
+            }
+            injectScript.add(line);
         }
     }
 

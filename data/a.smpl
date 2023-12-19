@@ -1,19 +1,20 @@
-include: __CURR_CONFIG__, __LOG__, __BUILD__
+include: __CURR_CONFIG__, __LOG__
 
+# prints out a line of '*'
 func line(y)
-  if(y.=(0))
+  if(y.==(0))
     return
   print("*")
-  y.--()
-  line(y)
+  line(y.--())
 
+# determines number of lines and length for each
 func base(x)
-  if(x.=(0))
+  if(x.==(0))
     return
   line(x)
-  println("")
-  x.--()
-  base(x)
+  println()
+  base(x.--())
 
+print("Enter size of triangle: ")
 num: input_int()
 base(num)

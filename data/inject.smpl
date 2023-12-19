@@ -1,0 +1,2 @@
+include: __CURR_CONFIG__, __LOG__, __BUILD__
+inject_code()

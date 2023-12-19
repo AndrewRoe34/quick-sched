@@ -269,7 +269,10 @@ public class Parser {
             case "get_task_by_id":
             case "add_all_tasks":
             case "input_tasks":
-            case "input_int": //todo need to add more functions
+            case "input_int":
+            case "pause":
+            case "view_interface":
+            case "inject_code":
                 return new StaticFunction(funcName, arguments, true);
             default:
                 return new StaticFunction(funcName, arguments, false);

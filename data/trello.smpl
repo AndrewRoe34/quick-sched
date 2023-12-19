@@ -1,0 +1,11 @@
+include: __CURR_CONFIG__, __LOG__, __BUILD__
+# Import JBin file
+import_schedule("data/update6.jbin")
+
+# View the Trello board (and pause for user to visualize/interact)
+view_interface()
+println()
+inject_code()
+
+# Build the schedule
+build()

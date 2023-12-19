@@ -21,6 +21,7 @@ import agile.planner.user.UserConfig;
 import agile.planner.util.CheckList;
 import agile.planner.util.EventLog;
 import agile.planner.util.JBin;
+import agile.planner.util.Time;
 
 /**
  * Handles the generation and management of the overall schedule
@@ -33,6 +34,8 @@ public class ScheduleManager {
     private List<Card> cards;
     /** LinkedList of Days representing a single schedule */
     private List<Day> schedule;
+    /** PriorityQueue of all archived Tasks in sorted order */
+    private PriorityQueue<Task> archivedTasks;
     /** PriorityQueue of all Tasks in sorted order */
     private PriorityQueue<Task> taskManager;
     /** Mapping of all Tasks via their unique IDs */
@@ -82,6 +85,7 @@ public class ScheduleManager {
         taskMap = new HashMap<>();
         cards = new ArrayList<>();
         labels = new ArrayList<>();
+        archivedTasks = new PriorityQueue<>();
         //processSettingsCfg(filename);
         //processJBinFile("data/week.jbin");
 
@@ -147,6 +151,16 @@ public class ScheduleManager {
             eventLog.reportReadJBinFile(filename);
             JBin.processJBin(binStr, taskManager, cards, labels);
             eventLog.reportProcessJBin();
+            // remove past tasks from current PQ and archives them
+            Calendar curr = Time.getFormattedCalendarInstance(0);
+            int n = taskManager.size();
+            for(int i = 0; i < n; i++) {
+                if(taskManager.peek() != null && taskManager.peek().getDueDate().compareTo(curr) < 0) {
+                    archivedTasks.add(taskManager.remove()); //todo need to test as well as add EventLog method to document this action (also, need to discard tasks from cards beyond a specific date)
+                } else {
+                    break;
+                }
+            }
             return true;
         }
         return false;
@@ -182,6 +196,10 @@ public class ScheduleManager {
             eventLog.reportException(e);
             System.out.println("File could not be located");
         }
+    }
+
+    public List<Card> getCards() {
+        return cards;
     }
 
     /**
@@ -295,7 +313,7 @@ public class ScheduleManager {
         int dayCount = 0;
         Day currDay;
 
-        while(taskManager.size() > 0) {
+        while(taskManager.size() > 0 && dayId < userConfig.getMaxDays()) {
             currDay = new Day(dayId++, userConfig.getWeek()[idx++ % 7], dayCount++);
             schedule.add(currDay);
             //TODO don't need incomplete as argument (should be local to schedulers)

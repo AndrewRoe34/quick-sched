@@ -219,10 +219,30 @@ public class JBin {
             DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             ld = LocalDate.parse(jbinScanner.nextLine(), df);
         }
-        Calendar calendar = Calendar.getInstance();
+        Calendar calendar = Time.getFormattedCalendarInstance(0);
         assert ld != null;
-        calendar.set(ld.getYear(), ld.getMonthValue(), ld.getDayOfMonth(), 0, 0, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
+        int[] monthSet = {
+                Calendar.JANUARY,
+                Calendar.FEBRUARY,
+                Calendar.MARCH,
+                Calendar.APRIL,
+                Calendar.MAY,
+                Calendar.JUNE,
+                Calendar.JULY,
+                Calendar.AUGUST,
+                Calendar.SEPTEMBER,
+                Calendar.OCTOBER,
+                Calendar.NOVEMBER,
+                Calendar.DECEMBER};
+
+        //todo codeblock needs to be refactored and tested further
+        int x = ld.getDayOfMonth(); //debugging values
+        calendar = Calendar.getInstance();
+        calendar.set(ld.getYear(), Calendar.DECEMBER, ld.getDayOfMonth());
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        //todo codeblock needs to be refactored and tested further
+
 
         boolean labelOpen = false;
         boolean labelClosed = false;
@@ -294,7 +314,7 @@ public class JBin {
                     } else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
                         taskClosed = true;
                         break;
-                    } else if(tokens.length == 3) {
+                    } else if(tokens.length == 3) { //todo will need to run quick check to see if task is within archive range (if not, don't add to Card or TaskManager)
                         taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1].trim()),
                                 Time.getFormattedCalendarInstance(calendar, Integer.parseInt(tokens[2].trim()))));
                     } else if(tokens.length > 3) {
@@ -351,6 +371,7 @@ public class JBin {
             }
         }
         tasks.addAll(taskList);
+        //todo need to remove old tasks that are beyond the user config archive date (will store null temporarily inside the tasklist and not add said tasks to cards)
 //        State.addAllLabels(labels);
 //        State.addAllCheckLists(checkLists);
 //        State.addAllTasks(taskList);
