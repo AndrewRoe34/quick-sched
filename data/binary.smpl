@@ -1,0 +1,14 @@
+include: __CURR_CONFIG__, __LOG__
+
+# Outputs all binary codes of a specified length
+func binary(bin, x)
+  if(x.==(0))
+    println(bin)
+    return
+  x.--()
+  binary(bin.add("0"), x)
+  binary(bin.add("1"), x)
+
+print("Enter number: ")
+x: input_int()
+binary("", x)

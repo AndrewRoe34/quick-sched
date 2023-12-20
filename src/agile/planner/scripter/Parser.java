@@ -39,6 +39,11 @@ public class Parser {
         MULTIPLY_ONE,
         MOD_ONE,
         EQUALS,
+        GREATER_EQUALS,
+        LESSER_EQUALS,
+        GREATER_THAN,
+        LESS_THAN,
+        NOT_EQUAL,
 
         //String
         LENGTH,
@@ -274,6 +279,7 @@ public class Parser {
             case "view_interface":
             case "inject_code":
             case "get_card":
+            case "avg":
                 return new StaticFunction(funcName, arguments, true);
             default:
                 return new StaticFunction(funcName, arguments, false);
@@ -659,6 +665,16 @@ public class Parser {
             case "==":
             case "equals":
                     return AttrFunc.EQUALS;
+            case ">":
+                return AttrFunc.GREATER_THAN;
+            case ">=":
+                return AttrFunc.GREATER_EQUALS;
+            case "<":
+                return AttrFunc.LESS_THAN;
+            case "<=":
+                return AttrFunc.LESSER_EQUALS;
+            case "!=":
+                return AttrFunc.NOT_EQUAL;
             default:
                 return null;
         }

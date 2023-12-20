@@ -411,6 +411,21 @@ public class Type implements Comparable<Type> {
                     case EQUALS:
                         if(args.length != 1) throw new InvalidGrammarException();
                         return new Type(this.intConstant.equals(args[0].getIntConstant()), null);
+                    case LESS_THAN:
+                        if(args.length != 1) throw new InvalidGrammarException();
+                        return new Type(this.intConstant < args[0].getIntConstant(), null);
+                    case GREATER_THAN:
+                        if(args.length != 1) throw new InvalidGrammarException();
+                        return new Type(this.intConstant > args[0].getIntConstant(), null);
+                    case LESSER_EQUALS:
+                        if(args.length != 1) throw new InvalidGrammarException();
+                        return new Type(this.intConstant <= args[0].getIntConstant(), null);
+                    case GREATER_EQUALS:
+                        if(args.length != 1) throw new InvalidGrammarException();
+                        return new Type(this.intConstant >= args[0].getIntConstant(), null);
+                    case NOT_EQUAL:
+                        if(args.length != 1) throw new InvalidGrammarException();
+                        return new Type(!this.intConstant.equals(args[0].getIntConstant()), null);
                 }
             case STRING:
                 switch(attr) {
@@ -420,8 +435,8 @@ public class Type implements Comparable<Type> {
                         for(Type t : args) {
                             sb.append(t.toString()); //todo need to add toString for Int, String, and Bool
                         }
-                        setStringConstant(sb.toString());
-                        return null;
+                        //setStringConstant(sb.toString());
+                        return new Type(sb.toString(), null);
                     case LENGTH:
                         if(args.length != 0) throw new InvalidGrammarException();
                         return new Type(this.stringConstant.length(), null);

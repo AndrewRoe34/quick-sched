@@ -420,6 +420,14 @@ public class ScriptFSM {
             case "get_card":
                 if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.INTEGER) throw new InvalidFunctionException();
                 return funcGetCard(args[0].getIntConstant());
+            case "avg":
+                if(args.length == 0) throw new InvalidFunctionException();
+                int sum = 0;
+                for(Type t1 : args) {
+                    if(t1.getVariabTypeId() != Type.TypeId.INTEGER) throw new InvalidFunctionException();
+                    sum += t1.getIntConstant();
+                }
+                return new Type(sum / args.length, null);
             default:
                 processCustomFunction(func, args);
         }
