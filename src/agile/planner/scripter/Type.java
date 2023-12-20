@@ -286,6 +286,9 @@ public class Type implements Comparable<Type> {
                     case GET_TITLE:
                         if(args.length != 0) throw new InvalidGrammarException();
                         return new Type(((Card) datatype).getTitle(), null);
+                    case ADD:
+                        if(args.length != 1) throw new InvalidGrammarException();
+                        return new Type(addType(args[0]), null);
                     default:
                         throw new InvalidGrammarException();
                 }

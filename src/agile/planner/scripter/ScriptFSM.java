@@ -16,7 +16,7 @@ import java.util.*;
 public class ScriptFSM {
 
     private final Scanner inputScanner = new Scanner(System.in);
-    private List<Type> variableList = new LinkedList<>();
+    private final List<Type> globalStack = new LinkedList<>();
     private final Parser parser = new Parser();
     private final ScriptLog scriptLog = new ScriptLog();
     private List<Type> checklistVariables = new ArrayList<>();
@@ -30,7 +30,7 @@ public class ScriptFSM {
     private boolean ppStatus = false;
     private Scanner scriptScanner;
     private boolean inFunction;
-    private List<String> injectScript = new ArrayList<>(); //todo need to integrate with system now
+    private List<String> injectScript = new ArrayList<>();
     private int injectScriptIdx;
     private final ScheduleManager scheduleManager = ScheduleManager.getScheduleManager();
 
@@ -101,7 +101,7 @@ public class ScriptFSM {
                                 if(ret == null) throw new InvalidGrammarException();
                                 if(t1 == null) {
                                     ret.setVariableName(varName);
-                                    variableList.add(ret);
+                                    globalStack.add(ret);
                                 } else {
                                     t1.setTypeVal(ret);
                                 }
@@ -254,7 +254,7 @@ public class ScriptFSM {
             t1 = lookupVariable(card.getVarName());
             if(t1 == null) {
                 t1 = new Type(new Card(card.getTitle().substring(1, card.getTitle().length() - 1)), card.getVarName(), Type.TypeId.CARD);
-                variableList.add(t1);
+                globalStack.add(t1);
             } else {
                 t1.setLinkerData(new Card(card.getTitle()), Type.TypeId.CARD);
             }
@@ -264,7 +264,7 @@ public class ScriptFSM {
             Task createdTask = new Task(0, task.getName(), task.getTotalHours(), task.getDueDate());
             if(t1 == null) {
                 t1 = new Type(createdTask, task.getVarName(), Type.TypeId.TASK);
-                variableList.add(t1);
+                globalStack.add(t1);
             } else {
                 t1.setLinkerData(createdTask, Type.TypeId.TASK);
             }
@@ -274,7 +274,7 @@ public class ScriptFSM {
             t1 = lookupVariable(cl.getVarName());
             if(t1 == null) {
                 t1 = new Type(new CheckList(0, cl.getTitle()), cl.getVarName(), Type.TypeId.CHECKLIST);
-                variableList.add(t1);
+                globalStack.add(t1);
             } else {
                 t1.setLinkerData(new CheckList(0, cl.getTitle()), Type.TypeId.CHECKLIST);
             }
@@ -283,7 +283,7 @@ public class ScriptFSM {
             t1 = lookupVariable(label.getVarName());
             if(t1 == null) {
                 t1 = new Type(new Label(0, label.getName(), label.getColor()), label.getVarName(), Type.TypeId.LABEL);
-                variableList.add(t1);
+                globalStack.add(t1);
             } else {
                 t1.setLinkerData(new Label(0, label.getName(), label.getColor()), Type.TypeId.LABEL);
             }
@@ -292,7 +292,7 @@ public class ScriptFSM {
             t1 = lookupVariable(str.getVarName());
             if(t1 == null) {
                 t1 = new Type(str.getStr(), str.getVarName());
-                variableList.add(t1);
+                globalStack.add(t1);
             } else {
                 t1.setStringConstant(str.getStr());
             }
@@ -301,7 +301,7 @@ public class ScriptFSM {
             t1 = lookupVariable(i.getVarName());
             if(t1 == null) {
                 t1 = new Type(i.getVal(), i.getVarName());
-                variableList.add(t1);
+                globalStack.add(t1);
             } else {
                 t1.setIntConstant(i.getVal());
             }
@@ -310,7 +310,7 @@ public class ScriptFSM {
             t1 = lookupVariable(bool.getVarName());
             if(t1 == null) {
                 t1 = new Type(bool.isVal(), bool.getVarName());
-                variableList.add(t1);
+                globalStack.add(t1);
             } else {
                 t1.setBoolConstant(bool.isVal());
             }
@@ -417,6 +417,9 @@ public class ScriptFSM {
                 if(localStack != null || args.length != 0) throw new InvalidFunctionException();
                 funcInjectCode();
                 return null;
+            case "get_card":
+                if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.INTEGER) throw new InvalidFunctionException();
+                return funcGetCard(args[0].getIntConstant());
             default:
                 processCustomFunction(func, args);
         }
@@ -521,7 +524,7 @@ public class ScriptFSM {
                         } else {
                             Type ret = processClassInstance(classInstance);
                             localStack.add(ret);
-                            variableList.remove(ret);
+                            globalStack.remove(ret);
                         }
                         break;
                     default:
@@ -535,7 +538,7 @@ public class ScriptFSM {
     }
 
     public Type lookupVariable(String token) {
-        for (Type t : variableList) {
+        for (Type t : globalStack) {
             if (token.equals(t.getVariableName())) {
                 return t;
             }
@@ -621,7 +624,7 @@ public class ScriptFSM {
                     types[i] = parser.parseConstant(args[i]);
                     break;
                 case VARIABLE:
-                    List<Type> tempList = inFunction ? localStack : variableList;
+                    List<Type> tempList = inFunction ? localStack : globalStack;
                     boolean flag = false;
                     for(Type t : tempList) {
                         if(t.getVariableName() != null && args[i].equals(t.getVariableName())) {
@@ -631,7 +634,7 @@ public class ScriptFSM {
                         }
                     }
                     if(!flag) {
-                        for(Type t : variableList) {
+                        for(Type t : globalStack) {
                             if(t.getVariableName() != null && args[i].equals(t.getVariableName())) {
                                 types[i] = t;
                                 break;
@@ -744,6 +747,8 @@ public class ScriptFSM {
                         }
                     }
                     System.out.print("|");
+                } else {
+                    System.out.print("                         |");
                 }
             }
         }
@@ -753,7 +758,7 @@ public class ScriptFSM {
     protected void funcInjectCode() {
         //todo need to list all global variables here
         System.out.println("GLOBAL STACK:");
-        for(Type t1 : variableList) {
+        for(Type t1 : globalStack) {
             System.out.println("var_name=" + t1.getVariableName() + ",\tvar_value=" + t1);
         }
         injectScriptIdx = 0;
@@ -766,6 +771,10 @@ public class ScriptFSM {
             }
             injectScript.add(line);
         }
+    }
+
+    protected Type funcGetCard(int idx) { //todo need to handle index out of bounds possibly
+        return new Type(scheduleManager.getCards().get(idx), null, Type.TypeId.CARD);
     }
 
     protected void funcUpdateProfile() {

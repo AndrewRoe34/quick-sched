@@ -273,6 +273,7 @@ public class Parser {
             case "pause":
             case "view_interface":
             case "inject_code":
+            case "get_card":
                 return new StaticFunction(funcName, arguments, true);
             default:
                 return new StaticFunction(funcName, arguments, false);
@@ -602,6 +603,8 @@ public class Parser {
      */
     public AttrFunc determineAttrFunc(String attr) {
         switch(attr) {
+            case "add":
+                return AttrFunc.ADD;
             case "get_id":
             case "id":
                 return AttrFunc.GET_ID;
