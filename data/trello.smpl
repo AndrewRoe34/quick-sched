@@ -1,11 +1,16 @@
 include: __CURR_CONFIG__, __LOG__, __BUILD__
-# Import JBin file
 import_schedule("data/update6.jbin")
 
-# View the Trello board (and pause for user to visualize/interact)
+func manage_tasks()
+  print("Number of Tasks: ")
+  x: input_int()
+  input_tasks(x)
+
 view_interface()
 println()
-inject_code()
 
-# Build the schedule
+x: 3
+inject_code()
+println(x)
+
 build()

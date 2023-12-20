@@ -112,6 +112,7 @@ public class ScriptFSM {
                             break;
                         case SETUP_CUST_FUNC:
                             if(!ppStatus) throw new InvalidPreProcessorException();
+                            if(injectScript.size() > 0 && injectScriptIdx < injectScript.size()) throw new InvalidGrammarException();
                             CustomFunction customFunction = parser.parseCustomFunction(untrimmed);
                             if(customFunction == null) {
                                 throw new InvalidFunctionException();
@@ -126,6 +127,7 @@ public class ScriptFSM {
                             break;
                         case IF_CONDITION:
                             if(!ppStatus) throw new InvalidPreProcessorException();
+                            if(injectScript.size() > 0 && injectScriptIdx < injectScript.size()) throw new InvalidGrammarException();
                             customFunction = parser.parseIfCondition(untrimmed);
                             if(customFunction == null) {
                                 throw new InvalidFunctionException();
@@ -749,6 +751,11 @@ public class ScriptFSM {
     }
 
     protected void funcInjectCode() {
+        //todo need to list all global variables here
+        System.out.println("GLOBAL STACK:");
+        for(Type t1 : variableList) {
+            System.out.println("var_name=" + t1.getVariableName() + ",\tvar_value=" + t1);
+        }
         injectScriptIdx = 0;
         System.out.println("__START__");
         injectScript = new ArrayList<>();
