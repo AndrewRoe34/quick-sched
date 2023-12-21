@@ -198,7 +198,7 @@ base(num)
 Agile Planner currently offers logging mechanisms for two areas: System and Scripting.
 
 #### System:
-All core system actions, events, and exceptions are reported on a date/time perspective when they occurr. The goal is to allow the user to report any errors or issues similar to Epic Game's logging system. Here's an example below:
+All core system actions, events, and exceptions are reported on a date/time perspective when they occur. The goal is to allow the user to report any errors or issues similar to Epic Game's logging system. Here's an example below:
 ```
 [28-08-2023] Log of all activities from current session: 
 
@@ -286,4 +286,4 @@ CARD {
   SCIENCE, T2, T3, L2, L3
 }
 ```
-Data is written in this format in order to allow reconstruction from top to bottom for an efficient time complexity. We start off with Label and CheckList, but Task is where we begin to store those Labels and CheckLists (hence the variable naming and index values). Cards have their name at the beginning followed by the Task and Label indices of what they store. I am currently seeking encyrption/decryption options to secure the data for the end user.
+Data is written in this format in order to allow reconstruction from top to bottom for an efficient time complexity. We start off with Label and CheckList, but Task is where we begin to store those Labels and CheckLists (hence the variable naming and index values). Cards have their name at the beginning followed by the Task and Label indices of what they store. I am currently seeking encryption/decryption options to secure the data for the end user.
