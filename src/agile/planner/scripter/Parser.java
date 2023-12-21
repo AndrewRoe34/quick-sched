@@ -280,6 +280,7 @@ public class Parser {
             case "inject_code":
             case "get_card":
             case "avg":
+            case "view_stack":
                 return new StaticFunction(funcName, arguments, true);
             default:
                 return new StaticFunction(funcName, arguments, false);

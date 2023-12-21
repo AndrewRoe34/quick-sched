@@ -428,6 +428,10 @@ public class ScriptFSM {
                     sum += t1.getIntConstant();
                 }
                 return new Type(sum / args.length, null);
+            case "view_stack":
+                if(args.length != 0) throw new InvalidFunctionException();
+                funcViewStack(localStack);
+                return null;
             default:
                 processCustomFunction(func, args);
         }
@@ -778,6 +782,19 @@ public class ScriptFSM {
                 break;
             }
             injectScript.add(line);
+        }
+    }
+
+    protected void funcViewStack(List<Type> localStack) {
+        System.out.println("GLOBAL STACK:");
+        for(Type t1 : globalStack) {
+            System.out.println("var_name=" + t1.getVariableName() + ",\tvar_value=" + t1);
+        }
+        System.out.println("LOCAL STACK:");
+        if(localStack != null) {
+            for(Type t1 : localStack) {
+                System.out.println("var_name=" + t1.getVariableName() + ",\tvar_value=" + t1);
+            }
         }
     }
 

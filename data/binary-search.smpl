@@ -2,6 +2,7 @@ include: __CURR_CONFIG__, __LOG__
 
 hidden_num: 27
 inject_code()
+
 # Finds the hidden number in O(lgn) time complexity
 func find_number(min, max, try)
   if(min.==(max))

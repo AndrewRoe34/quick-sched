@@ -2,7 +2,7 @@
 
 ### <ins>Summary</ins>
 
-Agile Planner is an easy to use CLI that offers configurable scheduling capabilities to minimize the hassles as a college student as well as providing custom scripting language integration. Here's a brief summary of what this system offers: 
+Agile Planner is an easy-to-use CLI that offers configurable scheduling capabilities to minimize the hassles as a college student as well as providing custom scripting language integration. Here's a brief summary of what this system offers: 
 
 * Designed and developed a highly adaptable scheduling system, accommodating diverse scheduling requirements.
 * Integrated my own custom functional and object-oriented scripting languages for flexible user interaction and customization within the Agile Planner.
@@ -25,7 +25,7 @@ Dynamic Scheduling, is a mixture of LRTF (Largest Remaining Time First) and Roun
 The goal of the scripting language was to offer the user more efficiency in terms of interacting with the system in comparison to the current CLI (Command Line Interface). At the moment, there are two working versions at hand (though, both utilize completely different paradigms).
 
 #### Functional Paradigm:
-This version utlizes the State Pattern for performing context switches between each operation that it parses. A basic script is provided below:
+This version utilizes the State Pattern for performing context switches between each operation that it parses. A basic script is provided below:
 ```
 #Preprocessor setup
 START:
@@ -61,11 +61,14 @@ While this iteration was very simple since it utilized dynamic memory and requir
 This version of my scripting language required a complete overhaul in design and approach. I opted for a Parser class to manage categorizing data and returning that to my ScriptFSM, which would then interpret the parsed data. The syntax of my language is very similar to Python for ease of access to more people. Here's a code snippet below:
 
 ```
-#Sample script
 include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__, __STATS__
 
 #Imports schedule data from prior session
 import_schedule("data/week.jbin")
+
+#Views the current board setup of cards
+view_interface()
+inject_code()
 
 #Constructs class instances
 val: string("3400")
@@ -79,6 +82,7 @@ func foo(cl, flag)
   cl.mark_item_by_id(0, flag)
   cl.mark_item_by_name("Step 2", flag)
   cl.mark_item_by_id(2, flag)
+  view_stack()
 
 #Outputs the class data
 println("length=", val.length(), ", int_val=", val.parse_int(), ", substring(1)=", val.sub_string(1))
@@ -95,6 +99,9 @@ println("checklist_id=", my_cl.id(), ", checklist_name=", my_cl.get_title(), ", 
 println(my_cl)
 println("")
 
+#Builds the schedule
+build()
+
 #Exports the schedule for later usage
 export_schedule("fun_week.jbin")
 ```
@@ -102,7 +109,7 @@ In stark contrast to before, this language allows for more flexibility with func
 
 It also has the functionality needed to write non-scheduling related scripts as demonstrated below:
 ```
-include: __CURR_CONFIG__, __LOG__, __BUILD__
+include: __CURR_CONFIG__, __LOG__
 
 # declaring and initializing variables
 balance: 1000
@@ -122,29 +129,69 @@ func deposit()
 
 # primary banking loop with options
 func loop()
-  println("Options:")
-  println("0 - Withdraw")
-  println("1 - Deposit")
-  println("2 - Exit")
+  println("Options:\n0 - Withdraw\n1 - Deposit\n2 - Exit")
   print("> ")
   x: input_int()
-  if(x.=(0))
+  if(x.==(0))
     withdraw()
-  if(x.=(1))
+  if(x.==(1))
     deposit()
-  if(x.=(2))
+  if(x.==(2))
     return
   loop()
 
 # prompts user with password
 func login()
-  println("Welcome to Banking 101!")
-  print("Password - ")
+  print("Welcome to Banking 101!\nPassword\n> ")
   pw: input_int()
-  if(pw.=(password))
+  if(pw.==(password))
     loop()
 
+inject_code()
 login()
+```
+```
+include: __CURR_CONFIG__, __LOG__
+
+hidden_num: 27
+inject_code()
+
+# Finds the hidden number in O(lgn) time complexity
+func find_number(min, max, try)
+  if(min.==(max))
+    println("Found in ", try, " tries...")
+    return
+  mid: avg(min, max)
+  if(mid.==(hidden_num))
+    println("Found in ", try, " tries...")
+  if(mid.>(hidden_num))
+    find_number(min, mid.--(), try.++())
+  if(mid.<(hidden_num))
+    find_number(mid.++(), max, try.++())
+
+find_number(0, 100, 1)
+```
+```
+include: __CURR_CONFIG__, __LOG__
+
+# prints out a line of '*'
+func line(y)
+  if(y.==(0))
+    return
+  print("*")
+  line(y.--())
+
+# determines number of lines and length for each
+func base(x)
+  if(x.==(0))
+    return
+  line(x)
+  println()
+  base(x.--())
+
+print("Enter size of triangle: ")
+num: input_int()
+base(num)
 ```
 ### <ins>Logging Mechanics</ins>
 
@@ -173,10 +220,10 @@ All core system actions, events, and exceptions are reported on a date/time pers
 ```
 
 #### Scripting:
-
-NOTE: The original framework was developed for the Functional Paradigm and is currently being ported over to the Object Oriented version. This is a work in progress below:
+The same is done with the Scripting Log. It essentially provides an extensive stacktrace as to all operations that occur while the script is being executed.
 ```
-SCRIPT_LOG:
+[28-08-2023] Log of all activities from current session: 
+
 FUNC_CALLS: NAME=import_schedule, ARGS=[]
 CARD_CREATED: ID=0, NAME="HW"
 FUNC_SETUP: NAME= foo, PARAM=[cl, flag]
@@ -213,6 +260,8 @@ FUNC_CALLS: NAME=println, ARGS=[]
 
 The goal of JBIN was to maintain data persistence while being able to easily store the data in a structured and efficient manner. Inspiration from JSON was used when developing JBIN.
 ```
+11-12-2023
+
 LABEL {
   LOL, 3
   Party, 4
