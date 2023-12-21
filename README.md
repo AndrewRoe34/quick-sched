@@ -162,6 +162,8 @@ func find_number(min, max, try)
     println("Found in ", try, " tries...")
     return
   mid: avg(min, max)
+  view_stack()
+  pause()
   if(mid.==(hidden_num))
     println("Found in ", try, " tries...")
   if(mid.>(hidden_num))
