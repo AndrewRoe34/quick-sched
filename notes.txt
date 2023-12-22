@@ -44,7 +44,7 @@ v_tasks: <num_days>
 label: <label_name>
 label: task:#, <label_name>
 labels:
-enable: TODO list all configuration options
+enable:
 edit: hours, due_date
 edit: task:#, hours, due_date
 remove: task:#

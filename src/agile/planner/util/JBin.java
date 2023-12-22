@@ -27,7 +27,6 @@ public class JBin {
      */
     public static String createJBin(List<Card> cards) {
         //TODO might add Days and the tasks they hold (for schedule preservation versus creating another one)
-        //TODO key thing to note is that you'll need to create a Calendar instance and use it for the number of days for each Task
 
         /* NOTES:
         1. Create Label section (with ID, not associated with system)
@@ -121,7 +120,7 @@ public class JBin {
                         .append(", ")
                         .append(totalHours)
                         .append(", ")
-                        .append(Time.determineRangeOfDays(calendar, t.getDueDate()));
+                        .append(Time.determineRangeOfDays(calendar, t.getDueDate())); //todo need to make it negative when the due_date is already past
                 for(Label l : t.getLabel()) {
                     if(!labelList.contains(l)) {
                         labelList.add(l);
@@ -211,7 +210,7 @@ public class JBin {
      * @param cards Cards holder
      * @param labels Labels holder
      */
-    public static void processJBin(String data, PriorityQueue<Task> tasks, List<Card> cards, List<Label> labels) {
+    public static void processJBin(String data, PriorityQueue<Task> tasks, List<Card> cards, List<Label> labels, int maxDays) {
         //NOTE: When processing, you should work from top to bottom (use ArrayLists to easily locate data by index value)
         Scanner jbinScanner = new Scanner(data);
         LocalDate ld = null;
@@ -314,7 +313,7 @@ public class JBin {
                     } else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
                         taskClosed = true;
                         break;
-                    } else if(tokens.length == 3) { //todo will need to run quick check to see if task is within archive range (if not, don't add to Card or TaskManager)
+                    } else if(tokens.length == 3) {
                         taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1].trim()),
                                 Time.getFormattedCalendarInstance(calendar, Integer.parseInt(tokens[2].trim()))));
                     } else if(tokens.length > 3) {
@@ -353,10 +352,16 @@ public class JBin {
                         cards.add(new Card(tokens[0].trim())); //todo need to add id eventually
                         for(int i = 1; i < tokens.length; i++) {
                             String item = tokens[i].trim();
+                            int idx = Integer.parseInt(item.substring(1));
                             if(item.length() > 1 && item.charAt(0) == 'T') {
-                                cards.get(cards.size() - 1).addTask(taskList.get(Integer.parseInt(item.substring(1))));
+                                Task tempTask = taskList.get(idx);
+                                if(tempTask != null && Time.determineRangeOfDays(tempTask.getDueDate(), Time.getFormattedCalendarInstance(0)) <= maxDays) { //todo need to check this works
+                                    cards.get(cards.size() - 1).addTask(tempTask);
+                                } else {
+                                    taskList.set(idx, null);
+                                }
                             } else if(item.length() > 1 && item.charAt(0) == 'L') {
-                                cards.get(cards.size() - 1).addLabel(labels.get(Integer.parseInt(item.substring(1))));
+                                cards.get(cards.size() - 1).addLabel(labels.get(idx));
                             } else {
                                 throw new InputMismatchException();
                             }
@@ -370,8 +375,12 @@ public class JBin {
                 throw new InputMismatchException();
             }
         }
-        tasks.addAll(taskList);
-        //todo need to remove old tasks that are beyond the user config archive date (will store null temporarily inside the tasklist and not add said tasks to cards)
+        for(Task t : taskList) {
+            if(t != null) {
+                tasks.add(t);
+            }
+        }
+        //tasks.addAll(taskList);
 //        State.addAllLabels(labels);
 //        State.addAllCheckLists(checkLists);
 //        State.addAllTasks(taskList);

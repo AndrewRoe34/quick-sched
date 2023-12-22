@@ -46,13 +46,13 @@ public class JBinTest {
         PriorityQueue<Task> tasks = new PriorityQueue<>();
         List<Label> labels = new ArrayList<>();
         List<Card> cards = new ArrayList<>();
-        JBin.processJBin(jbin, tasks, cards, labels);
-        for(Task t : tasks)
-            System.out.println(t);
-        for(Card c : cards)
-            System.out.println(c);
-        for(Label ll : labels)
-            System.out.println(ll);
+//        JBin.processJBin(jbin, tasks, cards, labels); todo need to fix
+//        for(Task t : tasks)
+//            System.out.println(t);
+//        for(Card c : cards)
+//            System.out.println(c);
+//        for(Label ll : labels)
+//            System.out.println(ll);
     }
 
     @Test

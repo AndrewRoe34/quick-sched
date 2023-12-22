@@ -149,7 +149,7 @@ public class ScheduleManager {
         String binStr = IOProcessing.readJBinFile(filename);
         if(binStr != null) {
             eventLog.reportReadJBinFile(filename);
-            JBin.processJBin(binStr, taskManager, cards, labels);
+            JBin.processJBin(binStr, taskManager, cards, labels, userConfig.getMaxDays());
             eventLog.reportProcessJBin();
             // remove past tasks from current PQ and archives them
             Calendar curr = Time.getFormattedCalendarInstance(0);

@@ -461,89 +461,85 @@ public class ScriptFSM {
             String untrimmed = line;
             line = line.trim();
             Parser.Operation operation = parser.typeOfOperation(line);
-            try {
-                switch (operation) {
-                    case COMMENT:
-                        break;
-                    case RETURN:
-                        return;
-                    case ATTRIBUTE:
-                        if(!ppStatus) throw new InvalidPreProcessorException();
-                        Attributes attr = parser.parseAttributes(line);
-                        if (attr == null) throw new InvalidFunctionException();
-                        processAttribute(attr, localStack);
-                        scriptLog.reportAttrFunc(attr);
-                        break;
-                    case FUNCTION:
-                        if(!ppStatus) throw new InvalidPreProcessorException();
-                        StaticFunction myfunc = parser.parseStaticFunction(line);
-                        this.inFunction = true;
-                        processStaticFunction(myfunc, localStack);
-                        scriptLog.reportFunctionCall(myfunc);
-                        break;
-                    case IF_CONDITION:
-                        if(!ppStatus) throw new InvalidPreProcessorException();
-                        if("if".equals(func.getFuncName())) throw new InvalidGrammarException();
-                        CustomFunction ifCondition = parser.parseIfCondition(untrimmed);
-                        if(ifCondition == null) throw new InvalidGrammarException();
-                        lineIdx++;
-                        for(; lineIdx < customFunction.getLines().size(); lineIdx++) {
-                            if(numSpaces(customFunction.getLines().get(lineIdx)) > ifCondition.getNumSpaces()) {
-                                ifCondition.addLine(customFunction.getLines().get(lineIdx));
-                            } else {
-                                break;
-                            }
-                        }
-                        boolean status = executeIfConditionFunc(ifCondition, localStack);
-                        if(status) return;
-//                        scriptLog.reportFunctionCall(myfunc);
-                        lineIdx--;
-                        break;
-                    case INSTANCE:
-                        if(!ppStatus) throw new InvalidPreProcessorException();
-                        ClassInstance classInstance = parser.parseClassInstance(line);
-                        if (classInstance == null) {
-                            int i = 0;
-                            for(; i < line.length(); i++) {
-                                if(line.charAt(i) == ':')
-                                    break;
-                            }
-                            String varName = line.substring(0, i);
-                            String trimmed = line.substring(i + 1).trim();
-                            Parser.Operation op = parser.typeOfOperation(trimmed);
-                            Type t1 = lookupVariable(varName);
-                            Type ret = null;
-                            switch (op) {
-                                case ATTRIBUTE:
-                                    Attributes atr = parser.parseAttributes(trimmed);
-                                    if (atr == null) throw new InvalidFunctionException();
-                                    ret = processAttribute(atr, localStack);
-                                    break;
-                                case FUNCTION:
-                                    StaticFunction fnc = parser.parseStaticFunction(trimmed);
-                                    ret = processStaticFunction(fnc, localStack);
-                                    break;
-                                default:
-                                    throw new InvalidPairingException();
-                            }
-                            if(ret == null) throw new InvalidGrammarException();
-                            if(t1 == null) {
-                                ret.setVariableName(varName);
-                                localStack.add(ret);
-                            } else {
-                                t1.setTypeVal(ret);
-                            }
+            switch (operation) {
+                case COMMENT:
+                    break;
+                case RETURN:
+                    return;
+                case ATTRIBUTE:
+                    if(!ppStatus) throw new InvalidPreProcessorException();
+                    Attributes attr = parser.parseAttributes(line);
+                    if (attr == null) throw new InvalidFunctionException();
+                    processAttribute(attr, localStack);
+                    scriptLog.reportAttrFunc(attr);
+                    break;
+                case FUNCTION:
+                    if(!ppStatus) throw new InvalidPreProcessorException();
+                    StaticFunction myfunc = parser.parseStaticFunction(line);
+                    this.inFunction = true;
+                    processStaticFunction(myfunc, localStack);
+                    scriptLog.reportFunctionCall(myfunc);
+                    break;
+                case IF_CONDITION:
+                    if(!ppStatus) throw new InvalidPreProcessorException();
+                    if("if".equals(func.getFuncName())) throw new InvalidGrammarException();
+                    CustomFunction ifCondition = parser.parseIfCondition(untrimmed);
+                    if(ifCondition == null) throw new InvalidGrammarException();
+                    lineIdx++;
+                    for(; lineIdx < customFunction.getLines().size(); lineIdx++) {
+                        if(numSpaces(customFunction.getLines().get(lineIdx)) > ifCondition.getNumSpaces()) {
+                            ifCondition.addLine(customFunction.getLines().get(lineIdx));
                         } else {
-                            Type ret = processClassInstance(classInstance);
-                            localStack.add(ret);
-                            globalStack.remove(ret);
+                            break;
                         }
-                        break;
-                    default:
-                        throw new InvalidGrammarException();
-                }
-            } catch (Exception e) {
-                System.out.println("\u001B[31m" + e.getClass() + "\u001B[0m" + ": " + e.getMessage());
+                    }
+                    boolean status = executeIfConditionFunc(ifCondition, localStack);
+                    if(status) return;
+//                        scriptLog.reportFunctionCall(myfunc);
+                    lineIdx--;
+                    break;
+                case INSTANCE:
+                    if(!ppStatus) throw new InvalidPreProcessorException();
+                    ClassInstance classInstance = parser.parseClassInstance(line);
+                    if (classInstance == null) {
+                        int i = 0;
+                        for(; i < line.length(); i++) {
+                            if(line.charAt(i) == ':')
+                                break;
+                        }
+                        String varName = line.substring(0, i);
+                        String trimmed = line.substring(i + 1).trim();
+                        Parser.Operation op = parser.typeOfOperation(trimmed);
+                        Type t1 = lookupVariable(varName);
+                        Type ret = null;
+                        switch (op) {
+                            case ATTRIBUTE:
+                                Attributes atr = parser.parseAttributes(trimmed);
+                                if (atr == null) throw new InvalidFunctionException();
+                                ret = processAttribute(atr, localStack);
+                                break;
+                            case FUNCTION:
+                                StaticFunction fnc = parser.parseStaticFunction(trimmed);
+                                ret = processStaticFunction(fnc, localStack);
+                                break;
+                            default:
+                                throw new InvalidPairingException();
+                        }
+                        if(ret == null) throw new InvalidGrammarException();
+                        if(t1 == null) {
+                            ret.setVariableName(varName);
+                            localStack.add(ret);
+                        } else {
+                            t1.setTypeVal(ret);
+                        }
+                    } else {
+                        Type ret = processClassInstance(classInstance);
+                        localStack.add(ret);
+                        globalStack.remove(ret);
+                    }
+                    break;
+                default:
+                    throw new InvalidGrammarException();
             }
         }
         inFunction = false;
