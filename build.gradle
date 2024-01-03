@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+    id 'jacoco'
+}
+
+jacoco {
+    toolVersion = "0.8.7"
+}
+
+group 'agile.planner'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+}
+
+test {
+    useJUnitPlatform()
+    jacoco {
+        // This will output the execution data to the file system for further analysis later
+        destinationFile = file("$buildDir/jacoco/test.exec")
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+        html.enabled true
+        html.destination file("${buildDir}/jacocoHtml")
+    }
+    dependsOn(test)
+}
