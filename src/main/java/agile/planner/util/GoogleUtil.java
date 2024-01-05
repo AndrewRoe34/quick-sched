@@ -13,7 +13,7 @@ public class GoogleUtil {
     //handles setup and initialization
     //provides key methods for passing data that IO can call
 
-    public void initGoogleIO() {
+    public static void initGoogleIO() {
 
     }
 

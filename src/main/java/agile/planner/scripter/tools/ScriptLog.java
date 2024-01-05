@@ -20,7 +20,7 @@ public class ScriptLog {
 
     /** Manages the construction of the {@code ScriptLog} */
     private StringBuilder sb;
-    private SimpleDateFormat sdf;
+    private final SimpleDateFormat sdf;
 
     /**
      * Creates an instance of ScriptLog as a tooling option for the {@code Simple} scripting language

@@ -78,7 +78,7 @@ public class ScheduleManager {
         eventLog.reportUserLogin();
         processUserConfigFile();
         taskManager = new PriorityQueue<>();
-        scheduler = new CompactScheduler(userConfig, eventLog);
+        scheduler = CompactScheduler.getSingleton(userConfig, eventLog);
         //scheduler = new DynamicScheduler(userConfig, eventLog);
         schedule = new LinkedList<>();
         customHours = new HashMap<>();

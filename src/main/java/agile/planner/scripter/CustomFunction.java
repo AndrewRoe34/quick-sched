@@ -6,7 +6,7 @@ import java.util.List;
 public class CustomFunction extends StaticFunction {
 
     private List<String> lines;
-    private int numSpaces;
+    private final int numSpaces;
     public CustomFunction(String funcName, String[] args, int numSpaces) {
         super(funcName, args, false);
         this.lines = new ArrayList<>();
@@ -17,8 +17,8 @@ public class CustomFunction extends StaticFunction {
         return lines;
     }
 
-    public boolean addLine(String line) {
-        return lines.add(line);
+    public void addLine(String line) {
+        lines.add(line);
     }
 
     public int getNumSpaces() {

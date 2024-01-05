@@ -40,6 +40,10 @@ public class Day {
         subtaskManager = new LinkedList<>();
     }
 
+    public int getTotalHours() {
+        return size;
+    }
+
     /**
      * Sets the capacity for the Day
      *
@@ -209,6 +213,11 @@ public class Day {
         return sb.toString();
     }
 
+    /**
+     * Gets the List of SubTasks for the given Day
+     *
+     * @return List of SubTasks
+     */
     public Iterable<? extends SubTask> getSubTasks() {
         return subtaskManager;
     }

@@ -5,6 +5,7 @@ import agile.planner.data.Task;
 import agile.planner.user.UserConfig;
 import agile.planner.util.EventLog;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -15,10 +16,11 @@ import java.util.PriorityQueue;
  */
 public class CompactScheduler implements Scheduler {
 
+    private static CompactScheduler singleton;
     /** Holds relevant data for user settings in scheduling */
     private final UserConfig userConfig;
     /** EventLog for logging data on Day actions */
-    private EventLog eventLog;
+    private final EventLog eventLog;
 
     /**
      * Primary constructor for CompactScheduler
@@ -26,10 +28,17 @@ public class CompactScheduler implements Scheduler {
      * @param userConfig user settings for scheduling purposes
      * @param eventLog EventLog for logging data on Day actions
      */
-    public CompactScheduler(UserConfig userConfig, EventLog eventLog) {
+    private CompactScheduler(UserConfig userConfig, EventLog eventLog) {
         this.userConfig = userConfig;
         this.eventLog = eventLog;
 
+    }
+
+    public static CompactScheduler getSingleton(UserConfig userConfig, EventLog eventLog) {
+        if(singleton == null) {
+            singleton = new CompactScheduler(userConfig, eventLog);
+        }
+        return singleton;
     }
 
     @Override
@@ -79,9 +88,19 @@ public class CompactScheduler implements Scheduler {
 
     @Override
     public boolean correctSchedule(List<Day> schedule, int errorCount) {
+        List<Integer> overflowIndex = new ArrayList<>();
+        List<Integer> overflowHours = new ArrayList<>();
+        int totalOverflowHours = 0;
         for(int i = schedule.size() - 1; i >= 0; i--) {
-
+            Day d1 = schedule.get(i);
+            int hoursOverflow = d1.getCapacity() - d1.getTotalHours() < 0 ? d1.getTotalHours() - d1.getCapacity() : 0;
+            if(hoursOverflow > 0) {
+                overflowIndex.add(i);
+                overflowHours.add(hoursOverflow);
+                totalOverflowHours += hoursOverflow;
+            }
         }
+        int leftoverDays = overflowIndex.size() - schedule.size();
         return false;
     }
 }

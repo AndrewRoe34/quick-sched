@@ -56,7 +56,7 @@ public class EventLog {
     public void reportTaskAction(Task task, int type) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
-
+        output.print(" [INFO]");
         if(type == 0) {
             output.print(" ADD(TASK): ");
         } else if(type == 1) {
@@ -80,6 +80,7 @@ public class EventLog {
     public void reportCardAction(Card card, int type) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
 
         if(type == 0) {
             output.print(" CREATE(CARD): ");
@@ -106,6 +107,7 @@ public class EventLog {
     public void reportCheckListCreation(CheckList cl) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.print(" CheckList ID=" + cl.getId());
         output.println(", CREATED");
     }
@@ -118,6 +120,7 @@ public class EventLog {
     public void reportCheckListRemoval(CheckList cl) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.print(" CheckList ID=" + cl.getId());
         output.println(", REMOVED");
     }
@@ -130,6 +133,7 @@ public class EventLog {
     public void reportCheckListReset(CheckList cl) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.print(" CheckList ID=" + cl.getId());
         output.println(", RESET");
     }
@@ -144,6 +148,7 @@ public class EventLog {
     public void reportCheckListAction(CheckList cl, int itemIdx, int action) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.print(" CheckList ID=" + cl.getId());
         if(action == 0) {
             output.print(", ITEM_REMOVED=" + cl.getItem(itemIdx));
@@ -169,6 +174,7 @@ public class EventLog {
     public void reportWeekEdit(Calendar date, int hours, boolean global) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.print(" EDIT(DAY): GLOBAL=" + global);
         output.println(", HOURS=" + hours);
     }
@@ -183,6 +189,7 @@ public class EventLog {
     public void reportDayAction(Day day, Task task, boolean nonOverflow) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.print(" DAY_ID=" + day.getId());
         output.print(", CAPACITY=" + day.getCapacity());
         output.print(", HOURS_REMAINING=" + day.getSpareHours());
@@ -197,6 +204,7 @@ public class EventLog {
     public void reportSchedulingStart() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.println(" Scheduling has begun...");
     }
 
@@ -206,6 +214,7 @@ public class EventLog {
     public void reportSchedulingFinish() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.println(" Scheduling has finished...");
     }
 
@@ -217,6 +226,7 @@ public class EventLog {
     public void reportDisplayDaySchedule(Day day) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.print(" Display Day_Schedule: ");
         output.print("CAPACITY=" + day.getCapacity());
         output.print(", HOURS_FILLED=" + day.getHoursFilled());
@@ -234,6 +244,7 @@ public class EventLog {
     public void reportDisplaySchedule(int days, int numTasks, boolean status) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.print(" Display Schedule: DAYS=" + days);
         output.print(", NUM_TASKS=" + numTasks);
         output.println(", STDOUT=" + status);
@@ -247,7 +258,7 @@ public class EventLog {
     public void reportException(Exception e) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.println(" ERROR: " + e.getMessage());
+        output.print(" [ERROR] " + e.getMessage());
     }
 
     /**
@@ -258,6 +269,7 @@ public class EventLog {
     public void reportProcessTasks(String filename) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.println(" Reading Tasks: FILE=" + filename);
     }
 
@@ -270,6 +282,7 @@ public class EventLog {
     public void reportProcessConfig(String filename) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.println(" Reading Config: FILE=" + filename);
     }
 
@@ -294,6 +307,7 @@ public class EventLog {
     public void reportConfigAction(int idx, Object value) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         if(idx == 0) {
             if(value instanceof String) {
                 output.println("EDIT(USER_CONFIG): USER_NAME=" + (String) value);
@@ -365,6 +379,7 @@ public class EventLog {
     public void reportReadJBinFile(String filename) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.println(" READE(JBIN): FILE=" + filename);
     }
 
@@ -376,6 +391,7 @@ public class EventLog {
     public void reportWriteJBinFile(String filename) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.println(" WRITE(JBIN): FILE=" + filename);
     }
 
@@ -385,6 +401,7 @@ public class EventLog {
     public void reportCreateJBin() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.println(" JBIN FILE CREATED");
     }
 
@@ -394,6 +411,7 @@ public class EventLog {
     public void reportProcessJBin() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.println(" JBIN FILE PROCESSED");
     }
 
@@ -403,6 +421,7 @@ public class EventLog {
     public void reportUserLogin() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.println(" Current session has begun...");
     }
 
@@ -412,6 +431,7 @@ public class EventLog {
     public void reportExitSession() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
         output.println(" Current session has ended...");
         output.close();
     }
