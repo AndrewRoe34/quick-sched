@@ -1,7 +1,0 @@
-include: __CURR_CONFIG__, __LOG__, __BUILD__
-
-func foo()
-  x: input_int()
-  println(x)
-
-foo()

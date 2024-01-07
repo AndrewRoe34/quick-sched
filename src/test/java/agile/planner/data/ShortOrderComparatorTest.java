@@ -1,7 +1,5 @@
 package agile.planner.data;
 
-import agile.planner.data.ShortOrderComparator;
-import agile.planner.data.Task;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -134,7 +134,7 @@ public class ParserTest {
         String fal = "false";
         assertFalse(parser.parseConstant(fal).getBoolConstant());
         String str = "\"hello\"";
-        assertEquals("\"hello\"", parser.parseConstant(str).getStringConstant());
+        assertEquals("hello", parser.parseConstant(str).getStringConstant());
     }
 
     @Test

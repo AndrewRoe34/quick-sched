@@ -1,6 +1,6 @@
 package agile.planner.manager;
 
-import agile.planner.manager.ScheduleManager;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 
 public class ScheduleManagerTest {
 
-    private static ScheduleManager sm;
+    private static ScheduleManager sm = ScheduleManager.getScheduleManager();
 
     @Test
     public void setGlobalHours() {

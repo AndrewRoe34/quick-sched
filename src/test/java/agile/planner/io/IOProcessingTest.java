@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 
-import agile.planner.io.IOProcessing;
 import agile.planner.schedule.day.Day;
 import agile.planner.user.UserConfig;
 
@@ -135,7 +134,7 @@ public class IOProcessingTest {
             list.add(d1);
             IOProcessing.outputSchedule(list, 0, new PrintStream(testFile));
             String actual = Files.readString(p1);
-            assertEquals("Day 1: " + d1.toString(), actual);
+            assertEquals("Day 1: " + d1.formattedString(), actual);
         } catch(Exception e) {
             fail();
         }
@@ -147,7 +146,7 @@ public class IOProcessingTest {
             list.add(d1);
             IOProcessing.outputSchedule(list, 1, new PrintStream(testFile));
             String actual = Files.readString(p1);
-            assertEquals("1 overflows have occurred within schedule...\r\nDay 1: " + d1.toString(), actual);
+            assertEquals("1 overflows have occurred within schedule...\r\nDay 1: " + d1.formattedString(), actual);
         } catch(Exception e) {
             fail();
         }
@@ -159,6 +158,6 @@ public class IOProcessingTest {
     @Test
     public void readAndWriteJBinFile() {
         IOProcessing.writeJBinFile("data/schedule.jbin", "JIMMY JOHNS");
-        assertEquals("JIMMY JOHNS", IOProcessing.readJBinFile("data/schedule.bin"));
+        assertEquals("JIMMY JOHNS", IOProcessing.readJBinFile("data/schedule.jbin"));
     }
 }

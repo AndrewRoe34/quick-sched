@@ -429,11 +429,19 @@ public class Type implements Comparable<Type> {
                 }
             case STRING:
                 switch(attr) {
-                    case ADD:
+                    case CONCATENATE:
                         if(args.length == 0) throw new InvalidGrammarException();
                         StringBuilder sb = new StringBuilder(this.stringConstant);
                         for(Type t : args) {
-                            sb.append(t.toString()); //todo need to add toString for Int, String, and Bool
+                            sb.append(t.toString());
+                        }
+                        this.stringConstant = sb.toString();
+                        return this;
+                    case ADD:
+                        if(args.length == 0) throw new InvalidGrammarException();
+                        sb = new StringBuilder(this.stringConstant);
+                        for(Type t : args) {
+                            sb.append(t.toString());
                         }
                         //setStringConstant(sb.toString());
                         return new Type(sb.toString(), null);

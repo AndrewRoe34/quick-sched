@@ -2,8 +2,6 @@ package agile.planner.schedule;
 
 import agile.planner.data.Task;
 import agile.planner.io.IOProcessing;
-import agile.planner.schedule.CompactScheduler;
-import agile.planner.schedule.Scheduler;
 import agile.planner.schedule.day.Day;
 import agile.planner.user.UserConfig;
 import agile.planner.util.EventLog;

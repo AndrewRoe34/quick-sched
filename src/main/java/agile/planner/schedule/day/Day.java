@@ -69,6 +69,10 @@ public class Day {
         this.date = Time.getFormattedCalendarInstance(incrementation);
     }
 
+    public int getSize() {
+        return size;
+    }
+
     /**
      * Gets the Date from the Day
      *
@@ -78,12 +82,19 @@ public class Day {
         return date;
     }
 
+    public void addSubTask(Task task, int hours, boolean overflow) {
+        Task.SubTask subtask = task.addSubTask(hours, overflow);
+        subtaskManager.addLast(subtask);
+        this.size += hours;
+    }
+
     /**
      * Adds a Task to the Day
      *
      * @param task task to be added in the form of a SubTask
      * @return whether task was inserted without overflow
      */
+    @Deprecated
     public boolean addSubTaskDynamically(Task task) {
         if(this.date.equals(task.getDueDate())) {
             boolean overflow = task.getSubTotalHoursRemaining() > getSpareHours();

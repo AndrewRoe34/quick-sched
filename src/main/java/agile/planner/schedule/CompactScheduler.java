@@ -41,6 +41,17 @@ public class CompactScheduler implements Scheduler {
         return singleton;
     }
 
+    /**
+     * Performs Longest-Job-First in order to compute the schedule for the week.
+     * User config options allow for other varieties such as Shortest-Job-First as well as other
+     * restraints for scheduling.
+     *
+     * @param day Day being processed
+     * @param errorCount number of errors in current schedule
+     * @param complete Tasks that are "finished scheduling" are added here
+     * @param taskManager PriorityQueue of all Tasks in sorted order
+     * @return number of errors in scheduling Day
+     */
     @Override
     public int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager) {
         //Note: We do not need to worry about 'min_hours' since CompactScheduler focuses on filling up each day with tasks

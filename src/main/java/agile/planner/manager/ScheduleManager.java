@@ -14,6 +14,7 @@ import agile.planner.data.Card;
 import agile.planner.data.Label;
 import agile.planner.io.IOProcessing;
 import agile.planner.schedule.CompactScheduler;
+import agile.planner.schedule.DynamicScheduler;
 import agile.planner.schedule.Scheduler;
 import agile.planner.schedule.day.Day;
 import agile.planner.data.Task;
@@ -78,8 +79,16 @@ public class ScheduleManager {
         eventLog.reportUserLogin();
         processUserConfigFile();
         taskManager = new PriorityQueue<>();
-        scheduler = CompactScheduler.getSingleton(userConfig, eventLog);
-        //scheduler = new DynamicScheduler(userConfig, eventLog);
+        switch(userConfig.getSchedulingAlgorithm()) {
+            case 0:
+                scheduler = DynamicScheduler.getSingleton(userConfig, eventLog);
+                break;
+            case 1:
+                scheduler = CompactScheduler.getSingleton(userConfig, eventLog);
+                break;
+            default:
+                //do nothing
+        }
         schedule = new LinkedList<>();
         customHours = new HashMap<>();
         taskMap = new HashMap<>();

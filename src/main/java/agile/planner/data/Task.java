@@ -399,6 +399,7 @@ public class Task implements Comparable<Task>, Linker {
 
     /**
      * The individual component of a parent Task in the form of a SubTask
+     * <p>
      * TODO will need to include a markComplete() method
      *
      * @author Andrew Roe

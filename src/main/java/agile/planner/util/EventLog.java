@@ -310,61 +310,61 @@ public class EventLog {
         output.print(" [INFO]");
         if(idx == 0) {
             if(value instanceof String) {
-                output.println("EDIT(USER_CONFIG): USER_NAME=" + (String) value);
+                output.println("EDIT(USER_CONFIG): USER_NAME=" + value);
             } else {
                 throw new InputMismatchException("Expected <String> for <USER_NAME>");
             }
         } else if(idx == 1) {
             if(value instanceof String) {
-                output.println("EDIT(USER_CONFIG): EMAIL=" + (String) value);
+                output.println("EDIT(USER_CONFIG): EMAIL=" + value);
             } else {
                 throw new InputMismatchException("Expected <String> for <EMAIL>");
             }
         } else if(idx == 2) {
             if(value instanceof Integer) {
-                output.println("EDIT(USER_CONFIG): DAY_HOURS=" + (Integer) value);
+                output.println("EDIT(USER_CONFIG): DAY_HOURS=" + value);
             } else {
                 throw new InputMismatchException("Expected <Integer> for <DAY_HOURS>");
             }
         } else if(idx == 3) {
             if(value instanceof Integer) {
-                output.println("EDIT(USER_CONFIG): MAX_DAYS=" + (Integer) value);
+                output.println("EDIT(USER_CONFIG): MAX_DAYS=" + value);
             } else {
                 throw new InputMismatchException("Expected <Integer> for <MAX_DAYS>");
             }
         } else if(idx == 4) {
             if(value instanceof Integer) {
-                output.println("EDIT(USER_CONFIG): ARCHIVE_DAYS=" + (Integer) value);
+                output.println("EDIT(USER_CONFIG): ARCHIVE_DAYS=" + value);
             } else {
                 throw new InputMismatchException("Expected <Integer> for <ARCHIVE_DAYS>");
             }
         } else if(idx == 5) {
             if(value instanceof Boolean) {
-                output.println("EDIT(USER_CONFIG): PRIORITY=" + (Boolean) value);
+                output.println("EDIT(USER_CONFIG): PRIORITY=" + value);
             } else {
                 throw new InputMismatchException("Expected <Boolean> for <PRIORITY>");
             }
         } else if(idx == 6) {
             if(value instanceof Boolean) {
-                output.println("EDIT(USER_CONFIG): OVERFLOW=" + (Boolean) value);
+                output.println("EDIT(USER_CONFIG): OVERFLOW=" + value);
             } else {
                 throw new InputMismatchException("Expected <Boolean> for <OVERFLOW>");
             }
         } else if(idx == 7) {
             if(value instanceof Boolean) {
-                output.println("EDIT(USER_CONFIG): FIT_SCHEDULE=" + (Boolean) value);
+                output.println("EDIT(USER_CONFIG): FIT_SCHEDULE=" + value);
             } else {
                 throw new InputMismatchException("Expected <Boolean> for <FIT_SCHEDULE>");
             }
         } else if(idx == 8) {
             if(value instanceof Integer) {
-                output.println("EDIT(USER_CONFIG): SCHEDULE_ALG=" + (Integer) value);
+                output.println("EDIT(USER_CONFIG): SCHEDULE_ALG=" + value);
             } else {
                 throw new InputMismatchException("Expected <Integer> for <SCHEDULE_ALG>");
             }
         } else {
             if(value instanceof Integer) {
-                output.println("EDIT(USER_CONFIG): MIN_HOURS=" + (Integer) value);
+                output.println("EDIT(USER_CONFIG): MIN_HOURS=" + value);
             } else {
                 throw new InputMismatchException("Expected <Integer> for <MIN_HOURS>");
             }

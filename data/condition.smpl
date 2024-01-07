@@ -1,0 +1,12 @@
+include: __CURR_CONFIG__, __LOG__
+
+func prompt_user()
+  print("Enter 0 or 1: ")
+  x: input_int()
+  if(x.==(0))
+    println("Rise and shine Mr. Freeman...rise and shine...")
+  #this should still work
+  else
+    println("The right man in the right place can make all the difference...")
+
+prompt_user()

@@ -50,6 +50,7 @@ public class Parser {
         PARSE_INT,
         PARSE_BOOL,
         SUB_STRING,
+        CONCATENATE,
 
         //Checklist
         ADD_ITEM,
@@ -171,6 +172,7 @@ public class Parser {
             case "false":
                 return Operation.CONSTANT;
             case "if":
+            case "else":
                 return Operation.IF_CONDITION;
             default:
                 switch(tokens[0].charAt(tokens[0].length() - 1)) {
@@ -241,6 +243,13 @@ public class Parser {
         }
 
         int idx = line.indexOf("if") + 2;
+        if(idx == 1) {
+            idx = line.indexOf("else") + 4;
+            for(int i = idx; i < line.length(); i++) {
+                if(line.charAt(i) != ' ' && line.charAt(i) != '\t') throw new InvalidGrammarException();
+            }
+            return new CustomFunction("else", new String[0], numSpaces + 4 * numTabs);
+        }
         for(; idx < line.length(); idx++) {
             if(line.charAt(idx) == '(') {
                 break;
@@ -610,6 +619,8 @@ public class Parser {
      */
     public AttrFunc determineAttrFunc(String attr) {
         switch(attr) {
+            case "concat":
+                return AttrFunc.CONCATENATE;
             case "add":
                 return AttrFunc.ADD;
             case "get_id":

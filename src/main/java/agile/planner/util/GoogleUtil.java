@@ -17,23 +17,15 @@ public class GoogleUtil {
 
     }
 
-    public void checkConnection() {
+    public static void authenticate() {
 
     }
 
-    public void formConnection() {
+    public static void sendData() {
 
     }
 
-    public void authenticate() {
-
-    }
-
-    public void sendData() {
-
-    }
-
-    public void receiveData() {
+    public static void receiveData() {
 
     }
 }

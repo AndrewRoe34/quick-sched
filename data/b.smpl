@@ -1,9 +1,0 @@
-include: __CURR_CONFIG__, __LOG__, __BUILD__
-func foo(x)
-  if(x.=(0))
-    return
-  println(x)
-  x.--()
-  foo(x)
-
-foo(3)

@@ -11,6 +11,7 @@ import agile.planner.util.CheckList;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.*;
 
 public class ScriptFSM {
@@ -29,7 +30,6 @@ public class ScriptFSM {
     private PreProcessor preProcessor = null;
     private boolean ppStatus = false;
     private Scanner scriptScanner;
-    private boolean inFunction;
     private List<String> injectScript = new ArrayList<>();
     private int injectScriptIdx;
     private final ScheduleManager scheduleManager = ScheduleManager.getScheduleManager();
@@ -132,6 +132,9 @@ public class ScriptFSM {
                             if(customFunction == null) {
                                 throw new InvalidFunctionException();
                             } else {
+                                if("else".equals(customFunction.getFuncName())) {
+                                    throw new InvalidGrammarException();
+                                }
                                 untrimmed = executeIfCondition(customFunction);
                                 if(untrimmed != null) {
                                     line = untrimmed.trim();
@@ -190,16 +193,43 @@ public class ScriptFSM {
         }
     }
 
-    protected boolean executeIfConditionFunc(CustomFunction ifCondition, List<Type> localStack) {
+    protected boolean[] executeIfConditionFunc(CustomFunction ifCondition, List<Type> localStack) {
         Type[] args = processArguments(ifCondition.getArgs(), localStack);
-        if(args.length != 1) throw new InvalidGrammarException();
+        if(args.length == 0) throw new InvalidGrammarException();
         //need to execute the code here
-        scriptLog.reportIfCondition(ifCondition.getArgs(), args[0].getBoolConstant());
-        if(args[0].getBoolConstant()) {
+        boolean status = true;
+        for(Type t1 : args) {
+            if(t1.getBoolConstant() == null) {
+                throw new InvalidGrammarException();
+            } else {
+                status = t1.getBoolConstant();
+                if(!status) {
+                    break;
+                }
+            }
+        }
+        // 0 == boolean arg result, 1 == return status
+        boolean[] results = {status, false};
+        scriptLog.reportIfCondition(ifCondition.getArgs(), status);
+        if(status) {
             for(String s : ifCondition.getLines()) {
-                if(parser.typeOfOperation(s) == Parser.Operation.RETURN) return true;
+                if(parser.typeOfOperation(s) == Parser.Operation.RETURN) {
+                    results[1] = true;
+                    return results;
+                }
                 executeStructureBlock(parser.typeOfOperation(s), s.trim(), localStack);
             }
+        }
+        return results;
+    }
+
+    protected boolean executeElseConditionFunc(CustomFunction ifCondition, List<Type> localStack) {
+        scriptLog.reportIfCondition(ifCondition.getArgs(), true);
+        for(String s : ifCondition.getLines()) {
+            if(parser.typeOfOperation(s) == Parser.Operation.RETURN) {
+                return true;
+            }
+            executeStructureBlock(parser.typeOfOperation(s), s.trim(), localStack);
         }
         return false;
     }
@@ -432,6 +462,10 @@ public class ScriptFSM {
                 if(args.length != 0) throw new InvalidFunctionException();
                 funcViewStack(localStack);
                 return null;
+            case "write_file":
+                if(args.length != 2 || args[0].getVariabTypeId() != Type.TypeId.STRING) throw new InvalidFunctionException();
+                funcWriteFile(args[0].getStringConstant(), formatString(args[1].toString()));
+                return null;
             default:
                 processCustomFunction(func, args);
         }
@@ -453,9 +487,11 @@ public class ScriptFSM {
         }
 
         if(!"if".equals(func.getFuncName())) {
-            inFunction = true;
+            //do nothing for now
         }
 
+        boolean priorIfCondition = false;
+        boolean priorIfFailed = false;
         for(int lineIdx = 0; lineIdx < customFunction.getLines().size(); lineIdx++) {
             String line = customFunction.getLines().get(lineIdx);
             String untrimmed = line;
@@ -471,13 +507,16 @@ public class ScriptFSM {
                     Attributes attr = parser.parseAttributes(line);
                     if (attr == null) throw new InvalidFunctionException();
                     processAttribute(attr, localStack);
+                    priorIfCondition = false;
+                    priorIfFailed = false;
                     scriptLog.reportAttrFunc(attr);
                     break;
                 case FUNCTION:
                     if(!ppStatus) throw new InvalidPreProcessorException();
                     StaticFunction myfunc = parser.parseStaticFunction(line);
-                    this.inFunction = true;
                     processStaticFunction(myfunc, localStack);
+                    priorIfCondition = false;
+                    priorIfFailed = false;
                     scriptLog.reportFunctionCall(myfunc);
                     break;
                 case IF_CONDITION:
@@ -493,9 +532,22 @@ public class ScriptFSM {
                             break;
                         }
                     }
-                    boolean status = executeIfConditionFunc(ifCondition, localStack);
-                    if(status) return;
-//                        scriptLog.reportFunctionCall(myfunc);
+                    //needed a way to obtain the return status and whether the condition block was executed
+                    if("if".equals(ifCondition.getFuncName())) {
+                        boolean[] status = executeIfConditionFunc(ifCondition, localStack);
+                        if(status[1]) return;
+                        priorIfCondition = true;
+                        priorIfFailed = !status[0];
+                    } else {
+                        if(priorIfCondition && priorIfFailed) {
+                            boolean status = executeElseConditionFunc(ifCondition, localStack);
+                            if(status) return;
+                            priorIfCondition = false;
+                            priorIfFailed = false;
+                        } else if(!priorIfCondition) {
+                            throw new InvalidGrammarException();
+                        }
+                    }
                     lineIdx--;
                     break;
                 case INSTANCE:
@@ -537,12 +589,13 @@ public class ScriptFSM {
                         localStack.add(ret);
                         globalStack.remove(ret);
                     }
+                    priorIfCondition = false;
+                    priorIfFailed = false;
                     break;
                 default:
                     throw new InvalidGrammarException();
             }
         }
-        inFunction = false;
     }
 
     public Type lookupVariable(String token) {
@@ -578,7 +631,7 @@ public class ScriptFSM {
                     break;
                 case VARIABLE:
                     Type t1 = null;
-                    if(inFunction) {
+                    if(localStack != null && localStack.size() > 0) {
                         t1 = lookupLocalVariable(args[i], localStack);
                     } else {
                         t1 = lookupVariable(args[i]);
@@ -632,7 +685,8 @@ public class ScriptFSM {
                     types[i] = parser.parseConstant(args[i]);
                     break;
                 case VARIABLE:
-                    List<Type> tempList = inFunction ? localStack : globalStack;
+//                    List<Type> tempList = inFunction ? localStack : globalStack;
+                    List<Type> tempList = localStack != null ? localStack : globalStack;
                     boolean flag = false;
                     for(Type t : tempList) {
                         if(t.getVariableName() != null && args[i].equals(t.getVariableName())) {
@@ -701,6 +755,16 @@ public class ScriptFSM {
         } else {
             throw new InvalidGrammarException();
         }
+    }
+
+    protected void funcWriteFile(String filename, String contents) {
+        PrintStream printStream = null;
+        try {
+            printStream = new PrintStream(filename);
+        } catch (FileNotFoundException e) {
+            throw new InvalidFunctionException();
+        }
+        printStream.print(contents);
     }
 
     protected void funcPause() {

@@ -26,7 +26,6 @@ public class JBin {
      * @return JBin String
      */
     public static String createJBin(List<Card> cards) {
-        //TODO might add Days and the tasks they hold (for schedule preservation versus creating another one)
 
         /* NOTES:
         1. Create Label section (with ID, not associated with system)
@@ -38,7 +37,7 @@ public class JBin {
 
         HashMaps will be very helpful for decoding JBin later on
         Need to account for possibility that file is read two times in a row
-            --> This would mean tasks, cards, and labels are the same/duplicates (will need to verify via the equals method, i.e. HashSet)
+            --> This would mean tasks, cards, and labels are the same/duplicates (will need to verify via the equals' method, i.e. HashSet)
             --> Otherwise, it simply gets added to the system
 
         FORMATTING OF DATA:

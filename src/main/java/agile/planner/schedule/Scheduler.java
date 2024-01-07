@@ -14,7 +14,7 @@ import java.util.PriorityQueue;
 public interface Scheduler {
 
     /**
-     * Assigns current day a set of SubTasks
+     * Assigns current day a set of SubTasks via one of the specified scheduling algorithms
      *
      * @param day Day being processed
      * @param errorCount number of errors in current schedule

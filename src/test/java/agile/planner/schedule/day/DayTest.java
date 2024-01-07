@@ -3,7 +3,6 @@ package agile.planner.schedule.day;
 import java.util.Calendar;
 
 import agile.planner.data.Task;
-import agile.planner.schedule.day.Day;
 import agile.planner.util.Time;
 import org.junit.jupiter.api.Test;
 
@@ -89,7 +88,7 @@ public class DayTest {
      * Tests toString() functionality
      */
     @Test
-    public void testToString() {
+    public void testFormattedString() {
         Calendar date = Calendar.getInstance();
         date.set(Calendar.DAY_OF_MONTH, 1);
         date.set(Calendar.MONTH, 0);
@@ -110,7 +109,7 @@ public class DayTest {
         d1.addSubTaskDynamically(new Task(0, "Future", 10, days));
         String expected = "01-01-3000\n"
                 + "-Future, 10hr, Due 01-01-3000 OVERFLOW\n";
-        assertEquals(expected, d1.toString());
+        assertEquals(expected, d1.formattedString());
     }
 
     /**
