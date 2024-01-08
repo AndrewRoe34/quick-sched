@@ -8,5 +8,6 @@ func prompt_user()
   #this should still work
   else
     println("The right man in the right place can make all the difference...")
+  println("Pick up that can")
 
 prompt_user()
