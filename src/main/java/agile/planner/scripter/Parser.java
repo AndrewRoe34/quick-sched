@@ -44,6 +44,7 @@ public class Parser {
         GREATER_THAN,
         LESS_THAN,
         NOT_EQUAL,
+        MOD,
 
         //String
         LENGTH,
@@ -653,6 +654,8 @@ public class Parser {
                 return AttrFunc.MULTIPLY_ONE;
             case "%%":
                 return AttrFunc.MOD_ONE;
+            case "%":
+                return AttrFunc.MOD;
             case "length":
                 return AttrFunc.LENGTH;
             case "parse_int":

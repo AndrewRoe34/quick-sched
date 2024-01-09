@@ -355,7 +355,7 @@ public class Type implements Comparable<Type> {
                     case ADD_ONE: //todo need to integrate for /, *, %
                         if(args.length == 0) {
                             this.intConstant++;
-                            return this;
+                            return new Type(getIntConstant(), null);
                         }
                         for(Type t : args) {
                             if(t.getVariabTypeId() == TypeId.INTEGER) {
@@ -364,11 +364,11 @@ public class Type implements Comparable<Type> {
                                 throw new InvalidGrammarException();
                             }
                         }
-                        return this;
+                        return new Type(getIntConstant(), null);
                     case SUBTRACT_ONE:
                         if(args.length == 0) {
                             this.intConstant--;
-                            return this;
+                            return new Type(getIntConstant(), null);
                         }
                         for(Type t : args) {
                             if(t.getVariabTypeId() == TypeId.INTEGER) {
@@ -377,7 +377,7 @@ public class Type implements Comparable<Type> {
                                 throw new InvalidGrammarException();
                             }
                         }
-                        return this;
+                        return new Type(getIntConstant(), null);
                     case DIVIDE_ONE:
                         if(args.length == 0) throw new InvalidGrammarException();
                         for(Type t : args) {
@@ -387,7 +387,7 @@ public class Type implements Comparable<Type> {
                                 throw new InvalidGrammarException();
                             }
                         }
-                        return this;
+                        return new Type(getIntConstant(), null);
                     case MULTIPLY_ONE:
                         if(args.length == 0) throw new InvalidGrammarException();
                         for(Type t : args) {
@@ -397,7 +397,7 @@ public class Type implements Comparable<Type> {
                                 throw new InvalidGrammarException();
                             }
                         }
-                        return this;
+                        return new Type(getIntConstant(), null);
                     case MOD_ONE:
                         if(args.length == 0) throw new InvalidGrammarException();
                         for(Type t : args) {
@@ -407,7 +407,18 @@ public class Type implements Comparable<Type> {
                                 throw new InvalidGrammarException();
                             }
                         }
-                        return this;
+                        return new Type(getIntConstant(), null);
+                    case MOD:
+                        if(args.length == 0) throw new InvalidGrammarException();
+                        int val = this.intConstant;
+                        for(Type t : args) {
+                            if(t.getVariabTypeId() == TypeId.INTEGER) {
+                                val %= t.getIntConstant();
+                            } else {
+                                throw new InvalidGrammarException();
+                            }
+                        }
+                        return new Type(val, null);
                     case EQUALS:
                         if(args.length != 1) throw new InvalidGrammarException();
                         return new Type(this.intConstant.equals(args[0].getIntConstant()), null);
