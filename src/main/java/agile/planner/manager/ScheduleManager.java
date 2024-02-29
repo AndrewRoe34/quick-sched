@@ -192,6 +192,14 @@ public class ScheduleManager {
         eventLog.reportWriteJBinFile(filename);
     }
 
+    public void setScheduleOption(int idx) {
+        if(idx == 1 && scheduler instanceof CompactScheduler) {
+            scheduler = DynamicScheduler.getSingleton(userConfig, eventLog);
+        } else if(idx == 2 && scheduler instanceof DynamicScheduler) {
+            scheduler = CompactScheduler.getSingleton(userConfig, eventLog);
+        }
+    }
+
     /**
      * Processes the Tasks from the given file
      *

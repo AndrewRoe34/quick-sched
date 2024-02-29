@@ -2,7 +2,7 @@ include: __CURR_CONFIG__, __LOG__, __IMPORT__, __BUILD__
 
 func confirm_settings()
   # Displays user settings and prompts whether changes should be made
-  option: input_int("1-Dynamic 2-Compact 3-Default")
+  option: input_int("1-Dynamic 2-Compact 3-Default> ")
   set_schedule(option)
   file_name: "data/"
   input: ""

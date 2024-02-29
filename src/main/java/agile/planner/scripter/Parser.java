@@ -294,6 +294,7 @@ public class Parser {
             case "get_card":
             case "avg":
             case "view_stack":
+            case "set_schedule":
                 return new StaticFunction(funcName, arguments, true);
             default:
                 return new StaticFunction(funcName, arguments, false);

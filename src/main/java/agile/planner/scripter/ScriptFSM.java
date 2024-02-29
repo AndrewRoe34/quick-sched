@@ -475,6 +475,15 @@ public class ScriptFSM {
                 if(args.length != 2 || args[0].getVariabTypeId() != Type.TypeId.STRING) throw new InvalidFunctionException();
                 funcWriteFile(args[0].getStringConstant(), formatString(args[1].toString()));
                 return null;
+            case "set_schedule":
+                if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.INTEGER) throw new InvalidFunctionException();
+                int x = args[0].getIntConstant();
+                if(x >= 1 && x <= 3) {
+                    funcSetSchedule(args[0].getIntConstant());
+                } else {
+                    throw new InvalidFunctionException();
+                }
+                return null;
             default:
                 processCustomFunction(func, args);
         }
@@ -893,6 +902,10 @@ public class ScriptFSM {
 
     protected Type funcGetCard(int idx) { //todo need to handle index out of bounds possibly
         return new Type(scheduleManager.getCards().get(idx), null, Type.TypeId.CARD);
+    }
+
+    protected void funcSetSchedule(int idx) {
+        this.scheduleManager.setScheduleOption(idx);
     }
 
     protected void funcUpdateProfile() {
