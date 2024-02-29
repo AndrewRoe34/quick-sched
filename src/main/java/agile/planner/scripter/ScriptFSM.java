@@ -433,8 +433,11 @@ public class ScriptFSM {
                 funcInputTasks(args[0].getIntConstant());
                 return null;
             case "input_int":
-                if(args.length != 0) throw new InvalidFunctionException();
-                return funcInputInt();
+                if(args.length > 1) throw new InvalidFunctionException();
+                if(args.length == 1) {
+                    return funcInputInt(args[0].getStringConstant());
+                }
+                return funcInputInt(null);
             case "pause":
                 if(args.length != 0) throw new InvalidFunctionException();
                 funcPause();
@@ -747,7 +750,10 @@ public class ScriptFSM {
         }
     }
 
-    protected Type funcInputInt() {
+    protected Type funcInputInt(String stringConstant) {
+        if(stringConstant != null) {
+            System.out.print(stringConstant);
+        }
         if(inputScanner.hasNextInt()) {
             Type localType = new Type(inputScanner.nextInt(), null);
             if(inputScanner.hasNextLine()) inputScanner.nextLine();

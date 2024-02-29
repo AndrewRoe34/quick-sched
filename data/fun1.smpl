@@ -3,7 +3,7 @@ include: __CURR_CONFIG__, __LOG__, __IMPORT__, __BUILD__
 
 #Imports schedule data from prior session
 if(true)
-  import_schedule("data/update7.jbin")
+  #import_schedule("data/update7.jbin")
 
 #Constructs class instances
 val: "3400"

@@ -1,0 +1,38 @@
+# Automated schedule generating program written with smpl
+# @author Andrew Roe
+include: __CURR_CONFIG__, __LOG__, __IMPORT__, __BUILD__
+
+func confirm_settings()
+  # Displays user settings and prompts whether changes should be made
+  file_name: "data/"
+  input: ""
+  str: input_word("Upload prior schedule: ")
+  if("y".==(str))
+    input: input_word("Jbin filename: ")
+    file_name.add(input)
+    import_schedule(file_name)
+
+func task_mod(my_task)
+  # Adds a checklist or label to the task
+
+func setup_tasks()
+  str: input_word("Are you finished: ")
+  if("y".!=(str))
+    return
+
+  name: input_word("Name: ")
+  hours: input_int("Hours: ")
+  due_date: input_int("Due_Date: ")
+  t1: task(name, hours, due_date)
+
+  str: input_word("Add a Checklist or Label: ")
+  if("y".==(str))
+    task_mod(t1)
+
+  setup_tasks()
+
+confirm_settings()
+setup_tasks()
+add_all_tasks()
+
+build()

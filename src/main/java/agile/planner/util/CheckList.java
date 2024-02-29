@@ -3,7 +3,6 @@ package agile.planner.util;
 import agile.planner.data.Linker;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -242,7 +241,6 @@ public class CheckList implements Linker {
             throw new IllegalArgumentException("Invalid index for checklist");
         }
         Item i1 = getItem(idx);
-        List<Integer> list = new LinkedList<>();
         i1.setDescription(description);
     }
 
