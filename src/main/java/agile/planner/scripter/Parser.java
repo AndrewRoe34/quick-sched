@@ -181,7 +181,7 @@ public class Parser {
                     case ':':
                         return Operation.INSTANCE;
                     case '.':
-                        return Operation.ATTRIBUTE;
+                        if(tokens[0].charAt(0) != '"') return Operation.ATTRIBUTE;
                     default:
                         if(verifyFunc(line)) {
                             if("if".equals(tokens[0].substring(0, 2))) {
@@ -435,9 +435,10 @@ public class Parser {
         // parses arguments in between parentheses (...)
         String[] arguments = verifyArgument(line, endIdx);
 
+        Parser.Operation op = null;
         Type[] args = new Type[arguments.length];
         for(int i = 0; i < arguments.length; i++) {
-            Parser.Operation op = typeOfOperation(arguments[i]);
+            op = typeOfOperation(arguments[i]);
             switch(op) {
                 case CONSTANT:
                     args[i] = parseConstant(arguments[i]);
