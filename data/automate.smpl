@@ -2,11 +2,12 @@ include: __CURR_CONFIG__, __LOG__, __IMPORT__, __BUILD__
 
 func confirm_settings()
   # Displays user settings and prompts whether changes should be made
+  println("\nSchedule options:")
   option: input_int("1-Dynamic 2-Compact 3-Default> ")
   set_schedule(option)
   file_name: "data/"
   input: ""
-  str: input_word("Upload prior schedule> ")
+  str: input_word("Upload prior schedule(y/n) ")
   if(str.==("y"))
     input: input_word("Jbin filename> ")
     file_name.concat(input)
@@ -16,14 +17,15 @@ func task_mod(my_task)
   # Adds a checklist or label to the task
 
 func setup_tasks()
+  println("Create a Task:")
   name: input_word("Name> ")
   hours: input_int("Hours> ")
   due_date: input_int("Due_Date> ")
   t1: task(name, hours, due_date)
-  str: input_word("Add a Checklist or Label> ")
+  str: input_word("Add a Checklist or Label(y/n) ")
   if(str.==("y"))
     task_mod(t1)
-  str: input_word("Are you finished> ")
+  str: input_word("Are you finished(y/n) ")
   if(str.!=("y"))
     return
   setup_tasks()
