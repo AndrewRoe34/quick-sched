@@ -73,7 +73,7 @@ public class ScriptFSM {
                             break;
                         case INSTANCE:
                             if(!ppStatus) throw new InvalidPreProcessorException();
-                            ClassInstance classInstance = parser.parseClassInstance(line);
+                            ClassInstance classInstance = parser.parseClassInstance(line, globalStack, new ArrayList<>());
                             if (classInstance == null) {
                                 int i = 0;
                                 for(; i < line.length(); i++) {
@@ -438,6 +438,12 @@ public class ScriptFSM {
                     return funcInputInt(args[0].getStringConstant());
                 }
                 return funcInputInt(null);
+            case "input_word":
+                if(args.length > 1) throw new InvalidFunctionException();
+                if(args.length == 1) {
+                    return funcInputWord(args[0].getStringConstant());
+                }
+                return funcInputWord(null);
             case "pause":
                 if(args.length != 0) throw new InvalidFunctionException();
                 funcPause();
@@ -555,7 +561,7 @@ public class ScriptFSM {
                     break;
                 case INSTANCE:
                     if(!ppStatus) throw new InvalidPreProcessorException();
-                    ClassInstance classInstance = parser.parseClassInstance(line);
+                    ClassInstance classInstance = parser.parseClassInstance(line, globalStack, localStack);
                     if (classInstance == null) {
                         int i = 0;
                         for(; i < line.length(); i++) {
@@ -756,6 +762,19 @@ public class ScriptFSM {
         }
         if(inputScanner.hasNextInt()) {
             Type localType = new Type(inputScanner.nextInt(), null);
+            if(inputScanner.hasNextLine()) inputScanner.nextLine();
+            return localType;
+        } else {
+            throw new InvalidGrammarException();
+        }
+    }
+
+    protected Type funcInputWord(String stringConstant) {
+        if(stringConstant != null) {
+            System.out.print(stringConstant);
+        }
+        if(inputScanner.hasNext()) {
+            Type localType = new Type(inputScanner.next(), null);
             if(inputScanner.hasNextLine()) inputScanner.nextLine();
             return localType;
         } else {

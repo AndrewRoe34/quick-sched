@@ -1,5 +1,6 @@
 package agile.planner.scripter;
 
+import agile.planner.scripter.exception.DereferenceNullException;
 import agile.planner.scripter.exception.InvalidGrammarException;
 
 import java.util.*;
@@ -195,6 +196,7 @@ public class Parser {
                         } else if(containsInteger(line.trim())) {
                             return Operation.CONSTANT;
                         } else {
+                            if(tokens.length == 1 && tokens[0].charAt(tokens[0].length()-1) == ')') return Operation.ATTRIBUTE;
 //                            String finalToken = tokens[tokens.length - 1].trim();
 //                            if(finalToken.charAt(finalToken.length() - 1) == ')') {
 //                                return Operation.FUNCTION;
@@ -285,6 +287,7 @@ public class Parser {
             case "add_all_tasks":
             case "input_tasks":
             case "input_int":
+            case "input_word":
             case "pause":
             case "view_interface":
             case "inject_code":
@@ -385,7 +388,7 @@ public class Parser {
      * @param line unprocessed class instance and assignment line
      * @return formatted {@link ClassInstance}
      */
-    public ClassInstance parseClassInstance(String line) {
+    public ClassInstance parseClassInstance(String line, List<Type> globalstack, List<Type> localstack) {
         // skips whitespace between beginning of line and variable
         //    t1: task("HW", 3, 0)
         int startIdx = skipWhiteSpace(line, 0);
@@ -432,21 +435,56 @@ public class Parser {
         // parses arguments in between parentheses (...)
         String[] arguments = verifyArgument(line, endIdx);
 
+        Type[] args = new Type[arguments.length];
+        for(int i = 0; i < arguments.length; i++) {
+            Parser.Operation op = typeOfOperation(arguments[i]);
+            switch(op) {
+                case CONSTANT:
+                    args[i] = parseConstant(arguments[i]);
+                    break;
+                case VARIABLE:
+                    //need to lookup local and global stack
+                    boolean flag = false;
+                    for(Type t1 : localstack) {
+                        if(arguments[i].equals(t1.getVariableName())) {
+                            flag = true;
+                            args[i] = t1;
+                            break;
+                        }
+                    }
+                    if(!flag) {
+                        for(Type t1 : globalstack) {
+                            if(arguments[i].equals(t1.getVariableName())) {
+                                flag = true;
+                                args[i] = t1;
+                                break;
+                            }
+                        }
+                    }
+                    if(!flag) {
+                        throw new DereferenceNullException();
+                    }
+                    break;
+                default:
+                    return null;
+            }
+        }
+
         // verifies parsed class instance exists and returns correct ClassInstance child class
         ClassInstance inst;
         switch(instanceType) {
             case "card":
-                inst = parseCard(arguments);
+                inst = parseCard(args);
                 break;
             case "task":
-                inst = parseTask(arguments);
+                inst = parseTask(args);
                 break;
             case "label":
-                inst = parseLabel(arguments);
+                inst = parseLabel(args);
                 break;
             case "checklist":
             case "cl":
-                inst = parseCheckList(arguments);
+                inst = parseCheckList(args);
                 break;
             default:
                 return null;
@@ -462,10 +500,10 @@ public class Parser {
      * @param args arguments for the given class
      * @return formatted {@link CardInstance}
      */
-    private CardInstance parseCard(String[] args) {
+    private CardInstance parseCard(Type[] args) {
 //        String[] arguments = args.split(FUNC_REGEX, -1);
 //        return arguments.length == 1 ? new CardInstance(arguments[0]) : null;
-        return args.length == 1 ? new CardInstance(args[0]) : null;
+        return args.length == 1 ? new CardInstance(args[0].getStringConstant()) : null;
     }
 
     /**
@@ -474,11 +512,11 @@ public class Parser {
      * @param args arguments for the given class
      * @return formatted {@link TaskInstance}
      */
-    private TaskInstance parseTask(String[] args) {
+    private TaskInstance parseTask(Type[] args) {
 //        String[] arguments = args.split(FUNC_REGEX, -1);
 //        return arguments.length == 3 ? new TaskInstance(arguments[0].trim(),
 //                Integer.parseInt(arguments[1].trim()), Integer.parseInt(arguments[2].trim())) : null;
-        return args.length == 3 ? new TaskInstance(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2])) : null;
+        return args.length == 3 ? new TaskInstance(args[0].getStringConstant(), args[1].getIntConstant(), args[2].getIntConstant()) : null;
     }
 
     /**
@@ -487,9 +525,9 @@ public class Parser {
      * @param args arguments for the given class
      * @return formatted {@link LabelInstance}
      */
-    private LabelInstance parseLabel(String[] args) {
+    private LabelInstance parseLabel(Type[] args) {
 //        String[] arguments = args.split(FUNC_REGEX, -1);
-        return args.length == 2 ? new LabelInstance(args[0], Integer.parseInt(args[1])) : null;
+        return args.length == 2 ? new LabelInstance(args[0].getStringConstant(), args[1].getIntConstant()) : null;
     }
 
     /**
@@ -498,9 +536,9 @@ public class Parser {
      * @param args arguments for the given class
      * @return formatted {@link CheckListInstance}
      */
-    private ClassInstance parseCheckList(String[] args) {
+    private ClassInstance parseCheckList(Type[] args) {
 //        String[] arguments = args.split(FUNC_REGEX, -1);
-        return args.length == 1 ? new CheckListInstance(args[0]) : null;
+        return args.length == 1 ? new CheckListInstance(args[0].getStringConstant()) : null;
     }
 
     private int skipWhiteSpace(String line, int startIdx) {

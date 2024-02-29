@@ -476,6 +476,12 @@ public class Type implements Comparable<Type> {
                             return new Type(this.stringConstant.substring(args[0].getIntConstant(),
                                     args[1].getIntConstant()), null);
                         }
+                    case EQUALS:
+                        if(args.length != 1 && args[0].getVariabTypeId() != TypeId.STRING) throw new InvalidGrammarException();
+                        return new Type(this.stringConstant.equals(args[0].getStringConstant()), null);
+                    case NOT_EQUAL:
+                        if(args.length != 1 && args[0].getVariabTypeId() != TypeId.STRING) throw new InvalidGrammarException();
+                        return new Type(!this.stringConstant.equals(args[0].getStringConstant()), null);
                 }
             case BOOLEAN:
             default:
