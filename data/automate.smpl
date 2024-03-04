@@ -15,9 +15,23 @@ func confirm_settings()
 
 func task_mod(my_task)
   # Adds a checklist or label to the task
+  str: input_word("Add a Checklist(y/n) ")
+  my_cl: ""
+  if(str.==("y"))
+    # my_cl: create_checklist(1)
+      my_task.add(my_cl)
+  str: input_word("Add a Label(y/n) ")
+  idx: ""
+  if(str.==("y"))
+    display_labels()
+    idx: input_int("Enter id for label> ")
+    my_task.add(get_label(idx))
 
 func setup_tasks()
-  println("Create a Task:")
+  # Adds a set of tasks to the system to be scheduled
+  str: input_word("Create a Task(y/n) ")
+  if(str.!=("y"))
+    return
   name: input_word("Name> ")
   hours: input_int("Hours> ")
   due_date: input_int("Due_Date> ")
@@ -25,13 +39,12 @@ func setup_tasks()
   str: input_word("Add a Checklist or Label(y/n) ")
   if(str.==("y"))
     task_mod(t1)
-  str: input_word("Are you finished(y/n) ")
-  if(str.!=("y"))
-    return
   setup_tasks()
 
 confirm_settings()
 setup_tasks()
-add_all_tasks()
 
+inject_code()
+add_all_tasks()
+view_interface()
 build()

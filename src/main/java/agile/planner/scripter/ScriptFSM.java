@@ -765,6 +765,10 @@ public class ScriptFSM {
         }
     }
 
+    protected  void funcInputCheckLists(int num) {
+        //todo
+    }
+
     protected Type funcInputInt(String stringConstant) {
         if(stringConstant != null) {
             System.out.print(stringConstant);
