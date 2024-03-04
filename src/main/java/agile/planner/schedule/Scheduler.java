@@ -7,14 +7,15 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 /**
- * Interface for all scheduling implementations to sort out tasks in the planner
+ * The interface {@code Scheduler} is for all scheduling implementations to sort out tasks via the {@link agile.planner.manager.ScheduleManager}
  *
  * @author Andrew Roe
+ * @since 0.3.0
  */
 public interface Scheduler {
 
     /**
-     * Assigns current day a set of SubTasks via one of the specified scheduling algorithms
+     * Assigns current {@link Day} a set of {@link agile.planner.data.Task.SubTask} via one of the specified scheduling algorithms
      *
      * @param day Day being processed
      * @param errorCount number of errors in current schedule
@@ -26,6 +27,7 @@ public interface Scheduler {
 
     /**
      * Corrects schedule by eliminating all overflows via adjusting number of hours per day
+     * <p>
      * NOTE: This assumes that past days are stored in an archived list (thus, the first index
      * of schedule is for today)
      *

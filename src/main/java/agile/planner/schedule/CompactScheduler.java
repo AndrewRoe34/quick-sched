@@ -10,12 +10,19 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 /**
- * Provides a more compact solution with generating a schedule
+ * The class {@code CompactScheduler} implements the interface {@link Scheduler} for compact scheduling actions.
+ * This involves the utilization of Longest-Job-First in order to compute the schedule for the week. {@link UserConfig}
+ * options allow for another style such as Shortest-Job-First well as other restraints for scheduling.
+ * <p>
+ * Schedule corrections occur when overflows happen and are properly handled in accordance with the algorithm type. In {@code CompactScheduler},
+ * this involves maintaining that distributive mindset when reallocating the tasks across the given week.
  *
  * @author Andrew Roe
+ * @since 0.3.0
  */
 public class CompactScheduler implements Scheduler {
 
+    /** Singleton for CompactScheduler */
     private static CompactScheduler singleton;
     /** Holds relevant data for user settings in scheduling */
     private final UserConfig userConfig;
@@ -23,7 +30,7 @@ public class CompactScheduler implements Scheduler {
     private final EventLog eventLog;
 
     /**
-     * Primary constructor for CompactScheduler
+     * Constructs a new {@code CompactScheduler} with a given {@link UserConfig} and {@link EventLog}
      *
      * @param userConfig user settings for scheduling purposes
      * @param eventLog EventLog for logging data on Day actions
@@ -34,6 +41,13 @@ public class CompactScheduler implements Scheduler {
 
     }
 
+    /**
+     * Retrieves a singleton of {@code CompactScheduler} for scheduling purposes
+     *
+     * @param userConfig user settings for scheduling purposes
+     * @param eventLog EventLog for logging data on Day actions
+     * @return instance of {@code CompactScheduler}
+     */
     public static CompactScheduler getSingleton(UserConfig userConfig, EventLog eventLog) {
         if(singleton == null) {
             singleton = new CompactScheduler(userConfig, eventLog);
@@ -41,17 +55,6 @@ public class CompactScheduler implements Scheduler {
         return singleton;
     }
 
-    /**
-     * Performs Longest-Job-First in order to compute the schedule for the week.
-     * User config options allow for other varieties such as Shortest-Job-First as well as other
-     * restraints for scheduling.
-     *
-     * @param day Day being processed
-     * @param errorCount number of errors in current schedule
-     * @param complete Tasks that are "finished scheduling" are added here
-     * @param taskManager PriorityQueue of all Tasks in sorted order
-     * @return number of errors in scheduling Day
-     */
     @Override
     public int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager) {
         //Note: We do not need to worry about 'min_hours' since CompactScheduler focuses on filling up each day with tasks

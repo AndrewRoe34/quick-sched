@@ -9,13 +9,21 @@ import java.util.List;
 import java.util.PriorityQueue;
 
 /**
- * Provides a more dynamic solution with generating a schedule
+ * The class {@code DynamicScheduler} implements the interface {@link Scheduler} for more complex scheduling actions.
+ * This involves the combination of Longest-Remaining-Time-First + Round-Robin in order to compute the schedule for the week.
+ * {@link UserConfig} options allow for other varieties such as Shortest-Remaining-Time-First + Round-Robin as well as other
+ * restraints for scheduling.
+ * <p>
+ * Schedule corrections occur when overflows happen and are properly handled in accordance with the algorithm type. In {@code DynamicScheduler},
+ * this involves maintaining that distributive mindset when reallocating the tasks across the given week.
  *
  * @author Andrew Roe
  * @author Lucia Langaney
+ * @since 0.3.0
  */
 public class DynamicScheduler implements Scheduler {
 
+    /** Singleton for DynamicScheduler */
     private static DynamicScheduler singleton;
     /** Holds relevant data for user settings in scheduling */
     private final UserConfig userConfig;
@@ -23,7 +31,7 @@ public class DynamicScheduler implements Scheduler {
     private EventLog eventLog;
 
     /**
-     * Primary constructor for CompactScheduler
+     * Constructs a new {@code DynamicScheduler} with a given {@link UserConfig} and {@link EventLog}
      *
      * @param userConfig user settings for scheduling purposes
      * @param eventLog EventLog for logging data on Day actions
@@ -34,11 +42,11 @@ public class DynamicScheduler implements Scheduler {
     }
 
     /**
-     * Retrieves a singleton of DynamicScheduler for scheduling purposes
+     * Retrieves a singleton of {@code DynamicScheduler} for scheduling purposes
      *
      * @param userConfig user settings for scheduling purposes
      * @param eventLog EventLog for logging data on Day actions
-     * @return instance of DynamicScheduler
+     * @return instance of {@code DynamicScheduler}
      */
     public static DynamicScheduler getSingleton(UserConfig userConfig, EventLog eventLog) {
         if(singleton == null) {
@@ -47,22 +55,11 @@ public class DynamicScheduler implements Scheduler {
         return singleton;
     }
 
-    /**
-     * Performs a mixture of Longest-Remaining-Time-First + Round-Robin in order to compute the schedule for the week.
-     * User config options allow for other varieties such as Shortest-Remaining-Time-First + Round-Robin as well as other
-     * restraints for scheduling.
-     *
-     * @param day Day being processed
-     * @param errorCount number of errors in current schedule
-     * @param complete Tasks that are "finished scheduling" are added here
-     * @param taskManager PriorityQueue of all Tasks in sorted order
-     * @return number of errors in scheduling Day
-     */
     @Override
     public int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager) {
         PriorityQueue<Task> incomplete = new PriorityQueue<>();
         int numErrors = errorCount;
-        while(day.hasSpareHours() && taskManager.size() > 0) {
+        while(day.hasSpareHours() && !taskManager.isEmpty()) {
             Task task = taskManager.remove();
             boolean validTaskStatus = true;
             if(day.getDate().equals(task.getDueDate())) {
@@ -96,7 +93,7 @@ public class DynamicScheduler implements Scheduler {
                 }
             }
         }
-        while(incomplete.size() > 0) {
+        while(!incomplete.isEmpty()) {
             taskManager.add(incomplete.remove());
         }
         return numErrors;
