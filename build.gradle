@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    // Add Gson dependency
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation 'com.google.code.gson:gson:2.10.1'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.9.2'

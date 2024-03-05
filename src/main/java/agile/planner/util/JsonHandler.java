@@ -8,7 +8,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class JsonHandler {
-
+    //todo will need to reformat individual instances to make sure they properly link
+        //todo e.g. 2 task "instances" that should just be 2 "references" to 1 object
     public static String createBoardJson(Board board) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         return gson.toJson(board);

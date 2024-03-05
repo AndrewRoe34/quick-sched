@@ -5,7 +5,7 @@ package agile.planner.util;
  *
  * @author Andrew Roe
  */
-public class GoogleUtil {
+public class GoogleCalendarUtil {
 
     //TODO links the codebase to Google Calendar
     //initializes everything

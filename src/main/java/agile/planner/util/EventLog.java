@@ -425,6 +425,18 @@ public class EventLog {
         output.println(" Current session has begun...");
     }
 
+    /*
+    todo
+        -report all user_config attr
+        -report the actions performed when scheduling
+        -report the actions performed when processing jbin
+        -report of scripting language beginning and ending
+        -report of json actions
+        -report of google calendar actions
+        -report of time actions
+        -report of html_report actions
+     */
+
     /**
      * Reports that current session has ended
      */
