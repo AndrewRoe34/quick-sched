@@ -124,7 +124,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li>java.lang.Object</li>
 <li>
 <ul class="inheritance">
-<li>agile.planner.schedule.DynamicScheduler</li>
+<li>com.agile.planner.schedule.DynamicScheduler</li>
 </ul>
 </li>
 </ul>
@@ -160,7 +160,7 @@ implements <a href="Scheduler.html" title="interface in agile.planner.schedule">
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(agile.planner.user.UserConfig,agile.planner.util.EventLog)">DynamicScheduler</a></span>&#8203;(<a href="../user/UserConfig.html" title="class in agile.planner.user">UserConfig</a>&nbsp;userConfig,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.agile.planner.user.UserConfig,com.agile.planner.util.EventLog)">DynamicScheduler</a></span>&#8203;(<a href="../user/UserConfig.html" title="class in agile.planner.user">UserConfig</a>&nbsp;userConfig,
                 <a href="../util/EventLog.html" title="class in agile.planner.util">EventLog</a>&nbsp;eventLog)</code></th>
 <td class="colLast">
 <div class="block">Primary constructor for CompactScheduler</div>
@@ -186,7 +186,7 @@ implements <a href="Scheduler.html" title="interface in agile.planner.schedule">
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#assignDay(agile.planner.schedule.day.Day,int,java.util.PriorityQueue,java.util.PriorityQueue)">assignDay</a></span>&#8203;(<a href="day/Day.html" title="class in agile.planner.schedule.day">Day</a>&nbsp;day,
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#assignDay(day.com.agile.planner.schedule.Day,int,java.util.PriorityQueue,java.util.PriorityQueue)">assignDay</a></span>&#8203;(<a href="day/Day.html" title="class in agile.planner.schedule.day">Day</a>&nbsp;day,
          int&nbsp;errorCount,
          java.util.PriorityQueue&lt;<a href="../data/Task.html" title="class in agile.planner.data">Task</a>&gt;&nbsp;complete,
          java.util.PriorityQueue&lt;<a href="../data/Task.html" title="class in agile.planner.data">Task</a>&gt;&nbsp;taskManager)</code></th>
@@ -228,7 +228,7 @@ implements <a href="Scheduler.html" title="interface in agile.planner.schedule">
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(agile.planner.user.UserConfig,agile.planner.util.EventLog)">
+<a id="&lt;init&gt;(com.agile.planner.user.UserConfig,com.agile.planner.util.EventLog)">
 <!--   -->
 </a>
 <ul class="blockListLast">
@@ -254,7 +254,7 @@ implements <a href="Scheduler.html" title="interface in agile.planner.schedule">
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="assignDay(agile.planner.schedule.day.Day,int,java.util.PriorityQueue,java.util.PriorityQueue)">
+<a id="assignDay(day.com.agile.planner.schedule.Day,int,java.util.PriorityQueue,java.util.PriorityQueue)">
 <!--   -->
 </a>
 <ul class="blockList">
@@ -264,11 +264,11 @@ implements <a href="Scheduler.html" title="interface in agile.planner.schedule">
                      int&nbsp;errorCount,
                      java.util.PriorityQueue&lt;<a href="../data/Task.html" title="class in agile.planner.data">Task</a>&gt;&nbsp;complete,
                      java.util.PriorityQueue&lt;<a href="../data/Task.html" title="class in agile.planner.data">Task</a>&gt;&nbsp;taskManager)</pre>
-<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="Scheduler.html#assignDay(agile.planner.schedule.day.Day,int,java.util.PriorityQueue,java.util.PriorityQueue)">Scheduler</a></code></span></div>
+<div class="block"><span class="descfrmTypeLabel">Description copied from interface:&nbsp;<code><a href="Scheduler.html#assignDay(day.com.agile.planner.schedule.Day,int,java.util.PriorityQueue,java.util.PriorityQueue)">Scheduler</a></code></span></div>
 <div class="block">Assigns current day a set of SubTasks</div>
 <dl>
 <dt><span class="overrideSpecifyLabel">Specified by:</span></dt>
-<dd><code><a href="Scheduler.html#assignDay(agile.planner.schedule.day.Day,int,java.util.PriorityQueue,java.util.PriorityQueue)">assignDay</a></code>&nbsp;in interface&nbsp;<code><a href="Scheduler.html" title="interface in agile.planner.schedule">Scheduler</a></code></dd>
+<dd><code><a href="Scheduler.html#assignDay(day.com.agile.planner.schedule.Day,int,java.util.PriorityQueue,java.util.PriorityQueue)">assignDay</a></code>&nbsp;in interface&nbsp;<code><a href="Scheduler.html" title="interface in agile.planner.schedule">Scheduler</a></code></dd>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>day</code> - Day being processed</dd>
 <dd><code>errorCount</code> - number of errors in current schedule</dd>
