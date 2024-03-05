@@ -4,9 +4,6 @@ import agile.planner.data.Task;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class JsonHandler {
 
     public static void main(String[] args) {
@@ -17,5 +14,9 @@ public class JsonHandler {
         Gson gson = new GsonBuilder().setPrettyPrinting().create(); // for pretty printing
         String json = gson.toJson(t1);
         System.out.println(json);
+
+        gson = new Gson();
+        Task myTask = gson.fromJson(json, Task.class);
+        System.out.println(myTask.getChecklist());
     }
 }
