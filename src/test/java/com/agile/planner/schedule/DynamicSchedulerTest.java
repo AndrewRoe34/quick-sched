@@ -62,7 +62,7 @@ public class DynamicSchedulerTest {
      */
     @Test
     public void assignDayValid() throws FileNotFoundException {
-        Scheduler dynamicSched = new DynamicScheduler(config, eventLog);
+        Scheduler dynamicSched = DynamicScheduler.getSingleton(config, eventLog);
 
         IOProcessing.readTasks("data/break.txt", pq, taskMap, 0);
         Day d0 = new Day(0, 8, 0);
@@ -105,7 +105,7 @@ public class DynamicSchedulerTest {
      */
     @Test
     public void assignDayLeftover() throws FileNotFoundException {
-        Scheduler dynamicSched = new DynamicScheduler(config, eventLog);
+        Scheduler dynamicSched = DynamicScheduler.getSingleton(config, eventLog);
 
         IOProcessing.readTasks("data/compact.txt", pq, taskMap, 0);
         Day d0 = new Day(0, 8, 0);
@@ -138,7 +138,7 @@ public class DynamicSchedulerTest {
      */
     @Test
     public void assignDayOverflow() throws FileNotFoundException {
-        Scheduler dynamicSched = new DynamicScheduler(config, eventLog);
+        Scheduler dynamicSched = DynamicScheduler.getSingleton(config, eventLog);
 
         IOProcessing.readTasks("data/overflow.txt", pq, taskMap, 0);
         Day d0 = new Day(0, 8, 0);

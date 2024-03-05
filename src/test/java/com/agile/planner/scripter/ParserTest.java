@@ -1,6 +1,5 @@
 package com.agile.planner.scripter;
 
-import agile.planner.scripter.*;
 import com.agile.planner.scripter.exception.InvalidGrammarException;
 import org.junit.jupiter.api.Test;
 
