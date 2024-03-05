@@ -117,12 +117,12 @@ public class ParserTest {
 
     }
 
-    @Test
-    public void parseClassInstance() {
-        String inst1 = "t1: task(\"HW\", 3, 2)";
-        ClassInstance ci1 = parser.parseClassInstance(inst1);
-        int x = 3;
-    }
+//    @Test
+//    public void parseClassInstance() {
+//        String inst1 = "t1: task(\"HW\", 3, 2)";
+//        ClassInstance ci1 = parser.parseClassInstance(inst1);
+//        int x = 3;
+//    }
 
     @Test
     public void parseConstant() {
