@@ -1,22 +1,51 @@
 package agile.planner.util;
 
+import agile.planner.data.Board;
+import agile.planner.data.Card;
+import agile.planner.data.Label;
 import agile.planner.data.Task;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class JsonHandler {
 
-    public static void main(String[] args) {
-        Task t1 = new Task(0, "A", 3, 2);
-        t1.addCheckList(new CheckList(0, "ToDo"));
-        t1.getChecklist().addItem("Step1");
-        t1.getChecklist().addItem("Step2");
-        Gson gson = new GsonBuilder().setPrettyPrinting().create(); // for pretty printing
-        String json = gson.toJson(t1);
-        System.out.println(json);
+    public static String createBoardJson(Board board) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(board);
+    }
 
-        gson = new Gson();
-        Task myTask = gson.fromJson(json, Task.class);
-        System.out.println(myTask.getChecklist());
+    public static Board readBoardJson(String jsonStr) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonStr, Board.class);
+    }
+
+    public static String createCardJson(Card card) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(card);
+    }
+
+    public static Card readCardJson(String jsonStr) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonStr, Card.class);
+    }
+
+    public static String createTaskJson(Task task) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(task);
+    }
+
+    public static Task readTaskJson(String jsonStr) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonStr, Task.class);
+    }
+
+    public static String createLabelJson(Label label) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(label);
+    }
+
+    public static Label readLabelJson(String jsonStr) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonStr, Label.class);
     }
 }
