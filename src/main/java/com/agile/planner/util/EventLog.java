@@ -3,10 +3,12 @@ package com.agile.planner.util;
 import com.agile.planner.data.Card;
 import com.agile.planner.schedule.day.Day;
 import com.agile.planner.data.Task;
+import com.agile.planner.user.UserConfig;
 
 import java.io.PrintStream;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.InputMismatchException;
 
@@ -422,20 +424,53 @@ public class EventLog {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
         output.print(" [INFO]");
-        output.println(" Current session has begun...");
+        output.println(" CURRENT SESSION HAS BEGUN...");
     }
 
-    /*
-    todo
-        -report all user_config attr
-        -report the actions performed when scheduling
-        -report the actions performed when processing jbin
-        -report of scripting language beginning and ending
-        -report of json actions
-        -report of google calendar actions
-        -report of time actions
-        -report of html_report actions
+    /**
+     * Reports the UserConfig attributes
+     *
+     * @param userConfig UserConfig attributes
      */
+    public void reportUserConfigAttr(UserConfig userConfig) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
+        output.print(" USERNAME=" + userConfig.getUserName());
+        output.print(" ,EMAIL=" + userConfig.getEmail());
+        output.print(" ,WEEK_HOURS=" + Arrays.toString(userConfig.getWeek()));
+        output.print(" ,MAX_DAYS=" + userConfig.getMaxDays());
+        output.print(" ,ARCHIVE_DAYS=" + userConfig.getArchiveDays());
+        output.print(" ,PRIORITY=" + userConfig.isPriority());
+        output.print(" ,OVERFLOW=" + userConfig.isOverflow());
+        output.print(" ,FIT_SCHEDULE=" + userConfig.isFitSchedule());
+        output.print(" ,SCHEDULE_ALGO=" + userConfig.getSchedulingAlgorithm());
+        output.println(" ,MIN_HOURS=" + userConfig.getMinHours());
+
+    }
+
+    /**
+     * Reports an instance of the script interpreter
+     *
+     * @param filename name of script file
+     * @param isStartOfScript whether the script has begun or ended
+     */
+    public void reportScriptInstance(String filename, boolean isStartOfScript) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
+        output.print(" SCRIPT_NAME=" + filename);
+        if(isStartOfScript) output.println(" , SCRIPT INSTANCE HAS BEGUN...");
+        else output.println(" , SCRIPT INSTANCE HAS ENDED...");
+    }
+
+    public void reportJsonActions() {
+        //todo
+    }
+
+    public void reportGoogleCalendarActions() {
+        //todo
+    }
 
     /**
      * Reports that current session has ended
@@ -444,7 +479,7 @@ public class EventLog {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
         output.print(" [INFO]");
-        output.println(" Current session has ended...");
+        output.println(" CURRENT SESSION HAS ENDED...");
         output.close();
     }
 }

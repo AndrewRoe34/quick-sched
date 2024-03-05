@@ -119,6 +119,7 @@ public class ScheduleManager {
         try {
             eventLog.reportProcessConfig("profile.cfg");
             userConfig = IOProcessing.readCfg(null);
+            eventLog.reportUserConfigAttr(userConfig);
         } catch (FileNotFoundException e) {
             eventLog.reportException(e);
         }
@@ -545,5 +546,9 @@ public class ScheduleManager {
 
     public List<Day> getSchedule() {
         return schedule;
+    }
+
+    public EventLog getEventLog() {
+        return eventLog;
     }
 }

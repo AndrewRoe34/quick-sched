@@ -8,6 +8,7 @@ import com.agile.planner.manager.ScheduleManager;
 import com.agile.planner.scripter.tools.ScriptLog;
 import com.agile.planner.scripter.exception.*;
 import com.agile.planner.util.CheckList;
+import com.agile.planner.util.EventLog;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -35,6 +36,8 @@ public class ScriptFSM {
     private final ScheduleManager scheduleManager = ScheduleManager.getScheduleManager();
 
     public void executeScript(String filename) throws FileNotFoundException {
+        EventLog eventLog = scheduleManager.getEventLog();
+        eventLog.reportScriptInstance(filename, true);
         scriptScanner = new Scanner(new File(filename));
         while (scriptScanner.hasNextLine() || injectScript.size() > 0 && injectScriptIdx < injectScript.size()) {
             String untrimmed;
@@ -168,6 +171,7 @@ public class ScriptFSM {
         if(preProcessor.isLog()) {
             IOProcessing.writeScripterLogToFile(scriptLog.toString());
         }
+        eventLog.reportScriptInstance(filename, false);
     }
 
     private void executeStructureBlock(Parser.Operation operation, String line, List<Type> localStack) {
