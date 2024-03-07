@@ -1,0 +1,39 @@
+include: __CURR_CONFIG__, __LOG__, __IMPORT__, __BUILD__
+
+# global data values
+_cl: ""
+_task: ""
+_name: ""
+_hours: ""
+_due: ""
+
+func setup_cl(cl1)
+  in: input_word("Add an Item(y/n) ")
+  if(in.==("y"))
+    in: input_line("Description -> ")
+    cl1.add_item(in)
+    setup_cl(cl1)
+
+func setup_task(t1)
+  in: input_word("Create a Checklist(y/n) ")
+  if(in.==("y"))
+    in: input_line("Title -> ")
+    _cl: checklist(in)
+    t1.add(_cl)
+    setup_cl(_cl)
+
+func setup_schedule()
+  in: input_word("Create a Task(y/n) ")
+  if(in.==("y"))
+    _name: input_line("Name -> ")
+    _hours: input_int("Hours -> ")
+    _due: input_int("Due -> ")
+    _task: task(_name, _hours, _due)
+    setup_task(_task)
+    setup_schedule()
+
+setup_schedule()
+inject_code()
+add_all_tasks()
+build()
+google_export()

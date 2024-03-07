@@ -292,6 +292,7 @@ public class Parser {
             case "input_tasks":
             case "input_int":
             case "input_word":
+            case "input_line":
             case "pause":
             case "view_interface":
             case "inject_code":

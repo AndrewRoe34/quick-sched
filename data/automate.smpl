@@ -32,7 +32,7 @@ func setup_tasks()
   str: input_word("Create a Task(y/n) ")
   if(str.!=("y"))
     return
-  name: input_word("Name> ")
+  name: input_line("Name> ")
   hours: input_int("Hours> ")
   due_date: input_int("Due_Date> ")
   t1: task(name, hours, due_date)

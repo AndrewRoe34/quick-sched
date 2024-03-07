@@ -193,9 +193,59 @@ public class ScriptFSM {
                 processStaticFunction(func, localStack);
                 scriptLog.reportFunctionCall(func);
                 break;
+            case INSTANCE:
+                ClassInstance classInstance = parser.parseClassInstance(line, globalStack, localStack);
+                if (classInstance == null) {
+                    int i = 0;
+                    for(; i < line.length(); i++) {
+                        if(line.charAt(i) == ':')
+                            break;
+                    }
+                    String varName = line.substring(0, i);
+                    String trimmed = line.substring(i + 1).trim();
+                    Parser.Operation op = parser.typeOfOperation(trimmed);
+                    Type t1 = lookupVariable(varName);
+                    Type ret = null;
+                    switch (op) {
+                        case ATTRIBUTE:
+                            Attributes atr = parser.parseAttributes(trimmed);
+                            if (atr == null) throw new InvalidFunctionException();
+                            ret = processAttribute(atr, localStack);
+                            break;
+                        case FUNCTION:
+                            StaticFunction fnc = parser.parseStaticFunction(trimmed);
+                            ret = processStaticFunction(fnc, localStack);
+                            break;
+                        default:
+                            throw new InvalidPairingException();
+                    }
+                    if(ret == null) throw new InvalidGrammarException();
+                    if(t1 == null) {
+                        ret.setVariableName(varName);
+//                        localStack.add(ret); // need to replace, not just add
+                        addAndReplaceVar(localStack, ret);
+                    } else {
+                        t1.setTypeVal(ret);
+                    }
+                } else {
+                    Type ret = processClassInstance(classInstance);
+                    localStack.add(ret);
+                    globalStack.remove(ret);
+                }
+                break;
             default:
                 throw new InvalidGrammarException();
         }
+    }
+
+    private void addAndReplaceVar(List<Type> localStack, Type val) {
+        for(int i = 0; i < localStack.size(); i++) {
+            if(localStack.get(i).getVariableName().equals(val.getVariableName())) {
+                localStack.set(i, val);
+                return;
+            }
+        }
+        localStack.add(val);
     }
 
     protected boolean[] executeIfConditionFunc(CustomFunction ifCondition, List<Type> localStack) {
@@ -449,6 +499,12 @@ public class ScriptFSM {
                     return funcInputWord(args[0].getStringConstant());
                 }
                 return funcInputWord(null);
+            case "input_line":
+                if(args.length > 1) throw new InvalidFunctionException();
+                if(args.length == 1) {
+                    return funcInputLine(args[0].getStringConstant());
+                }
+                return funcInputLine(null);
             case "pause":
                 if(args.length != 0) throw new InvalidFunctionException();
                 funcPause();
@@ -607,7 +663,8 @@ public class ScriptFSM {
                         if(ret == null) throw new InvalidGrammarException();
                         if(t1 == null) {
                             ret.setVariableName(varName);
-                            localStack.add(ret);
+//                            localStack.add(ret);
+                            addAndReplaceVar(localStack, ret);
                         } else {
                             t1.setTypeVal(ret);
                         }
@@ -799,6 +856,17 @@ public class ScriptFSM {
             Type localType = new Type(inputScanner.next(), null);
             if(inputScanner.hasNextLine()) inputScanner.nextLine();
             return localType;
+        } else {
+            throw new InvalidGrammarException();
+        }
+    }
+
+    protected Type funcInputLine(String stringConstant) {
+        if(stringConstant != null) {
+            System.out.print(stringConstant);
+        }
+        if(inputScanner.hasNextLine()) {
+            return new Type(inputScanner.nextLine(), null);
         } else {
             throw new InvalidGrammarException();
         }

@@ -27,8 +27,16 @@ public class GoogleCalendarUtil {
                 .append("-")
                 .append(task.getDueDate().get(Calendar.DAY_OF_MONTH))
                 .append("\n\n");
-        //todo handle checklist
-        // ...
+        CheckList cl = task.getCheckList();
+        if(cl != null) {
+            sb.append(cl.getName()).append(":<ul>");
+            for(CheckList.Item i1 : cl.getItems()) {
+                sb.append("<li>")
+                        .append(i1.getDescription())
+                        .append("</li>");
+            }
+            sb.append("</ul>\n");
+        }
 
         sb.append("Agile Planner\n\neb007aba6df2559a02ceb17ddba47c85b3e2b930");
         event.setDescription(sb.toString());

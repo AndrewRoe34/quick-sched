@@ -293,6 +293,8 @@ public class Type implements Comparable<Type> {
                         throw new InvalidGrammarException();
                 }
             case TASK:
+                if(args.length != 1) throw new InvalidGrammarException();
+                return new Type(addType(args[0]), null);
             case LABEL:
                 switch(attr) {
                     case GET_TITLE:
