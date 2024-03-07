@@ -1,12 +1,5 @@
 include: __CURR_CONFIG__, __LOG__, __IMPORT__, __BUILD__
 
-# global data values
-_cl: ""
-_task: ""
-_name: ""
-_hours: ""
-_due: ""
-
 func setup_cl(cl1)
   in: input_word("Add an Item(y/n) ")
   if(in.==("y"))
