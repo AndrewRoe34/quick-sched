@@ -4,6 +4,7 @@ import com.agile.planner.data.Task;
 import com.agile.planner.schedule.day.Day;
 import com.agile.planner.util.EventLog;
 import com.agile.planner.util.GoogleCalendarUtil;
+import com.agile.planner.util.Time;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
@@ -94,7 +95,9 @@ public class GoogleCalendarIO {
     // [COMPLETE]
     public void exportScheduleToGoogle(List<Day> week) throws IOException {
         int i = 0;
-        int startHour = 8;
+        java.util.Calendar date = java.util.Calendar.getInstance();
+        int startHour = date.get(java.util.Calendar.HOUR_OF_DAY);
+        //todo will need to check and see how many hours are left in day from starting moment
         for(Day day : week) {
             for(Task.SubTask subTask : day.getSubTasks()) {
                 Task task = subTask.getParentTask();
@@ -133,7 +136,7 @@ public class GoogleCalendarIO {
 
     // [COMPLETE]
     public int cleanGoogleSchedule() throws IOException {
-        DateTime now = new DateTime(System.currentTimeMillis());
+        DateTime now = new DateTime(Time.getFormattedCalendarInstance(0).getTime());
         Events events = service.events().list("primary")
                 .setMaxResults(100)
                 .setTimeMin(now)
