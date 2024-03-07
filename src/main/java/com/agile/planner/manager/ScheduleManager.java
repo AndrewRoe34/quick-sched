@@ -565,4 +565,8 @@ public class ScheduleManager {
         googleCalendarIO.cleanGoogleSchedule();
         googleCalendarIO.exportScheduleToGoogle(schedule);
     }
+
+    public void importScheduleFromGoogle() throws IOException {
+        googleCalendarIO.importScheduleFromGoogle();
+    }
 }

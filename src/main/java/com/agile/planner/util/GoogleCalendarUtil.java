@@ -5,6 +5,7 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -17,7 +18,6 @@ import java.util.Scanner;
  */
 public class GoogleCalendarUtil {
 
-    //todo
     public static Event formatTaskToEvent(Task task, int subTaskHours, int dayIdx, int dayHour) {
         Event event = new Event().setSummary(task.getName()); //todo need to display labels with given Task
         StringBuilder sb = new StringBuilder("Due: ");
@@ -57,22 +57,17 @@ public class GoogleCalendarUtil {
         return event;
     }
 
-    //todo
-    public static List<Task> formatEventsToTasks(List<Event> items) {
+    public static List<String> formatEventsToTasks(List<Event> items) throws IOException {
+        List<String> tasks = new ArrayList<>();
         for(Event i1 : items) {
-            String title = i1.getSummary();
-            String description = i1.getDescription();
-            Scanner strScanner = new Scanner(description);
-            if(strScanner.hasNextLine()) {
-                String date = strScanner.nextLine();
-            }
-            if(strScanner.hasNextLine()) {
-                String hashcode = strScanner.nextLine();
+            if(i1.getDescription().contains("eb007aba6df2559a02ceb17ddba47c85b3e2b930")) {
+                String title = i1.getSummary();
+                String start = i1.getStart().toPrettyString();
+                String end = i1.getEnd().toPrettyString();
+                tasks.add("title=" + title + ", start=" + start + ", end=" + end);
             }
         }
-        //todo
-//        items.get(0).getSummary();
-        return new ArrayList<>();
+        return tasks;
     }
 
 }

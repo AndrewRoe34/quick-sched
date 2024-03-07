@@ -301,6 +301,7 @@ public class Parser {
             case "view_stack":
             case "set_schedule":
             case "google_export":
+            case "google_import":
                 return new StaticFunction(funcName, arguments, true);
             default:
                 return new StaticFunction(funcName, arguments, false);

@@ -116,18 +116,18 @@ public class GoogleCalendarIO {
     public void importScheduleFromGoogle() throws IOException {
         DateTime now = new DateTime(System.currentTimeMillis());
         Events events = service.events().list("primary")
-                .setMaxResults(14)
+                .setMaxResults(100)
                 .setTimeMin(now)
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
                 .execute();
         List<Event> items = events.getItems();
-        List<Task> tasks = GoogleCalendarUtil.formatEventsToTasks(items);
+        List<String> tasks = GoogleCalendarUtil.formatEventsToTasks(items);
         if (tasks.isEmpty()) {
             System.out.println("No upcoming tasks found.");
         } else {
             System.out.println("Upcoming tasks");
-            for (Task t1 : tasks) {
+            for (String t1 : tasks) {
                 System.out.println(t1);
             }
         }

@@ -549,6 +549,10 @@ public class ScriptFSM {
                 if(args.length != 0) throw new InvalidFunctionException();
                 funcGoogleExport();
                 return null;
+            case "google_import":
+                if(args.length != 0) throw new InvalidFunctionException();
+                funcGoogleImport();
+                return null;
             default:
                 processCustomFunction(func, args);
         }
@@ -992,6 +996,14 @@ public class ScriptFSM {
     protected void funcGoogleExport() {
         try {
             scheduleManager.exportScheduleToGoogle();
+        } catch (IOException e) {
+            throw new InvalidFunctionException();
+        }
+    }
+
+    protected void funcGoogleImport() {
+        try {
+            scheduleManager.importScheduleFromGoogle();
         } catch (IOException e) {
             throw new InvalidFunctionException();
         }
