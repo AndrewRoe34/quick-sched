@@ -61,49 +61,44 @@ While this iteration was very simple since it utilized dynamic memory and requir
 This version of my scripting language required a complete overhaul in design and approach. I opted for a Parser class to manage categorizing data and returning that to my ScriptFSM, which would then interpret the parsed data. The syntax of my language is very similar to Python for ease of access to more people. Here's a code snippet below:
 
 ```
-include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__, __STATS__
+include: __CURR_CONFIG__, __LOG__, __IMPORT__, __BUILD__
 
-#Imports schedule data from prior session
-import_schedule("data/week.jbin")
+# Setups the Checklist
+func setup_cl(cl1)
+  in: input_word("Add an Item(y/n) ")
+  if(in.==("y"))
+    in: input_line("Description -> ")
+    cl1.add_item(in)
+    setup_cl(cl1)
 
-#Views the current board setup of cards
-view_interface()
-inject_code()
+# Sets up the Task
+func setup_task(t1)
+  in: input_word("Create a Checklist(y/n) ")
+  if(in.==("y"))
+    in: input_line("Title -> ")
+    _cl: checklist(in)
+    t1.add(_cl)
+    setup_cl(_cl)
 
-#Constructs class instances
-val: string("3400")
-c1: card("HW")
+# Sets up the week's schedule
+func setup_schedule()
+  in: input_word("Create a Task(y/n) ")
+  if(in.==("y"))
+    _name: input_line("Name -> ")
+    _hours: input_int("Hours -> ")
+    _due: input_int("Due -> ")
+    _task: task(_name, _hours, _due)
+    setup_task(_task)
+    setup_schedule()
 
-#Custom function to modify checklist instance with parameter references
-func foo(cl, flag)
-  cl.add_item("Step 1")
-  cl.add_item("Step 2")
-  cl.add_item("Step 3")
-  cl.mark_item_by_id(0, flag)
-  cl.mark_item_by_name("Step 2", flag)
-  cl.mark_item_by_id(2, flag)
-  view_stack()
+setup_schedule()
 
-#Outputs the class data
-println("length=", val.length(), ", int_val=", val.parse_int(), ", substring(1)=", val.sub_string(1))
-println("")
-println("card_name=", c1.get_title())
-
-#Creates and modifies a checklist
-status: bool(true)
-my_cl: cl("List")
-foo(my_cl, status)
-
-#Outputs the checklist data to showcase Simple's data referencing system
-println("checklist_id=", my_cl.id(), ", checklist_name=", my_cl.get_title(), ", checklist_percent=", my_cl.get_percent(), "%")
-println(my_cl)
-println("")
-
-#Builds the schedule
+# Adds all tasks to manager and builds the schedule
+add_all_tasks()
 build()
 
-#Exports the schedule for later usage
-export_schedule("fun_week.jbin")
+# Exports schedule to Google Calendar
+google_export()
 ```
 In stark contrast to before, this language allows for more flexibility with function calls, accessing class methods and attributes, managing a Stack of variables (which are dynamic like Python), and much more. It is essentially Python but for Agile Planner.
 
@@ -111,67 +106,21 @@ It also has the functionality needed to write non-scheduling related scripts as 
 ```
 include: __CURR_CONFIG__, __LOG__
 
-# declaring and initializing variables
-balance: 1000
-password: 1234
-
-# withdraws money from bank
-func withdraw()
-  print("Amount - ")
-  x: input_int()
-  println("Balance $", balance.--(x))
-
-# deposits money into bank
-func deposit()
-  print("Amount - ")
-  x: input_int()
-  println("Balance $", balance.++(x))
-
-# primary banking loop with options
-func loop()
-  println("Options:\n0 - Withdraw\n1 - Deposit\n2 - Exit")
-  print("> ")
-  x: input_int()
+# Outputs all binary codes of a specified length
+str: ""
+func binary(bin, x)
   if(x.==(0))
-    withdraw()
-  if(x.==(1))
-    deposit()
-  if(x.==(2))
+    str.concat(bin, "\n")
     return
-  loop()
+  x.--()
+  binary(bin.add("0"), x)
+  binary(bin.add("1"), x)
 
-# prompts user with password
-func login()
-  print("Welcome to Banking 101!\nPassword\n> ")
-  pw: input_int()
-  if(pw.==(password))
-    loop()
+print("Enter number: ")
+x: input_int()
+binary("", x)
 
-inject_code()
-login()
-```
-```
-include: __CURR_CONFIG__, __LOG__
-
-hidden_num: 27
-inject_code()
-
-# Finds the hidden number in O(lgn) time complexity
-func find_number(min, max, try)
-  if(min.==(max))
-    println("Found in ", try, " tries...")
-    return
-  mid: avg(min, max)
-  view_stack()
-  pause()
-  if(mid.==(hidden_num))
-    println("Found in ", try, " tries...")
-  if(mid.>(hidden_num))
-    find_number(min, mid.--(), try.++())
-  if(mid.<(hidden_num))
-    find_number(mid.++(), max, try.++())
-
-find_number(0, 100, 1)
+write_file("data/bin.txt", str)
 ```
 ```
 include: __CURR_CONFIG__, __LOG__
@@ -202,60 +151,55 @@ Agile Planner currently offers logging mechanisms for two areas: System and Scri
 #### System:
 All core system actions, events, and exceptions are reported on a date/time perspective when they occur. The goal is to allow the user to report any errors or issues similar to Epic Game's logging system. Here's an example below:
 ```
-[28-08-2023] Log of all activities from current session: 
+[07-03-2024] Log of all activities from current session: 
 
-[01:07:42] Current session has begun...
-[01:07:42] Reading Config: FILE=profile.cfg
-[01:07:45] JBIN FILE CREATED
-[01:07:45] WRITE(JBIN): FILE=data/update6.jbin
-[01:07:45] ADD(TASK):  ID=0, NAME=a, HOURS=3, DUE_DATE=08-30-2023
-[01:07:45] ADD(TASK):  ID=1, NAME=b, HOURS=2, DUE_DATE=08-29-2023
-[01:07:45] ADD(TASK):  ID=2, NAME=c, HOURS=1, DUE_DATE=08-28-2023
-[01:07:45] Scheduling has begun...
-[01:07:45] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=7, HOURS_FILLED=1, TASK ADDED=2, OVERFLOW=false
-[01:07:45] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=5, HOURS_FILLED=3, TASK ADDED=1, OVERFLOW=false
-[01:07:45] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=2, HOURS_FILLED=6, TASK ADDED=0, OVERFLOW=false
-[01:07:45] Scheduling has finished...
-[01:07:45] Display Schedule: DAYS=1, NUM_TASKS=3, STDOUT=true
-[01:07:45] JBIN FILE CREATED
-[01:07:45] WRITE(JBIN): FILE=data/default.jbin
+[15:46:16] [INFO] CURRENT SESSION HAS BEGUN...
+[15:46:16] [INFO] Reading Config: FILE=profile.cfg
+[15:46:16] [INFO] USERNAME=null ,EMAIL=null ,WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8] ,MAX_DAYS=14 ,ARCHIVE_DAYS=14 ,PRIORITY=false ,OVERFLOW=true ,FIT_SCHEDULE=false ,SCHEDULE_ALGO=1 ,MIN_HOURS=1
+[15:46:17] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
+[15:46:21] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\google.smpl , SCRIPT INSTANCE HAS BEGUN...
+[15:47:03] [INFO] ADD(TASK):  ID=0, NAME=Study Math Test 1, HOURS=6, DUE_DATE=03-10-2024
+[15:47:03] [INFO] ADD(TASK):  ID=0, NAME=Study for CH Test 2, HOURS=12, DUE_DATE=03-13-2024
+[15:47:03] [INFO] Scheduling has begun...
+[15:47:03] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=2, HOURS_FILLED=6, TASK ADDED=0, OVERFLOW=false
+[15:47:03] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=0, HOURS_FILLED=8, TASK ADDED=0, OVERFLOW=false
+[15:47:03] [INFO] DAY_ID=1, CAPACITY=8, HOURS_REMAINING=0, HOURS_FILLED=8, TASK ADDED=0, OVERFLOW=false
+[15:47:03] [INFO] DAY_ID=2, CAPACITY=8, HOURS_REMAINING=6, HOURS_FILLED=2, TASK ADDED=0, OVERFLOW=false
+[15:47:03] [INFO] Scheduling has finished...
+[15:47:03] [INFO] 0 TASKS REMOVED FROM GOOGLE CALENDAR...
+[15:47:04] [INFO] SCHEDULE EXPORTED TO GOOGLE CALENDAR...
+[15:47:04] [INFO] Display Schedule: DAYS=3, NUM_TASKS=2, STDOUT=true
+[15:47:04] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\google.smpl , SCRIPT INSTANCE HAS ENDED...
 ```
 
 #### Scripting:
 The same is done with the Scripting Log. It essentially provides an extensive stacktrace as to all operations that occur while the script is being executed.
 ```
-[28-08-2023] Log of all activities from current session: 
+[07-03-2024] Log of all activities from current session: 
 
-FUNC_CALLS: NAME=import_schedule, ARGS=[]
-CARD_CREATED: ID=0, NAME="HW"
-FUNC_SETUP: NAME= foo, PARAM=[cl, flag]
-ATTR_CALL: VAR_NAME=val, NAME=length, ARGS[]
-ATTR_CALL: VAR_NAME=val, NAME=parse_int, ARGS[]
-ATTR_CALL: VAR_NAME=val, NAME=sub_string, ARGS[]
-PRINTS: ARGS=["length=", "4", ", int_val=", "3400", ", substring(1)=", "400"]
-FUNC_CALLS: NAME=println, ARGS=["length=", val.length(), ", int_val=", val.parse_int(), ", substring(1)=", val.sub_string(1)]
-PRINTS: ARGS=[]
-FUNC_CALLS: NAME=println, ARGS=[]
-ATTR_CALL: VAR_NAME=c1, NAME=get_title, ARGS[]
-PRINTS: ARGS=["card_name=", "HW"]
-FUNC_CALLS: NAME=println, ARGS=["card_name=", c1.get_title()]
-CHECKLIST_CREATED: ID=0, NAME="List"
-ATTR_CALL: VAR_NAME=cl, NAME=add_item, ARGS[]
-ATTR_CALL: VAR_NAME=cl, NAME=add_item, ARGS[]
-ATTR_CALL: VAR_NAME=cl, NAME=add_item, ARGS[]
-ATTR_CALL: VAR_NAME=cl, NAME=mark_item_by_id, ARGS[0, flag]
-ATTR_CALL: VAR_NAME=cl, NAME=mark_item_by_name, ARGS["Step 2", flag]
-ATTR_CALL: VAR_NAME=cl, NAME=mark_item_by_id, ARGS[2, flag]
-FUNC_CALLS: NAME=foo, ARGS=[my_cl, status]
-ATTR_CALL: VAR_NAME=my_cl, NAME=id, ARGS[]
-ATTR_CALL: VAR_NAME=my_cl, NAME=get_title, ARGS[]
-ATTR_CALL: VAR_NAME=my_cl, NAME=get_percent, ARGS[]
-PRINTS: ARGS=["checklist_id=", "0", ", checklist_name=", ""List"", ", checklist_percent=", "100", "%"]
-FUNC_CALLS: NAME=println, ARGS=["checklist_id=", my_cl.id(), ", checklist_name=", my_cl.get_title(), ", checklist_percent=", my_cl.get_percent(), "%"]
-PRINTS: ARGS=[]
-FUNC_CALLS: NAME=println, ARGS=[]
-PRINTS: ARGS=[]
-FUNC_CALLS: NAME=println, ARGS=[]
+[15:46:21] PREPROC_ATTR: DEF_CONFIG=false, IMPORT=true, EXPORT=false, LOG=true, BUILD=true, STATS=false
+[15:46:21] FUNC_SETUP: NAME= setup_cl, PARAM=[]
+[15:46:21] FUNC_SETUP: NAME= setup_task, PARAM=[]
+[15:46:21] FUNC_SETUP: NAME= setup_schedule, PARAM=[]
+[15:46:23] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[15:46:23] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
+[15:46:42] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[15:46:42] IF_CONDITION: ARGS=[in.==("y")], RESULT=false
+[15:46:42] FUNC_CALLS: NAME=setup_task, ARGS=[_task]
+[15:46:44] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[15:46:44] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
+[15:46:58] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[15:46:58] IF_CONDITION: ARGS=[in.==("y")], RESULT=false
+[15:46:58] FUNC_CALLS: NAME=setup_task, ARGS=[_task]
+[15:47:00] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[15:47:00] IF_CONDITION: ARGS=[in.==("y")], RESULT=false
+[15:47:00] FUNC_CALLS: NAME=setup_schedule, ARGS=[]
+[15:47:00] FUNC_CALLS: NAME=setup_schedule, ARGS=[]
+[15:47:00] FUNC_CALLS: NAME=setup_schedule, ARGS=[]
+[15:47:03] FUNC_CALLS: NAME=inject_code, ARGS=[]
+[15:47:03] FUNC_CALLS: NAME=add_all_tasks, ARGS=[]
+[15:47:03] FUNC_CALLS: NAME=build, ARGS=[]
+[15:47:04] FUNC_CALLS: NAME=google_export, ARGS=[]
 ```
 
 ### <ins>Java Binary Serialization</ins>
