@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.agile.planner.user.UserConfigTest" tests="20" skipped="0" failures="0" errors="0" timestamp="2024-03-07T23:54:59" hostname="DIGITALSTORM-PC" time="0.018">
+  <properties/>
+  <testcase name="isPriority()" classname="com.agile.planner.user.UserConfigTest" time="0.0"/>
+  <testcase name="setOverflow()" classname="com.agile.planner.user.UserConfigTest" time="0.0"/>
+  <testcase name="setArchiveDays()" classname="com.agile.planner.user.UserConfigTest" time="0.001"/>
+  <testcase name="setSchedulingAlgorithm()" classname="com.agile.planner.user.UserConfigTest" time="0.0"/>
+  <testcase name="setMaxDays()" classname="com.agile.planner.user.UserConfigTest" time="0.001"/>
+  <testcase name="isOverflow()" classname="com.agile.planner.user.UserConfigTest" time="0.0"/>
+  <testcase name="getWeek()" classname="com.agile.planner.user.UserConfigTest" time="0.001"/>
+  <testcase name="setFitSchedule()" classname="com.agile.planner.user.UserConfigTest" time="0.001"/>
+  <testcase name="getArchiveDays()" classname="com.agile.planner.user.UserConfigTest" time="0.0"/>
+  <testcase name="setMinHours()" classname="com.agile.planner.user.UserConfigTest" time="0.0"/>
+  <testcase name="getMinHours()" classname="com.agile.planner.user.UserConfigTest" time="0.0"/>
+  <testcase name="setPriority()" classname="com.agile.planner.user.UserConfigTest" time="0.0"/>
+  <testcase name="isFitSchedule()" classname="com.agile.planner.user.UserConfigTest" time="0.001"/>
+  <testcase name="setEmail()" classname="com.agile.planner.user.UserConfigTest" time="0.0"/>
+  <testcase name="setUserName()" classname="com.agile.planner.user.UserConfigTest" time="0.001"/>
+  <testcase name="getSchedulingAlgorithm()" classname="com.agile.planner.user.UserConfigTest" time="0.0"/>
+  <testcase name="getUserName()" classname="com.agile.planner.user.UserConfigTest" time="0.0"/>
+  <testcase name="getMaxDays()" classname="com.agile.planner.user.UserConfigTest" time="0.0"/>
+  <testcase name="getEmail()" classname="com.agile.planner.user.UserConfigTest" time="0.0"/>
+  <testcase name="setWeek()" classname="com.agile.planner.user.UserConfigTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

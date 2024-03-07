@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="agile.planner.data.ShortOrderComparatorTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2024-01-06T21:00:29" hostname="DIGITALSTORM-PC" time="0.001">
-  <properties/>
-  <testcase name="compare()" classname="agile.planner.data.ShortOrderComparatorTest" time="0.001"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

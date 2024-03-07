@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.agile.planner.scripter.ParserTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2024-03-07T23:54:59" hostname="DIGITALSTORM-PC" time="0.025">
+  <properties/>
+  <testcase name="parseCustomFunction()" classname="com.agile.planner.scripter.ParserTest" time="0.0"/>
+  <testcase name="parseConstant()" classname="com.agile.planner.scripter.ParserTest" time="0.006"/>
+  <testcase name="parseStaticFunction()" classname="com.agile.planner.scripter.ParserTest" time="0.003"/>
+  <testcase name="parseAttributes()" classname="com.agile.planner.scripter.ParserTest" time="0.006"/>
+  <testcase name="typeOfOperation()" classname="com.agile.planner.scripter.ParserTest" time="0.003"/>
+  <testcase name="testParsePreProcessor()" classname="com.agile.planner.scripter.ParserTest" time="0.003"/>
+  <testcase name="determineAttrFunc()" classname="com.agile.planner.scripter.ParserTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
