@@ -1,6 +1,10 @@
 # Compiled class file
 *.class
 
+# Google files
+credentials.json
+StoredCredential
+
 # Log file
 *.log
 
