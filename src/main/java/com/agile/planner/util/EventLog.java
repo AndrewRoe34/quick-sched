@@ -472,14 +472,14 @@ public class EventLog {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
         output.print(" [INFO]");
-        output.println(" AUTHORIZATION PROCESSED...");
+        output.println(" GOOGLE CALENDAR AUTHORIZATION PROCESSED...");
     }
 
     public void reportGoogleCalendarCleanSchedule(int numTasksDeleted) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         output.print(sdf.format(Calendar.getInstance().getTime()));
         output.print(" [INFO]");
-        output.println(" " + numTasksDeleted + " TASKS REMOVED");
+        output.println(" " + numTasksDeleted + " TASKS REMOVED FROM GOOGLE CALENDAR...");
     }
 
     public void reportGoogleCalendarExportSchedule() {

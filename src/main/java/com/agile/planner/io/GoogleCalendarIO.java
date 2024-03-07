@@ -93,13 +93,18 @@ public class GoogleCalendarIO {
 
     // [COMPLETE]
     public void exportScheduleToGoogle(List<Day> week) throws IOException {
+        int i = 0;
+        int startHour = 8;
         for(Day day : week) {
             for(Task.SubTask subTask : day.getSubTasks()) {
                 Task task = subTask.getParentTask();
-                Event event = GoogleCalendarUtil.formatTaskToEvent(task);
+                Event event = GoogleCalendarUtil.formatTaskToEvent(task, subTask.getSubTaskHours(), i, startHour);
                 event = service.events().insert(calendarId, event).execute();
                 System.out.printf("Event created: %s\n", event.getHtmlLink());
+                startHour += subTask.getSubTaskHours();
             }
+            i++;
+            startHour = 8;
         }
         eventLog.reportGoogleCalendarExportSchedule();
     }
@@ -130,7 +135,7 @@ public class GoogleCalendarIO {
     public int cleanGoogleSchedule() throws IOException {
         DateTime now = new DateTime(System.currentTimeMillis());
         Events events = service.events().list("primary")
-                .setMaxResults(14)
+                .setMaxResults(100)
                 .setTimeMin(now)
                 .setOrderBy("startTime")
                 .setSingleEvents(true)
@@ -150,7 +155,7 @@ public class GoogleCalendarIO {
 
     public static void main(String... args) throws IOException, GeneralSecurityException {
         // Build a new authorized API client service.
-        GoogleCalendarIO quickstart = new GoogleCalendarIO(null);
+        GoogleCalendarIO quickstart = new GoogleCalendarIO(EventLog.getEventLog());
         quickstart.importScheduleFromGoogle();
 //        String s1 = "Read";
 //        String s2 = "Write";

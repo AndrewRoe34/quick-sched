@@ -5,6 +5,8 @@ import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
 
@@ -16,22 +18,34 @@ import java.util.Scanner;
 public class GoogleCalendarUtil {
 
     //todo
-    public static Event formatTaskToEvent(Task task) {
-        Event event = new Event()
-                .setSummary(task.getName())
-                .setDescription("Agile Planner\n\neb007aba6df2559a02ceb17ddba47c85b3e2b930");
-        DateTime startDateTime = new DateTime("2024-03-06T09:00:00-07:00");
-        EventDateTime start = new EventDateTime()
-                .setDateTime(startDateTime)
-                .setTimeZone("America/Los_Angeles");
+    public static Event formatTaskToEvent(Task task, int subTaskHours, int dayIdx, int dayHour) {
+        Event event = new Event().setSummary(task.getName()); //todo need to display labels with given Task
+        StringBuilder sb = new StringBuilder("Due: ");
+        sb.append(task.getDueDate().get(Calendar.YEAR))
+                .append("-")
+                .append(task.getDueDate().get(Calendar.MONTH) + 1)
+                .append("-")
+                .append(task.getDueDate().get(Calendar.DAY_OF_MONTH))
+                .append("\n\n");
+        //todo handle checklist
+        // ...
+
+        sb.append("Agile Planner\n\neb007aba6df2559a02ceb17ddba47c85b3e2b930");
+        event.setDescription(sb.toString());
+
+        Calendar now = Time.getFormattedCalendarInstance(dayIdx);
+        now.add(Calendar.HOUR, dayHour);
+        DateTime startDateTime = new DateTime(now.getTime());
+        EventDateTime start = new EventDateTime().setDateTime(startDateTime);
         event.setStart(start);
 
-        DateTime endDateTime = new DateTime("2024-03-06T17:00:00-07:00");
-        EventDateTime end = new EventDateTime()
-                .setDateTime(endDateTime)
-                .setTimeZone("America/Los_Angeles");
+        now.add(Calendar.HOUR, subTaskHours);
+        DateTime endDateTime = new DateTime(now.getTime());
+        EventDateTime end = new EventDateTime().setDateTime(endDateTime);
         event.setEnd(end);
-//        event.setColorId("9"); https://chat.openai.com/share/95995dc1-1061-4e88-81e6-fc15a72e8370
+        //https://chat.openai.com/share/95995dc1-1061-4e88-81e6-fc15a72e8370
+        event.setColorId("1");
+
         return event;
     }
 
@@ -49,8 +63,8 @@ public class GoogleCalendarUtil {
             }
         }
         //todo
-        items.get(0).getSummary();
-        return null;
+//        items.get(0).getSummary();
+        return new ArrayList<>();
     }
 
 }
