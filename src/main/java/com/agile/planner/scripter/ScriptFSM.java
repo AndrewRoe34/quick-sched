@@ -12,6 +12,7 @@ import com.agile.planner.util.EventLog;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
 import java.util.*;
 
@@ -35,13 +36,13 @@ public class ScriptFSM {
     private int injectScriptIdx;
     private final ScheduleManager scheduleManager = ScheduleManager.getScheduleManager();
 
-    public void executeScript(String filename) throws FileNotFoundException {
+    public void executeScript(String filename) throws IOException {
         EventLog eventLog = scheduleManager.getEventLog();
         eventLog.reportScriptInstance(filename, true);
         scriptScanner = new Scanner(new File(filename));
-        while (scriptScanner.hasNextLine() || injectScript.size() > 0 && injectScriptIdx < injectScript.size()) {
+        while (scriptScanner.hasNextLine() || !injectScript.isEmpty() && injectScriptIdx < injectScript.size()) {
             String untrimmed;
-            if(injectScript.size() > 0 && injectScriptIdx < injectScript.size()) {
+            if(!injectScript.isEmpty() && injectScriptIdx < injectScript.size()) {
                 untrimmed = injectScript.get(injectScriptIdx++);
             } else {
                 untrimmed = scriptScanner.nextLine();
@@ -488,6 +489,10 @@ public class ScriptFSM {
                     throw new InvalidFunctionException();
                 }
                 return null;
+            case "google_export":
+                if(args.length != 0) throw new InvalidFunctionException();
+                funcGoogleExport();
+                return null;
             default:
                 processCustomFunction(func, args);
         }
@@ -914,6 +919,14 @@ public class ScriptFSM {
 
     protected void funcSetSchedule(int idx) {
         this.scheduleManager.setScheduleOption(idx);
+    }
+
+    protected void funcGoogleExport() {
+        try {
+            scheduleManager.exportScheduleToGoogle();
+        } catch (IOException e) {
+            throw new InvalidFunctionException();
+        }
     }
 
     protected void funcUpdateProfile() {

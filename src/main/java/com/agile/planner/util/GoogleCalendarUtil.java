@@ -15,6 +15,7 @@ import java.util.Scanner;
  */
 public class GoogleCalendarUtil {
 
+    //todo
     public static Event formatTaskToEvent(Task task) {
         Event event = new Event()
                 .setSummary(task.getName())
@@ -34,6 +35,7 @@ public class GoogleCalendarUtil {
         return event;
     }
 
+    //todo
     public static List<Task> formatEventsToTasks(List<Event> items) {
         for(Event i1 : items) {
             String title = i1.getSummary();

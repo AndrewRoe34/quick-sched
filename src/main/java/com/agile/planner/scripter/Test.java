@@ -1,13 +1,14 @@
 package com.agile.planner.scripter;
 
 import java.io.*;
+import java.security.GeneralSecurityException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class Test {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, GeneralSecurityException {
         System.out.println("Simple Script 1.0\n");
         ScriptFSM fsm = new ScriptFSM();
         File file = new File("data/");

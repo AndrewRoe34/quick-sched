@@ -468,8 +468,32 @@ public class EventLog {
         //todo
     }
 
-    public void reportGoogleCalendarActions() {
-        //todo
+    public void reportGoogleCalendarAuthorization() {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
+        output.println(" AUTHORIZATION PROCESSED...");
+    }
+
+    public void reportGoogleCalendarCleanSchedule(int numTasksDeleted) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
+        output.println(" " + numTasksDeleted + " TASKS REMOVED");
+    }
+
+    public void reportGoogleCalendarExportSchedule() {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
+        output.println(" SCHEDULE EXPORTED TO GOOGLE CALENDAR...");
+    }
+
+    public void reportGoogleCalendarImportSchedule() {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        output.print(sdf.format(Calendar.getInstance().getTime()));
+        output.print(" [INFO]");
+        output.println(" SCHEDULE IMPORTED FROM GOOGLE CALENDAR...");
     }
 
     /**

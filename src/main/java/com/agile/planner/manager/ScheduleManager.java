@@ -1,7 +1,9 @@
 package com.agile.planner.manager;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.security.GeneralSecurityException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.LinkedList;
@@ -12,6 +14,7 @@ import java.util.Calendar;
 
 import com.agile.planner.data.Card;
 import com.agile.planner.data.Label;
+import com.agile.planner.io.GoogleCalendarIO;
 import com.agile.planner.io.IOProcessing;
 import com.agile.planner.schedule.CompactScheduler;
 import com.agile.planner.schedule.DynamicScheduler;
@@ -65,6 +68,7 @@ public class ScheduleManager {
     /** Last day Task is due */
     private int lastDueDate;
     private List<Label> labels;
+    private final GoogleCalendarIO googleCalendarIO;
 
     /**
      * Private constructor of ScheduleManager
@@ -79,6 +83,11 @@ public class ScheduleManager {
         eventLog.reportUserLogin();
         processUserConfigFile();
         taskManager = new PriorityQueue<>();
+        try {
+            googleCalendarIO = new GoogleCalendarIO(eventLog);
+        } catch (GeneralSecurityException | IOException e) {
+            throw new IllegalArgumentException();
+        }
         switch(userConfig.getSchedulingAlgorithm()) {
             case 0:
                 scheduler = DynamicScheduler.getSingleton(userConfig, eventLog);
@@ -550,5 +559,10 @@ public class ScheduleManager {
 
     public EventLog getEventLog() {
         return eventLog;
+    }
+
+    public void exportScheduleToGoogle() throws IOException {
+        googleCalendarIO.cleanGoogleSchedule();
+        googleCalendarIO.exportScheduleToGoogle(schedule);
     }
 }

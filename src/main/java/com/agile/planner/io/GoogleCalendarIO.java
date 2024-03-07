@@ -2,6 +2,7 @@ package com.agile.planner.io;
 
 import com.agile.planner.data.Task;
 import com.agile.planner.schedule.day.Day;
+import com.agile.planner.util.EventLog;
 import com.agile.planner.util.GoogleCalendarUtil;
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -51,12 +52,15 @@ public class GoogleCalendarIO {
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
     private static final String calendarId = "primary";
     private final Calendar service;
+    private EventLog eventLog;
 
-    public GoogleCalendarIO() throws GeneralSecurityException, IOException {
+    public GoogleCalendarIO(EventLog eventLog) throws GeneralSecurityException, IOException {
+        this.eventLog = eventLog;
         final NetHttpTransport HTTP_TRANSPORT = GoogleNetHttpTransport.newTrustedTransport();
         service = new Calendar.Builder(HTTP_TRANSPORT, JSON_FACTORY, getCredentials(HTTP_TRANSPORT))
                 .setApplicationName(APPLICATION_NAME)
                 .build();
+        this.eventLog.reportGoogleCalendarAuthorization();
     }
 
     /**
@@ -87,6 +91,7 @@ public class GoogleCalendarIO {
         return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
     }
 
+    // [COMPLETE]
     public void exportScheduleToGoogle(List<Day> week) throws IOException {
         for(Day day : week) {
             for(Task.SubTask subTask : day.getSubTasks()) {
@@ -96,8 +101,10 @@ public class GoogleCalendarIO {
                 System.out.printf("Event created: %s\n", event.getHtmlLink());
             }
         }
+        eventLog.reportGoogleCalendarExportSchedule();
     }
 
+    // [COMPLETE]
     public void importScheduleFromGoogle() throws IOException {
         DateTime now = new DateTime(System.currentTimeMillis());
         Events events = service.events().list("primary")
@@ -107,20 +114,19 @@ public class GoogleCalendarIO {
                 .setSingleEvents(true)
                 .execute();
         List<Event> items = events.getItems();
-        if (items.isEmpty()) {
-            System.out.println("No upcoming events found.");
+        List<Task> tasks = GoogleCalendarUtil.formatEventsToTasks(items);
+        if (tasks.isEmpty()) {
+            System.out.println("No upcoming tasks found.");
         } else {
-            System.out.println("Upcoming events");
-            for (Event event : items) {
-                DateTime start = event.getStart().getDateTime();
-                if (start == null) {
-                    start = event.getStart().getDate();
-                }
-                System.out.printf("%s (%s)\n", event.getSummary(), start);
+            System.out.println("Upcoming tasks");
+            for (Task t1 : tasks) {
+                System.out.println(t1);
             }
         }
+        eventLog.reportGoogleCalendarImportSchedule();
     }
 
+    // [COMPLETE]
     public int cleanGoogleSchedule() throws IOException {
         DateTime now = new DateTime(System.currentTimeMillis());
         Events events = service.events().list("primary")
@@ -138,12 +144,13 @@ public class GoogleCalendarIO {
                 count++;
             }
         }
+        eventLog.reportGoogleCalendarCleanSchedule(count);
         return count;
     }
 
     public static void main(String... args) throws IOException, GeneralSecurityException {
         // Build a new authorized API client service.
-        GoogleCalendarIO quickstart = new GoogleCalendarIO();
+        GoogleCalendarIO quickstart = new GoogleCalendarIO(null);
         quickstart.importScheduleFromGoogle();
 //        String s1 = "Read";
 //        String s2 = "Write";
