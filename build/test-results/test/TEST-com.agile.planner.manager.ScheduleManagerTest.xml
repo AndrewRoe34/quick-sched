@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.agile.planner.manager.ScheduleManagerTest" tests="11" skipped="0" failures="10" errors="0" timestamp="2024-03-07T23:54:59" hostname="DIGITALSTORM-PC" time="0.034">
+<testsuite name="com.agile.planner.manager.ScheduleManagerTest" tests="11" skipped="0" failures="10" errors="0" timestamp="2024-03-08T00:03:42" hostname="DIGITALSTORM-PC" time="0.042">
   <properties/>
-  <testcase name="outputCurrentDayToConsole()" classname="com.agile.planner.manager.ScheduleManagerTest" time="0.024">
+  <testcase name="outputCurrentDayToConsole()" classname="com.agile.planner.manager.ScheduleManagerTest" time="0.031">
     <failure message="org.opentest4j.AssertionFailedError" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError
 	at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:34)
 	at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:116)
@@ -182,7 +182,7 @@
 </failure>
   </testcase>
   <testcase name="scheduleIsEmpty()" classname="com.agile.planner.manager.ScheduleManagerTest" time="0.001"/>
-  <testcase name="outputScheduleToConsole()" classname="com.agile.planner.manager.ScheduleManagerTest" time="0.001">
+  <testcase name="outputScheduleToConsole()" classname="com.agile.planner.manager.ScheduleManagerTest" time="0.0">
     <failure message="org.opentest4j.AssertionFailedError" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError
 	at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:34)
 	at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:116)
@@ -272,7 +272,7 @@
 	at app//worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="setCustomHours()" classname="com.agile.planner.manager.ScheduleManagerTest" time="0.001">
+  <testcase name="setCustomHours()" classname="com.agile.planner.manager.ScheduleManagerTest" time="0.0">
     <failure message="org.opentest4j.AssertionFailedError" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError
 	at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:34)
 	at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:116)
@@ -362,7 +362,7 @@
 	at app//worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="setGlobalHours()" classname="com.agile.planner.manager.ScheduleManagerTest" time="0.001">
+  <testcase name="setGlobalHours()" classname="com.agile.planner.manager.ScheduleManagerTest" time="0.0">
     <failure message="org.opentest4j.AssertionFailedError" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError
 	at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:34)
 	at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:116)
@@ -722,7 +722,7 @@
 	at app//worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="outputScheduleToFile()" classname="com.agile.planner.manager.ScheduleManagerTest" time="0.001">
+  <testcase name="outputScheduleToFile()" classname="com.agile.planner.manager.ScheduleManagerTest" time="0.0">
     <failure message="org.opentest4j.AssertionFailedError" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError
 	at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:34)
 	at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:116)
@@ -812,7 +812,7 @@
 	at app//worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="processTasks()" classname="com.agile.planner.manager.ScheduleManagerTest" time="0.001">
+  <testcase name="processTasks()" classname="com.agile.planner.manager.ScheduleManagerTest" time="0.0">
     <failure message="org.opentest4j.AssertionFailedError" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError
 	at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:34)
 	at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:116)

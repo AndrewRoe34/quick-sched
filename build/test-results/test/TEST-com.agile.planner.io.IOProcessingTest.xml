@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.agile.planner.io.IOProcessingTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2024-03-07T23:54:59" hostname="DIGITALSTORM-PC" time="0.03">
+<testsuite name="com.agile.planner.io.IOProcessingTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2024-03-08T00:03:42" hostname="DIGITALSTORM-PC" time="0.044">
   <properties/>
-  <testcase name="outputDay()" classname="com.agile.planner.io.IOProcessingTest" time="0.009"/>
-  <testcase name="readAndWriteJBinFile()" classname="com.agile.planner.io.IOProcessingTest" time="0.003"/>
-  <testcase name="readTasks()" classname="com.agile.planner.io.IOProcessingTest" time="0.003"/>
-  <testcase name="readCfg()" classname="com.agile.planner.io.IOProcessingTest" time="0.005"/>
+  <testcase name="outputDay()" classname="com.agile.planner.io.IOProcessingTest" time="0.015"/>
+  <testcase name="readAndWriteJBinFile()" classname="com.agile.planner.io.IOProcessingTest" time="0.007"/>
+  <testcase name="readTasks()" classname="com.agile.planner.io.IOProcessingTest" time="0.004"/>
+  <testcase name="readCfg()" classname="com.agile.planner.io.IOProcessingTest" time="0.008"/>
   <testcase name="outputSchedule()" classname="com.agile.planner.io.IOProcessingTest" time="0.008"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

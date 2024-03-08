@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.agile.planner.util.TimeTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-03-07T23:54:59" hostname="DIGITALSTORM-PC" time="0.001">
+<testsuite name="com.agile.planner.util.TimeTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-03-08T00:03:43" hostname="DIGITALSTORM-PC" time="0.001">
   <properties/>
-  <testcase name="testGetFormattedCalendarInstance()" classname="com.agile.planner.util.TimeTest" time="0.0"/>
+  <testcase name="testGetFormattedCalendarInstance()" classname="com.agile.planner.util.TimeTest" time="0.001"/>
   <testcase name="testDetermineRangeOfDays()" classname="com.agile.planner.util.TimeTest" time="0.0"/>
   <system-out><![CDATA[]]></system-out>
   <system-err><![CDATA[]]></system-err>

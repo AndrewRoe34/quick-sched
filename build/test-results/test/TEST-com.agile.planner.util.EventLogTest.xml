@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.agile.planner.util.EventLogTest" tests="6" skipped="0" failures="6" errors="0" timestamp="2024-03-07T23:54:59" hostname="DIGITALSTORM-PC" time="0.009">
+<testsuite name="com.agile.planner.util.EventLogTest" tests="6" skipped="0" failures="6" errors="0" timestamp="2024-03-08T00:03:42" hostname="DIGITALSTORM-PC" time="0.02">
   <properties/>
-  <testcase name="reportTaskAction()" classname="com.agile.planner.util.EventLogTest" time="0.0">
+  <testcase name="reportTaskAction()" classname="com.agile.planner.util.EventLogTest" time="0.001">
     <failure message="org.opentest4j.AssertionFailedError" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError
 	at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:34)
 	at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:116)
@@ -181,7 +181,7 @@
 	at app//worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="reportDayAction()" classname="com.agile.planner.util.EventLogTest" time="0.001">
+  <testcase name="reportDayAction()" classname="com.agile.planner.util.EventLogTest" time="0.002">
     <failure message="org.opentest4j.AssertionFailedError" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError
 	at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:34)
 	at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:116)
@@ -271,7 +271,7 @@
 	at app//worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="reportExitSession()" classname="com.agile.planner.util.EventLogTest" time="0.001">
+  <testcase name="reportExitSession()" classname="com.agile.planner.util.EventLogTest" time="0.002">
     <failure message="org.opentest4j.AssertionFailedError" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError
 	at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:34)
 	at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:116)
@@ -361,7 +361,7 @@
 	at app//worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="reportUserLogin()" classname="com.agile.planner.util.EventLogTest" time="0.001">
+  <testcase name="reportUserLogin()" classname="com.agile.planner.util.EventLogTest" time="0.003">
     <failure message="org.opentest4j.AssertionFailedError" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError
 	at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:34)
 	at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:116)
@@ -451,7 +451,7 @@
 	at app//worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="reportWeekEdit()" classname="com.agile.planner.util.EventLogTest" time="0.002">
+  <testcase name="reportWeekEdit()" classname="com.agile.planner.util.EventLogTest" time="0.003">
     <failure message="org.opentest4j.AssertionFailedError" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError
 	at app//org.junit.jupiter.api.AssertionUtils.fail(AssertionUtils.java:34)
 	at app//org.junit.jupiter.api.Assertions.fail(Assertions.java:116)

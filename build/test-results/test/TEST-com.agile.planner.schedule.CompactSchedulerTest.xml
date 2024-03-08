@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.agile.planner.schedule.CompactSchedulerTest" tests="4" skipped="0" failures="1" errors="0" timestamp="2024-03-07T23:54:59" hostname="DIGITALSTORM-PC" time="0.044">
+<testsuite name="com.agile.planner.schedule.CompactSchedulerTest" tests="4" skipped="0" failures="1" errors="0" timestamp="2024-03-08T00:03:42" hostname="DIGITALSTORM-PC" time="0.055">
   <properties/>
-  <testcase name="assignDayValid()" classname="com.agile.planner.schedule.CompactSchedulerTest" time="0.026"/>
-  <testcase name="assignDayLeftover()" classname="com.agile.planner.schedule.CompactSchedulerTest" time="0.004"/>
-  <testcase name="assignDayFitSchedule()" classname="com.agile.planner.schedule.CompactSchedulerTest" time="0.01">
+  <testcase name="assignDayValid()" classname="com.agile.planner.schedule.CompactSchedulerTest" time="0.025"/>
+  <testcase name="assignDayLeftover()" classname="com.agile.planner.schedule.CompactSchedulerTest" time="0.007"/>
+  <testcase name="assignDayFitSchedule()" classname="com.agile.planner.schedule.CompactSchedulerTest" time="0.009">
     <failure message="org.opentest4j.AssertionFailedError: expected: &lt;2&gt; but was: &lt;3&gt;" type="org.opentest4j.AssertionFailedError">org.opentest4j.AssertionFailedError: expected: &lt;2&gt; but was: &lt;3&gt;
 	at app//org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
 	at app//org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
@@ -97,7 +97,7 @@
 	at app//worker.org.gradle.process.internal.worker.GradleWorkerMain.main(GradleWorkerMain.java:74)
 </failure>
   </testcase>
-  <testcase name="assignDayOverflow()" classname="com.agile.planner.schedule.CompactSchedulerTest" time="0.003"/>
+  <testcase name="assignDayOverflow()" classname="com.agile.planner.schedule.CompactSchedulerTest" time="0.009"/>
   <system-out><![CDATA[Day [03-07-2024]
 Day [03-08-2024]
 Day [03-09-2024]
