@@ -35,35 +35,35 @@ public class IOProcessingTest {
         }
         //Misspelled keyword
         try {
-            IOProcessing.readCfg("data/bad_settings.cfg");
+            IOProcessing.readCfg("data/cfg_tests/bad_settings.cfg");
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof InputMismatchException);
         }
         //Invalid input for expected string
         try {
-            IOProcessing.readCfg("data/bad_settings1.cfg");
+            IOProcessing.readCfg("data/cfg_tests/bad_settings1.cfg");
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof InputMismatchException);
         }
         //Invalid array
         try {
-            IOProcessing.readCfg("data/bad_settings2.cfg");
+            IOProcessing.readCfg("data/cfg_tests/bad_settings2.cfg");
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof InputMismatchException);
         }
         //Empty file
         try {
-            IOProcessing.readCfg("data/bad_settings3.cfg");
+            IOProcessing.readCfg("data/cfg_tests/bad_settings3.cfg");
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof InputMismatchException);
         }
         //Missing element
         try {
-            IOProcessing.readCfg("data/bad_settings4.cfg");
+            IOProcessing.readCfg("data/cfg_tests/bad_settings4.cfg");
             fail();
         } catch (Exception e) {
             assertTrue(e instanceof InputMismatchException);
@@ -157,7 +157,7 @@ public class IOProcessingTest {
      */
     @Test
     public void readAndWriteJBinFile() {
-        IOProcessing.writeJBinFile("data/schedule.jbin", "JIMMY JOHNS");
+        IOProcessing.writeJBinFile("data/jbin/schedule.jbin", "JIMMY JOHNS");
         assertEquals("JIMMY JOHNS", IOProcessing.readJBinFile("data/schedule.jbin"));
     }
 }

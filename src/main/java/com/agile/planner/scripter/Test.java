@@ -11,7 +11,7 @@ public class Test {
     public static void main(String[] args) throws IOException, GeneralSecurityException {
         System.out.println("Simple Script 1.0\n");
         ScriptFSM fsm = new ScriptFSM();
-        File file = new File("data/");
+        File file = new File("data/scripts");
         File[] list = file.listFiles();
         List<File> files = new ArrayList<>();
         assert list != null;
