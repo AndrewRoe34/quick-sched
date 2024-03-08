@@ -35,6 +35,18 @@ test {
     }
 }
 
+jar {
+    duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
+
+    manifest {
+        attributes 'Main-Class' : 'com.agile.planner.scripter.Test'
+    }
+
+    from {
+        configurations.runtimeClasspath.collect {it.isDirectory() ? it : zipTree(it)}
+    }
+}
+
 jacocoTestReport {
     reports {
         xml.enabled true
