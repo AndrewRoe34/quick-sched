@@ -1,6 +1,6 @@
 package com.agile.planner.io;
 
-import com.agile.planner.data.Task;
+import com.agile.planner.models.Task;
 import com.agile.planner.schedule.day.Day;
 import com.agile.planner.util.EventLog;
 import com.agile.planner.util.GoogleCalendarUtil;
@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 

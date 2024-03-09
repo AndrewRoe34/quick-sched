@@ -1,7 +1,7 @@
 package com.agile.planner.scripter;
 
-import com.agile.planner.data.Card;
-import com.agile.planner.data.Label;
+import com.agile.planner.models.Card;
+import com.agile.planner.models.Label;
 import com.agile.planner.scripter.exception.InvalidGrammarException;
 
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package com.agile.planner.data;
+package com.agile.planner.models;
 
 import java.util.ArrayList;
 import java.util.Calendar;

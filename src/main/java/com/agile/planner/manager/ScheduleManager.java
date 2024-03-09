@@ -12,15 +12,15 @@ import java.util.PriorityQueue;
 import java.util.Map;
 import java.util.Calendar;
 
-import com.agile.planner.data.Card;
-import com.agile.planner.data.Label;
+import com.agile.planner.models.Card;
+import com.agile.planner.models.Label;
 import com.agile.planner.io.GoogleCalendarIO;
 import com.agile.planner.io.IOProcessing;
 import com.agile.planner.schedule.CompactScheduler;
 import com.agile.planner.schedule.DynamicScheduler;
 import com.agile.planner.schedule.Scheduler;
 import com.agile.planner.schedule.day.Day;
-import com.agile.planner.data.Task;
+import com.agile.planner.models.Task;
 import com.agile.planner.user.UserConfig;
 import com.agile.planner.util.CheckList;
 import com.agile.planner.util.EventLog;

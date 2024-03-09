@@ -1,8 +1,8 @@
 package com.agile.planner.util;
 
-import com.agile.planner.data.Card;
+import com.agile.planner.models.Card;
 import com.agile.planner.schedule.day.Day;
-import com.agile.planner.data.Task;
+import com.agile.planner.models.Task;
 import com.agile.planner.user.UserConfig;
 
 import java.io.PrintStream;

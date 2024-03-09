@@ -2,7 +2,7 @@ package com.agile.planner.schedule;
 
 import com.agile.planner.manager.ScheduleManager;
 import com.agile.planner.schedule.day.Day;
-import com.agile.planner.data.Task;
+import com.agile.planner.models.Task;
 
 import java.util.List;
 import java.util.PriorityQueue;

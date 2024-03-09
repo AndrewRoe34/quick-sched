@@ -1,7 +1,7 @@
 package com.agile.planner.schedule;
 
 import com.agile.planner.schedule.day.Day;
-import com.agile.planner.data.Task;
+import com.agile.planner.models.Task;
 import com.agile.planner.user.UserConfig;
 import com.agile.planner.util.EventLog;
 

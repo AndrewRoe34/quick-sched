@@ -2,7 +2,7 @@ package com.agile.planner.schedule.day;
 
 import java.util.Calendar;
 
-import com.agile.planner.data.Task;
+import com.agile.planner.models.Task;
 import com.agile.planner.util.Time;
 import org.junit.jupiter.api.Test;
 

@@ -1,6 +1,6 @@
 package com.agile.planner.scripter.functional;
 
-import com.agile.planner.data.Label;
+import com.agile.planner.models.Label;
 import com.agile.planner.scripter.exception.InvalidGrammarException;
 
 /**

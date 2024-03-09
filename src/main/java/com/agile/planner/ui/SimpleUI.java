@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Scanner;
 
 import com.agile.planner.manager.SystemManager;
-import com.agile.planner.data.Task;
+import com.agile.planner.models.Task;
 
 /**
  * Basic Command Line UI

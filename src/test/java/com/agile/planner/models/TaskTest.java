@@ -1,4 +1,4 @@
-package com.agile.planner.data;//package agile.planner.data;
+package com.agile.planner.models;//package agile.planner.data;
 //
 //import static org.junit.Assert.*;
 //

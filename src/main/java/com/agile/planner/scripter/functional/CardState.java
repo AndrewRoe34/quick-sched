@@ -1,6 +1,6 @@
 package com.agile.planner.scripter.functional;
 
-import com.agile.planner.data.Card;
+import com.agile.planner.models.Card;
 import com.agile.planner.scripter.exception.InvalidGrammarException;
 
 /**

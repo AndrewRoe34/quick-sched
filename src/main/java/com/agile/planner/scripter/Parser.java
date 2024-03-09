@@ -2,9 +2,9 @@ package com.agile.planner.scripter;
 
 import com.agile.planner.scripter.exception.DereferenceNullException;
 import com.agile.planner.scripter.exception.InvalidGrammarException;
-import com.agile.planner.data.Card;
-import com.agile.planner.data.Label;
-import com.agile.planner.data.Task;
+import com.agile.planner.models.Card;
+import com.agile.planner.models.Label;
+import com.agile.planner.models.Task;
 import com.agile.planner.util.CheckList;
 
 import java.util.*;

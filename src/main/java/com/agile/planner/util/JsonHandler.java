@@ -1,9 +1,9 @@
 package com.agile.planner.util;
 
-import com.agile.planner.data.Board;
-import com.agile.planner.data.Card;
-import com.agile.planner.data.Label;
-import com.agile.planner.data.Task;
+import com.agile.planner.models.Board;
+import com.agile.planner.models.Card;
+import com.agile.planner.models.Label;
+import com.agile.planner.models.Task;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 

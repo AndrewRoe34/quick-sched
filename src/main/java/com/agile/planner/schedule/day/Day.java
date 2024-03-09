@@ -4,8 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.LinkedList;
 
-import com.agile.planner.data.Task;
-import com.agile.planner.data.Task.SubTask;
+import com.agile.planner.models.Task;
+import com.agile.planner.models.Task.SubTask;
 import com.agile.planner.util.Time;
 
 /**

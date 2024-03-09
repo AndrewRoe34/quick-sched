@@ -1,6 +1,6 @@
 package com.agile.planner.util;
 
-import com.agile.planner.data.Task;
+import com.agile.planner.models.Task;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  * Handler of all core linker and utility functions for GoogleIO
