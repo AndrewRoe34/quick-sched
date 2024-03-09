@@ -1,5 +1,5 @@
 include: __CURR_CONFIG__, __LOG__, __BUILD__
-import_schedule("data/update6.jbin")
+import_schedule("data/jbin/update6.jbin")
 
 func manage_tasks()
   print("Number of Tasks: ")

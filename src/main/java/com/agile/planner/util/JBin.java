@@ -236,7 +236,7 @@ public class JBin {
         //todo codeblock needs to be refactored and tested further
         int x = ld.getDayOfMonth(); //debugging values
         calendar = Calendar.getInstance();
-        calendar.set(ld.getYear(), Calendar.DECEMBER, ld.getDayOfMonth());
+        calendar.set(ld.getYear(), Calendar.MARCH, ld.getDayOfMonth());
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         //todo codeblock needs to be refactored and tested further
