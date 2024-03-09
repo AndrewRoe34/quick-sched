@@ -1,6 +1,4 @@
-package com.agile.planner.util;
-
-import com.agile.planner.models.Linker;
+package com.agile.planner.models;
 
 import java.util.ArrayList;
 import java.util.List;

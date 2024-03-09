@@ -6,7 +6,7 @@ import com.agile.planner.models.Label;
 import com.agile.planner.models.Task;
 import com.agile.planner.scripter.exception.InvalidFunctionException;
 import com.agile.planner.scripter.exception.UnknownClassException;
-import com.agile.planner.util.CheckList;
+import com.agile.planner.models.CheckList;
 
 import java.util.ArrayList;
 import java.util.List;

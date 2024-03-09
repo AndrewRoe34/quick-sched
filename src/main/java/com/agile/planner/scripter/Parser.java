@@ -5,7 +5,7 @@ import com.agile.planner.scripter.exception.InvalidGrammarException;
 import com.agile.planner.models.Card;
 import com.agile.planner.models.Label;
 import com.agile.planner.models.Task;
-import com.agile.planner.util.CheckList;
+import com.agile.planner.models.CheckList;
 
 import java.util.*;
 
@@ -178,6 +178,7 @@ public class Parser {
             case "false":
                 return Operation.CONSTANT;
             case "if":
+            case "elif":
             case "else":
                 return Operation.IF_CONDITION;
             default:
@@ -188,12 +189,12 @@ public class Parser {
                         if(tokens[0].charAt(0) != '"') return Operation.ATTRIBUTE;
                     default:
                         if(verifyFunc(line)) {
-                            if("if".equals(tokens[0].substring(0, 2))) {
+                            if("if".equals(tokens[0].substring(0, 2)) || "elif".equals(tokens[0].substring(0, 4))) {
                                 return Operation.IF_CONDITION;
                             } else {
                                 return Operation.FUNCTION;
                             }
-                        } else if(tokens.length > 1 && tokens[1].length() > 0 && tokens[1].charAt(0) == '.' || verifyAttr(line)) {
+                        } else if(tokens.length > 1 && !tokens[1].isEmpty() && tokens[1].charAt(0) == '.' || verifyAttr(line)) {
                             return Operation.ATTRIBUTE;
                         } else if(tokens[0].charAt(0) == '"' && tokens[tokens.length - 1].charAt(tokens[tokens.length - 1].length() - 1) == '"') {
                             return Operation.CONSTANT;
@@ -250,7 +251,8 @@ public class Parser {
         }
 
         int idx = line.indexOf("if") + 2;
-        if(idx == 1) {
+        int elifIdx = line.indexOf("elif") + 4;
+        if(idx == 1 && elifIdx == 3) {
             idx = line.indexOf("else") + 4;
             for(int i = idx; i < line.length(); i++) {
                 if(line.charAt(i) != ' ' && line.charAt(i) != '\t') throw new InvalidGrammarException();
@@ -263,8 +265,9 @@ public class Parser {
             } else if(line.charAt(idx) == ')') return null;
         }
 
+        String funcName = elifIdx != 3 ? "elif" : "if";
         String[] args = verifyArgument(line.substring(idx), 0);
-        return new CustomFunction("if", args, numSpaces + 4 * numTabs);
+        return new CustomFunction(funcName, args, numSpaces + 4 * numTabs);
     }
 
     public StaticFunction parseStaticFunction(String line) {

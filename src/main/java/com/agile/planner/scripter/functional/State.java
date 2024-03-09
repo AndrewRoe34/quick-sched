@@ -10,7 +10,7 @@ import com.agile.planner.manager.ScheduleManager;
 import com.agile.planner.schedule.day.Day;
 import com.agile.planner.scripter.tools.ScriptLog;
 import com.agile.planner.user.UserConfig;
-import com.agile.planner.util.CheckList;
+import com.agile.planner.models.CheckList;
 
 import java.util.*;
 

@@ -4,7 +4,7 @@ import com.agile.planner.models.Card;
 import com.agile.planner.models.Label;
 import com.agile.planner.models.Linker;
 import com.agile.planner.scripter.exception.InvalidGrammarException;
-import com.agile.planner.util.CheckList;
+import com.agile.planner.models.CheckList;
 
 /**
  * Manages and stores data for the specified variable within the Simple scripting language. It handles all core

@@ -1,7 +1,7 @@
 package com.agile.planner.manager;
 
 import com.agile.planner.models.Task;
-import com.agile.planner.util.CheckList;
+import com.agile.planner.models.CheckList;
 
 import java.io.FileNotFoundException;
 

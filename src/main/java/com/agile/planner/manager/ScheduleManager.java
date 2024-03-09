@@ -22,7 +22,7 @@ import com.agile.planner.schedule.Scheduler;
 import com.agile.planner.schedule.day.Day;
 import com.agile.planner.models.Task;
 import com.agile.planner.user.UserConfig;
-import com.agile.planner.util.CheckList;
+import com.agile.planner.models.CheckList;
 import com.agile.planner.util.EventLog;
 import com.agile.planner.util.JBin;
 import com.agile.planner.util.Time;

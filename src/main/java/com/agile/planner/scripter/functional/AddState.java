@@ -5,7 +5,7 @@ import com.agile.planner.models.Label;
 import com.agile.planner.models.Task;
 import com.agile.planner.scripter.exception.InvalidGrammarException;
 import com.agile.planner.scripter.exception.InvalidPairingException;
-import com.agile.planner.util.CheckList;
+import com.agile.planner.models.CheckList;
 
 import java.util.List;
 

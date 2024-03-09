@@ -4,7 +4,7 @@ import com.agile.planner.models.Card;
 import com.agile.planner.models.Label;
 import com.agile.planner.models.Task;
 import com.agile.planner.scripter.*;
-import com.agile.planner.util.CheckList;
+import com.agile.planner.models.CheckList;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;

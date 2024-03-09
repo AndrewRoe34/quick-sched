@@ -1,5 +1,6 @@
 package com.agile.planner.util;
 
+import com.agile.planner.models.CheckList;
 import com.agile.planner.models.Task;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;

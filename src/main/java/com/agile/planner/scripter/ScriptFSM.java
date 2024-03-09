@@ -7,7 +7,7 @@ import com.agile.planner.io.IOProcessing;
 import com.agile.planner.manager.ScheduleManager;
 import com.agile.planner.scripter.tools.ScriptLog;
 import com.agile.planner.scripter.exception.*;
-import com.agile.planner.util.CheckList;
+import com.agile.planner.models.CheckList;
 import com.agile.planner.util.EventLog;
 
 import java.io.File;
@@ -625,16 +625,35 @@ public class ScriptFSM {
                         if(status[1]) return;
                         priorIfCondition = true;
                         priorIfFailed = !status[0];
-                    } else {
-                        if(priorIfCondition && priorIfFailed) {
-                            boolean status = executeElseConditionFunc(ifCondition, localStack);
-                            if(status) return;
-                            priorIfCondition = false;
-                            priorIfFailed = false;
-                        } else if(!priorIfCondition) {
-                            throw new InvalidGrammarException();
-                        }
+                    } else if("elif".equals(ifCondition.getFuncName()) && priorIfCondition && priorIfFailed) {
+                        boolean[] status = executeIfConditionFunc(ifCondition, localStack);
+                        if(status[1]) return;
+                        priorIfFailed = !status[0];
+                    } else if("else".equals(ifCondition.getFuncName()) && priorIfCondition && priorIfFailed) {
+                        boolean status = executeElseConditionFunc(ifCondition, localStack);
+                        if(status) return;
+                        priorIfCondition = false;
+                        priorIfFailed = false;
+                    } else if("elif".equals(ifCondition.getFuncName()) && !priorIfCondition ||
+                            "else".equals(ifCondition.getFuncName()) && !priorIfCondition) {
+                        throw new InvalidGrammarException("Improper chaining of control structures");
                     }
+//                    else {
+//                        if(priorIfCondition && priorIfFailed) {
+//                            if("elif".equals(ifCondition.getFuncName())) {
+//                                boolean[] status = executeIfConditionFunc(ifCondition, localStack);
+//                                if(status[1]) return;
+//                                priorIfFailed = !status[0];
+//                            } else {
+//                                boolean status = executeElseConditionFunc(ifCondition, localStack);
+//                                if(status) return;
+//                                priorIfCondition = false;
+//                                priorIfFailed = false;
+//                            }
+//                        } else if(!priorIfCondition) {
+//                            throw new InvalidGrammarException();
+//                        }
+//                    }
                     lineIdx--;
                     break;
                 case INSTANCE:

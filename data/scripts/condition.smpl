@@ -1,13 +1,18 @@
 include: __CURR_CONFIG__, __LOG__
 
 func prompt_user()
-  print("Enter 0 or 1: ")
-  x: input_int()
+  x: 1
   if(x.==(0))
-    println("Rise and shine Mr. Freeman...rise and shine...")
-  #this should still work
+    println("Cond 1")
+  elif(x.==(1))
+    println("Cond 2")
+  elif(x.==(2))
+    println("Cond 3")
   else
-    println("The right man in the right place can make all the difference...")
-  println("Pick up that can")
+    println("Cond 4")
+  if(x.==(2))
+    println("Cond 5")
+  else
+    println("Cond 6")
 
 prompt_user()
