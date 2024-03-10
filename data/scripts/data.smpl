@@ -1,9 +1,5 @@
 #Sample script
-include: __CURR_CONFIG__, __LOG__, __IMPORT__, __BUILD__
-
-#Imports schedule data from prior session
-if(true)
-  #import_schedule("data/update7.jbin")
+include: __CURR_CONFIG__, __LOG__, __BUILD__, __HTML__
 
 #Constructs class instances
 val: "3400"
@@ -38,7 +34,3 @@ println("checklist_id=", my_cl.id(), ", checklist_name=", my_cl.get_title(), ", 
 println(my_cl)
 println("")
 
-val: "0002"
-# For this to work [println(val.sub_string(val.parse_int()).parse_int())], you need to separate it by 'val', 'sub_string(val.parse_int())', and 'parse_int()'
-
-build()

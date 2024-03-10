@@ -124,28 +124,28 @@ public class ScriptLog {
         sb.append("FILES_LINKED: FILE=").append(name).append("\n");
     }
 
-    /**
-     * Reports the {@code print} operation with regards to displaying the formatted String version of a reference or a String literal
-     *
-     * @param args variable references being reported
-     */
-    public void reportPrintFunc(Type[] args) {
-        sb.append(sdf.format(Calendar.getInstance().getTime())).append(" ");
-        sb.append("PRINTS: ARGS=[");
-        if(args.length > 1) {
-//            sb.append(args[0].getVariableName() == null ? "NULL": args[0].getVariableName());
-            sb.append("\"");
-            sb.append(args[0].toString());
-            sb.append("\"");
-        }
-        for(int i = 1; i < args.length; i++) {
-            sb.append(", \"");
-//            sb.append(args[i].getVariableName() == null ? "NULL": args[0].getVariableName());
-            sb.append(args[i].toString());
-            sb.append("\"");
-        }
-        sb.append("]\n");
-    }
+//    /**
+//     * Reports the {@code print} operation with regards to displaying the formatted String version of a reference or a String literal
+//     *
+//     * @param args variable references being reported
+//     */
+//    public void reportPrintFunc(Type[] args) {
+//        sb.append(sdf.format(Calendar.getInstance().getTime())).append(" ");
+//        sb.append("PRINTS: ARGS=[");
+//        if(args.length > 1) {
+////            sb.append(args[0].getVariableName() == null ? "NULL": args[0].getVariableName());
+//            sb.append("\"");
+//            sb.append(args[0].toString());
+//            sb.append("\"");
+//        }
+//        for(int i = 1; i < args.length; i++) {
+//            sb.append(", \"");
+////            sb.append(args[i].getVariableName() == null ? "NULL": args[0].getVariableName());
+//            sb.append(args[i].toString());
+//            sb.append("\"");
+//        }
+//        sb.append("]\n");
+//    }
 
     /**
      * Reports the creation of a {@link PreProcessor} via its core attributes for the {@code Simple} language

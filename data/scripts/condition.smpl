@@ -1,7 +1,7 @@
-include: __CURR_CONFIG__, __LOG__
+include: __CURR_CONFIG__, __LOG__, __HTML__
 
 func prompt_user()
-  x: 1
+  x: input_int("Enter a number between 0 and 3 -> ")
   if(x.==(0))
     println("Cond 1")
   elif(x.==(1))

@@ -9,8 +9,6 @@ func manage_tasks()
 view_interface()
 println()
 
-x: 3
 inject_code()
-println(x)
 
 build()

@@ -1,4 +1,4 @@
-include: __CURR_CONFIG__, __LOG__, __HTML__
+include: __CURR_CONFIG__, __LOG__
 
 hidden_num: 27
 inject_code()
@@ -10,8 +10,8 @@ func find_number(min, max, try)
     return
   mid: avg(min, max)
   # __Debugging tools__
-  # view_stack()
-  # pause()
+  view_stack()
+  pause()
   if(mid.==(hidden_num))
     println("Found in ", try, " tries...")
   if(mid.>(hidden_num))

@@ -1,13 +1,25 @@
-05-00-2024
+08-02-2024
+
+LABEL {
+  LOL, 3
+  Party, 4
+}
+
+CHECKLIST {
+  To Do, Item 1, Item 2
+}
 
 TASK {
-  a, 3, 1
-  c, 1, 4
-  b, 2, 3
+  a, 3, 4, L1
+  c, 1, 1, CL0
+  b, 2, 2, L0
 }
 
 CARD {
-  Default, T0
+  Default, T0, L0
   Homework, T1, T2
 }
 
+DAY {
+  T2 1, T3 2, T1 3
+}

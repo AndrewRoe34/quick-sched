@@ -52,21 +52,17 @@ prompt_user()
                 <code>
 [10-03-2024] Log of all activities from current session: 
 
-[01:01:04] PREPROC_ATTR: DEF_CONFIG=false, IMPORT=false, EXPORT=false, LOG=true, BUILD=false, STATS=false, HTML=true
-[01:01:04] FUNC_SETUP: NAME= prompt_user, PARAM=[]
-[01:01:09] VAR_SETUP: NAME=x, VALUE=1
-[01:01:09] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[01:01:09] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[01:01:09] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[1]
-[01:01:09] IF_CONDITION: ARGS=[x.==(1)], RESULT=true
-[01:01:09] PRINTS: ARGS=[]
-[01:01:09] FUNC_CALLS: NAME=println, ARGS=["Cond 2"]
-[01:01:09] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[2]
-[01:01:09] IF_CONDITION: ARGS=[x.==(2)], RESULT=false
-[01:01:09] IF_CONDITION: ARGS=[], RESULT=true
-[01:01:09] PRINTS: ARGS=[]
-[01:01:09] FUNC_CALLS: NAME=println, ARGS=["Cond 6"]
-[01:01:09] FUNC_CALLS: NAME=prompt_user, ARGS=[]
+[11:17:46] PREPROC_ATTR: DEF_CONFIG=false, IMPORT=false, EXPORT=false, LOG=true, BUILD=false, STATS=false, HTML=true
+[11:17:46] FUNC_SETUP: NAME= prompt_user, PARAM=[]
+[11:17:51] VAR_SETUP: NAME=x, VALUE=0
+[11:17:51] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[11:17:51] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
+[11:17:51] FUNC_CALLS: NAME=println, ARGS=["Cond 1"]
+[11:17:51] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[2]
+[11:17:51] IF_CONDITION: ARGS=[x.==(2)], RESULT=false
+[11:17:51] IF_CONDITION: ARGS=[], RESULT=true
+[11:17:51] FUNC_CALLS: NAME=println, ARGS=["Cond 6"]
+[11:17:51] FUNC_CALLS: NAME=prompt_user, ARGS=[]
                 </code>
             </pre>
         </div>
@@ -76,11 +72,12 @@ prompt_user()
                 <code>
 [10-03-2024] Log of all activities from current session: 
 
-[01:00:58] [INFO] CURRENT SESSION HAS BEGUN...
-[01:00:58] [INFO] Reading Config: FILE=profile.cfg
-[01:00:58] [INFO] USERNAME=null ,EMAIL=null ,WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8] ,MAX_DAYS=14 ,ARCHIVE_DAYS=14 ,PRIORITY=false ,OVERFLOW=true ,FIT_SCHEDULE=false ,SCHEDULE_ALGO=1 ,MIN_HOURS=1
-[01:00:59] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
-[01:01:04] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\condition.smpl , SCRIPT INSTANCE HAS BEGUN...
+[11:17:36] [INFO] CURRENT SESSION HAS BEGUN...
+[11:17:36] [INFO] Reading Config: FILE=profile.cfg
+[11:17:36] [INFO] USERNAME=null ,EMAIL=null ,WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8] ,MAX_DAYS=14 ,ARCHIVE_DAYS=14 ,PRIORITY=false ,OVERFLOW=true ,FIT_SCHEDULE=false ,SCHEDULE_ALGO=1 ,MIN_HOURS=1
+[11:17:37] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
+[11:17:46] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\condition.smpl , SCRIPT INSTANCE HAS BEGUN...
+[11:17:51] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\condition.smpl , SCRIPT INSTANCE HAS ENDED...
                 </code>
             </pre>
         </div>

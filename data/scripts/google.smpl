@@ -1,11 +1,7 @@
-# Automates schedule building process
-# author: Andrew Roe
-include: __CURR_CONFIG__, __LOG__, __BUILD__, __HTML__
+include: __CURR_CONFIG__, __LOG__, __IMPORT__, __BUILD__
 
-# Reads in current schedule data from google
 google_import()
 
-# Sets up the checklist
 func setup_cl(cl1)
   in: input_word("Add an Item(y/n) ")
   if(in.==("y"))
@@ -13,7 +9,6 @@ func setup_cl(cl1)
     cl1.add_item(in)
     setup_cl(cl1)
 
-# Sets up the task
 func setup_task(t1)
   in: input_word("Create a Checklist(y/n) ")
   if(in.==("y"))
@@ -22,7 +17,6 @@ func setup_task(t1)
     t1.add(_cl)
     setup_cl(_cl)
 
-# Sets up the schedule
 func setup_schedule()
   in: input_word("Create a Task(y/n) ")
   if(in.==("y"))
@@ -33,14 +27,11 @@ func setup_schedule()
     setup_task(_task)
     setup_schedule()
 
-# Build schedule data
 option: input_int("1.Dynamic 2.Compact 3.Default -> ")
 set_schedule(option)
 setup_schedule()
 
-# Build the schedule
 add_all_tasks()
 build()
 
-# Export formatted schedule to google
 google_export()

@@ -1,5 +1,0 @@
-setup_data:
-  print: "Inside 'setup_data'"
-  add: label, task
-  add: label, card
-  add: task, card

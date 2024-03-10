@@ -1,4 +1,0 @@
-include: __CURR_CONFIG__, __LOG__, __BUILD__
-
-x: "f\n\tg"
-println(x)

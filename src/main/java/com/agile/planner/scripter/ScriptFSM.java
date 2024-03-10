@@ -170,6 +170,7 @@ public class ScriptFSM {
                 }
             }
         }
+        eventLog.reportScriptInstance(filename, false);
         if(preProcessor.isBuild()) {
             scheduleManager.outputScheduleToConsole();
         }
@@ -182,9 +183,8 @@ public class ScriptFSM {
             String scriptName = script.getName();
             String scriptStr = IOProcessing.readScriptFile(filename);
             ScriptPage scriptPage = new ScriptPage(scriptLog.toString(), eventLog.toString(), scriptStr, scriptName);
-            IOProcessing.writeScripterPage(scriptPage.buildPage());
+            IOProcessing.writeScripterPage(scriptPage.buildPage(), scriptName.substring(0, scriptName.length() - 5));
         }
-        eventLog.reportScriptInstance(filename, false);
     }
 
     private void executeStructureBlock(Parser.Operation operation, String line, List<Type> localStack) {
@@ -473,7 +473,7 @@ public class ScriptFSM {
                         System.out.print(formatString(t.toString()));
                     }
                 }
-                scriptLog.reportPrintFunc(args);
+//                scriptLog.reportPrintFunc(args);
                 return null;
             case "println":
                 for (Type t : args) {
@@ -484,7 +484,7 @@ public class ScriptFSM {
                     }
                 }
                 System.out.println();
-                scriptLog.reportPrintFunc(args);
+//                scriptLog.reportPrintFunc(args);
                 return null;
             case "import_schedule":
                 if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.STRING) throw new InvalidFunctionException();

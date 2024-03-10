@@ -243,8 +243,8 @@ public class IOProcessing {
         outputStream.print(str);
     }
 
-    public static void writeScripterPage(String page) throws FileNotFoundException {
-        PrintStream outputStream = new PrintStream("data/html/index.html");
+    public static void writeScripterPage(String page, String scriptName) throws FileNotFoundException {
+        PrintStream outputStream = new PrintStream("data/html/" + scriptName + ".html");
         outputStream.print(page);
     }
 }

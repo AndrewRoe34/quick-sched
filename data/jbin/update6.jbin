@@ -1,13 +1,21 @@
 08-03-2024
 
+LABEL {
+  LOL, 3
+  Party, 4
+}
+
+CHECKLIST {
+  To Do, Item 1, Item 2
+}
+
 TASK {
-  a, 3, 3
-  c, 1, 0
-  b, 2, 1
+  a, 3, 3, L1
+  c, 1, 0, CL0
+  b, 2, 1, L0
 }
 
 CARD {
-  Default, T0
+  Default, T0, L0
   Homework, T1, T2
 }
-

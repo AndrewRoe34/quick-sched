@@ -1,5 +1,5 @@
 include: __CURR_CONFIG__, __LOG__
 
-str: "Half Life 2\n"
-filename: "data/hl2.txt"
+str: input_line("Give me some text -> ")
+filename: "data/data.txt"
 write_file(filename, str)
