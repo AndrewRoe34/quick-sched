@@ -151,7 +151,8 @@ public class ScriptLog {
         sb.append(", EXPORT=").append(preProcessor.isExprt());
         sb.append(", LOG=").append(preProcessor.isLog());
         sb.append(", BUILD=").append(preProcessor.isBuild());
-        sb.append(", STATS=").append(preProcessor.isStats()).append("\n");
+        sb.append(", STATS=").append(preProcessor.isStats());
+        sb.append(", HTML=").append(preProcessor.isHtml()).append("\n");
     }
 
     /**

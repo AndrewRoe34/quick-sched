@@ -204,6 +204,22 @@ public class IOProcessing {
         return sb.toString();
     }
 
+    public static String readScriptFile(String filename) throws IOException {
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(filename));
+        StringBuilder sb = new StringBuilder();
+        String s = null;
+        while( (s = bufferedReader.readLine()) != null) {
+            String trim = s.trim();
+            if(trim.isEmpty()) {
+                sb.append("\n");
+            } else {
+                sb.append(s).append("\n");
+            }
+        }
+        bufferedReader.close();
+        return sb.toString();
+    }
+
     /**
      * Appends bytes to StringBuilder
      *
@@ -220,5 +236,15 @@ public class IOProcessing {
     public static void writeScripterLogToFile(String str) throws FileNotFoundException {
         PrintStream outputStream = new PrintStream("logs/scripter.log");
         outputStream.print(str);
+    }
+
+    public static void writeSysLogToFile(String str) throws FileNotFoundException {
+        PrintStream outputStream = new PrintStream("logs/system.log");
+        outputStream.print(str);
+    }
+
+    public static void writeScripterPage(String page) throws FileNotFoundException {
+        PrintStream outputStream = new PrintStream("data/html/index.html");
+        outputStream.print(page);
     }
 }

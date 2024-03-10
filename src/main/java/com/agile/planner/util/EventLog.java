@@ -6,7 +6,6 @@ import com.agile.planner.schedule.day.Day;
 import com.agile.planner.models.Task;
 import com.agile.planner.user.UserConfig;
 
-import java.io.PrintStream;
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -23,18 +22,16 @@ public class EventLog {
 
     /** Singleton instance for EventLog */
     private static EventLog instance;
-    /** PrintStream for outputting to log */
-    private final PrintStream output;
+
+    private StringBuilder sb = new StringBuilder();
 
     /**
      * Primary private constructor for EventLog
-     *
-     * @throws FileNotFoundException thrown if invalid file
      */
-    private EventLog() throws FileNotFoundException {
-        output = new PrintStream("logs/system.log");
-        output.print(new SimpleDateFormat("[dd-MM-yyyy]").format(Calendar.getInstance().getTime()));
-        output.println(" Log of all activities from current session: \n");
+    private EventLog() {
+//        output = new PrintStream("logs/system.log");
+        sb.append(new SimpleDateFormat("[dd-MM-yyyy]").format(Calendar.getInstance().getTime()))
+                .append(" Log of all activities from current session: \n\n");
     }
 
     /**
@@ -58,20 +55,20 @@ public class EventLog {
      */
     public void reportTaskAction(Task task, int type) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
         if(type == 0) {
-            output.print(" ADD(TASK): ");
+            sb.append(" ADD(TASK): ");
         } else if(type == 1) {
-            output.print(" REMOVE(TASK): ");
+            sb.append(" REMOVE(TASK): ");
         } else {
-            output.print(" EDIT(TASK): ");
+            sb.append(" EDIT(TASK): ");
         }
-        output.print(" ID=" + task.getId());
-        output.print(", NAME=" + task.getName());
-        output.print(", HOURS=" + task.getTotalHours());
+        sb.append(" ID=").append(task.getId());
+        sb.append(", NAME=").append(task.getName());
+        sb.append(", HOURS=").append(task.getTotalHours());
         SimpleDateFormat sdf2 = new SimpleDateFormat("MM-dd-yyyy");
-        output.println(", DUE_DATE=" + sdf2.format(task.getDueDate().getTime()));
+        sb.append(", DUE_DATE=").append(sdf2.format(task.getDueDate().getTime())).append("\n");
     }
 
     /**
@@ -82,23 +79,24 @@ public class EventLog {
      */
     public void reportCardAction(Card card, int type) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
 
         if(type == 0) {
-            output.print(" CREATE(CARD): ");
+            sb.append(" CREATE(CARD): ");
         } else if(type == 1) {
-            output.print(" ADD(TASK): ");
+            sb.append(" ADD(TASK): ");
         } else if(type == 2) {
-            output.print(" REMOVE(TASK): ");
+            sb.append(" REMOVE(TASK): ");
         } else if(type == 3) {
-            output.print(" ADD(LABEL): ");
+            sb.append(" ADD(LABEL): ");
         } else {
-            output.print(" REMOVE(LABEL): ");
+            sb.append(" REMOVE(LABEL): ");
         }
 
         //output.print(" ID=" + card.getId()); //TODO: need to finish getId()
-        output.print(", TITLE=" + card.getLabel());
+        sb.append(", TITLE=").append(card.getLabel());
+        sb.append("\n");
     }
 
 
@@ -109,10 +107,10 @@ public class EventLog {
      */
     public void reportCheckListCreation(CheckList cl) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.print(" CheckList ID=" + cl.getId());
-        output.println(", CREATED");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" CheckList ID=").append(cl.getId());
+        sb.append(", CREATED\n");
     }
 
     /**
@@ -122,10 +120,10 @@ public class EventLog {
      */
     public void reportCheckListRemoval(CheckList cl) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.print(" CheckList ID=" + cl.getId());
-        output.println(", REMOVED");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" CheckList ID=").append(cl.getId());
+        sb.append(", REMOVED\n");
     }
 
     /**
@@ -135,10 +133,10 @@ public class EventLog {
      */
     public void reportCheckListReset(CheckList cl) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.print(" CheckList ID=" + cl.getId());
-        output.println(", RESET");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" CheckList ID=").append(cl.getId());
+        sb.append(", RESET\n");
     }
 
     /**
@@ -150,21 +148,21 @@ public class EventLog {
      */
     public void reportCheckListAction(CheckList cl, int itemIdx, int action) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.print(" CheckList ID=" + cl.getId());
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" CheckList ID=").append(cl.getId());
         if(action == 0) {
-            output.print(", ITEM_REMOVED=" + cl.getItem(itemIdx));
+            sb.append(", ITEM_REMOVED=").append(cl.getItem(itemIdx));
         } else if(action == 1) {
-            output.print(", ITEM_ADDED=" + cl.getItem(itemIdx));
+            sb.append(", ITEM_ADDED=").append(cl.getItem(itemIdx));
         } else if(action == 2) {
-            output.print(", ITEM=" + cl.getItem(itemIdx) + ", MARKED=COMPLETE");
+            sb.append(", ITEM=").append(cl.getItem(itemIdx)).append(", MARKED=COMPLETE");
         } else if(action == 3) {
-            output.print(", ITEM=" + cl.getItem(itemIdx) + ", MARKED=INCOMPLETE");
+            sb.append(", ITEM=").append(cl.getItem(itemIdx)).append(", MARKED=INCOMPLETE");
         } else if(action == 4) {
-            output.print(", ITEM=" + cl.getItem(itemIdx) + ", SHIFTED");
+            sb.append(", ITEM=").append(cl.getItem(itemIdx)).append(", SHIFTED");
         }
-        output.println(", PERCENTAGE_COMPLETE=" + cl.getPercentage());
+        sb.append(", PERCENTAGE_COMPLETE=").append(cl.getPercentage()).append("\n");
     }
 
     /**
@@ -176,10 +174,10 @@ public class EventLog {
      */
     public void reportWeekEdit(Calendar date, int hours, boolean global) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.print(" EDIT(DAY): GLOBAL=" + global);
-        output.println(", HOURS=" + hours);
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" EDIT(DAY): GLOBAL=").append(global);
+        sb.append(", HOURS=").append(hours).append("\n");
     }
 
     /**
@@ -191,14 +189,14 @@ public class EventLog {
      */
     public void reportDayAction(Day day, Task task, boolean nonOverflow) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.print(" DAY_ID=" + day.getId());
-        output.print(", CAPACITY=" + day.getCapacity());
-        output.print(", HOURS_REMAINING=" + day.getSpareHours());
-        output.print(", HOURS_FILLED=" + day.getHoursFilled());
-        output.print(", TASK ADDED=" + task.getId());
-        output.println(", OVERFLOW=" + !nonOverflow);
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" DAY_ID=").append(day.getId());
+        sb.append(", CAPACITY=").append(day.getCapacity());
+        sb.append(", HOURS_REMAINING=").append(day.getSpareHours());
+        sb.append(", HOURS_FILLED=").append(day.getHoursFilled());
+        sb.append(", TASK ADDED=").append(task.getId());
+        sb.append(", OVERFLOW=").append(!nonOverflow).append("\n");
     }
 
     /**
@@ -206,9 +204,9 @@ public class EventLog {
      */
     public void reportSchedulingStart() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" Scheduling has begun...");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" SCHEDULING HAS BEGUN...\n");
     }
 
     /**
@@ -216,9 +214,9 @@ public class EventLog {
      */
     public void reportSchedulingFinish() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" Scheduling has finished...");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" SCHEDULING HAS FINISHED...\n");
     }
 
     /**
@@ -228,12 +226,12 @@ public class EventLog {
      */
     public void reportDisplayDaySchedule(Day day) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.print(" Display Day_Schedule: ");
-        output.print("CAPACITY=" + day.getCapacity());
-        output.print(", HOURS_FILLED=" + day.getHoursFilled());
-        output.println(", NUM_TASKS=" + day.getNumSubTasks());
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" Display Day_Schedule: ");
+        sb.append("CAPACITY=").append(day.getCapacity());
+        sb.append(", HOURS_FILLED=").append(day.getHoursFilled());
+        sb.append(", NUM_TASKS=").append(day.getNumSubTasks()).append("\n");
 
     }
 
@@ -246,11 +244,11 @@ public class EventLog {
      */
     public void reportDisplaySchedule(int days, int numTasks, boolean status) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.print(" Display Schedule: DAYS=" + days);
-        output.print(", NUM_TASKS=" + numTasks);
-        output.println(", STDOUT=" + status);
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" Display Schedule: DAYS=").append(days);
+        sb.append(", NUM_TASKS=").append(numTasks);
+        sb.append(", STDOUT=").append(status).append("\n");
     }
 
     /**
@@ -260,8 +258,8 @@ public class EventLog {
      */
     public void reportException(Exception e) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [ERROR] " + e.getMessage());
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [ERROR] ").append(e.getMessage()).append("\n");
     }
 
     /**
@@ -271,9 +269,9 @@ public class EventLog {
      */
     public void reportProcessTasks(String filename) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" Reading Tasks: FILE=" + filename);
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" Reading Tasks: FILE=").append(filename).append("\n");
     }
 
 
@@ -284,9 +282,9 @@ public class EventLog {
      */
     public void reportProcessConfig(String filename) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" Reading Config: FILE=" + filename);
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" Reading Config: FILE=").append(filename).append("\n");
     }
 
     /**
@@ -309,65 +307,65 @@ public class EventLog {
      */
     public void reportConfigAction(int idx, Object value) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
         if(idx == 0) {
             if(value instanceof String) {
-                output.println("EDIT(USER_CONFIG): USER_NAME=" + value);
+                sb.append("EDIT(USER_CONFIG): USER_NAME=").append(value).append("\n");
             } else {
                 throw new InputMismatchException("Expected <String> for <USER_NAME>");
             }
         } else if(idx == 1) {
             if(value instanceof String) {
-                output.println("EDIT(USER_CONFIG): EMAIL=" + value);
+                sb.append("EDIT(USER_CONFIG): EMAIL=").append(value).append("\n");
             } else {
                 throw new InputMismatchException("Expected <String> for <EMAIL>");
             }
         } else if(idx == 2) {
             if(value instanceof Integer) {
-                output.println("EDIT(USER_CONFIG): DAY_HOURS=" + value);
+                sb.append("EDIT(USER_CONFIG): DAY_HOURS=").append(value).append("\n");
             } else {
                 throw new InputMismatchException("Expected <Integer> for <DAY_HOURS>");
             }
         } else if(idx == 3) {
             if(value instanceof Integer) {
-                output.println("EDIT(USER_CONFIG): MAX_DAYS=" + value);
+                sb.append("EDIT(USER_CONFIG): MAX_DAYS=").append(value).append("\n");
             } else {
                 throw new InputMismatchException("Expected <Integer> for <MAX_DAYS>");
             }
         } else if(idx == 4) {
             if(value instanceof Integer) {
-                output.println("EDIT(USER_CONFIG): ARCHIVE_DAYS=" + value);
+                sb.append("EDIT(USER_CONFIG): ARCHIVE_DAYS=").append(value).append("\n");
             } else {
                 throw new InputMismatchException("Expected <Integer> for <ARCHIVE_DAYS>");
             }
         } else if(idx == 5) {
             if(value instanceof Boolean) {
-                output.println("EDIT(USER_CONFIG): PRIORITY=" + value);
+                sb.append("EDIT(USER_CONFIG): PRIORITY=").append(value).append("\n");
             } else {
                 throw new InputMismatchException("Expected <Boolean> for <PRIORITY>");
             }
         } else if(idx == 6) {
             if(value instanceof Boolean) {
-                output.println("EDIT(USER_CONFIG): OVERFLOW=" + value);
+                sb.append("EDIT(USER_CONFIG): OVERFLOW=").append(value).append("\n");
             } else {
                 throw new InputMismatchException("Expected <Boolean> for <OVERFLOW>");
             }
         } else if(idx == 7) {
             if(value instanceof Boolean) {
-                output.println("EDIT(USER_CONFIG): FIT_SCHEDULE=" + value);
+                sb.append("EDIT(USER_CONFIG): FIT_SCHEDULE=").append(value).append("\n");
             } else {
                 throw new InputMismatchException("Expected <Boolean> for <FIT_SCHEDULE>");
             }
         } else if(idx == 8) {
             if(value instanceof Integer) {
-                output.println("EDIT(USER_CONFIG): SCHEDULE_ALG=" + value);
+                sb.append("EDIT(USER_CONFIG): SCHEDULE_ALG=").append(value).append("\n");
             } else {
                 throw new InputMismatchException("Expected <Integer> for <SCHEDULE_ALG>");
             }
         } else {
             if(value instanceof Integer) {
-                output.println("EDIT(USER_CONFIG): MIN_HOURS=" + value);
+                sb.append("EDIT(USER_CONFIG): MIN_HOURS=").append(value).append("\n");
             } else {
                 throw new InputMismatchException("Expected <Integer> for <MIN_HOURS>");
             }
@@ -381,9 +379,9 @@ public class EventLog {
      */
     public void reportReadJBinFile(String filename) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" READE(JBIN): FILE=" + filename);
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" READE(JBIN): FILE=").append(filename).append("\n");
     }
 
     /**
@@ -393,9 +391,9 @@ public class EventLog {
      */
     public void reportWriteJBinFile(String filename) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" WRITE(JBIN): FILE=" + filename);
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" WRITE(JBIN): FILE=").append(filename).append("\n");
     }
 
     /**
@@ -403,9 +401,9 @@ public class EventLog {
      */
     public void reportCreateJBin() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" JBIN FILE CREATED");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" JBIN FILE CREATED\n");
     }
 
     /**
@@ -413,9 +411,9 @@ public class EventLog {
      */
     public void reportProcessJBin() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" JBIN FILE PROCESSED");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" JBIN FILE PROCESSED\n");
     }
 
     /**
@@ -423,9 +421,9 @@ public class EventLog {
      */
     public void reportUserLogin() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" CURRENT SESSION HAS BEGUN...");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" CURRENT SESSION HAS BEGUN...\n");
     }
 
     /**
@@ -435,18 +433,18 @@ public class EventLog {
      */
     public void reportUserConfigAttr(UserConfig userConfig) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.print(" USERNAME=" + userConfig.getUserName());
-        output.print(" ,EMAIL=" + userConfig.getEmail());
-        output.print(" ,WEEK_HOURS=" + Arrays.toString(userConfig.getWeek()));
-        output.print(" ,MAX_DAYS=" + userConfig.getMaxDays());
-        output.print(" ,ARCHIVE_DAYS=" + userConfig.getArchiveDays());
-        output.print(" ,PRIORITY=" + userConfig.isPriority());
-        output.print(" ,OVERFLOW=" + userConfig.isOverflow());
-        output.print(" ,FIT_SCHEDULE=" + userConfig.isFitSchedule());
-        output.print(" ,SCHEDULE_ALGO=" + userConfig.getSchedulingAlgorithm());
-        output.println(" ,MIN_HOURS=" + userConfig.getMinHours());
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" USERNAME=").append(userConfig.getUserName());
+        sb.append(" ,EMAIL=").append(userConfig.getEmail());
+        sb.append(" ,WEEK_HOURS=").append(Arrays.toString(userConfig.getWeek()));
+        sb.append(" ,MAX_DAYS=").append(userConfig.getMaxDays());
+        sb.append(" ,ARCHIVE_DAYS=").append(userConfig.getArchiveDays());
+        sb.append(" ,PRIORITY=").append(userConfig.isPriority());
+        sb.append(" ,OVERFLOW=").append(userConfig.isOverflow());
+        sb.append(" ,FIT_SCHEDULE=").append(userConfig.isFitSchedule());
+        sb.append(" ,SCHEDULE_ALGO=").append(userConfig.getSchedulingAlgorithm());
+        sb.append(" ,MIN_HOURS=").append(userConfig.getMinHours()).append("\n");
 
     }
 
@@ -458,11 +456,11 @@ public class EventLog {
      */
     public void reportScriptInstance(String filename, boolean isStartOfScript) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.print(" SCRIPT_NAME=" + filename);
-        if(isStartOfScript) output.println(" , SCRIPT INSTANCE HAS BEGUN...");
-        else output.println(" , SCRIPT INSTANCE HAS ENDED...");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" SCRIPT_NAME=").append(filename);
+        if(isStartOfScript) sb.append(" , SCRIPT INSTANCE HAS BEGUN...\n");
+        else sb.append(" , SCRIPT INSTANCE HAS ENDED...\n");
     }
 
     public void reportJsonActions() {
@@ -471,30 +469,30 @@ public class EventLog {
 
     public void reportGoogleCalendarAuthorization() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" GOOGLE CALENDAR AUTHORIZATION PROCESSED...");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" GOOGLE CALENDAR AUTHORIZATION PROCESSED...\n");
     }
 
     public void reportGoogleCalendarCleanSchedule(int numTasksDeleted) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" " + numTasksDeleted + " TASKS REMOVED FROM GOOGLE CALENDAR...");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" ").append(numTasksDeleted).append(" TASKS REMOVED FROM GOOGLE CALENDAR...\n");
     }
 
     public void reportGoogleCalendarExportSchedule() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" SCHEDULE EXPORTED TO GOOGLE CALENDAR...");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" SCHEDULE EXPORTED TO GOOGLE CALENDAR...\n");
     }
 
     public void reportGoogleCalendarImportSchedule() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" SCHEDULE IMPORTED FROM GOOGLE CALENDAR...");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" SCHEDULE IMPORTED FROM GOOGLE CALENDAR...\n");
     }
 
     /**
@@ -502,9 +500,13 @@ public class EventLog {
      */
     public void reportExitSession() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        output.print(sdf.format(Calendar.getInstance().getTime()));
-        output.print(" [INFO]");
-        output.println(" CURRENT SESSION HAS ENDED...");
-        output.close();
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" CURRENT SESSION HAS ENDED...\n");
+    }
+
+    @Override
+    public String toString() {
+        return sb.toString();
     }
 }

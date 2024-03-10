@@ -14,13 +14,16 @@ public class PreProcessor {
 
     private boolean stats;
 
-    public PreProcessor(boolean defaultConfig, boolean log, boolean imprt, boolean exprt, boolean build, boolean stats) {
+    private boolean html;
+
+    public PreProcessor(boolean defaultConfig, boolean log, boolean imprt, boolean exprt, boolean build, boolean stats, boolean html) {
         this.defaultConfig = defaultConfig;
         this.log = log;
         this.imprt = imprt;
         this.exprt = exprt;
         this.build = build;
         this.stats = stats;
+        this.html = html;
     }
 
     public boolean isDefaultConfig() {
@@ -45,5 +48,9 @@ public class PreProcessor {
 
     public boolean isStats() {
         return stats;
+    }
+
+    public boolean isHtml() {
+        return html;
     }
 }

@@ -1,2 +1,3 @@
-include: __CURR_CONFIG__, __LOG__, __BUILD__
+include: __CURR_CONFIG__, __LOG__, __BUILD__, __HTML__
+
 inject_code()

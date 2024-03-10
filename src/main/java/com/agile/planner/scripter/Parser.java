@@ -95,6 +95,7 @@ public class Parser {
             boolean exprt = false;
             boolean build = false;
             boolean stats = false;
+            boolean html = false;
             for (String s : tokens) {
                 switch (s.trim()) {
                     case "__CURR_CONFIG__":
@@ -140,6 +141,12 @@ public class Parser {
                         }
                         build = true;
                         break;
+                    case "__HTML__":
+                        if(html) {
+                            return null;
+                        }
+                        html = true;
+                        break;
                     case "__STATS__":
                         if (stats) {
                             return null;
@@ -150,7 +157,7 @@ public class Parser {
                         return null;
                 }
             }
-            return config ? new PreProcessor(defConfig, log, imprt, exprt, build, stats) : null;
+            return config ? new PreProcessor(defConfig, log, imprt, exprt, build, stats, html) : null;
         }
         return null;
     }

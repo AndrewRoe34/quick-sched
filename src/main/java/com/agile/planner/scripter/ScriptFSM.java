@@ -5,6 +5,7 @@ import com.agile.planner.models.Label;
 import com.agile.planner.models.Task;
 import com.agile.planner.io.IOProcessing;
 import com.agile.planner.manager.ScheduleManager;
+import com.agile.planner.models.web.ScriptPage;
 import com.agile.planner.scripter.tools.ScriptLog;
 import com.agile.planner.scripter.exception.*;
 import com.agile.planner.models.CheckList;
@@ -171,6 +172,14 @@ public class ScriptFSM {
         }
         if(preProcessor.isLog()) {
             IOProcessing.writeScripterLogToFile(scriptLog.toString());
+            IOProcessing.writeSysLogToFile(eventLog.toString());
+        }
+        if(preProcessor.isHtml()) {
+            File script = new File(filename);
+            String scriptName = script.getName();
+            String scriptStr = IOProcessing.readScriptFile(filename);
+            ScriptPage scriptPage = new ScriptPage(scriptLog.toString(), eventLog.toString(), scriptStr, scriptName);
+            IOProcessing.writeScripterPage(scriptPage.buildPage());
         }
         eventLog.reportScriptInstance(filename, false);
     }
