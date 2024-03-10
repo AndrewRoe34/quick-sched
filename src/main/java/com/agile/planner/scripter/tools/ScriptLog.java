@@ -32,6 +32,14 @@ public class ScriptLog {
         sdf = new SimpleDateFormat("[HH:mm:ss]");
     }
 
+    public void reportVariableAssignment(Type t) {
+        sb.append(sdf.format(Calendar.getInstance().getTime())).append(" ");
+        sb.append("VAR_SETUP: NAME=").append(t.getVariableName())
+                .append(", VALUE=")
+                .append(t)
+                .append("\n");
+    }
+
     /**
      * Reports the construction of one of the built-in {@link Type} for the {@code Simple} language
      *

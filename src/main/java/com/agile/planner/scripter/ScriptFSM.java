@@ -107,12 +107,15 @@ public class ScriptFSM {
                                 if(t1 == null) {
                                     ret.setVariableName(varName);
                                     globalStack.add(ret);
+                                    scriptLog.reportVariableAssignment(ret);
                                 } else {
                                     t1.setTypeVal(ret);
+                                    scriptLog.reportVariableAssignment(t1);
                                 }
                             } else {
                                 Type t1 = processClassInstance(classInstance);
                                 scriptLog.reportInstantiation(t1);
+                                scriptLog.reportVariableAssignment(t1);
                             }
                             break;
                         case SETUP_CUST_FUNC:
@@ -232,14 +235,17 @@ public class ScriptFSM {
                     if(t1 == null) {
                         ret.setVariableName(varName);
 //                        localStack.add(ret); // need to replace, not just add
+                        scriptLog.reportVariableAssignment(ret);
                         addAndReplaceVar(localStack, ret);
                     } else {
                         t1.setTypeVal(ret);
+                        scriptLog.reportVariableAssignment(t1);
                     }
                 } else {
                     Type ret = processClassInstance(classInstance);
                     localStack.add(ret);
                     globalStack.remove(ret);
+                    scriptLog.reportVariableAssignment(ret);
                 }
                 break;
             default:
@@ -697,13 +703,16 @@ public class ScriptFSM {
                             ret.setVariableName(varName);
 //                            localStack.add(ret);
                             addAndReplaceVar(localStack, ret);
+                            scriptLog.reportVariableAssignment(ret);
                         } else {
                             t1.setTypeVal(ret);
+                            scriptLog.reportVariableAssignment(t1);
                         }
                     } else {
                         Type ret = processClassInstance(classInstance);
                         localStack.add(ret);
                         globalStack.remove(ret);
+                        scriptLog.reportVariableAssignment(ret);
                     }
                     priorIfCondition = false;
                     priorIfFailed = false;

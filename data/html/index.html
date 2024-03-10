@@ -22,26 +22,55 @@
     <h1>Simple Script v0.3.8</h1>
     <div class="container">
         <div class="box">
-            <h2>binary.smpl</h2>
+            <h2>google.smpl</h2>
             <pre>
                 <code>
-include: __CURR_CONFIG__, __LOG__, __HTML__
+# Automates schedule building process
+# author: Andrew Roe
+include: __CURR_CONFIG__, __LOG__, __BUILD__, __HTML__
 
-# Outputs all binary codes of a specified length
-str: ""
-func binary(bin, x)
-  if(x.==(0))
-    str.concat(bin, "\n")
-    return
-  x.--()
-  binary(bin.add("0"), x)
-  binary(bin.add("1"), x)
+# Reads in current schedule data from google
+google_import()
 
-print("Enter number: ")
-x: input_int()
-binary("", x)
+# Sets up the checklist
+func setup_cl(cl1)
+  in: input_word("Add an Item(y/n) ")
+  if(in.==("y"))
+    in: input_line("Description -> ")
+    cl1.add_item(in)
+    setup_cl(cl1)
 
-write_file("data/bin.txt", str)
+# Sets up the task
+func setup_task(t1)
+  in: input_word("Create a Checklist(y/n) ")
+  if(in.==("y"))
+    in: input_line("Title -> ")
+    _cl: checklist(in)
+    t1.add(_cl)
+    setup_cl(_cl)
+
+# Sets up the schedule
+func setup_schedule()
+  in: input_word("Create a Task(y/n) ")
+  if(in.==("y"))
+    _name: input_line("Name -> ")
+    _hours: input_int("Hours -> ")
+    _due: input_int("Due -> ")
+    _task: task(_name, _hours, _due)
+    setup_task(_task)
+    setup_schedule()
+
+# Build schedule data
+option: input_int("1.Dynamic 2.Compact 3.Default -> ")
+set_schedule(option)
+setup_schedule()
+
+# Build the schedule
+add_all_tasks()
+build()
+
+# Export formatted schedule to google
+google_export()
                 </code>
             </pre>
         </div>
@@ -51,46 +80,39 @@ write_file("data/bin.txt", str)
                 <code>
 [09-03-2024] Log of all activities from current session: 
 
-[22:53:03] PREPROC_ATTR: DEF_CONFIG=false, IMPORT=false, EXPORT=false, LOG=true, BUILD=false, STATS=false, HTML=true
-[22:53:03] CONST TYPE CREATED...
-[22:53:03] FUNC_SETUP: NAME= binary, PARAM=[bin, x]
-[22:53:03] PRINTS: ARGS=[]
-[22:53:03] FUNC_CALLS: NAME=print, ARGS=["Enter number: "]
-[22:53:05] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[22:53:05] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[22:53:05] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[22:53:05] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[22:53:05] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[22:53:05] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[22:53:05] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[22:53:05] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[22:53:05] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[22:53:05] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[22:53:05] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[22:53:05] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[22:53:05] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[22:53:05] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[22:53:05] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[22:53:05] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[22:53:05] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[22:53:05] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[22:53:05] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[22:53:05] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[22:53:05] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[22:53:05] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[22:53:05] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[22:53:05] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[22:53:05] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[22:53:05] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[22:53:05] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[22:53:05] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[22:53:05] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[22:53:05] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[22:53:05] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[22:53:05] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[22:53:05] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[22:53:05] FUNC_CALLS: NAME=binary, ARGS=["", x]
-[22:53:05] FUNC_CALLS: NAME=write_file, ARGS=["data/bin.txt", str]
+[23:14:25] PREPROC_ATTR: DEF_CONFIG=false, IMPORT=false, EXPORT=false, LOG=true, BUILD=true, STATS=false, HTML=true
+[23:14:25] FUNC_CALLS: NAME=google_import, ARGS=[]
+[23:14:25] FUNC_SETUP: NAME= setup_cl, PARAM=[]
+[23:14:25] FUNC_SETUP: NAME= setup_task, PARAM=[]
+[23:14:25] FUNC_SETUP: NAME= setup_schedule, PARAM=[]
+[23:14:29] VAR_SETUP: NAME=option, VALUE=1
+[23:14:29] FUNC_CALLS: NAME=set_schedule, ARGS=[option]
+[23:14:31] VAR_SETUP: NAME=in, VALUE=y
+[23:14:31] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[23:14:31] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
+[23:14:34] VAR_SETUP: NAME=_name, VALUE=Math
+[23:14:36] VAR_SETUP: NAME=_hours, VALUE=4
+[23:14:37] VAR_SETUP: NAME=_due, VALUE=2
+[23:14:37] VAR_SETUP: NAME=_task, VALUE=Task [name=Math, total=4]
+[23:14:39] VAR_SETUP: NAME=in, VALUE=y
+[23:14:39] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[23:14:39] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
+[23:14:43] VAR_SETUP: NAME=in, VALUE=ToDo
+[23:14:43] VAR_SETUP: NAME=_cl, VALUE=Checklist [name=ToDo, percentage=0%, items=]
+[23:14:43] ATTR_CALL: VAR_NAME=t1, NAME=add, ARGS[_cl]
+[23:14:45] VAR_SETUP: NAME=in, VALUE=n
+[23:14:45] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[23:14:45] IF_CONDITION: ARGS=[in.==("y")], RESULT=false
+[23:14:45] FUNC_CALLS: NAME=setup_cl, ARGS=[_cl]
+[23:14:45] FUNC_CALLS: NAME=setup_task, ARGS=[_task]
+[23:14:48] VAR_SETUP: NAME=in, VALUE=n
+[23:14:48] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[23:14:48] IF_CONDITION: ARGS=[in.==("y")], RESULT=false
+[23:14:48] FUNC_CALLS: NAME=setup_schedule, ARGS=[]
+[23:14:48] FUNC_CALLS: NAME=setup_schedule, ARGS=[]
+[23:14:48] FUNC_CALLS: NAME=add_all_tasks, ARGS=[]
+[23:14:48] FUNC_CALLS: NAME=build, ARGS=[]
+[23:14:51] FUNC_CALLS: NAME=google_export, ARGS=[]
                 </code>
             </pre>
         </div>
@@ -100,11 +122,20 @@ write_file("data/bin.txt", str)
                 <code>
 [09-03-2024] Log of all activities from current session: 
 
-[22:52:48] [INFO] CURRENT SESSION HAS BEGUN...
-[22:52:48] [INFO] Reading Config: FILE=profile.cfg
-[22:52:48] [INFO] USERNAME=null ,EMAIL=null ,WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8] ,MAX_DAYS=14 ,ARCHIVE_DAYS=14 ,PRIORITY=false ,OVERFLOW=true ,FIT_SCHEDULE=false ,SCHEDULE_ALGO=1 ,MIN_HOURS=1
-[22:52:49] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
-[22:53:03] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\binary.smpl , SCRIPT INSTANCE HAS BEGUN...
+[23:14:20] [INFO] CURRENT SESSION HAS BEGUN...
+[23:14:20] [INFO] Reading Config: FILE=profile.cfg
+[23:14:20] [INFO] USERNAME=null ,EMAIL=null ,WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8] ,MAX_DAYS=14 ,ARCHIVE_DAYS=14 ,PRIORITY=false ,OVERFLOW=true ,FIT_SCHEDULE=false ,SCHEDULE_ALGO=1 ,MIN_HOURS=1
+[23:14:21] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
+[23:14:25] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\google.smpl , SCRIPT INSTANCE HAS BEGUN...
+[23:14:25] [INFO] SCHEDULE IMPORTED FROM GOOGLE CALENDAR...
+[23:14:48] [INFO] ADD(TASK):  ID=0, NAME=Math, HOURS=4, DUE_DATE=03-11-2024
+[23:14:48] [INFO] SCHEDULING HAS BEGUN...
+[23:14:48] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=6, HOURS_FILLED=2, TASK ADDED=0, OVERFLOW=false
+[23:14:48] [INFO] DAY_ID=1, CAPACITY=8, HOURS_REMAINING=6, HOURS_FILLED=2, TASK ADDED=0, OVERFLOW=false
+[23:14:48] [INFO] SCHEDULING HAS FINISHED...
+[23:14:50] [INFO] 4 TASKS REMOVED FROM GOOGLE CALENDAR...
+[23:14:51] [INFO] SCHEDULE EXPORTED TO GOOGLE CALENDAR...
+[23:14:51] [INFO] Display Schedule: DAYS=2, NUM_TASKS=1, STDOUT=true
                 </code>
             </pre>
         </div>
