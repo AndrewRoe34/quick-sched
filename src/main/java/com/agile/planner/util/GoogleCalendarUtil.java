@@ -60,7 +60,7 @@ public class GoogleCalendarUtil {
     public static List<String> formatEventsToTasks(List<Event> items) throws IOException {
         List<String> tasks = new ArrayList<>();
         for(Event i1 : items) {
-            if(i1.getDescription().contains("eb007aba6df2559a02ceb17ddba47c85b3e2b930")) {
+            if(i1.getDescription() != null && i1.getDescription().contains("eb007aba6df2559a02ceb17ddba47c85b3e2b930")) {
                 String title = i1.getSummary();
                 String start = i1.getStart().toPrettyString();
                 String end = i1.getEnd().toPrettyString();

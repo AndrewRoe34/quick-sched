@@ -146,7 +146,7 @@ public class GoogleCalendarIO {
         int count = 0;
         for(Event e : items) {
             // hashcode representing an Agile Planner created event
-            if(e.getDescription().contains("eb007aba6df2559a02ceb17ddba47c85b3e2b930")) {
+            if(e.getDescription() != null && e.getDescription().contains("eb007aba6df2559a02ceb17ddba47c85b3e2b930")) {
                 service.events().delete(calendarId, e.getId()).execute();
                 count++;
             }

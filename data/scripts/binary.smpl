@@ -1,4 +1,4 @@
-include: __CURR_CONFIG__, __LOG__
+include: __CURR_CONFIG__, __LOG__, __HTML__
 
 # Outputs all binary codes of a specified length
 str: ""

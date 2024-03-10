@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agile Planner Simple Script</title>
+    <style>
+        .container {
+            display: flex;
+            justify-content: space-between;
+        }
+        .box {
+            border: 2px solid black;
+            padding: 10px;
+            margin: 5px;
+            background-color: #f8f8f8;
+            width: 27%;
+            overflow-x: auto;
+            overflow-y: auto;
+            height: 800px; /* Adjust this value as needed */
+        }
+    </style>
+</head><body>
+    <h1>Simple Script v0.3.8</h1>
+    <div class="container">
+        <div class="box">
+            <h2>data.smpl</h2>
+            <pre>
+                <code>
+#Sample script
+include: __CURR_CONFIG__, __LOG__, __BUILD__, __HTML__
+
+#Constructs class instances
+val: "3400"
+c1: card("HW")
+
+#Custom function to modify checklist instance with parameter references
+func foo(cl, flag)
+  cl.add_item("Step 1")
+  cl.add_item("Step 2")
+  cl.add_item("Step 3")
+  cl.mark_item_by_id(0, flag)
+  cl.mark_item_by_name("Step 2", flag)
+  cl.mark_item_by_id(2, flag)
+
+func test(str)
+  println(str)
+  println("")
+
+
+#Outputs the class data
+println("length=", val.length(), ", int_val=", val.parse_int(), ", substring(1)=", val.sub_string(1))
+println("")
+println("card_name=", c1.get_title())
+
+#Creates and modifies a checklist
+status: true
+my_cl: cl("List")
+foo(my_cl, status)
+
+#Outputs the checklist data to showcase Simple's data referencing system
+println("checklist_id=", my_cl.id(), ", checklist_name=", my_cl.get_title(), ", checklist_percent=", my_cl.get_percent(), "%")
+println(my_cl)
+println("")
+
+                </code>
+            </pre>
+        </div>
+        <div class="box">
+            <h2>Script Log</h2>
+            <pre>
+                <code>
+[10-03-2024] Log of all activities from current session: 
+
+[19:05:43] PREPROC_ATTR: DEF_CONFIG=false, IMPORT=false, EXPORT=false, LOG=true, BUILD=true, STATS=false, HTML=true
+[19:05:43] CONST TYPE CREATED...
+[19:05:43] VAR_SETUP: NAME=val, VALUE=3400
+[19:05:43] CARD_CREATED: VAR=c1, NAME=
+[19:05:43] VAR_SETUP: NAME=c1, VALUE=
+[19:05:43] FUNC_SETUP: NAME= foo, PARAM=[cl, flag]
+[19:05:43] FUNC_SETUP: NAME= test, PARAM=[]
+[19:05:43] ATTR_CALL: VAR_NAME=val, NAME=length, ARGS[]
+[19:05:43] ATTR_CALL: VAR_NAME=val, NAME=parse_int, ARGS[]
+[19:05:43] ATTR_CALL: VAR_NAME=val, NAME=sub_string, ARGS[1]
+[19:05:43] FUNC_CALLS: NAME=println, ARGS=["length=", val.length(), ", int_val=", val.parse_int(), ", substring(1)=", val.sub_string(1)]
+[19:05:43] FUNC_CALLS: NAME=println, ARGS=[""]
+[19:05:43] ATTR_CALL: VAR_NAME=c1, NAME=get_title, ARGS[]
+[19:05:43] FUNC_CALLS: NAME=println, ARGS=["card_name=", c1.get_title()]
+[19:05:43] CONST TYPE CREATED...
+[19:05:43] VAR_SETUP: NAME=status, VALUE=true
+[19:05:43] CHECKLIST_CREATED: VAR=my_cl, NAME=List
+[19:05:43] VAR_SETUP: NAME=my_cl, VALUE=Checklist [name=List, percentage=0%, items=]
+[19:05:43] ATTR_CALL: VAR_NAME=cl, NAME=add_item, ARGS["Step 1"]
+[19:05:43] ATTR_CALL: VAR_NAME=cl, NAME=add_item, ARGS["Step 2"]
+[19:05:43] ATTR_CALL: VAR_NAME=cl, NAME=add_item, ARGS["Step 3"]
+[19:05:43] ATTR_CALL: VAR_NAME=cl, NAME=mark_item_by_id, ARGS[0, flag]
+[19:05:43] ATTR_CALL: VAR_NAME=cl, NAME=mark_item_by_name, ARGS["Step 2", flag]
+[19:05:43] ATTR_CALL: VAR_NAME=cl, NAME=mark_item_by_id, ARGS[2, flag]
+[19:05:43] FUNC_CALLS: NAME=foo, ARGS=[my_cl, status]
+[19:05:43] ATTR_CALL: VAR_NAME=my_cl, NAME=id, ARGS[]
+[19:05:43] ATTR_CALL: VAR_NAME=my_cl, NAME=get_title, ARGS[]
+[19:05:43] ATTR_CALL: VAR_NAME=my_cl, NAME=get_percent, ARGS[]
+[19:05:43] FUNC_CALLS: NAME=println, ARGS=["checklist_id=", my_cl.id(), ", checklist_name=", my_cl.get_title(), ", checklist_percent=", my_cl.get_percent(), "%"]
+[19:05:43] FUNC_CALLS: NAME=println, ARGS=[my_cl]
+[19:05:43] FUNC_CALLS: NAME=println, ARGS=[""]
+                </code>
+            </pre>
+        </div>
+        <div class="box">
+            <h2>System Log:</h2>
+            <pre>
+                <code>
+[10-03-2024] Log of all activities from current session: 
+
+[19:05:23] [INFO] CURRENT SESSION HAS BEGUN...
+[19:05:23] [INFO] Reading Config: FILE=profile.cfg
+[19:05:23] [INFO] USERNAME=null ,EMAIL=null ,WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8] ,MAX_DAYS=14 ,ARCHIVE_DAYS=14 ,PRIORITY=false ,OVERFLOW=true ,FIT_SCHEDULE=false ,SCHEDULE_ALGO=1 ,MIN_HOURS=1
+[19:05:24] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
+[19:05:43] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\data.smpl , SCRIPT INSTANCE HAS BEGUN...
+[19:05:43] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\data.smpl , SCRIPT INSTANCE HAS ENDED...
+                </code>
+            </pre>
+        </div>
+    </div>
+</body>
+</html>
