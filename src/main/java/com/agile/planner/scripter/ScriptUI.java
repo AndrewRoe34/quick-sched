@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Test {
+public class ScriptUI {
 
     public static void main(String[] args) throws IOException, GeneralSecurityException {
-        System.out.println("Simple Script 0.3.9\n");
+        System.out.println("Simple Script 0.3.10\n");
         ScriptFSM fsm = new ScriptFSM();
         File file = new File("data/scripts");
         File[] list = file.listFiles();

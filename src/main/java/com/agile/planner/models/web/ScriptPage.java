@@ -1,6 +1,6 @@
 package com.agile.planner.models.web;
 
-public class ScriptPage {
+public class ScriptPage implements Page {
     private final String scriptLog;
     private final String sysLog;
     private final String script;
@@ -63,6 +63,7 @@ public class ScriptPage {
         this.scriptName = scriptName;
     }
 
+    @Override
     public String buildPage() {
         StringBuilder sb = new StringBuilder(htmlHead);
         sb.append(scriptBody)

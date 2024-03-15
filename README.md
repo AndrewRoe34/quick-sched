@@ -1,108 +1,100 @@
-## Agile Planner
+## Agile Planner v0.3.9
 
-### <ins>Summary</ins>
+### Getting Started
 
-Agile Planner is an easy-to-use CLI that offers configurable scheduling capabilities to minimize the hassles as a college student as well as providing custom scripting language integration. Here's a brief summary of what this system offers: 
-
-* Designed and developed a highly adaptable scheduling system, accommodating diverse scheduling requirements.
-* Integrated my own custom functional and object-oriented scripting languages for flexible user interaction and customization within the Agile Planner.
-* Implemented an extensive logging mechanism to record system actions, enhancing transparency, and facilitating debugging.
-* Employed Java binary serialization for efficient storage and retrieval of scheduling data, optimizing system performance.
-
-
-### <ins>Scheduling Algorithms</ins>
-
-My system offers two core scheduling algorithms at the moment for user convenience:
-* Compact Scheduling
-* Dynamic Scheduling
-
-Compact Scheduling, deals with LJF (Largest Jobs First) scheduling, whereby tasks are sorted (by due_date and number of hours) and then are completed in bulk before progressing further. This is ideal for students that prioritize early completion over distribution.
-
-Dynamic Scheduling, is a mixture of LRTF (Largest Remaining Time First) and Round Robin so as to equally distribute all the tasks within the system while ensuring the user has enough time to complete said tasks. I am currently working on optimization algorithms to provide clients more feedback as to how they can configure their schedule for better success.
-
-### <ins>Custom Scripting Languages</ins>
-
-The goal of the scripting language was to offer the user more efficiency in terms of interacting with the system in comparison to the current CLI (Command Line Interface). At the moment, there are two working versions at hand (though, both utilize completely different paradigms).
-
-#### Functional Paradigm:
-This version utilizes the State Pattern for performing context switches between each operation that it parses. A basic script is provided below:
+To start off the program, we will run the following:
+```bash
+java -jar agile-planner-0.3.9-SNAPSHOT.jar
 ```
-#Preprocessor setup
-START:
-  __CURR_CONFIG__
-  __DEBUG__
-  __LOG__
-  __IMPORT__
-  __EXPORT__
-  __BUILD__
-END:
+Once this has been entered, you will be prompted with the name of the program followed by a request to “Please open the following address in your browser: …”
 
-#Creates a Task (<name>, <hours>, <due_date>)
-task: a, 3, 2
-task: b, 2, 1
-task: c, 1, 0
+Once you head over to the webpage, which should have opened up automatically, you’ll be greeted with a Google Authorization prompt. If you allow access, you’ll then be able to continue on with the app and get started!
 
-#Creates a Card (<name>)
-card: homework
+### An Introduction to Simple Script
 
-#Calls functions on the data, which are referenced by providing an '_' in front of the type to access the top of the Stack
-#In the first example, the most recent task and card are used in the function 
-add: _task, _card
-#In the second example, we provide a number to access a specific index of the Stack
-add: _task 1, _card
-
-#Exports the scheduling data to a jbin file (Java Binary Serialization that I developed)
-export: update6.jbin
-```
-While this iteration was very simple since it utilized dynamic memory and required no variable naming, it resulted in increased complexity with edit operations and recursive routines. As a result, I ended development with this version and moved on to my next iteration.
-
-#### Object Oriented Paradigm:
-
-This version of my scripting language required a complete overhaul in design and approach. I opted for a Parser class to manage categorizing data and returning that to my ScriptFSM, which would then interpret the parsed data. The syntax of my language is very similar to Python for ease of access to more people. Here's a code snippet below:
-
+Simple is an Object-Oriented interpreted programming language that functions similar to Python. Its syntax can be summarized as the following:
 ```
 include: __CURR_CONFIG__, __LOG__, __IMPORT__, __BUILD__
 
-# Setups the Checklist
-func setup_cl(cl1)
-  in: input_word("Add an Item(y/n) ")
-  if(in.==("y"))
-    in: input_line("Description -> ")
-    cl1.add_item(in)
-    setup_cl(cl1)
+google_import()
+import_jbin(“data/jbin/foo.jbin”)
 
-# Sets up the Task
-func setup_task(t1)
-  in: input_word("Create a Checklist(y/n) ")
-  if(in.==("y"))
-    in: input_line("Title -> ")
-    _cl: checklist(in)
-    t1.add(_cl)
-    setup_cl(_cl)
+func foo(flag)
+  if(flag)
+    println(“Flag is “, flag)
 
-# Sets up the week's schedule
-func setup_schedule()
-  in: input_word("Create a Task(y/n) ")
-  if(in.==("y"))
-    _name: input_line("Name -> ")
-    _hours: input_int("Hours -> ")
-    _due: input_int("Due -> ")
-    _task: task(_name, _hours, _due)
-    setup_task(_task)
-    setup_schedule()
+my_task: task(“Math”, 4, 2)
+foo(true)
 
-setup_schedule()
-
-# Adds all tasks to manager and builds the schedule
 add_all_tasks()
 build()
-
-# Exports schedule to Google Calendar
 google_export()
 ```
-In stark contrast to before, this language allows for more flexibility with function calls, accessing class methods and attributes, managing a Stack of variables (which are dynamic like Python), and much more. It is essentially Python but for Agile Planner.
+We will cover each of the core components along with a list of built-in functions and data types/methods.
 
-It also has the functionality needed to write non-scheduling related scripts as demonstrated below:
+#### Include Flags:
+This part of the script tells Simple what to include when it’s interpreting your code. This can range from type of configuration settings to logging out the stack trace. Here’s all the possible options:
+```
+__CURR_CONFIG__  (Uses the current config settings)
+__DEF_CONFIG__   (Uses the default config settings)
+__LOG__	         (Stores a log of the stack trace)
+__IMPORT__	 (Allows importing your schedule)
+__EXPORT__       (Allows exporting your schedule)
+__BUILD__        (Allows building your schedule)
+```
+
+#### Variables:
+Variables, similar to Python, are dynamic in nature and allow switching between types as often as you please. Declaration and instantiation are done simultaneously in Simple and cannot be separated. Below is the syntax:
+```
+<var_name>: <data_type>(<arg1>, <arg2>, ...>)
+```
+And the following are examples of how you could create an instance of each built-in type:
+```
+c1: card(“Calc 3”)
+my_task: task(“Math HW”, 4, 2)
+var: label(“HW”, 2)
+_cl: checklist(“ToDo”)
+x: 34
+str: “Hello World”
+flag: false
+```
+Whenever a variable is attempting to hold an object instance, it must attach the ‘:’ to the end of its name. Thankfully, memory is dynamic here and allows for switching of types with storage like the following:
+```
+c1: card(“Calc 3”)
+c1: “This is some string”
+c1: 34
+# Will print out the value of ‘34’
+println(c1)
+```
+
+#### Built-In Functions:
+Simple script provides an extensive list of built-in functions that solve a wide variety of problems. We will cover some of the more important ones and a link will be included to the entire list in Appendix A.
+These two functions are for reading and writing scheduling data via the JBin format:
+```
+import_schedule(<filename : String>)
+export_schedule(<filename : String>)
+```
+The google import/export functions deal with reading and writing Calendar data back and forth. The import function will display all Agile Planner tasks with a JSON format while the export function will schedule the tasks with timeslots according to the generated schedule (note: scheduled tasks are printed with links to their Calendar counterparts):
+```
+google_import()
+google_export()
+```
+These two functions are necessary when attempting to build a schedule with newly created tasks. The add_all_tasks() function deals with adding all task variables (whether past or current) to the schedule manager and the build() function creates and outputs a schedule:
+```
+add_all_tasks()
+build()
+```
+And finally, we arrive at one of the more interesting functions available with Simple. This operation allows the user to inject code while the script is being interpreted! Simply include whatever function calls, variable declarations, etc. as you’d like (making sure to close off with ```__END__```). Note: You cannot use inject_code() inside of custom functions or use it to create a function:
+```
+inject_code()
+```
+
+#### Custom Functions:
+Simple’s custom functions are very similar to Python and allow for repeated efficiency and offer recursive capabilities. They follow this format here:
+```
+func <func_name>(<arg1>, <arg2>, . . .>)
+```
+A sample script is provided below as to what is possible outside of scheduling:
 ```
 include: __CURR_CONFIG__, __LOG__
 
@@ -122,97 +114,138 @@ binary("", x)
 
 write_file("data/bin.txt", str)
 ```
+
+#### Control Structure:
+If conditions work a bit differently compared to Python in that arguments are comma delimited (this is being changed with the next version of Simple script). Here is a typical example below:
 ```
-include: __CURR_CONFIG__, __LOG__
-
-# prints out a line of '*'
-func line(y)
-  if(y.==(0))
-    return
-  print("*")
-  line(y.--())
-
-# determines number of lines and length for each
-func base(x)
-  if(x.==(0))
-    return
-  line(x)
-  println()
-  base(x.--())
-
-print("Enter size of triangle: ")
-num: input_int()
-base(num)
-```
-### <ins>Logging Mechanics</ins>
-
-Agile Planner currently offers logging mechanisms for two areas: System and Scripting.
-
-#### System:
-All core system actions, events, and exceptions are reported on a date/time perspective when they occur. The goal is to allow the user to report any errors or issues similar to Epic Game's logging system. Here's an example below:
-```
-[07-03-2024] Log of all activities from current session: 
-
-[15:46:16] [INFO] CURRENT SESSION HAS BEGUN...
-[15:46:16] [INFO] Reading Config: FILE=profile.cfg
-[15:46:16] [INFO] USERNAME=null ,EMAIL=null ,WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8] ,MAX_DAYS=14 ,ARCHIVE_DAYS=14 ,PRIORITY=false ,OVERFLOW=true ,FIT_SCHEDULE=false ,SCHEDULE_ALGO=1 ,MIN_HOURS=1
-[15:46:17] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
-[15:46:21] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\google.smpl , SCRIPT INSTANCE HAS BEGUN...
-[15:47:03] [INFO] ADD(TASK):  ID=0, NAME=Study Math Test 1, HOURS=6, DUE_DATE=03-10-2024
-[15:47:03] [INFO] ADD(TASK):  ID=0, NAME=Study for CH Test 2, HOURS=12, DUE_DATE=03-13-2024
-[15:47:03] [INFO] Scheduling has begun...
-[15:47:03] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=2, HOURS_FILLED=6, TASK ADDED=0, OVERFLOW=false
-[15:47:03] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=0, HOURS_FILLED=8, TASK ADDED=0, OVERFLOW=false
-[15:47:03] [INFO] DAY_ID=1, CAPACITY=8, HOURS_REMAINING=0, HOURS_FILLED=8, TASK ADDED=0, OVERFLOW=false
-[15:47:03] [INFO] DAY_ID=2, CAPACITY=8, HOURS_REMAINING=6, HOURS_FILLED=2, TASK ADDED=0, OVERFLOW=false
-[15:47:03] [INFO] Scheduling has finished...
-[15:47:03] [INFO] 0 TASKS REMOVED FROM GOOGLE CALENDAR...
-[15:47:04] [INFO] SCHEDULE EXPORTED TO GOOGLE CALENDAR...
-[15:47:04] [INFO] Display Schedule: DAYS=3, NUM_TASKS=2, STDOUT=true
-[15:47:04] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\google.smpl , SCRIPT INSTANCE HAS ENDED...
+if(x.==(0))
+  print(“Play games with friends”)
+elif(x.==(1))
+  print(“Watch latest Marvel movie”)
+else
+  print(“Study for test”)
+...
 ```
 
-#### Scripting:
-The same is done with the Scripting Log. It essentially provides an extensive stacktrace as to all operations that occur while the script is being executed.
+#### Object Methods:
+Simple has an extensive list of methods for each type in order to leverage the Object-Oriented structure. A typical example would be as follows:
 ```
-[07-03-2024] Log of all activities from current session: 
+my_card: card(“HW”)
+t1: task(“Math”, 4, 2)
+# Adds the task to the card
+my_card.add(t1)
+```
+While already sizable, the number of methods available continues to grow (you can see the current list via Appendix B).
 
-[15:46:21] PREPROC_ATTR: DEF_CONFIG=false, IMPORT=true, EXPORT=false, LOG=true, BUILD=true, STATS=false
-[15:46:21] FUNC_SETUP: NAME= setup_cl, PARAM=[]
-[15:46:21] FUNC_SETUP: NAME= setup_task, PARAM=[]
-[15:46:21] FUNC_SETUP: NAME= setup_schedule, PARAM=[]
-[15:46:23] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
-[15:46:23] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
-[15:46:42] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
-[15:46:42] IF_CONDITION: ARGS=[in.==("y")], RESULT=false
-[15:46:42] FUNC_CALLS: NAME=setup_task, ARGS=[_task]
-[15:46:44] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
-[15:46:44] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
-[15:46:58] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
-[15:46:58] IF_CONDITION: ARGS=[in.==("y")], RESULT=false
-[15:46:58] FUNC_CALLS: NAME=setup_task, ARGS=[_task]
-[15:47:00] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
-[15:47:00] IF_CONDITION: ARGS=[in.==("y")], RESULT=false
-[15:47:00] FUNC_CALLS: NAME=setup_schedule, ARGS=[]
-[15:47:00] FUNC_CALLS: NAME=setup_schedule, ARGS=[]
-[15:47:00] FUNC_CALLS: NAME=setup_schedule, ARGS=[]
-[15:47:03] FUNC_CALLS: NAME=inject_code, ARGS=[]
-[15:47:03] FUNC_CALLS: NAME=add_all_tasks, ARGS=[]
-[15:47:03] FUNC_CALLS: NAME=build, ARGS=[]
-[15:47:04] FUNC_CALLS: NAME=google_export, ARGS=[]
+### Scheduling Algorithms
+
+Agile Planner utilizes two core algorithms when scheduling out user data throughout the upcoming weeks: Dynamic and Compact.
+
+Dynamic scheduling is a combination of Longest-Remaining-Time-First (LRTF) + Round Robin (RR). This allows for a distributive mindset of scheduling so students have an optimal amount of time each day.
+
+Compact scheduling is simply LJF and its primary focus is the cramming mindset. This allows the user to finish each task in as few days as possible since they are not being broken up.
+
+These algorithms also come with plenty of configuration options to make scheduling even more adaptable to your weekly needs.
+
+### Logging Tools
+
+#### System Logging:
+System logging reports all actions that are performed with managing data and performing scheduling operations or routine IO. It is meant to be thorough and complete while avoiding unnecessary reporting. A sample log is shown below:
+```
+[08-03-2024] Log of all activities from current session: 
+
+[17:29:21] [INFO] CURRENT SESSION HAS BEGUN...
+[17:29:21] [INFO] Reading Config: FILE=profile.cfg
+[17:29:21] [INFO] USERNAME=null ,EMAIL=null ,WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8] ,MAX_DAYS=14 ,ARCHIVE_DAYS=14 ,PRIORITY=false ,OVERFLOW=true ,FIT_SCHEDULE=false ,SCHEDULE_ALGO=1 ,MIN_HOURS=1
+[17:29:22] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
+[17:29:24] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner-0.3.7\data\scripts\google.smpl , SCRIPT INSTANCE HAS BEGUN...
+[17:29:25] [INFO] SCHEDULE IMPORTED FROM GOOGLE CALENDAR...
+[17:31:02] [INFO] ADD(TASK):  ID=0, NAME=Study Math, HOURS=6, DUE_DATE=03-12-2024
+[17:31:02] [INFO] ADD(TASK):  ID=0, NAME=Study OS, HOURS=8, DUE_DATE=03-10-2024
+[17:31:02] [INFO] ADD(TASK):  ID=0, NAME=Study Physics, HOURS=10, DUE_DATE=03-15-2024
+[17:31:02] [INFO] Scheduling has begun...
+[17:31:02] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=5, HOURS_FILLED=3, TASK ADDED=0, OVERFLOW=false
+[17:31:02] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=3, HOURS_FILLED=5, TASK ADDED=0, OVERFLOW=false
+[17:31:02] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=1, HOURS_FILLED=7, TASK ADDED=0, OVERFLOW=false
+[17:31:02] [INFO] DAY_ID=1, CAPACITY=8, HOURS_REMAINING=5, HOURS_FILLED=3, TASK ADDED=0, OVERFLOW=false
+[17:31:02] [INFO] DAY_ID=1, CAPACITY=8, HOURS_REMAINING=3, HOURS_FILLED=5, TASK ADDED=0, OVERFLOW=false
+[17:31:02] [INFO] DAY_ID=1, CAPACITY=8, HOURS_REMAINING=1, HOURS_FILLED=7, TASK ADDED=0, OVERFLOW=false
+[17:31:02] [INFO] DAY_ID=2, CAPACITY=8, HOURS_REMAINING=6, HOURS_FILLED=2, TASK ADDED=0, OVERFLOW=false
+[17:31:02] [INFO] DAY_ID=2, CAPACITY=8, HOURS_REMAINING=4, HOURS_FILLED=4, TASK ADDED=0, OVERFLOW=false
+[17:31:02] [INFO] DAY_ID=2, CAPACITY=8, HOURS_REMAINING=2, HOURS_FILLED=6, TASK ADDED=0, OVERFLOW=false
+[17:31:02] [INFO] DAY_ID=3, CAPACITY=8, HOURS_REMAINING=6, HOURS_FILLED=2, TASK ADDED=0, OVERFLOW=false
+[17:31:02] [INFO] DAY_ID=4, CAPACITY=8, HOURS_REMAINING=6, HOURS_FILLED=2, TASK ADDED=0, OVERFLOW=false
+[17:31:02] [INFO] Scheduling has finished...
+[17:31:04] [INFO] 4 TASKS REMOVED FROM GOOGLE CALENDAR...
+[17:31:08] [INFO] SCHEDULE EXPORTED TO GOOGLE CALENDAR...
+[17:31:08] [INFO] Display Schedule: DAYS=5, NUM_TASKS=3, STDOUT=true
+[17:31:08] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner-0.3.7\data\scripts\google.smpl , SCRIPT INSTANCE HAS ENDED...
 ```
 
-### <ins>Java Binary Serialization</ins>
-
-The goal of JBIN was to maintain data persistence while being able to easily store the data in a structured and efficient manner. Inspiration from JSON was used when developing JBIN.
+#### Scripter Logging:
+Scripter logging essentially serves as a stack trace and reports all operations that occur as the Simple script is parsed and interpreted. Changes are being planned with logging the following: variable creation, local stack, and global stack:
 ```
-11-12-2023
+[08-03-2024] Log of all activities from current session: 
+
+[17:29:24] PREPROC_ATTR: DEF_CONFIG=false, IMPORT=true, EXPORT=false, LOG=true, BUILD=true, STATS=false
+[17:29:25] FUNC_CALLS: NAME=google_import, ARGS=[]
+[17:29:25] FUNC_SETUP: NAME= setup_cl, PARAM=[]
+[17:29:25] FUNC_SETUP: NAME= setup_task, PARAM=[]
+[17:29:25] FUNC_SETUP: NAME= setup_schedule, PARAM=[]
+[17:29:28] FUNC_CALLS: NAME=set_schedule, ARGS=[option]
+[17:29:29] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[17:29:29] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
+[17:29:41] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[17:29:41] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
+[17:29:45] ATTR_CALL: VAR_NAME=t1, NAME=add, ARGS[_cl]
+[17:29:46] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[17:29:46] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
+[17:29:50] ATTR_CALL: VAR_NAME=cl1, NAME=add_item, ARGS[in]
+[17:29:51] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[17:29:51] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
+[17:29:57] ATTR_CALL: VAR_NAME=cl1, NAME=add_item, ARGS[in]
+[17:29:59] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[17:29:59] IF_CONDITION: ARGS=[in.==("y")], RESULT=false
+[17:29:59] FUNC_CALLS: NAME=setup_cl, ARGS=[cl1]
+[17:29:59] FUNC_CALLS: NAME=setup_cl, ARGS=[cl1]
+[17:29:59] FUNC_CALLS: NAME=setup_cl, ARGS=[_cl]
+[17:29:59] FUNC_CALLS: NAME=setup_task, ARGS=[_task]
+[17:30:01] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[17:30:01] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
+[17:30:12] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[17:30:12] IF_CONDITION: ARGS=[in.==("y")], RESULT=false
+[17:30:12] FUNC_CALLS: NAME=setup_task, ARGS=[_task]
+[17:30:13] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[17:30:13] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
+[17:30:44] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[17:30:44] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
+[17:30:49] ATTR_CALL: VAR_NAME=t1, NAME=add, ARGS[_cl]
+[17:30:50] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[17:30:50] IF_CONDITION: ARGS=[in.==("y")], RESULT=true
+[17:30:59] ATTR_CALL: VAR_NAME=cl1, NAME=add_item, ARGS[in]
+[17:31:01] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[17:31:01] IF_CONDITION: ARGS=[in.==("y")], RESULT=false
+[17:31:01] FUNC_CALLS: NAME=setup_cl, ARGS=[cl1]
+[17:31:01] FUNC_CALLS: NAME=setup_cl, ARGS=[_cl]
+[17:31:01] FUNC_CALLS: NAME=setup_task, ARGS=[_task]
+[17:31:02] ATTR_CALL: VAR_NAME=in, NAME===, ARGS["y"]
+[17:31:02] IF_CONDITION: ARGS=[in.==("y")], RESULT=false
+[17:31:02] FUNC_CALLS: NAME=setup_schedule, ARGS=[]
+[17:31:02] FUNC_CALLS: NAME=setup_schedule, ARGS=[]
+[17:31:02] FUNC_CALLS: NAME=setup_schedule, ARGS=[]
+[17:31:02] FUNC_CALLS: NAME=setup_schedule, ARGS=[]
+[17:31:02] FUNC_CALLS: NAME=add_all_tasks, ARGS=[]
+[17:31:02] FUNC_CALLS: NAME=build, ARGS=[]
+[17:31:08] FUNC_CALLS: NAME=google_export, ARGS=[]
+```
+### Java Binary Serialization
+Agile Planner utilizes custom serialization for maintaining data persistence with scheduling data. The following is a jbin file that has been properly formatted:
+```
+08-03-2024
 
 LABEL {
   LOL, 3
   Party, 4
-  math, 3
-  lol, 8
 }
 
 CHECKLIST {
@@ -220,16 +253,20 @@ CHECKLIST {
 }
 
 TASK {
-  Read, 4, 4, L0
-  Write, 2, 2, CL0
-  suffer, 5, 5, L2, L3
-  based, 3, 3, L2, L3
+  a, 3, 3, L1
+  c, 1, 0, CL0
+  b, 2, 1, L0
 }
 
 CARD {
-  HW, T0, T1, L0, L1
-  MA, T2, T3, L2, L3
-  SCIENCE, T2, T3, L2, L3
+  Default, T0, L0
+  Homework, T1, T2
 }
 ```
-Data is written in this format in order to allow reconstruction from top to bottom for an efficient time complexity. We start off with Label and CheckList, but Task is where we begin to store those Labels and CheckLists (hence the variable naming and index values). Cards have their name at the beginning followed by the Task and Label indices of what they store. I am currently seeking encryption/decryption options to secure the data for the end user.
+Data is configured so that objects can be read in with optimal time efficiency due to all the referencing at the bottom of the chain such as Task or Card.
+
+### Conclusive Summary:
+A lot of work has gone into making this all happen. The current plan is to continue developing the terminal version of Agile Planner until all core features hit the necessary mark. The current plan is to offer more 3rd party integrations, redesign the language, and implement optimization algorithms for scheduling.
+If you have any questions or would like to report a bug, you can report an issue here.
+
+Agile Planner – “Scheduling Made Simple” 
