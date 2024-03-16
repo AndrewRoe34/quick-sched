@@ -28,7 +28,7 @@ public class ScriptPage implements Page {
             "    </style>\n" +
             "</head>";
     private static final String scriptBody = "<body>\n" +
-            "    <h1>Simple Script v0.3.8</h1>\n" +
+            "    <h1>Simple Script v0.3.10</h1>\n" +
             "    <div class=\"container\">\n" +
             "        <div class=\"box\">\n" +
             "            <h2>";

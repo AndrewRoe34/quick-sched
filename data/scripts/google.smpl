@@ -2,19 +2,19 @@ include: __CURR_CONFIG__, __LOG__, __IMPORT__, __BUILD__, __HTML__
 
 google_import()
 
-func setup_cl(cl1)
+func setup_cl(_cl)
   in: input_word("Add an Item(y/n) ")
   if(in.==("y"))
     in: input_line("Description -> ")
-    cl1.add_item(in)
-    setup_cl(cl1)
+    _cl.add_item(in)
+    setup_cl(_cl)
 
-func setup_task(t1)
+func setup_task(_task)
   in: input_word("Create a Checklist(y/n) ")
   if(in.==("y"))
     in: input_line("Title -> ")
     _cl: checklist(in)
-    t1.add(_cl)
+    _task.add(_cl)
     setup_cl(_cl)
 
 func setup_schedule()

@@ -19,7 +19,7 @@
         }
     </style>
 </head><body>
-    <h1>Simple Script v0.3.8</h1>
+    <h1>Simple Script v0.3.10</h1>
     <div class="container">
         <div class="box">
             <h2>binary.smpl</h2>
@@ -37,8 +37,7 @@ func binary(bin, x)
   binary(bin.add("0"), x)
   binary(bin.add("1"), x)
 
-print("Enter number: ")
-x: input_int()
+x: input_int("Enter number -> ")
 binary("", x)
 
 write_file("data/bin.txt", str)
@@ -49,169 +48,89 @@ write_file("data/bin.txt", str)
             <h2>Script Log</h2>
             <pre>
                 <code>
-[10-03-2024] Log of all activities from current session: 
+[16-03-2024] Log of all activities from current session: 
 
-[19:05:03] PREPROC_ATTR: DEF_CONFIG=false, IMPORT=false, EXPORT=false, LOG=true, BUILD=false, STATS=false, HTML=true
-[19:05:03] CONST TYPE CREATED...
-[19:05:03] VAR_SETUP: NAME=str, VALUE=
-[19:05:03] FUNC_SETUP: NAME= binary, PARAM=[bin, x]
-[19:05:03] FUNC_CALLS: NAME=print, ARGS=["Enter number: "]
-[19:05:06] VAR_SETUP: NAME=x, VALUE=4
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
-[19:05:06] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
-[19:05:06] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
-[19:05:06] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
-[19:05:06] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
-[19:05:06] FUNC_CALLS: NAME=binary, ARGS=["", x]
-[19:05:06] FUNC_CALLS: NAME=write_file, ARGS=["data/bin.txt", str]
+[00:52:47] PREPROC_ATTR: DEF_CONFIG=false, IMPORT=false, EXPORT=false, LOG=true, BUILD=false, STATS=false, HTML=true
+[00:52:47] CONST TYPE CREATED...
+[00:52:47] VAR_SETUP: NAME=str, VALUE=
+[00:52:47] FUNC_SETUP: NAME= binary, PARAM=[bin, x]
+[00:52:49] FUNC_CALLS: NAME=input_int, ARGS=["Enter number -> "]
+[00:52:49] VAR_SETUP: NAME=x, VALUE=3
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
+[00:52:49] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
+[00:52:49] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
+[00:52:49] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
+[00:52:49] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
+[00:52:49] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
+[00:52:49] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME=--, ARGS[]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["0"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
+[00:52:49] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("0"), x]
+[00:52:49] ATTR_CALL: VAR_NAME=bin, NAME=add, ARGS["1"]
+[00:52:49] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:52:49] IF_CONDITION: ARGS=[x.==(0)], RESULT=true
+[00:52:49] ATTR_CALL: VAR_NAME=str, NAME=concat, ARGS[bin, "\n"]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=[bin.add("1"), x]
+[00:52:49] FUNC_CALLS: NAME=binary, ARGS=["", x]
+[00:52:49] FUNC_CALLS: NAME=write_file, ARGS=["data/bin.txt", str]
                 </code>
             </pre>
         </div>
@@ -219,14 +138,14 @@ write_file("data/bin.txt", str)
             <h2>System Log:</h2>
             <pre>
                 <code>
-[10-03-2024] Log of all activities from current session: 
+[16-03-2024] Log of all activities from current session: 
 
-[19:04:53] [INFO] CURRENT SESSION HAS BEGUN...
-[19:04:53] [INFO] Reading Config: FILE=profile.cfg
-[19:04:53] [INFO] USERNAME=null ,EMAIL=null ,WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8] ,MAX_DAYS=14 ,ARCHIVE_DAYS=14 ,PRIORITY=false ,OVERFLOW=true ,FIT_SCHEDULE=false ,SCHEDULE_ALGO=1 ,MIN_HOURS=1
-[19:04:53] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
-[19:05:03] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\binary.smpl , SCRIPT INSTANCE HAS BEGUN...
-[19:05:06] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\binary.smpl , SCRIPT INSTANCE HAS ENDED...
+[00:52:38] [INFO] CURRENT SESSION HAS BEGUN...
+[00:52:38] [INFO] Reading Config: FILE=profile.cfg
+[00:52:38] [INFO] USERNAME=null ,EMAIL=null ,WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8] ,MAX_DAYS=14 ,ARCHIVE_DAYS=14 ,PRIORITY=false ,OVERFLOW=true ,FIT_SCHEDULE=false ,SCHEDULE_ALGO=1 ,MIN_HOURS=1
+[00:52:39] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
+[00:52:47] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\binary.smpl , SCRIPT INSTANCE HAS BEGUN...
+[00:52:49] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\binary.smpl , SCRIPT INSTANCE HAS ENDED...
                 </code>
             </pre>
         </div>

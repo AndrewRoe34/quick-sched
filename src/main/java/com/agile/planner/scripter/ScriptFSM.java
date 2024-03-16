@@ -95,10 +95,12 @@ public class ScriptFSM {
                                         Attributes atr = parser.parseAttributes(trimmed);
                                         if (atr == null) throw new InvalidFunctionException();
                                         ret = processAttribute(atr, null);
+                                        scriptLog.reportAttrFunc(atr);
                                         break;
                                     case FUNCTION:
                                         StaticFunction fnc = parser.parseStaticFunction(trimmed);
                                         ret = processStaticFunction(fnc, null);
+                                        scriptLog.reportFunctionCall(fnc);
                                         break;
                                     default:
                                         throw new InvalidPairingException();
@@ -120,7 +122,7 @@ public class ScriptFSM {
                             break;
                         case SETUP_CUST_FUNC:
                             if(!ppStatus) throw new InvalidPreProcessorException();
-                            if(injectScript.size() > 0 && injectScriptIdx < injectScript.size()) throw new InvalidGrammarException();
+                            if(!injectScript.isEmpty() && injectScriptIdx < injectScript.size()) throw new InvalidGrammarException();
                             CustomFunction customFunction = parser.parseCustomFunction(untrimmed);
                             if(customFunction == null) {
                                 throw new InvalidFunctionException();
@@ -135,7 +137,7 @@ public class ScriptFSM {
                             break;
                         case IF_CONDITION:
                             if(!ppStatus) throw new InvalidPreProcessorException();
-                            if(injectScript.size() > 0 && injectScriptIdx < injectScript.size()) throw new InvalidGrammarException();
+                            if(!injectScript.isEmpty() && injectScriptIdx < injectScript.size()) throw new InvalidGrammarException();
                             customFunction = parser.parseIfCondition(untrimmed);
                             if(customFunction == null) {
                                 throw new InvalidFunctionException();
@@ -223,10 +225,12 @@ public class ScriptFSM {
                             Attributes atr = parser.parseAttributes(trimmed);
                             if (atr == null) throw new InvalidFunctionException();
                             ret = processAttribute(atr, localStack);
+                            scriptLog.reportAttrFunc(atr);
                             break;
                         case FUNCTION:
                             StaticFunction fnc = parser.parseStaticFunction(trimmed);
                             ret = processStaticFunction(fnc, localStack);
+                            scriptLog.reportFunctionCall(fnc);
                             break;
                         default:
                             throw new InvalidPairingException();
@@ -690,10 +694,12 @@ public class ScriptFSM {
                                 Attributes atr = parser.parseAttributes(trimmed);
                                 if (atr == null) throw new InvalidFunctionException();
                                 ret = processAttribute(atr, localStack);
+                                scriptLog.reportAttrFunc(atr);
                                 break;
                             case FUNCTION:
                                 StaticFunction fnc = parser.parseStaticFunction(trimmed);
                                 ret = processStaticFunction(fnc, localStack);
+                                scriptLog.reportFunctionCall(fnc);
                                 break;
                             default:
                                 throw new InvalidPairingException();

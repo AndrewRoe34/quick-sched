@@ -10,8 +10,7 @@ func binary(bin, x)
   binary(bin.add("0"), x)
   binary(bin.add("1"), x)
 
-print("Enter number: ")
-x: input_int()
+x: input_int("Enter number -> ")
 binary("", x)
 
 write_file("data/bin.txt", str)
