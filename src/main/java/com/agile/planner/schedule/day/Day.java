@@ -89,39 +89,6 @@ public class Day {
     }
 
     /**
-     * Adds a Task to the Day
-     *
-     * @param task task to be added in the form of a SubTask
-     * @return whether task was inserted without overflow
-     */
-    @Deprecated
-    public boolean addSubTaskDynamically(Task task) {
-        if(this.date.equals(task.getDueDate())) {
-            boolean overflow = task.getSubTotalHoursRemaining() > getSpareHours();
-            int hours = task.getSubTotalHoursRemaining();
-            SubTask subtask = task.addSubTask(hours, overflow);
-            subtaskManager.addLast(subtask);
-            this.size += hours;
-            return !overflow;
-        }
-        if(task.getAverageNumHours() == 0) {
-            task.setAverageNumHours(this.date);
-        }
-        int hours = task.getAverageNumHours();
-        //Handles the case where we actually have fewer hours available due to scheduling
-        hours = Math.min(hours, task.getSubTotalHoursRemaining());
-        //Fixes the number of hours according to what the Day has available
-        hours = hours + size > capacity ? capacity - size : hours;
-
-        SubTask subtask = task.addSubTask(hours, false);
-
-        subtaskManager.addLast(subtask);
-        this.size += hours;
-
-        return true;
-    }
-
-    /**
      * Gets the parent task based on the specified subtask index value
      *
      * @param subtaskIndex index of the subtask

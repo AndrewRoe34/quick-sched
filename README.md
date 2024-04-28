@@ -1,10 +1,10 @@
-## Agile Planner v0.3.9
+## Agile Planner v0.3.10
 
 ### Getting Started
 
 To start off the program, we will run the following:
 ```bash
-java -jar agile-planner-0.3.9-SNAPSHOT.jar
+java -jar agile-planner-0.3.10-SNAPSHOT.jar
 ```
 Once this has been entered, you will be prompted with the name of the program followed by a request to “Please open the following address in your browser: …”
 

@@ -3,6 +3,8 @@ package com.agile.planner.schedule;
 import com.agile.planner.manager.ScheduleManager;
 import com.agile.planner.schedule.day.Day;
 import com.agile.planner.models.Task;
+import com.agile.planner.user.UserConfig;
+import com.agile.planner.util.EventLog;
 
 import java.util.List;
 import java.util.PriorityQueue;
@@ -14,6 +16,11 @@ import java.util.PriorityQueue;
  * @since 0.3.0
  */
 public interface Scheduler {
+
+    static Scheduler getInstance(UserConfig userConfig, EventLog eventLog, int idx) {
+        if (idx == 0) return DynamicScheduler.getSingleton(userConfig, eventLog);
+        return CompactScheduler.getSingleton(userConfig, eventLog);
+    }
 
     /**
      * Assigns current {@link Day} a set of {@link Task.SubTask} via one of the specified scheduling algorithms

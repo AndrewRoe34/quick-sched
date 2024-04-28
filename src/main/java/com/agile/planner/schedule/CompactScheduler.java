@@ -5,7 +5,6 @@ import com.agile.planner.models.Task;
 import com.agile.planner.user.UserConfig;
 import com.agile.planner.util.EventLog;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -20,7 +19,7 @@ import java.util.PriorityQueue;
  * @author Andrew Roe
  * @since 0.3.0
  */
-public class CompactScheduler implements Scheduler {
+class CompactScheduler implements Scheduler {
 
     /** Singleton for CompactScheduler */
     private static CompactScheduler singleton;
@@ -48,7 +47,7 @@ public class CompactScheduler implements Scheduler {
      * @param eventLog EventLog for logging data on Day actions
      * @return instance of {@code CompactScheduler}
      */
-    public static CompactScheduler getSingleton(UserConfig userConfig, EventLog eventLog) {
+    protected static CompactScheduler getSingleton(UserConfig userConfig, EventLog eventLog) {
         if(singleton == null) {
             singleton = new CompactScheduler(userConfig, eventLog);
         }
@@ -60,9 +59,9 @@ public class CompactScheduler implements Scheduler {
         //Note: We do not need to worry about 'min_hours' since CompactScheduler focuses on filling up each day with tasks
         PriorityQueue<Task> incomplete = new PriorityQueue<>();
         int numErrors = errorCount;
-        while(day.hasSpareHours() && taskManager.size() > 0) {
+        while(day.hasSpareHours() && !taskManager.isEmpty()) {
             Task task = taskManager.remove();
-            int maxHours = 0;
+            int maxHours;
             if(task.getDueDate().equals(day.getDate())) {
                 maxHours = userConfig.isFitSchedule() ? Math.min(day.getSpareHours(), task.getSubTotalHoursRemaining()) : task.getSubTotalHoursRemaining();
             } else {
@@ -72,7 +71,7 @@ public class CompactScheduler implements Scheduler {
             if(userConfig.isFitSchedule() && task.getSubTotalHoursRemaining() > 0) {
                 eventLog.reportDayAction(day, task, validTaskStatus);
                 complete.add(task);
-                while(taskManager.size() > 0 && taskManager.peek().getDueDate().equals(day.getDate())) {
+                while(!taskManager.isEmpty() && taskManager.peek().getDueDate().equals(day.getDate())) {
                     complete.add(taskManager.remove());
                 }
             } else {
@@ -84,7 +83,7 @@ public class CompactScheduler implements Scheduler {
                 eventLog.reportDayAction(day, task, validTaskStatus);
                 numErrors += validTaskStatus ? 0 : 1;
                 if(!day.hasSpareHours() && !userConfig.isFitSchedule()) {
-                    while(taskManager.size() > 0 && taskManager.peek().getDueDate().equals(day.getDate())) {
+                    while(!taskManager.isEmpty() && taskManager.peek().getDueDate().equals(day.getDate())) {
                         Task dueTask = taskManager.remove();
                         complete.add(dueTask);
                         day.addSubTaskManually(dueTask, dueTask.getSubTotalHoursRemaining());
@@ -94,7 +93,7 @@ public class CompactScheduler implements Scheduler {
                 }
             }
         }
-        while(incomplete.size() > 0) {
+        while(!incomplete.isEmpty()) {
             taskManager.add(incomplete.remove());
         }
         return numErrors;
@@ -102,19 +101,6 @@ public class CompactScheduler implements Scheduler {
 
     @Override
     public boolean correctSchedule(List<Day> schedule, int errorCount) {
-        List<Integer> overflowIndex = new ArrayList<>();
-        List<Integer> overflowHours = new ArrayList<>();
-        int totalOverflowHours = 0;
-        for(int i = schedule.size() - 1; i >= 0; i--) {
-            Day d1 = schedule.get(i);
-            int hoursOverflow = d1.getCapacity() - d1.getTotalHours() < 0 ? d1.getTotalHours() - d1.getCapacity() : 0;
-            if(hoursOverflow > 0) {
-                overflowIndex.add(i);
-                overflowHours.add(hoursOverflow);
-                totalOverflowHours += hoursOverflow;
-            }
-        }
-        int leftoverDays = overflowIndex.size() - schedule.size();
         return false;
     }
 }

@@ -28,7 +28,7 @@ public class DynamicScheduler implements Scheduler {
     /** Holds relevant data for user settings in scheduling */
     private final UserConfig userConfig;
     /** EventLog for logging data on Day actions */
-    private EventLog eventLog;
+    private final EventLog eventLog;
 
     /**
      * Constructs a new {@code DynamicScheduler} with a given {@link UserConfig} and {@link EventLog}
@@ -48,7 +48,7 @@ public class DynamicScheduler implements Scheduler {
      * @param eventLog EventLog for logging data on Day actions
      * @return instance of {@code DynamicScheduler}
      */
-    public static DynamicScheduler getSingleton(UserConfig userConfig, EventLog eventLog) {
+    protected static DynamicScheduler getSingleton(UserConfig userConfig, EventLog eventLog) {
         if(singleton == null) {
             singleton = new DynamicScheduler(userConfig, eventLog);
         }
@@ -83,7 +83,7 @@ public class DynamicScheduler implements Scheduler {
                 eventLog.reportDayAction(day, task, validTaskStatus);
                 numErrors += validTaskStatus ? 0 : 1;
                 if(!day.hasSpareHours()) {
-                    while(taskManager.size() > 0 && taskManager.peek().getDueDate().equals(day.getDate())) {
+                    while(!taskManager.isEmpty() && taskManager.peek().getDueDate().equals(day.getDate())) {
                         Task dueTask = taskManager.remove();
                         complete.add(dueTask);
                         validTaskStatus = addTaskSameDay(dueTask, day);

@@ -16,8 +16,6 @@ import com.agile.planner.models.Card;
 import com.agile.planner.models.Label;
 import com.agile.planner.io.GoogleCalendarIO;
 import com.agile.planner.io.IOProcessing;
-import com.agile.planner.schedule.CompactScheduler;
-import com.agile.planner.schedule.DynamicScheduler;
 import com.agile.planner.schedule.Scheduler;
 import com.agile.planner.schedule.day.Day;
 import com.agile.planner.models.Task;
@@ -88,16 +86,8 @@ public class ScheduleManager {
         } catch (GeneralSecurityException | IOException e) {
             throw new IllegalArgumentException();
         }
-        switch(userConfig.getSchedulingAlgorithm()) {
-            case 0:
-                scheduler = DynamicScheduler.getSingleton(userConfig, eventLog);
-                break;
-            case 1:
-                scheduler = CompactScheduler.getSingleton(userConfig, eventLog);
-                break;
-            default:
-                //do nothing
-        }
+        scheduler = Scheduler.getInstance(userConfig, eventLog, userConfig.getSchedulingAlgorithm());
+
         schedule = new LinkedList<>();
         customHours = new HashMap<>();
         taskMap = new HashMap<>();
@@ -203,11 +193,7 @@ public class ScheduleManager {
     }
 
     public void setScheduleOption(int idx) {
-        if(idx == 1 && scheduler instanceof CompactScheduler) {
-            scheduler = DynamicScheduler.getSingleton(userConfig, eventLog);
-        } else if(idx == 2 && scheduler instanceof DynamicScheduler) {
-            scheduler = CompactScheduler.getSingleton(userConfig, eventLog);
-        }
+        scheduler = Scheduler.getInstance(userConfig, eventLog, idx);
     }
 
     /**
@@ -343,7 +329,7 @@ public class ScheduleManager {
         int dayCount = 0;
         Day currDay;
 
-        while(taskManager.size() > 0 && dayId < userConfig.getMaxDays()) {
+        while(!taskManager.isEmpty() && dayId < userConfig.getMaxDays()) {
             currDay = new Day(dayId++, userConfig.getWeek()[idx++ % 7], dayCount++);
             schedule.add(currDay);
             //TODO don't need incomplete as argument (should be local to schedulers)
@@ -359,7 +345,7 @@ public class ScheduleManager {
     private void resetSchedule() {
         schedule = new LinkedList<>();
         PriorityQueue<Task> copy = new PriorityQueue<>();
-        while(taskManager.size() > 0) {
+        while(!taskManager.isEmpty()) {
             Task task = taskManager.remove();
             task.reset();
             copy.add(task);

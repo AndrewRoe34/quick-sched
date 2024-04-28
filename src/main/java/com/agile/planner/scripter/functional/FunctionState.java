@@ -1,6 +1,5 @@
 package com.agile.planner.scripter.functional;
 
-import com.agile.planner.models.Board;
 import com.agile.planner.models.Card;
 import com.agile.planner.models.Label;
 import com.agile.planner.models.Task;

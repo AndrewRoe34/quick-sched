@@ -23,9 +23,8 @@ public class ScriptFSM {
     private final List<Type> globalStack = new LinkedList<>();
     private final Parser parser = new Parser();
     private final ScriptLog scriptLog = new ScriptLog();
-    private List<Type> checklistVariables = new ArrayList<>();
-    private List<Type> labelVariables = new ArrayList<>();
-    private List<Type> taskVariables = new ArrayList<>();
+    private List<Type> clList = new ArrayList<>();
+    private List<Type> labelList = new ArrayList<>();
     private List<Task> taskList = new ArrayList<>();
     private List<Type> cardVariables = new ArrayList<>();
     private List<Type> primitiveVariables = new ArrayList<>();
@@ -365,7 +364,7 @@ public class ScriptFSM {
         } else if (classInstance instanceof TaskInstance) {
             TaskInstance task = (TaskInstance) classInstance;
             t1 = lookupVariable(task.getVarName());
-            Task createdTask = new Task(0, task.getName(), task.getTotalHours(), task.getDueDate());
+            Task createdTask = new Task(scheduleManager.getLastTaskId() + taskList.size(), task.getName(), task.getTotalHours(), task.getDueDate());
             if(t1 == null) {
                 t1 = new Type(createdTask, task.getVarName(), Type.TypeId.TASK);
                 globalStack.add(t1);
@@ -377,19 +376,19 @@ public class ScriptFSM {
             CheckListInstance cl = (CheckListInstance) classInstance;
             t1 = lookupVariable(cl.getVarName());
             if(t1 == null) {
-                t1 = new Type(new CheckList(0, cl.getTitle()), cl.getVarName(), Type.TypeId.CHECKLIST);
+                t1 = new Type(new CheckList(scheduleManager.getLastCLId() + clList.size(), cl.getTitle()), cl.getVarName(), Type.TypeId.CHECKLIST);
                 globalStack.add(t1);
             } else {
-                t1.setLinkerData(new CheckList(0, cl.getTitle()), Type.TypeId.CHECKLIST);
+                t1.setLinkerData(new CheckList(scheduleManager.getLastCLId() + clList.size(), cl.getTitle()), Type.TypeId.CHECKLIST);
             }
         } else if (classInstance instanceof LabelInstance) {
             LabelInstance label = (LabelInstance) classInstance;
             t1 = lookupVariable(label.getVarName());
             if(t1 == null) {
-                t1 = new Type(new Label(0, label.getName(), label.getColor()), label.getVarName(), Type.TypeId.LABEL);
+                t1 = new Type(new Label(scheduleManager.getLastLabelId() + labelList.size(), label.getName(), label.getColor()), label.getVarName(), Type.TypeId.LABEL);
                 globalStack.add(t1);
             } else {
-                t1.setLinkerData(new Label(0, label.getName(), label.getColor()), Type.TypeId.LABEL);
+                t1.setLinkerData(new Label(scheduleManager.getLastLabelId() + labelList.size(), label.getName(), label.getColor()), Type.TypeId.LABEL);
             }
         } else if (classInstance instanceof StringInstance) {
             StringInstance str = (StringInstance) classInstance;
