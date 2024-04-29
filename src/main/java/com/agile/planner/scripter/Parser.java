@@ -303,6 +303,7 @@ public class Parser {
             case "input_int":
             case "input_word":
             case "input_line":
+            case "input_bool":
             case "pause":
             case "view_interface":
             case "inject_code":

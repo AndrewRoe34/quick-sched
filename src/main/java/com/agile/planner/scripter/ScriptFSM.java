@@ -523,6 +523,12 @@ public class ScriptFSM {
                     return funcInputLine(args[0].getStringConstant());
                 }
                 return funcInputLine(null);
+            case "input_bool":
+                if(args.length > 1) throw new InvalidFunctionException();
+                if(args.length == 1) {
+                    return funcInputBool(args[0].getStringConstant());
+                }
+                return funcInputBool(null);
             case "pause":
                 if(args.length != 0) throw new InvalidFunctionException();
                 funcPause();
@@ -913,6 +919,19 @@ public class ScriptFSM {
         }
         if(inputScanner.hasNextLine()) {
             return new Type(inputScanner.nextLine(), null);
+        } else {
+            throw new InvalidGrammarException();
+        }
+    }
+
+    protected Type funcInputBool(String stringConstant) {
+        if(stringConstant != null) {
+            System.out.print(stringConstant);
+        }
+        if(inputScanner.hasNextBoolean()) {
+            Type localType =  new Type(inputScanner.nextBoolean(), null);
+            if(inputScanner.hasNextLine()) inputScanner.nextLine();
+            return localType;
         } else {
             throw new InvalidGrammarException();
         }

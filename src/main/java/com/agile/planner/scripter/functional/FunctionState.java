@@ -16,7 +16,7 @@ public class FunctionState extends State {
     private static List<Task> tasks;
     private static List<CheckList> checkLists;
     private static List<Card> cards;
-    private static List<Board> boards;
+//    private static List<Board> boards;
     private static List<Label> labels;
     private static boolean inFunction;
 
@@ -153,9 +153,9 @@ public class FunctionState extends State {
         return cards;
     }
 
-    protected static List<Board> getBoards() {
-        return boards;
-    }
+//    protected static List<Board> getBoards() {
+//        return boards;
+//    }
 
     protected static List<Label> getLabels() {
         return labels;
@@ -169,7 +169,7 @@ public class FunctionState extends State {
         tasks = null;
         checkLists = null;
         cards = null;
-        boards = null;
+//        boards = null;
         labels = null;
         inFunction = false;
     }
