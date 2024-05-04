@@ -1,5 +1,0 @@
-include: __CURR_CONFIG__, __LOG__
-
-str: input_line("Give me some text -> ")
-filename: "data/data.txt"
-write_file(filename, str)

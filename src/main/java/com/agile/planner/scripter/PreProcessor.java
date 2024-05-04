@@ -6,22 +6,13 @@ public class PreProcessor {
 
     private boolean log;
 
-    private boolean imprt;
-
-    private boolean exprt;
-
-    private boolean build;
-
     private boolean stats;
 
     private boolean html;
 
-    public PreProcessor(boolean defaultConfig, boolean log, boolean imprt, boolean exprt, boolean build, boolean stats, boolean html) {
+    public PreProcessor(boolean defaultConfig, boolean log, boolean stats, boolean html) {
         this.defaultConfig = defaultConfig;
         this.log = log;
-        this.imprt = imprt;
-        this.exprt = exprt;
-        this.build = build;
         this.stats = stats;
         this.html = html;
     }
@@ -32,18 +23,6 @@ public class PreProcessor {
 
     public boolean isLog() {
         return log;
-    }
-
-    public boolean isImprt() {
-        return imprt;
-    }
-
-    public boolean isExprt() {
-        return exprt;
-    }
-
-    public boolean isBuild() {
-        return build;
     }
 
     public boolean isStats() {

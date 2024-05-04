@@ -1,0 +1,37 @@
+include: __CURR_CONFIG__, __LOG__
+
+import_schedule("data/jbin/update6.jbin")
+
+#google_import()
+#println("\n")
+view_interface()
+
+func process_card(_t1)
+  idx: input_int("Card Index -> ")
+  if (idx.<(0))
+    return
+  else
+    c1: get_card(idx)
+    c1.add(_t1)
+
+
+func create_task()
+  flag: input_bool("Create Task(T/F) -> ")
+  if (flag)
+    _name: input_line("Name -> ")
+    _hours: input_int("Hours -> ")
+    _days: input_int("Days -> ")
+    _t1: task(_name, _hours, _days)
+    process_card(_t1)
+    create_task()
+  else
+    return
+
+
+create_task()
+view_interface()
+
+
+add_all_tasks()
+build()
+#google_export()

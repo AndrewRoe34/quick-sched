@@ -172,12 +172,21 @@ public class ScriptFSM {
             }
         }
         eventLog.reportScriptInstance(filename, false);
-        if(preProcessor.isBuild()) {
-            scheduleManager.outputScheduleToConsole();
-        }
+//        if(preProcessor.isBuild()) {
+//            scheduleManager.outputScheduleToConsole();
+//        }
+        System.out.println("\nSCHEDULE:");
+        scheduleManager.outputScheduleToConsole();
+
         if(preProcessor.isLog()) {
             IOProcessing.writeScripterLogToFile(scriptLog.toString());
             IOProcessing.writeSysLogToFile(eventLog.toString());
+            System.out.println("\nSYSTEM LOG:\n" + eventLog.toString());
+            System.out.println("SCRIPT:");
+            scriptScanner = new Scanner(new File(filename));
+            while (scriptScanner.hasNextLine()) {
+                System.out.println(scriptScanner.nextLine());
+            }
         }
         if(preProcessor.isHtml()) {
             File script = new File(filename);
@@ -856,15 +865,17 @@ public class ScriptFSM {
     }
 
     protected void funcImportSchedule(String filename) {
-        if(preProcessor.isBuild()) {
-            scheduleManager.importJBinFile(filename);
-        }
+//        if(preProcessor.isBuild()) {
+//            scheduleManager.importJBinFile(filename);
+//        }
+        scheduleManager.importJBinFile(filename);
     }
 
     protected void funcExportSchedule(String filename) {
-        if(preProcessor.isExprt()) {
-            scheduleManager.exportJBinFile(filename);
-        }
+//        if(preProcessor.isExprt()) {
+//            scheduleManager.exportJBinFile(filename);
+//        }
+        scheduleManager.exportJBinFile(filename);
     }
 
     protected void funcInputTasks(int num) {

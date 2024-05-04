@@ -1,5 +1,5 @@
 #Sample script
-include: __CURR_CONFIG__, __LOG__, __BUILD__, __HTML__
+include: __CURR_CONFIG__, __LOG__, __HTML__
 
 #Constructs class instances
 val: "3400"

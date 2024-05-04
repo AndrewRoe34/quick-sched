@@ -1,5 +1,0 @@
-include: __CURR_CONFIG__, __DEBUG__, __LOG__, __IMPORT__, __EXPORT__, __BUILD__
-import_schedule("data/jbin/update6.jbin")
-
-view_interface()
-inject_code()

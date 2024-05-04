@@ -155,10 +155,7 @@ public class ScriptLog {
     public void reportPreProcessorSetup(PreProcessor preProcessor) {
         sb.append(sdf.format(Calendar.getInstance().getTime())).append(" ");
         sb.append("PREPROC_ATTR: DEF_CONFIG=").append(preProcessor.isDefaultConfig());
-        sb.append(", IMPORT=").append(preProcessor.isImprt());
-        sb.append(", EXPORT=").append(preProcessor.isExprt());
         sb.append(", LOG=").append(preProcessor.isLog());
-        sb.append(", BUILD=").append(preProcessor.isBuild());
         sb.append(", STATS=").append(preProcessor.isStats());
         sb.append(", HTML=").append(preProcessor.isHtml()).append("\n");
     }

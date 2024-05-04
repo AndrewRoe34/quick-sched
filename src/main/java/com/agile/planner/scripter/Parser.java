@@ -89,11 +89,7 @@ public class Parser {
             //code below
             boolean config = false;
             boolean defConfig = false;
-            boolean debug = false;
             boolean log = false;
-            boolean imprt = false;
-            boolean exprt = false;
-            boolean build = false;
             boolean stats = false;
             boolean html = false;
             for (String s : tokens) {
@@ -111,35 +107,11 @@ public class Parser {
                         config = true;
                         defConfig = true;
                         break;
-                    case "__DEBUG__":
-                        if (debug) {
-                            return null;
-                        }
-                        debug = true;
-                        break;
                     case "__LOG__":
                         if (log) {
                             return null;
                         }
                         log = true;
-                        break;
-                    case "__IMPORT__":
-                        if (imprt) {
-                            return null;
-                        }
-                        imprt = true;
-                        break;
-                    case "__EXPORT__":
-                        if (exprt) {
-                            return null;
-                        }
-                        exprt = true;
-                        break;
-                    case "__BUILD__":
-                        if (build) {
-                            return null;
-                        }
-                        build = true;
                         break;
                     case "__HTML__":
                         if(html) {
@@ -157,7 +129,7 @@ public class Parser {
                         return null;
                 }
             }
-            return config ? new PreProcessor(defConfig, log, imprt, exprt, build, stats, html) : null;
+            return config ? new PreProcessor(defConfig, log, stats, html) : null;
         }
         return null;
     }

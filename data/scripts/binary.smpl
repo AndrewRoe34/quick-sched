@@ -1,16 +1,15 @@
-include: __CURR_CONFIG__, __LOG__, __HTML__
+include: __CURR_CONFIG__, __LOG__
 
 # Outputs all binary codes of a specified length
-str: ""
 func binary(bin, x)
   if(x.==(0))
-    str.concat(bin, "\n")
+    println(bin)
     return
   x.--()
   binary(bin.add("0"), x)
   binary(bin.add("1"), x)
 
-x: input_int("Enter number -> ")
+print("Enter number: ")
+x: input_int()
 binary("", x)
 
-write_file("data/bin.txt", str)
