@@ -1,6 +1,6 @@
 ## Agile Planner v0.3.10
 
-[![Watch the video](https://img.youtube.com/vi/i-5ljp229kU/maxresdefault.jpg)](https://www.youtube.com/watch?v=i-5ljp229kU&ab_channel=CSC316TA)
+[DEMONSTRATION OF AGILE PLANNER](https://www.youtube.com/watch?v=i-5ljp229kU&ab_channel=CSC316TA)
 
 ### Getting Started
 
