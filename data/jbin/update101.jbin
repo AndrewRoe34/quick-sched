@@ -10,18 +10,20 @@ CHECKLIST {
 }
 
 TASK {
-  a, 3, -1, L1
-  c, 1, 0, CL0
-  b, 2, 0, L0
-  d, 7, 5
+  a, 3, 0, L1
+  c, 1, 1, CL0
+  b, 2, 1, L0
+  d, 7, 6
+  e, 10, 7
 }
 
 CARD {
   Default, T0, L0
-  Homework, T1, T2, T3
+  Homework, T1, T2, T3, T4
 }
 
 DAY {
   T2 2, T1 1, T3 5
-  T3 2
+  T3 2, T4 6
+  T4 4
 }

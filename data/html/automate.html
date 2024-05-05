@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agile Planner Simple Script</title>
+    <style>
+        html, body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eaeaea;
+        }
+        h1 {
+	    margin: 0;
+	    margin-top: 0;
+            text-align: center;
+            background-color: #dcd0ff; /* Light purple background */
+            color: #333;
+            padding: 10px 0;
+            margin-bottom: 20px; /* Added space below the header */
+	    font-size: 2em;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .box {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 10px;
+            background-color: #f2f2f2; /* Light gray background for boxes */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 30%;
+            overflow: auto;
+            height: 800px; /* Adjust this value as needed */
+        }
+	.box:hover {
+    		box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+	}
+
+        h2 {
+	    font-size: 1.5em;
+	    margin-top: 0;
+            border-bottom: 2px solid #5b9bd5;
+            color: #5b9bd5;
+        }
+        code {
+    		font-family: 'Consolas', 'Courier New', monospace; /* This is a monospace font */
+    		background-color: #f3f3f3; /* Light grey background */
+    		border-left: 3px solid #5b9bd5; /* A blue border on the left */
+    		padding: 2px 10px;
+    		display: block; /* Makes it a block element */
+    		color: #333; /* Darker text for better contrast */
+    		margin: 5px 0; /* Adds spacing above and below the code block */
+    		overflow-x: auto; /* Allows horizontal scrolling if needed */
+	}
+    </style>
+</head><body>
+    <h1>Simple Script v0.3.10</h1>
+    <div class="container">
+        <div class="box">
+            <h2>automate.smpl</h2>
+            <pre>
+                <code>
+include: __CURR_CONFIG__, __LOG__, __HTML__
+
+import_schedule("data/jbin/update99.jbin")
+
+#google_import()
+#println("\n")
+view_interface()
+
+func process_card(_t1)
+  idx: input_int("Card Index -> ")
+  if (idx.<(0))
+    return
+  else
+    c1: get_card(idx)
+    c1.add(_t1)
+
+
+func create_task()
+  flag: input_bool("Create Task(T/F) -> ")
+  if (flag)
+    _name: input_line("Name -> ")
+    _hours: input_int("Hours -> ")
+    _days: input_int("Days -> ")
+    _t1: task(_name, _hours, _days)
+    process_card(_t1)
+    create_task()
+  else
+    return
+
+
+create_task()
+view_interface()
+
+
+add_all_tasks()
+build()
+#google_export()
+export_schedule("data/jbin/update101.jbin")
+                </code>
+            </pre>
+        </div>
+        <div class="box">
+            <h2>Script Log</h2>
+            <pre>
+                <code>
+[04-05-2024] Log of all activities from current session: 
+
+[22:35:20] PREPROC_ATTR: DEF_CONFIG=false, LOG=true, STATS=false, HTML=true
+[22:35:20] FUNC_CALLS: NAME=import_schedule, ARGS=["data/jbin/update99.jbin"]
+[22:35:20] FUNC_CALLS: NAME=view_interface, ARGS=[]
+[22:35:20] FUNC_SETUP: NAME= process_card, PARAM=[]
+[22:35:20] FUNC_SETUP: NAME= create_task, PARAM=[]
+[22:35:24] FUNC_CALLS: NAME=input_bool, ARGS=["Create Task(T/F) -> "]
+[22:35:24] VAR_SETUP: NAME=flag, VALUE=true
+[22:35:24] IF_CONDITION: ARGS=[flag], RESULT=true
+[22:35:28] FUNC_CALLS: NAME=input_line, ARGS=["Name -> "]
+[22:35:28] VAR_SETUP: NAME=_name, VALUE=e
+[22:35:31] FUNC_CALLS: NAME=input_int, ARGS=["Hours -> "]
+[22:35:31] VAR_SETUP: NAME=_hours, VALUE=10
+[22:35:33] FUNC_CALLS: NAME=input_int, ARGS=["Days -> "]
+[22:35:33] VAR_SETUP: NAME=_days, VALUE=7
+[22:35:33] VAR_SETUP: NAME=_t1, VALUE=Task [name=e, total=10]
+[22:35:35] FUNC_CALLS: NAME=input_int, ARGS=["Card Index -> "]
+[22:35:35] VAR_SETUP: NAME=idx, VALUE=1
+[22:35:35] ATTR_CALL: VAR_NAME=idx, NAME=<, ARGS[0]
+[22:35:35] IF_CONDITION: ARGS=[idx.<(0)], RESULT=false
+[22:35:35] IF_CONDITION: ARGS=[], RESULT=true
+[22:35:35] FUNC_CALLS: NAME=get_card, ARGS=[idx]
+[22:35:35] VAR_SETUP: NAME=c1, VALUE=Homework
+[22:35:35] ATTR_CALL: VAR_NAME=c1, NAME=add, ARGS[_t1]
+[22:35:35] FUNC_CALLS: NAME=process_card, ARGS=[_t1]
+[22:35:37] FUNC_CALLS: NAME=input_bool, ARGS=["Create Task(T/F) -> "]
+[22:35:37] VAR_SETUP: NAME=flag, VALUE=false
+[22:35:37] IF_CONDITION: ARGS=[flag], RESULT=false
+[22:35:37] IF_CONDITION: ARGS=[], RESULT=true
+[22:35:37] FUNC_CALLS: NAME=create_task, ARGS=[]
+[22:35:37] FUNC_CALLS: NAME=create_task, ARGS=[]
+[22:35:37] FUNC_CALLS: NAME=view_interface, ARGS=[]
+[22:35:37] FUNC_CALLS: NAME=add_all_tasks, ARGS=[]
+[22:35:37] FUNC_CALLS: NAME=build, ARGS=[]
+[22:35:37] FUNC_CALLS: NAME=export_schedule, ARGS=["data/jbin/update101.jbin"]
+                </code>
+            </pre>
+        </div>
+        <div class="box">
+            <h2>System Log:</h2>
+            <pre>
+                <code>
+[04-05-2024] Log of all activities from current session: 
+
+[22:35:13] [INFO] CURRENT SESSION HAS BEGUN...
+[22:35:13] [INFO] Reading Config: FILE=profile.cfg
+[22:35:13] [INFO] USERNAME=null ,EMAIL=null ,WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8] ,MAX_DAYS=14 ,ARCHIVE_DAYS=14 ,PRIORITY=false ,OVERFLOW=true ,FIT_SCHEDULE=false ,SCHEDULE_ALGO=1 ,MIN_HOURS=1
+[22:35:14] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
+[22:35:20] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\automate.smpl , SCRIPT INSTANCE HAS BEGUN...
+[22:35:20] [INFO] READE(JBIN): FILE=data/jbin/update99.jbin
+[22:35:20] [INFO] JBIN FILE PROCESSED
+[22:35:37] [INFO] ADD(TASK):  ID=0, NAME=e, HOURS=10, DUE_DATE=05-11-2024
+[22:35:37] [INFO] SCHEDULING HAS BEGUN...
+[22:35:37] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=6, HOURS_FILLED=2, TASK ADDED=2, OVERFLOW=false
+[22:35:37] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=5, HOURS_FILLED=3, TASK ADDED=1, OVERFLOW=false
+[22:35:37] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=0, HOURS_FILLED=8, TASK ADDED=3, OVERFLOW=false
+[22:35:37] [INFO] DAY_ID=1, CAPACITY=8, HOURS_REMAINING=6, HOURS_FILLED=2, TASK ADDED=3, OVERFLOW=false
+[22:35:37] [INFO] DAY_ID=1, CAPACITY=8, HOURS_REMAINING=0, HOURS_FILLED=8, TASK ADDED=0, OVERFLOW=false
+[22:35:37] [INFO] DAY_ID=2, CAPACITY=8, HOURS_REMAINING=4, HOURS_FILLED=4, TASK ADDED=0, OVERFLOW=false
+[22:35:37] [INFO] SCHEDULING HAS FINISHED...
+[22:35:37] [INFO] JBIN FILE CREATED
+[22:35:37] [INFO] WRITE(JBIN): FILE=data/jbin/update101.jbin
+[22:35:37] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\automate.smpl , SCRIPT INSTANCE HAS ENDED...
+[22:35:37] [INFO] Display Schedule: DAYS=3, NUM_TASKS=4, STDOUT=true
+                </code>
+            </pre>
+        </div>
+    </div>
+</body>
+</html>

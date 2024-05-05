@@ -1,9 +1,9 @@
-include: __CURR_CONFIG__, __LOG__
+include: __CURR_CONFIG__, __LOG__, __HTML__
 
 import_schedule("data/jbin/update99.jbin")
 
-#google_import()
-#println("\n")
+google_import()
+println("\n")
 view_interface()
 
 func process_card(_t1)
@@ -34,5 +34,5 @@ view_interface()
 
 add_all_tasks()
 build()
-#google_export()
+google_export()
 export_schedule("data/jbin/update101.jbin")
