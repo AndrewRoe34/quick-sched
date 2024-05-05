@@ -180,7 +180,7 @@ public class Task implements Comparable<Task>, Linker {
      *
      * @param total number of hours for the Task
      */
-    private void setTotalHours(int total) { //TODO will need to include exceptions for the setters
+    public void setTotalHours(int total) { //TODO will need to include exceptions for the setters
         this.totalHours = total;
     }
 

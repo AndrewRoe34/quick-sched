@@ -1,6 +1,6 @@
 include: __CURR_CONFIG__, __LOG__
 
-import_schedule("data/jbin/update6.jbin")
+import_schedule("data/jbin/update99.jbin")
 
 #google_import()
 #println("\n")
@@ -35,3 +35,4 @@ view_interface()
 add_all_tasks()
 build()
 #google_export()
+export_schedule("data/jbin/update101.jbin")

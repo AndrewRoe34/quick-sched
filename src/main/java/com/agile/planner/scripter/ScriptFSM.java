@@ -10,6 +10,7 @@ import com.agile.planner.scripter.tools.ScriptLog;
 import com.agile.planner.scripter.exception.*;
 import com.agile.planner.models.CheckList;
 import com.agile.planner.util.EventLog;
+import com.agile.planner.util.Time;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -962,7 +963,7 @@ public class ScriptFSM {
         System.out.print("Enter 'y' to continue: ");
         while(inputScanner.hasNextLine()) {
             String line = inputScanner.nextLine().trim();
-            if(line.length() > 0 && line.charAt(0) == 'y') {
+            if(!line.isEmpty() && line.charAt(0) == 'y') {
                 break;
             }
         }
@@ -972,16 +973,17 @@ public class ScriptFSM {
      * Outputs a text based version of Cards as a UI
      */
     protected void funcViewInterface() {
+        Calendar currDate = Time.getFormattedCalendarInstance(0);
         List<Card> cards = scheduleManager.getCards();
         // use foreach loop to determine max number of tasks while printing out the first line of Cards
         int maxTasks = 0;
         for(Card c1 : cards) {
             maxTasks = Math.max(c1.getTask().size(), maxTasks);
-            if(c1.toString().length() > 25) {
-                System.out.print(c1.toString().substring(0, 25));
+            if(c1.toString().length() > 35) {
+                System.out.print(c1.toString().substring(0, 35));
             } else {
                 System.out.print(c1);
-                for(int i = c1.toString().length(); i < 25; i++) {
+                for(int i = c1.toString().length(); i < 35; i++) {
                     System.out.print(" ");
                 }
             }
@@ -990,7 +992,7 @@ public class ScriptFSM {
 
         System.out.println();
         for(int i = 0; i < cards.size(); i++) {
-            System.out.print("--------------------------"); //will print out this line for the number of cards there are
+            System.out.print("------------------------------------"); //will print out this line for the number of cards there are
         }
 
         // use foreach loop inside a for loop to output the tasks
@@ -1000,18 +1002,22 @@ public class ScriptFSM {
                 if(i < c1.getTask().size()) {
                     //print out the task (up to 18 characters)
                     Task t1 = c1.getTask().get(i);
-                    String outputTask = t1.toString();
-                    if(outputTask.length() > 25) {
-                        System.out.print(outputTask.substring(0, 25));
+                    String outputTask = "";
+                    if (Time.differenceOfDays(t1.getDueDate(), currDate) < 0) {
+                        outputTask = "*";
+                    }
+                    outputTask += t1.toString();
+                    if(outputTask.length() > 35) {
+                        System.out.print(outputTask.substring(0, 35));
                     } else {
                         System.out.print(outputTask);
-                        for(int j = outputTask.length(); j < 25; j++) {
+                        for(int j = outputTask.length(); j < 35; j++) {
                             System.out.print(" ");
                         }
                     }
                     System.out.print("|");
                 } else {
-                    System.out.print("                         |");
+                    System.out.print("                                   |");
                 }
             }
         }

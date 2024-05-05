@@ -114,13 +114,13 @@ public class JBin {
             for(Task t : taskList) {
                 String name = t.getName();
                 int totalHours = t.getTotalHours();
-                //int remainingHours = t.getSubTotalHoursRemaining(); //TODO need to verify this
+                //int remainingHours = t.getSubTotalHoursRemaining();
                 taskSB.append("  ")
                         .append(name)
                         .append(", ")
                         .append(totalHours)
                         .append(", ")
-                        .append(Time.determineRangeOfDays(calendar, t.getDueDate())); //todo need to make it negative when the due_date is already past
+                        .append(Time.differenceOfDays(t.getDueDate(), calendar));
                 for(Label l : t.getLabel()) {
                     if(!labelList.contains(l)) {
                         labelList.add(l);
@@ -165,7 +165,7 @@ public class JBin {
         StringBuilder daySB = new StringBuilder();
         ScheduleManager sm = ScheduleManager.getScheduleManager();
         if(!sm.scheduleIsEmpty()) {
-            daySB.append("DAY {\n"); //TODO need to include the date at the beginning of each line (also, how are we going to sync schedule with export)
+            daySB.append("DAY {\n");
             for(Day d : sm.getSchedule()) {
                 boolean flag = false;
                 daySB.append("  ");
@@ -174,7 +174,7 @@ public class JBin {
                         daySB.append(", ");
                     }
                     Task task = st.getParentTask();
-                    int i = 0;
+                    int i = -1;
                     for(Task t : taskList) {
                         i++;
                         if(task == t) {
@@ -210,7 +210,7 @@ public class JBin {
      * @param cards Cards holder
      * @param labels Labels holder
      */
-    public static void processJBin(String data, PriorityQueue<Task> tasks, List<Card> cards, List<Label> labels, int maxDays) {
+    public static void processJBin(String data, PriorityQueue<Task> tasks, List<Card> cards, List<Label> labels, List<Day> schedule, int maxArchiveDays) {
         //NOTE: When processing, you should work from top to bottom (use ArrayLists to easily locate data by index value)
         Scanner jbinScanner = new Scanner(data);
         LocalDate ld = null;
@@ -237,7 +237,7 @@ public class JBin {
         //todo codeblock needs to be refactored and tested further
         int x = ld.getDayOfMonth(); //debugging values
         calendar = Calendar.getInstance();
-        calendar.set(ld.getYear(), Calendar.MARCH, ld.getDayOfMonth());
+        calendar.set(ld.getYear(), Calendar.MAY, ld.getDayOfMonth());
         calendar.add(Calendar.DAY_OF_MONTH, 1);
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         //todo codeblock needs to be refactored and tested further
@@ -251,6 +251,8 @@ public class JBin {
         boolean taskClosed = false;
         boolean cardOpen = false;
         boolean cardClosed = false;
+        boolean dayOpen = false;
+        boolean dayClosed = false;
         List<CheckList> checkLists = new ArrayList<>();
         List<Task> taskList = new ArrayList<>();
         while(jbinScanner.hasNextLine()) {
@@ -338,6 +340,7 @@ public class JBin {
                 }
             } else if(!cardOpen && tokens.length == 2 && "CARD".equals(tokens[0]) && "{".equals(tokens[1])) {
                 cardOpen = true;
+                Calendar currDay = Time.getFormattedCalendarInstance(0);
                 while(jbinScanner.hasNextLine()) {
                     type = jbinScanner.nextLine();
                     tokens = type.split(",");
@@ -355,10 +358,10 @@ public class JBin {
                             int idx = Integer.parseInt(item.substring(1));
                             if(item.length() > 1 && item.charAt(0) == 'T') {
                                 Task tempTask = taskList.get(idx);
-                                if(tempTask != null && Time.determineRangeOfDays(tempTask.getDueDate(), Time.getFormattedCalendarInstance(0)) <= maxDays) { //todo need to check this works
-                                    cards.get(cards.size() - 1).addTask(tempTask);
-                                } else {
-                                    taskList.set(idx, null);
+                                if(tempTask != null) {
+                                    int numDays = Time.differenceOfDays(tempTask.getDueDate(), currDay);
+                                    if (numDays >= -1 * maxArchiveDays) cards.get(cards.size() - 1).addTask(tempTask);
+                                    else taskList.set(idx, null);
                                 }
                             } else if(item.length() > 1 && item.charAt(0) == 'L') {
                                 cards.get(cards.size() - 1).addLabel(labels.get(idx));
@@ -371,7 +374,45 @@ public class JBin {
                 if(!cardClosed) {
                     throw new IllegalArgumentException();
                 }
-            } else if(!"".equals(type)) {
+            } else if (!dayOpen && tokens.length == 2 && "DAY".equals(tokens[0]) && "{".equals(tokens[1])) {
+                boolean[] table = new boolean[taskList.size()];
+                dayOpen = true;
+                Calendar currDay = Time.getFormattedCalendarInstance(0);
+                int dayIdx = 0;
+                int dayCount = 0;
+                while (jbinScanner.hasNextLine()) {
+                    Calendar scheduleDay = Time.getFormattedCalendarInstance(calendar, dayIdx++);
+                    type = jbinScanner.nextLine();
+                    tokens = type.split(",");
+                    if(tokens.length == 0) {
+                        throw new InputMismatchException();
+                    } else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
+                        dayClosed = true;
+                        break;
+                    } else {
+                        if (Time.differenceOfDays(scheduleDay, currDay) < 0) continue;
+                        Day day = new Day(dayCount++, 8, scheduleDay);
+                        int totalHours = 0;
+                        for (String taskStr : tokens) {
+                            String[] pair = taskStr.trim().split("\\s");
+                            if (pair.length == 2 && pair[0].charAt(0) == 'T') {
+                                int taskIdx = Integer.parseInt(pair[0].substring(1));
+                                int hours = Integer.parseInt(pair[1]);
+                                totalHours += hours;
+                                if (!table[taskIdx]) {
+                                    taskList.get(taskIdx).setTotalHours(hours);
+                                    table[taskIdx] = true;
+                                } else {
+                                    taskList.get(taskIdx).setTotalHours(hours + taskList.get(taskIdx).getTotalHours());
+                                }
+                                day.addSubTask(taskList.get(taskIdx), hours, totalHours > 8);
+                                schedule.add(day);
+                            } else throw new InputMismatchException();
+                        }
+                    }
+                }
+                if (!dayClosed) throw new IllegalArgumentException();
+            } else if(!type.isEmpty()) {
                 throw new InputMismatchException();
             }
         }

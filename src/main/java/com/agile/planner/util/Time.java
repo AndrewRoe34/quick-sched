@@ -10,6 +10,18 @@ import java.util.Calendar;
 public class Time {
 
     /**
+     * Determines the difference of days between two Calendar instances
+     *
+     * @param date1 first Calendar instance
+     * @param date2 second Calendar instance
+     * @return difference of days between two Calendar instances
+     */
+    public static int differenceOfDays(Calendar date1, Calendar date2) {
+        long milliseconds = date1.getTimeInMillis() - date2.getTimeInMillis();
+        return (int) Math.round(milliseconds / 1000.0 / 3600.0 / 24.0);
+    }
+
+    /**
      * Determines the range of days between two Calendar instances
      *
      * @param date1 first Calendar instance

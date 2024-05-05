@@ -40,6 +40,13 @@ public class Day {
         subtaskManager = new LinkedList<>();
     }
 
+    public Day(int id, int capacity, Calendar date) {
+        setId(id);
+        setCapacity(capacity);
+        this.date = date;
+        subtaskManager = new LinkedList<>();
+    }
+
     public int getTotalHours() {
         return size;
     }

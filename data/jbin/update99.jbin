@@ -1,4 +1,4 @@
-03-05-2024
+04-04-2024
 
 LABEL {
   LOL, 3
@@ -10,17 +10,18 @@ CHECKLIST {
 }
 
 TASK {
-  a, 3, 0, L1
-  c, 1, 1, CL0
-  b, 2, 1, L0
+  a, 3, -1, L1
+  c, 1, 0, CL0
+  b, 2, 0, L0
+  d, 7, 5
 }
 
 CARD {
   Default, T0, L0
-  Homework, T1, T2
+  Homework, T1, T2, T3
 }
 
 DAY {
-  T0 3
-  T2 2, T1 1
+  T2 2, T1 1, T3 5
+  T3 2
 }
