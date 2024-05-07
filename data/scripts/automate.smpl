@@ -1,10 +1,22 @@
 include: __CURR_CONFIG__, __LOG__, __HTML__
 
-import_schedule("data/jbin/update99.jbin")
+jbin_file: input_word("Import JBin -> ")
+import_schedule(jbin_file)
 
-google_import()
-println("\n")
-view_interface()
+import_google()
+
+func create_card()
+  flag: input_bool("Create Card(T/F) -> ")
+  if (flag)
+    _name: input_line("Name -> ")
+    _c1: card(_name)
+    create_card()
+  else
+    println()
+
+create_card()
+add_all_cards()
+display_board()
 
 func process_card(_t1)
   idx: input_int("Card Index -> ")
@@ -14,10 +26,11 @@ func process_card(_t1)
     c1: get_card(idx)
     c1.add(_t1)
 
-
+task_added: false
 func create_task()
   flag: input_bool("Create Task(T/F) -> ")
   if (flag)
+    task_added: true
     _name: input_line("Name -> ")
     _hours: input_int("Hours -> ")
     _days: input_int("Days -> ")
@@ -25,14 +38,18 @@ func create_task()
     process_card(_t1)
     create_task()
   else
+    println()
     return
 
-
 create_task()
-view_interface()
+if (task_added)
+  display_board()
+  add_all_tasks()
+  build()
+  export_google()
 
+println("\n")
+display_schedule()
 
-add_all_tasks()
-build()
-google_export()
-export_schedule("data/jbin/update101.jbin")
+jbin_file: input_word("Export JBin -> ")
+export_schedule(jbin_file)

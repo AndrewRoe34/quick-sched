@@ -10,7 +10,7 @@ func find_number(min, max, try)
     return
   mid: avg(min, max)
   # __Debugging tools__
-  view_stack()
+  display_stack()
   pause()
   if(mid.==(hidden_num))
     println("Found in ", try, " tries...")

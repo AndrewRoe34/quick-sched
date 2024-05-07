@@ -1,0 +1,38 @@
+04-05-2024
+
+LABEL {
+  LOL, 3
+  Party, 4
+}
+
+CHECKLIST {
+  To Do, Item 1, Item 2
+}
+
+TASK {
+  a, 3, -2, L1
+  Math HW7, 7, 5
+  c, 1, -1, CL0
+  b, 2, -1, L0
+  d, 2, 4
+  Physics Lab3, 3, 2
+  Backtracking, 4, 2
+  Fix Schedule, 2, 2
+  Documentation, 10, 8
+  Write Tests, 10, 8
+}
+
+CARD {
+  Default, T0, T1, L0
+  Homework, T2, T3, T4, T5
+  DS&A, T6
+  Project, T7, T8, T9
+}
+
+DAY {
+  T5 3, T7 2, T6 3
+  T6 1, T4 2, T1 5
+  T1 2, T8 6
+  T9 8
+  T8 4, T9 2
+}
