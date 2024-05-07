@@ -3,8 +3,6 @@ include: __CURR_CONFIG__, __LOG__, __HTML__
 jbin_file: input_word("Import JBin -> ")
 import_schedule(jbin_file)
 
-import_google()
-
 func create_card()
   flag: input_bool("Create Card(T/F) -> ")
   if (flag)

@@ -74,7 +74,7 @@ public class JBin {
         }
         calendarSB.append("-");
         if(calendar.get(Calendar.MONTH) < 10) {
-            calendarSB.append("0").append(calendar.get(Calendar.MONTH));
+            calendarSB.append("0").append(calendar.get(Calendar.MONTH) + 1);
         } else {
             calendarSB.append(calendar.get(Calendar.MONTH));
         }

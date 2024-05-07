@@ -1,0 +1,29 @@
+03-05-2024
+
+TASK {
+  Finish JBin, 4, 2
+  Finish Docs, 10, 5
+  Testing, 12, 7
+  Marketing, 4, 1
+  Study DP, 8, 5
+  Study Graphs, 8, 5
+  Apply for Jobs, 10, 7
+}
+
+CARD {
+  Default
+  Project, T0, T1, T2, T3
+  DS&A, T4, T5
+  Job Hunting, T6
+  Hobbies
+}
+
+DAY {
+  T3 4, T0 4
+  T1 8
+  T5 8
+  T4 8
+  T1 2, T2 6
+  T6 8
+  T2 6, T6 2
+}
