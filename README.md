@@ -2,6 +2,8 @@
 
 ### Getting Started
 
+[Agile Planner Showcase](https://youtu.be/iO7e2dIMH00?si=OhwrZNYYb-fDDRgF)
+
 To start off the program, run the following:
 ```bash
 java -jar agile-planner-0.4.0-SNAPSHOT.jar
