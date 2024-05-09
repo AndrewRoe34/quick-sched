@@ -29,7 +29,6 @@ public class ScriptFSM {
     private List<Type> clList = new ArrayList<>();
     private List<Type> labelList = new ArrayList<>();
     private List<Task> taskList = new ArrayList<>();
-    private List<Card> cardList = new ArrayList<>();
     private List<Type> primitiveVariables = new ArrayList<>();
     private final Map<String, CustomFunction> funcMap = new HashMap<>();
     private PreProcessor preProcessor = null;
@@ -377,7 +376,7 @@ public class ScriptFSM {
             } else {
                 t1.setLinkerData(new Card(card.getTitle()), Type.TypeId.CARD);
             }
-            cardList.add((Card) t1.getLinkerData());
+            scheduleManager.getCards().add((Card) t1.getLinkerData());
         } else if (classInstance instanceof TaskInstance) {
             TaskInstance task = (TaskInstance) classInstance;
             t1 = lookupVariable(task.getVarName());
@@ -522,10 +521,6 @@ public class ScriptFSM {
                 if(args.length != 0) throw new InvalidFunctionException();
                 funcAddAllTasks();
                 return null;
-            case "add_all_cards":
-                if(args.length != 0) throw new InvalidFunctionException();
-                funcAddAllCards();
-                return null;
             case "input_tasks":
                 if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.INTEGER) throw new InvalidFunctionException();
                 funcInputTasks(args[0].getIntConstant());
@@ -580,6 +575,10 @@ public class ScriptFSM {
             case "display_stack":
                 if(args.length != 0) throw new InvalidFunctionException();
                 funcDisplayStack(localStack);
+                return null;
+            case "display_card":
+                if (args.length != 1 && args[0].getVariabTypeId() != Type.TypeId.INTEGER) throw new InvalidFunctionException();
+                funcDisplayCard(args[0].getIntConstant());
                 return null;
             case "write_file":
                 if(args.length != 2 || args[0].getVariabTypeId() != Type.TypeId.STRING) throw new InvalidFunctionException();
@@ -876,10 +875,6 @@ public class ScriptFSM {
         scheduleManager.addTaskList(taskList);
     }
 
-    protected void funcAddAllCards() {
-        scheduleManager.addCardList(cardList);
-    }
-
     protected void funcBuild() {
         scheduleManager.buildSchedule();
     }
@@ -1063,7 +1058,10 @@ public class ScriptFSM {
                     //print out the task (up to 18 characters)
                     Task t1 = c1.getTask().get(i);
                     String outputTask = "";
-                    if (Time.differenceOfDays(t1.getDueDate(), currDate) < 0) {
+//                    if (Time.differenceOfDays(t1.getDueDate(), currDate) < 0) {
+//                        outputTask = "*";
+//                    }
+                    if (scheduleManager.isArchivedTask(t1)) {
                         outputTask = "*";
                     }
                     outputTask += t1.toString();
@@ -1082,6 +1080,42 @@ public class ScriptFSM {
             }
         }
         System.out.println();
+    }
+
+    protected void funcDisplayCard(int idx) {
+        Card card = scheduleManager.getCards().get(idx);
+        System.out.print(card.toString().length() > 40 ? card.toString().substring(0, 40) : card);
+        for(int i = card.toString().length(); i < 40; i++) {
+            System.out.print(" ");
+        }
+        System.out.println("|");
+        System.out.println("-----------------------------------------");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        for (Task task : card.getTask()) {
+            System.out.println(task.getName());
+            System.out.println("  Hrs: " + task.getTotalHours());
+            System.out.println("  Due: " + sdf.format(task.getDueDate().getTime()));
+            if (task.getChecklist() != null) {
+                System.out.println("  CL: " + task.getChecklist().getName());
+                for (CheckList.Item item : task.getChecklist().getItems()) {
+                    System.out.println("    It: " + item.getDescription());
+                }
+            }
+        }
+    }
+
+    protected void funcDisplayDay(Day day) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        Calendar date = Time.getFormattedCalendarInstance(0);
+        System.out.print(sdf.format(date.getTime()));
+        System.out.println("                              |");
+
+//        displaySubTasksHelper(day.getSubTasks()); todo need to add new method
+    }
+
+    private void displaySubTasksHelper(List<Task.SubTask> subTasks) {
+
     }
 
     protected void funcInjectCode() {

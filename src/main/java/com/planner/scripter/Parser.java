@@ -284,6 +284,7 @@ public class Parser {
             case "avg":
             case "display_stack":
             case "display_schedule":
+            case "display_card":
             case "set_schedule":
             case "export_google":
             case "import_google":

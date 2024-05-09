@@ -4,13 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.security.GeneralSecurityException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.LinkedList;
-import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.Map;
-import java.util.Calendar;
+import java.util.*;
 
 import com.planner.models.Card;
 import com.planner.models.Label;
@@ -166,15 +160,32 @@ public class ScheduleManager {
             JBin.processJBin(binStr, taskManager, cards, labels, schedule, userConfig.getArchiveDays());
             eventLog.reportProcessJBin();
             // remove past tasks from current PQ and archives them
-            Calendar curr = Time.getFormattedCalendarInstance(0);
-            int n = taskManager.size();
-            for(int i = 0; i < n; i++) {
-                if(taskManager.peek() != null && taskManager.peek().getDueDate().compareTo(curr) < 0) {
-                    archivedTasks.add(taskManager.remove()); //todo need to test as well as add EventLog method to document this action (also, need to discard tasks from cards beyond a specific date)
-                } else {
-                    break;
+            Set<Task> set = new HashSet<>();
+            for (Day day : schedule) {
+                for (Task.SubTask subTask : day.getSubTasks()) {
+                    set.add(subTask.getParentTask());
                 }
             }
+            PriorityQueue<Task> copy = new PriorityQueue<>();
+            int n = taskManager.size();
+            for (int i = 0; i < n; i++) {
+                Task task = taskManager.remove();
+                if (!set.contains(task)) {
+                    archivedTasks.add(task);
+                } else {
+                    copy.add(task);
+                }
+            }
+            taskManager = copy;
+//            Calendar curr = Time.getFormattedCalendarInstance(0);
+//            int n = taskManager.size();
+//            for(int i = 0; i < n; i++) {
+//                if(taskManager.peek() != null && taskManager.peek().getDueDate().compareTo(curr) < 0) {
+//                    archivedTasks.add(taskManager.remove()); //todo need to test as well as add EventLog method to document this action (also, need to discard tasks from cards beyond a specific date)
+//                } else {
+//                    break;
+//                }
+//            }
         }
     }
 
@@ -554,5 +565,9 @@ public class ScheduleManager {
 
     public void importScheduleFromGoogle() throws IOException {
         googleCalendarIO.importScheduleFromGoogle();
+    }
+
+    public boolean isArchivedTask(Task t1) {
+        return archivedTasks.contains(t1);
     }
 }
