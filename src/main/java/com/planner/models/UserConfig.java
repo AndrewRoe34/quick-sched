@@ -7,10 +7,8 @@ package com.planner.models;
  */
 public class UserConfig {
 
-    /** Name for user */
-    private String userName;
-    /** Email for user */
-    private String email;
+    /** Daily range of hours for day */
+    private int[] range;
     /** Global data for week */
     private int[] week;
     /** Maximum number of days to display */
@@ -32,8 +30,7 @@ public class UserConfig {
     /**
      * Primary constructor for UserConfig
      *
-     * @param userName            Name for user
-     * @param userEmail           Email for user
+     * @param range               Daily range of hours for day
      * @param globalHr            Global data for week
      * @param maxDays             Maximum number of days to display
      * @param archiveDays         Maximum number of past days to display
@@ -43,9 +40,8 @@ public class UserConfig {
      * @param schedulingAlgorithm Scheduling algorithm chosen
      * @param minHours            Minimum number of hours for a given day
      */
-    public UserConfig(String userName, String userEmail, int[] globalHr, int maxDays, int archiveDays, boolean priority, boolean overflow, boolean fitSchedule, int schedulingAlgorithm, int minHours) {
-        this.userName = userName;
-        this.email = userEmail;
+    public UserConfig(int[] range, int[] globalHr, int maxDays, int archiveDays, boolean priority, boolean overflow, boolean fitSchedule, int schedulingAlgorithm, int minHours) {
+        this.range = range;
         this.week = globalHr;
         this.maxDays = maxDays;
         this.archiveDays = archiveDays;
@@ -56,46 +52,12 @@ public class UserConfig {
         this.minHours = minHours;
     }
 
-    /**
-     * Gets name for user
-     *
-     * @return name
-     */
-    public String getUserName() {
-        return userName;
+    public int[] getRange() {
+        return range;
     }
 
-    /**
-     * Sets name for user
-     *
-     * @param userName name
-     */
-    public void setUserName(String userName) {
-        if(userName == null || userName.isEmpty()) {
-            //TODO exception
-        }
-        this.userName = userName;
-    }
-
-    /**
-     * Gets email for user
-     *
-     * @return email
-     */
-    public String getEmail() {
-        return email;
-    }
-
-    /**
-     * Sets email for user
-     *
-     * @param email email
-     */
-    public void setEmail(String email) {
-        if(email == null || email.isEmpty()) {
-            //TODO exception
-        }
-        this.email = email;
+    public void setRange(int[] range) {
+        this.range = range;
     }
 
     /**

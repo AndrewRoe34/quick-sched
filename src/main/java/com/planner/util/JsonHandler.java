@@ -1,8 +1,6 @@
 package com.planner.util;
 
-import com.planner.models.Card;
-import com.planner.models.Label;
-import com.planner.models.Task;
+import com.planner.models.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -38,5 +36,15 @@ public class JsonHandler {
     public static Label readLabelJson(String jsonStr) {
         Gson gson = new Gson();
         return gson.fromJson(jsonStr, Label.class);
+    }
+
+    public static String createUserConfig(UserConfig userConfig) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(userConfig);
+    }
+
+    public static UserConfig readUserConfig(String jsonStr) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonStr, UserConfig.class);
     }
 }

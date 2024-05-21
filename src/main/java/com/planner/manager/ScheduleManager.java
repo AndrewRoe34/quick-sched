@@ -3,6 +3,8 @@ package com.planner.manager;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
@@ -17,7 +19,7 @@ import com.planner.models.UserConfig;
 import com.planner.models.CheckList;
 import com.planner.util.EventLog;
 import com.planner.util.JBin;
-import com.planner.util.Time;
+import com.planner.util.JsonHandler;
 
 /**
  * Handles the generation and management of the overall schedule
@@ -111,10 +113,15 @@ public class ScheduleManager {
     private void processUserConfigFile() {
         try {
             eventLog.reportProcessConfig("profile.cfg");
-            userConfig = IOProcessing.readCfg(null);
+            String configStr = Files.readString(Paths.get("settings/profile.cfg"));
+            userConfig = JsonHandler.readUserConfig(configStr);
             eventLog.reportUserConfigAttr(userConfig);
         } catch (FileNotFoundException e) {
             eventLog.reportException(e);
+            throw new IllegalArgumentException("Could not locate settings file");
+        } catch (IOException e) {
+            eventLog.reportException(e);
+            throw new IllegalArgumentException("Was unable to process settings file");
         }
     }
 
@@ -205,24 +212,6 @@ public class ScheduleManager {
 
     public void setScheduleOption(int idx) {
         scheduler = Scheduler.getInstance(userConfig, eventLog, idx);
-    }
-
-    /**
-     * Processes the Tasks from the given file
-     *
-     * @param filename file to be processed
-     */
-    @Deprecated
-    public void processTaskInputFile(String filename) {
-        try {
-            int pqSize = taskManager.size();
-            lastDueDate = IOProcessing.readTasks("data/" + filename, taskManager, taskMap, taskId);
-            taskId += taskManager.size() - pqSize;
-            eventLog.reportProcessTasks(filename);
-        } catch (FileNotFoundException e) {
-            eventLog.reportException(e);
-            System.out.println("File could not be located");
-        }
     }
 
     public List<Card> getCards() {

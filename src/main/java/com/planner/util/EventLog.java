@@ -435,8 +435,7 @@ public class EventLog {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         sb.append(sdf.format(Calendar.getInstance().getTime()));
         sb.append(" [INFO]");
-        sb.append(" USERNAME=").append(userConfig.getUserName());
-        sb.append(", EMAIL=").append(userConfig.getEmail());
+        sb.append(" RANGE=").append(Arrays.toString(userConfig.getRange()));
         sb.append(", WEEK_HOURS=").append(Arrays.toString(userConfig.getWeek()));
         sb.append(", MAX_DAYS=").append(userConfig.getMaxDays());
         sb.append(", ARCHIVE_DAYS=").append(userConfig.getArchiveDays());
