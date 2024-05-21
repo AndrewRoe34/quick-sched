@@ -17,6 +17,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -193,7 +195,7 @@ public class ScriptFSM {
         if(preProcessor.isHtml()) {
             File script = new File(filename);
             String scriptName = script.getName();
-            String scriptStr = IOProcessing.readScriptFile(filename);
+            String scriptStr = Files.readString(Paths.get(filename));
             ScriptPage scriptPage = new ScriptPage(scriptLog.toString(), eventLog.toString(), scriptStr, scriptName);
             IOProcessing.writeScripterPage(scriptPage.buildPage(), scriptName.substring(0, scriptName.length() - 5));
         }

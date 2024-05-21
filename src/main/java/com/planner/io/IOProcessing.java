@@ -2,6 +2,8 @@ package com.planner.io;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import com.planner.schedule.day.Day;
@@ -99,22 +101,6 @@ public class IOProcessing {
         } catch (IOException e) {
             return null;
         }
-        return sb.toString();
-    }
-
-    public static String readScriptFile(String filename) throws IOException {
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(filename));
-        StringBuilder sb = new StringBuilder();
-        String s = null;
-        while( (s = bufferedReader.readLine()) != null) {
-            String trim = s.trim();
-            if(trim.isEmpty()) {
-                sb.append("\n");
-            } else {
-                sb.append(s).append("\n");
-            }
-        }
-        bufferedReader.close();
         return sb.toString();
     }
 
