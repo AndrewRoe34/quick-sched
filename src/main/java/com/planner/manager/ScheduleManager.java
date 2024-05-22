@@ -20,6 +20,7 @@ import com.planner.models.CheckList;
 import com.planner.util.EventLog;
 import com.planner.util.JBin;
 import com.planner.util.JsonHandler;
+import com.planner.util.Time;
 
 /**
  * Handles the generation and management of the overall schedule
@@ -168,23 +169,32 @@ public class ScheduleManager {
             JBin.processJBin(binStr, taskManager, cards, labels, schedule, userConfig.getArchiveDays());
             eventLog.reportProcessJBin();
             // remove past tasks from current PQ and archives them
-            Set<Task> set = new HashSet<>();
-            for (Day day : schedule) {
-                for (Task.SubTask subTask : day.getSubTasks()) {
-                    set.add(subTask.getParentTask());
-                }
-            }
-            PriorityQueue<Task> copy = new PriorityQueue<>();
-            int n = taskManager.size();
-            for (int i = 0; i < n; i++) {
+//            Set<Task> set = new HashSet<>();
+//            for (Day day : schedule) {
+//                for (Task.SubTask subTask : day.getSubTasks()) {
+//                    set.add(subTask.getParentTask());
+//                }
+//            }
+//            PriorityQueue<Task> copy = new PriorityQueue<>();
+//            int n = taskManager.size();
+//            for (int i = 0; i < n; i++) {
+//                Task task = taskManager.remove();
+//                if (!set.contains(task)) {
+//                    archivedTasks.add(task);
+//                } else {
+//                    copy.add(task);
+//                }
+//            }
+//            taskManager = copy;
+            Calendar currDate = Time.getFormattedCalendarInstance(0);
+            while (!taskManager.isEmpty()) {
                 Task task = taskManager.remove();
-                if (!set.contains(task)) {
-                    archivedTasks.add(task);
-                } else {
-                    copy.add(task);
+                if (task.getDueDate().compareTo(currDate) < 0) archivedTasks.add(task);
+                else {
+                    taskManager.add(task);
+                    break;
                 }
             }
-            taskManager = copy;
             taskId = taskManager.size();
 //            Calendar curr = Time.getFormattedCalendarInstance(0);
 //            int n = taskManager.size();
@@ -325,13 +335,20 @@ public class ScheduleManager {
         //Tasks that are "finished scheduling" are added here
         PriorityQueue<Task> complete = new PriorityQueue<>();
         
-        schedule = new ArrayList<>(14);
+        schedule = new ArrayList<>(userConfig.getMaxDays());
         scheduleTime = Calendar.getInstance();
         int idx = scheduleTime.get(Calendar.DAY_OF_WEEK) - 1;
         int dayCount = 0;
         Day currDay;
 
-        // todo need to archive tasks that are 'past due' (this is to handle edge case where we started at 11PM and now it's 1AM)
+        // need to archive tasks that are 'past due' (this is to handle edge case where we started at 11PM, and now it's 1AM)
+        Task head = taskManager.peek();
+        // note: while incredibly unlikely, if the user let the program run for a month nonstop, it would result in some archived tasks being scheduled
+        // the scheduler assumes it is being given valid data to schedule (due today or later)
+        while (head != null && head.getDueDate().compareTo(scheduleTime) < 0
+                && head.getDueDate().get(Calendar.DAY_OF_MONTH) != scheduleTime.get(Calendar.DAY_OF_MONTH)) {
+            archivedTasks.add(taskManager.remove());
+        }
 
         while(!taskManager.isEmpty() && dayId < userConfig.getMaxDays()) {
             currDay = new Day(dayId++, userConfig.getWeek()[idx++ % 7], dayCount++);

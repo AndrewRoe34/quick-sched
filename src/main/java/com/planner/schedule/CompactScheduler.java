@@ -84,8 +84,6 @@ public class CompactScheduler implements Scheduler {
     }
 
     private int getMaxHours(Day day, Task task, Calendar date) {
-        // todo need to add a condition check for when the task is due before the date (occurs when we have a session that overlaps midnight)
-
         // sets up the starting hour for the day based on the given time from 'date'
         int startingHour = date.get(Calendar.HOUR_OF_DAY);
         boolean sameDate = false;
