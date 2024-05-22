@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class GoogleCalendarUtil {
 
-    public static Event formatTaskToEvent(Task task, int subTaskHours, int dayIdx, int dayHour) {
+    public static Event formatTaskToEvent(Task task, int subTaskHours, int dayIdx, int dayHour, int dayMin) {
         Event event = new Event().setSummary(task.getName()); //todo need to display labels with given Task
         StringBuilder sb = new StringBuilder("Due: ");
         sb.append(task.getDueDate().get(Calendar.YEAR))
@@ -43,16 +43,20 @@ public class GoogleCalendarUtil {
 
         Calendar now = Time.getFormattedCalendarInstance(dayIdx);
         now.add(Calendar.HOUR, dayHour);
+        now.add(Calendar.MINUTE, dayMin);
         DateTime startDateTime = new DateTime(now.getTime());
         EventDateTime start = new EventDateTime().setDateTime(startDateTime);
         event.setStart(start);
 
         now.add(Calendar.HOUR, subTaskHours);
+//        now.add(Calendar.MINUTE, dayMin);
         DateTime endDateTime = new DateTime(now.getTime());
         EventDateTime end = new EventDateTime().setDateTime(endDateTime);
         event.setEnd(end);
         //https://chat.openai.com/share/95995dc1-1061-4e88-81e6-fc15a72e8370
-        event.setColorId("1");
+        if (!task.getLabel().isEmpty()) {
+            event.setColorId("" + task.getLabel().get(0).getColor());
+        } else event.setColorId("1");
 
         return event;
     }

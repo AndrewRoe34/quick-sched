@@ -116,6 +116,7 @@ public class Day {
      * @return boolean status for success of adding SubTask manually
      */
     public boolean addSubTaskManually(Task task, int hours) {
+        if (hours <= 0) return false;
         boolean overflow = this.size + hours > this.capacity;
         SubTask subtask = task.addSubTask(hours, overflow);
 

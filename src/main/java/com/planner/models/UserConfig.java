@@ -20,7 +20,7 @@ public class UserConfig {
     /** Whether to display overflow */
     private boolean overflow;
     /** Whether to fit schedule */
-    private boolean fitSchedule;
+    private boolean fitDay;
     /** Scheduling algorithm chosen */
     private int schedulingAlgorithm;
     /** Minimum number of hours for a given day */
@@ -36,18 +36,18 @@ public class UserConfig {
      * @param archiveDays         Maximum number of past days to display
      * @param priority            Whether to enable priority for tasks
      * @param overflow            Whether to display overflow
-     * @param fitSchedule         Whether to fit schedule
+     * @param fitDay         Whether to fit schedule
      * @param schedulingAlgorithm Scheduling algorithm chosen
      * @param minHours            Minimum number of hours for a given day
      */
-    public UserConfig(int[] range, int[] globalHr, int maxDays, int archiveDays, boolean priority, boolean overflow, boolean fitSchedule, int schedulingAlgorithm, int minHours) {
+    public UserConfig(int[] range, int[] globalHr, int maxDays, int archiveDays, boolean priority, boolean overflow, boolean fitDay, int schedulingAlgorithm, int minHours) {
         this.range = range;
         this.week = globalHr;
         this.maxDays = maxDays;
         this.archiveDays = archiveDays;
         this.priority = priority;
         this.overflow = overflow;
-        this.fitSchedule = fitSchedule;
+        this.fitDay = fitDay;
         this.schedulingAlgorithm = schedulingAlgorithm;
         this.minHours = minHours;
     }
@@ -155,17 +155,17 @@ public class UserConfig {
      *
      * @return fitted status for scheduler
      */
-    public boolean isFitSchedule() {
-        return fitSchedule;
+    public boolean isFitDay() {
+        return fitDay;
     }
 
     /**
      * Sets fitted status for scheduler
      *
-     * @param fitSchedule fitted status for scheduler
+     * @param fitDay fitted status for scheduler
      */
-    public void setFitSchedule(boolean fitSchedule) {
-        this.fitSchedule = fitSchedule;
+    public void setFitDay(boolean fitDay) {
+        this.fitDay = fitDay;
     }
 
     /**

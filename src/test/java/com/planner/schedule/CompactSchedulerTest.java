@@ -53,7 +53,7 @@ public class CompactSchedulerTest {
         pq = new PriorityQueue<>();
         complete = new PriorityQueue<>();
         taskMap = new HashMap<>();
-        config.setFitSchedule(false);
+        config.setFitDay(false);
     }
 
     /**
@@ -158,7 +158,7 @@ public class CompactSchedulerTest {
      */
     @Test
     public void assignDayFitSchedule() throws FileNotFoundException {
-        config.setFitSchedule(true);
+        config.setFitDay(true);
         Scheduler compactSched = CompactScheduler.getSingleton(config, eventLog);
 
         IOProcessing.readTasks("data/overflow.txt", pq, taskMap, 0);

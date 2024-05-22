@@ -441,7 +441,7 @@ public class EventLog {
         sb.append(", ARCHIVE_DAYS=").append(userConfig.getArchiveDays());
         sb.append(", PRIORITY=").append(userConfig.isPriority());
         sb.append(", OVERFLOW=").append(userConfig.isOverflow());
-        sb.append(", FIT_SCHEDULE=").append(userConfig.isFitSchedule());
+        sb.append(", FIT_SCHEDULE=").append(userConfig.isFitDay());
         sb.append(", SCHEDULE_ALGO=").append(userConfig.getSchedulingAlgorithm());
         sb.append(", MIN_HOURS=").append(userConfig.getMinHours()).append("\n");
 

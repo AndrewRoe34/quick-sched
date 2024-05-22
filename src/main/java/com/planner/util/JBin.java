@@ -169,23 +169,27 @@ public class JBin {
             for(Day d : sm.getSchedule()) {
                 boolean flag = false;
                 daySB.append("  ");
-                for(Task.SubTask st : d.getSubTasks()) {
-                    if(flag) {
-                        daySB.append(", ");
-                    }
-                    Task task = st.getParentTask();
-                    int i = -1;
-                    for(Task t : taskList) {
-                        i++;
-                        if(task == t) {
-                            break;
+                if (d.getNumSubTasks() == 0) {
+                    daySB.append("N/A");
+                } else {
+                    for(Task.SubTask st : d.getSubTasks()) {
+                        if(flag) {
+                            daySB.append(", ");
                         }
+                        Task task = st.getParentTask();
+                        int i = -1;
+                        for(Task t : taskList) {
+                            i++;
+                            if(task == t) {
+                                break;
+                            }
+                        }
+                        daySB.append("T")
+                                .append(i)
+                                .append(" ")
+                                .append(st.getSubTaskHours());
+                        flag = true;
                     }
-                    daySB.append("T")
-                            .append(i)
-                            .append(" ")
-                            .append(st.getSubTaskHours());
-                    flag = true;
                 }
                 daySB.append("\n");
             }
@@ -391,6 +395,10 @@ public class JBin {
                     } else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
                         dayClosed = true;
                         break;
+                    } else if ("N/A".equals(tokens[0].trim()) && tokens.length == 1) {
+//                        Day day = new Day(dayCount++, 8, scheduleDay);
+//                        schedule.add(day);
+                        dayCount++;
                     } else {
                         if (Time.differenceOfDays(scheduleDay, currDay) < 0) continue;
                         Day day = new Day(dayCount++, 8, scheduleDay);

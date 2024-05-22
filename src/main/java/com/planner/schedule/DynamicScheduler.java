@@ -5,6 +5,7 @@ import com.planner.models.Task;
 import com.planner.models.UserConfig;
 import com.planner.util.EventLog;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -56,7 +57,7 @@ public class DynamicScheduler implements Scheduler {
     }
 
     @Override
-    public int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager) {
+    public int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager, Calendar date) {
         PriorityQueue<Task> incomplete = new PriorityQueue<>();
         int numErrors = errorCount;
         while(day.hasSpareHours() && !taskManager.isEmpty()) {

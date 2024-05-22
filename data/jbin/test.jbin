@@ -1,28 +1,23 @@
-08-05-2024
-
-CHECKLIST {
-  Stuff I have to finish, Check IT application, Check Indeed, Apply for some more jobs
-}
+22-05-2024
 
 TASK {
-  Finish JBin, 4, -3
-  Finish Docs, 10, 0
-  Testing, 6, 2
-  Marketing, 4, -4
-  Study DP, 8, 0
-  Study Graphs, 8, 0
-  Apply for Jobs, 10, 2, CL0
+  F, 2, 1
+  Documentation, 2, 2
+  Testing, 1, 2
+  Fix CompareTo, 1, -1
+  Update Dynamic Sched, 4, 0
+  Apply for jobs, 8, 1
 }
 
 CARD {
-  Default
-  Project, T0, T1, T2, T3
-  DS&A, T4, T5
-  Job Hunting, T6
+  Default, T0
+  Project, T1, T2, T3, T4
+  DS&A
+  Job Hunting, T5
   Hobbies
 }
 
 DAY {
-  T6 8
-  T2 6, T6 2
+  T4 4
+  T0 2, T1 2, T2 1
 }

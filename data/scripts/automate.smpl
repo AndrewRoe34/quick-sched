@@ -13,7 +13,6 @@ func create_card()
     println()
 
 create_card()
-add_all_cards()
 display_board()
 
 func process_card(_t1)
@@ -23,6 +22,9 @@ func process_card(_t1)
   else
     c1: get_card(idx)
     c1.add(_t1)
+  x: input_bool("View Card(T/F) ")
+  if (x)
+    display_card(idx)
 
 task_added: false
 func create_task()
@@ -43,11 +45,14 @@ create_task()
 if (task_added)
   display_board()
   add_all_tasks()
-  build()
-  export_google()
+
+build()
+export_google()
 
 println("\n")
 display_schedule()
+println()
 
-jbin_file: input_word("Export JBin -> ")
-export_schedule(jbin_file)
+if (task_added)
+  jbin_file: input_word("Export JBin -> ")
+  export_schedule(jbin_file)

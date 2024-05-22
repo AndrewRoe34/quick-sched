@@ -6,6 +6,7 @@ import com.planner.models.Task;
 import com.planner.models.UserConfig;
 import com.planner.util.EventLog;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -31,7 +32,7 @@ public interface Scheduler {
      * @param taskManager PriorityQueue of all Tasks in sorted order
      * @return number of errors in scheduling Day
      */
-    int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager);
+    int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager, Calendar date);
 
     /**
      * Corrects schedule by eliminating all overflows via adjusting number of hours per day

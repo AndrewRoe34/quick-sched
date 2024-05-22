@@ -63,6 +63,7 @@ public class ScheduleManager {
     private int lastDueDate;
     private List<Label> labels;
     private final GoogleCalendarIO googleCalendarIO;
+    private Calendar scheduleTime;
 
     /**
      * Private constructor of ScheduleManager
@@ -184,6 +185,7 @@ public class ScheduleManager {
                 }
             }
             taskManager = copy;
+            taskId = taskManager.size();
 //            Calendar curr = Time.getFormattedCalendarInstance(0);
 //            int n = taskManager.size();
 //            for(int i = 0; i < n; i++) {
@@ -324,16 +326,18 @@ public class ScheduleManager {
         PriorityQueue<Task> complete = new PriorityQueue<>();
         
         schedule = new ArrayList<>(14);
-        Calendar today = Calendar.getInstance();
-        int idx = today.get(Calendar.DAY_OF_WEEK) - 1;
+        scheduleTime = Calendar.getInstance();
+        int idx = scheduleTime.get(Calendar.DAY_OF_WEEK) - 1;
         int dayCount = 0;
         Day currDay;
+
+        // todo need to archive tasks that are 'past due' (this is to handle edge case where we started at 11PM and now it's 1AM)
 
         while(!taskManager.isEmpty() && dayId < userConfig.getMaxDays()) {
             currDay = new Day(dayId++, userConfig.getWeek()[idx++ % 7], dayCount++);
             schedule.add(currDay);
-            //TODO don't need incomplete as argument (should be local to schedulers)
-            errorCount = scheduler.assignDay(currDay, errorCount, complete, taskManager);
+            // don't need incomplete as argument (should be local to schedulers)
+            errorCount = scheduler.assignDay(currDay, errorCount, complete, taskManager, scheduleTime);
         }
         this.taskManager = complete;
         eventLog.reportSchedulingFinish();
@@ -549,7 +553,8 @@ public class ScheduleManager {
 
     public void exportScheduleToGoogle() throws IOException {
         googleCalendarIO.cleanGoogleSchedule();
-        googleCalendarIO.exportScheduleToGoogle(schedule);
+        assert scheduleTime != null;
+        googleCalendarIO.exportScheduleToGoogle(userConfig, schedule, scheduleTime);
     }
 
     public void importScheduleFromGoogle() throws IOException {

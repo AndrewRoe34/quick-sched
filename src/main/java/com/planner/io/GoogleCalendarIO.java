@@ -1,6 +1,7 @@
 package com.planner.io;
 
 import com.planner.models.Task;
+import com.planner.models.UserConfig;
 import com.planner.schedule.day.Day;
 import com.planner.util.EventLog;
 import com.planner.util.GoogleCalendarUtil;
@@ -92,21 +93,26 @@ public class GoogleCalendarIO {
     }
 
     // [COMPLETE]
-    public void exportScheduleToGoogle(List<Day> week) throws IOException {
+    public void exportScheduleToGoogle(UserConfig userconfig, List<Day> week, java.util.Calendar scheduleTime) throws IOException {
         int i = 0;
-        java.util.Calendar date = java.util.Calendar.getInstance();
-        int startHour = date.get(java.util.Calendar.HOUR_OF_DAY);
-        //todo will need to check and see how many hours are left in day from starting moment
+        // need to handle null pointer here since if we try to export to Google without building, else we'll get an exception
+        int hour = userconfig.getRange()[0];
+        int min = 0;
+        if (scheduleTime != null) {
+            hour = scheduleTime.get(java.util.Calendar.HOUR_OF_DAY);
+            min = scheduleTime.get(java.util.Calendar.MINUTE);
+        }
         for(Day day : week) {
             for(Task.SubTask subTask : day.getSubTasks()) {
                 Task task = subTask.getParentTask();
-                Event event = GoogleCalendarUtil.formatTaskToEvent(task, subTask.getSubTaskHours(), i, startHour);
+                Event event = GoogleCalendarUtil.formatTaskToEvent(task, subTask.getSubTaskHours(), i, hour, min);
                 event = service.events().insert(calendarId, event).execute();
                 System.out.printf("Event created: %s\n", event.getHtmlLink());
-                startHour += subTask.getSubTaskHours();
+                hour += subTask.getSubTaskHours();
             }
             i++;
-            startHour = 8;
+            hour = userconfig.getRange()[0];
+            min = 0;
         }
         eventLog.reportGoogleCalendarExportSchedule();
     }

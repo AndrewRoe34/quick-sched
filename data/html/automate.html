@@ -78,7 +78,6 @@ func create_card()
     println()
 
 create_card()
-add_all_cards()
 display_board()
 
 func process_card(_t1)
@@ -88,6 +87,9 @@ func process_card(_t1)
   else
     c1: get_card(idx)
     c1.add(_t1)
+  x: input_bool("View Card(T/F) ")
+  if (x)
+    display_card(idx)
 
 task_added: false
 func create_task()
@@ -108,14 +110,17 @@ create_task()
 if (task_added)
   display_board()
   add_all_tasks()
-  build()
-  export_google()
+
+build()
+export_google()
 
 println("\n")
 display_schedule()
+println()
 
-jbin_file: input_word("Export JBin -> ")
-export_schedule(jbin_file)
+if (task_added)
+  jbin_file: input_word("Export JBin -> ")
+  export_schedule(jbin_file)
                 </code>
             </pre>
         </div>
@@ -123,63 +128,39 @@ export_schedule(jbin_file)
             <h2>Script Log</h2>
             <pre>
                 <code>
-[06-05-2024] Log of all activities from current session: 
+[22-05-2024] Log of all activities from current session: 
 
-[21:05:53] PREPROC_ATTR: DEF_CONFIG=false, LOG=true, STATS=false, HTML=true
-[21:05:56] FUNC_CALLS: NAME=input_word, ARGS=["Import JBin -> "]
-[21:05:56] VAR_SETUP: NAME=jbin_file, VALUE=week.jbin
-[21:05:56] FUNC_CALLS: NAME=import_schedule, ARGS=[jbin_file]
-[21:05:56] FUNC_SETUP: NAME= create_card, PARAM=[]
-[21:05:59] FUNC_CALLS: NAME=input_bool, ARGS=["Create Card(T/F) -> "]
-[21:05:59] VAR_SETUP: NAME=flag, VALUE=false
-[21:05:59] IF_CONDITION: ARGS=[flag], RESULT=false
-[21:05:59] IF_CONDITION: ARGS=[], RESULT=true
-[21:05:59] FUNC_CALLS: NAME=println, ARGS=[]
-[21:05:59] FUNC_CALLS: NAME=create_card, ARGS=[]
-[21:05:59] FUNC_CALLS: NAME=add_all_cards, ARGS=[]
-[21:05:59] FUNC_CALLS: NAME=display_board, ARGS=[]
-[21:05:59] FUNC_SETUP: NAME= process_card, PARAM=[]
-[21:05:59] CONST TYPE CREATED...
-[21:05:59] VAR_SETUP: NAME=task_added, VALUE=false
-[21:05:59] FUNC_SETUP: NAME= create_task, PARAM=[]
-[21:06:01] FUNC_CALLS: NAME=input_bool, ARGS=["Create Task(T/F) -> "]
-[21:06:01] VAR_SETUP: NAME=flag, VALUE=true
-[21:06:01] IF_CONDITION: ARGS=[flag], RESULT=true
-[21:06:01] VAR_SETUP: NAME=task_added, VALUE=true
-[21:06:06] FUNC_CALLS: NAME=input_line, ARGS=["Name -> "]
-[21:06:06] VAR_SETUP: NAME=_name, VALUE=CODMW2 w/ Sam
-[21:06:07] FUNC_CALLS: NAME=input_int, ARGS=["Hours -> "]
-[21:06:07] VAR_SETUP: NAME=_hours, VALUE=4
-[21:06:09] FUNC_CALLS: NAME=input_int, ARGS=["Days -> "]
-[21:06:09] VAR_SETUP: NAME=_days, VALUE=0
-[21:06:09] VAR_SETUP: NAME=_t1, VALUE=Task [name=CODMW2 w/ Sam, total=4]
-[21:06:12] FUNC_CALLS: NAME=input_int, ARGS=["Card Index -> "]
-[21:06:12] VAR_SETUP: NAME=idx, VALUE=4
-[21:06:12] ATTR_CALL: VAR_NAME=idx, NAME=<, ARGS[0]
-[21:06:12] IF_CONDITION: ARGS=[idx.<(0)], RESULT=false
-[21:06:12] IF_CONDITION: ARGS=[], RESULT=true
-[21:06:12] FUNC_CALLS: NAME=get_card, ARGS=[idx]
-[21:06:12] VAR_SETUP: NAME=c1, VALUE=Hobbies
-[21:06:12] ATTR_CALL: VAR_NAME=c1, NAME=add, ARGS[_t1]
-[21:06:12] FUNC_CALLS: NAME=process_card, ARGS=[_t1]
-[21:06:14] FUNC_CALLS: NAME=input_bool, ARGS=["Create Task(T/F) -> "]
-[21:06:14] VAR_SETUP: NAME=flag, VALUE=false
-[21:06:14] IF_CONDITION: ARGS=[flag], RESULT=false
-[21:06:14] IF_CONDITION: ARGS=[], RESULT=true
-[21:06:14] FUNC_CALLS: NAME=println, ARGS=[]
-[21:06:14] FUNC_CALLS: NAME=create_task, ARGS=[]
-[21:06:14] FUNC_CALLS: NAME=create_task, ARGS=[]
-[21:06:14] IF_CONDITION: ARGS=[task_added], RESULT=true
-[21:06:14] FUNC_CALLS: NAME=display_board, ARGS=[]
-[21:06:14] FUNC_CALLS: NAME=add_all_tasks, ARGS=[]
-[21:06:14] FUNC_CALLS: NAME=build, ARGS=[]
-[21:06:21] FUNC_CALLS: NAME=export_google, ARGS=[]
-[21:06:21] FUNC_SETUP: NAME=if, PARAM=[]
-[21:06:21] FUNC_CALLS: NAME=println, ARGS=["\n"]
-[21:06:21] FUNC_CALLS: NAME=display_schedule, ARGS=[]
-[21:06:35] FUNC_CALLS: NAME=input_word, ARGS=["Export JBin -> "]
-[21:06:35] VAR_SETUP: NAME=jbin_file, VALUE=upcoming.jbin
-[21:06:35] FUNC_CALLS: NAME=export_schedule, ARGS=[jbin_file]
+[14:03:28] PREPROC_ATTR: DEF_CONFIG=false, LOG=true, STATS=false, HTML=true
+[14:03:31] FUNC_CALLS: NAME=input_word, ARGS=["Import JBin -> "]
+[14:03:31] VAR_SETUP: NAME=jbin_file, VALUE=week.jbin
+[14:03:31] FUNC_CALLS: NAME=import_schedule, ARGS=[jbin_file]
+[14:03:31] FUNC_SETUP: NAME= create_card, PARAM=[]
+[14:03:33] FUNC_CALLS: NAME=input_bool, ARGS=["Create Card(T/F) -> "]
+[14:03:33] VAR_SETUP: NAME=flag, VALUE=false
+[14:03:33] IF_CONDITION: ARGS=[flag], RESULT=false
+[14:03:33] IF_CONDITION: ARGS=[], RESULT=true
+[14:03:33] FUNC_CALLS: NAME=println, ARGS=[]
+[14:03:33] FUNC_CALLS: NAME=create_card, ARGS=[]
+[14:03:33] FUNC_CALLS: NAME=display_board, ARGS=[]
+[14:03:33] FUNC_SETUP: NAME= process_card, PARAM=[]
+[14:03:33] CONST TYPE CREATED...
+[14:03:33] VAR_SETUP: NAME=task_added, VALUE=false
+[14:03:33] FUNC_SETUP: NAME= create_task, PARAM=[]
+[14:03:35] FUNC_CALLS: NAME=input_bool, ARGS=["Create Task(T/F) -> "]
+[14:03:35] VAR_SETUP: NAME=flag, VALUE=false
+[14:03:35] IF_CONDITION: ARGS=[flag], RESULT=false
+[14:03:35] IF_CONDITION: ARGS=[], RESULT=true
+[14:03:35] FUNC_CALLS: NAME=println, ARGS=[]
+[14:03:35] FUNC_CALLS: NAME=create_task, ARGS=[]
+[14:03:35] IF_CONDITION: ARGS=[task_added], RESULT=false
+[14:03:35] FUNC_SETUP: NAME=if, PARAM=[]
+[14:03:37] FUNC_CALLS: NAME=build, ARGS=[]
+[14:04:01] FUNC_CALLS: NAME=export_google, ARGS=[]
+[14:04:01] FUNC_CALLS: NAME=println, ARGS=["\n"]
+[14:04:01] FUNC_CALLS: NAME=display_schedule, ARGS=[]
+[14:04:01] FUNC_CALLS: NAME=println, ARGS=[]
+[14:04:01] IF_CONDITION: ARGS=[task_added], RESULT=false
+[14:04:01] FUNC_SETUP: NAME=if, PARAM=[]
                 </code>
             </pre>
         </div>
@@ -187,32 +168,24 @@ export_schedule(jbin_file)
             <h2>System Log:</h2>
             <pre>
                 <code>
-[06-05-2024] Log of all activities from current session: 
+[22-05-2024] Log of all activities from current session: 
 
-[21:05:49] [INFO] CURRENT SESSION HAS BEGUN...
-[21:05:49] [INFO] Reading Config: FILE=profile.cfg
-[21:05:49] [INFO] USERNAME=null, EMAIL=null, WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8], MAX_DAYS=14, ARCHIVE_DAYS=14, PRIORITY=false, OVERFLOW=true, FIT_SCHEDULE=false, SCHEDULE_ALGO=1, MIN_HOURS=1
-[21:05:50] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
-[21:05:53] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\automate.smpl, SCRIPT INSTANCE HAS BEGUN...
-[21:05:56] [INFO] READ(JBIN): FILE=data/jbin/week.jbin
-[21:05:56] [INFO] JBIN FILE PROCESSED
-[21:06:14] [INFO] ADD(TASK):  ID=0, NAME=CODMW2 w/ Sam, HOURS=4, DUE_DATE=05-06-2024
-[21:06:14] [INFO] SCHEDULING HAS BEGUN...
-[21:06:14] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=4, HOURS_FILLED=4, TASK ADDED=0, OVERFLOW=false
-[21:06:14] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=0, HOURS_FILLED=8, TASK ADDED=5, OVERFLOW=false
-[21:06:14] [INFO] DAY_ID=1, CAPACITY=8, HOURS_REMAINING=0, HOURS_FILLED=8, TASK ADDED=4, OVERFLOW=false
-[21:06:14] [INFO] DAY_ID=2, CAPACITY=8, HOURS_REMAINING=4, HOURS_FILLED=4, TASK ADDED=5, OVERFLOW=false
-[21:06:14] [INFO] DAY_ID=2, CAPACITY=8, HOURS_REMAINING=2, HOURS_FILLED=6, TASK ADDED=1, OVERFLOW=false
-[21:06:14] [INFO] DAY_ID=2, CAPACITY=8, HOURS_REMAINING=0, HOURS_FILLED=8, TASK ADDED=2, OVERFLOW=false
-[21:06:14] [INFO] DAY_ID=3, CAPACITY=8, HOURS_REMAINING=0, HOURS_FILLED=8, TASK ADDED=6, OVERFLOW=false
-[21:06:14] [INFO] DAY_ID=4, CAPACITY=8, HOURS_REMAINING=0, HOURS_FILLED=10, TASK ADDED=2, OVERFLOW=true
-[21:06:14] [INFO] DAY_ID=4, CAPACITY=8, HOURS_REMAINING=0, HOURS_FILLED=12, TASK ADDED=6, OVERFLOW=true
-[21:06:14] [INFO] SCHEDULING HAS FINISHED...
-[21:06:18] [INFO] 7 TASKS REMOVED FROM GOOGLE CALENDAR...
-[21:06:21] [INFO] SCHEDULE EXPORTED TO GOOGLE CALENDAR...
-[21:06:35] [INFO] JBIN FILE CREATED
-[21:06:35] [INFO] WRITE(JBIN): FILE=data/jbin/upcoming.jbin
-[21:06:35] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\automate.smpl, SCRIPT INSTANCE HAS ENDED...
+[14:03:17] [INFO] CURRENT SESSION HAS BEGUN...
+[14:03:17] [INFO] Reading Config: FILE=profile.cfg
+[14:03:17] [INFO] RANGE=[9, 20], WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8], MAX_DAYS=14, ARCHIVE_DAYS=5, PRIORITY=false, OVERFLOW=true, FIT_SCHEDULE=true, SCHEDULE_ALGO=1, MIN_HOURS=1
+[14:03:18] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
+[14:03:28] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\automate.smpl, SCRIPT INSTANCE HAS BEGUN...
+[14:03:31] [INFO] READ(JBIN): FILE=data/jbin/week.jbin
+[14:03:31] [INFO] JBIN FILE PROCESSED
+[14:03:35] [INFO] SCHEDULING HAS BEGUN...
+[14:03:37] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=4, HOURS_FILLED=4, TASK ADDED=3, OVERFLOW=false
+[14:03:37] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=2, HOURS_FILLED=6, TASK ADDED=0, OVERFLOW=false
+[14:03:37] [INFO] DAY_ID=0, CAPACITY=8, HOURS_REMAINING=2, HOURS_FILLED=6, TASK ADDED=1, OVERFLOW=true
+[14:03:37] [INFO] DAY_ID=1, CAPACITY=8, HOURS_REMAINING=7, HOURS_FILLED=1, TASK ADDED=1, OVERFLOW=false
+[14:03:37] [INFO] SCHEDULING HAS FINISHED...
+[14:03:39] [INFO] 3 TASKS REMOVED FROM GOOGLE CALENDAR...
+[14:04:01] [INFO] SCHEDULE EXPORTED TO GOOGLE CALENDAR...
+[14:04:01] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\automate.smpl, SCRIPT INSTANCE HAS ENDED...
                 </code>
             </pre>
         </div>

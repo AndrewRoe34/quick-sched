@@ -8,6 +8,16 @@ public class JsonHandler {
     //todo will need to reformat individual instances to make sure they properly link
         //todo e.g. 2 task "instances" that should just be 2 "references" to 1 object
 
+    public static String createUserConfig(UserConfig userConfig) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(userConfig);
+    }
+
+    public static UserConfig readUserConfig(String jsonStr) {
+        Gson gson = new Gson();
+        return gson.fromJson(jsonStr, UserConfig.class);
+    }
+
     public static String createCardJson(Card card) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         return gson.toJson(card);
@@ -36,15 +46,5 @@ public class JsonHandler {
     public static Label readLabelJson(String jsonStr) {
         Gson gson = new Gson();
         return gson.fromJson(jsonStr, Label.class);
-    }
-
-    public static String createUserConfig(UserConfig userConfig) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.toJson(userConfig);
-    }
-
-    public static UserConfig readUserConfig(String jsonStr) {
-        Gson gson = new Gson();
-        return gson.fromJson(jsonStr, UserConfig.class);
     }
 }

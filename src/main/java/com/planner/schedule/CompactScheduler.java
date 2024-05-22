@@ -4,7 +4,9 @@ import com.planner.schedule.day.Day;
 import com.planner.models.Task;
 import com.planner.models.UserConfig;
 import com.planner.util.EventLog;
+import com.planner.util.Time;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -55,48 +57,64 @@ public class CompactScheduler implements Scheduler {
     }
 
     @Override
-    public int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager) {
-        //Note: We do not need to worry about 'min_hours' since CompactScheduler focuses on filling up each day with tasks
+    public int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager, Calendar date) {
         PriorityQueue<Task> incomplete = new PriorityQueue<>();
         int numErrors = errorCount;
-        while(day.hasSpareHours() && !taskManager.isEmpty()) {
+        while ((!taskManager.isEmpty() && day.hasSpareHours()) ||
+                (!taskManager.isEmpty() && taskManager.peek().getDueDate().equals(day.getDate()))) {
+            // gets first task from heap and finds max possible hours available
             Task task = taskManager.remove();
-            int maxHours;
-            if(task.getDueDate().equals(day.getDate())) {
-                maxHours = userConfig.isFitSchedule() ? Math.min(day.getSpareHours(), task.getSubTotalHoursRemaining()) : task.getSubTotalHoursRemaining();
-            } else {
-                maxHours = Math.min(day.getSpareHours(), task.getSubTotalHoursRemaining());
-            }
+            int maxHours = getMaxHours(day, task, date);
+            // status of task creation
             boolean validTaskStatus = day.addSubTaskManually(task, maxHours);
-            if(userConfig.isFitSchedule() && task.getSubTotalHoursRemaining() > 0) {
-                eventLog.reportDayAction(day, task, validTaskStatus);
-                complete.add(task);
-                while(!taskManager.isEmpty() && taskManager.peek().getDueDate().equals(day.getDate())) {
-                    complete.add(taskManager.remove());
-                }
-            } else {
-                if(task.getSubTotalHoursRemaining() > 0) {
-                    incomplete.add(task);
-                } else {
-                    complete.add(task);
-                }
-                eventLog.reportDayAction(day, task, validTaskStatus);
-                numErrors += validTaskStatus ? 0 : 1;
-                if(!day.hasSpareHours() && !userConfig.isFitSchedule()) {
-                    while(!taskManager.isEmpty() && taskManager.peek().getDueDate().equals(day.getDate())) {
-                        Task dueTask = taskManager.remove();
-                        complete.add(dueTask);
-                        day.addSubTaskManually(dueTask, dueTask.getSubTotalHoursRemaining());
-                        eventLog.reportDayAction(day, dueTask, validTaskStatus);
-                        numErrors++;
-                    }
-                }
-            }
+            // adds task to relevant completion heap
+            if (task.getDueDate().equals(day.getDate()) || task.getSubTotalHoursRemaining() == 0) complete.add(task);
+            else incomplete.add(task);
+            // reports scheduling action
+            eventLog.reportDayAction(day, task, validTaskStatus);
+            // updates number of errors
+            numErrors += validTaskStatus ? 0 : 1;
+
+            if (!validTaskStatus && Time.differenceOfDays(task.getDueDate(), day.getDate()) > 0) break;
         }
-        while(!incomplete.isEmpty()) {
+        while (!incomplete.isEmpty()) {
             taskManager.add(incomplete.remove());
         }
         return numErrors;
+    }
+
+    private int getMaxHours(Day day, Task task, Calendar date) {
+        // todo need to add a condition check for when the task is due before the date (occurs when we have a session that overlaps midnight)
+
+        // sets up the starting hour for the day based on the given time from 'date'
+        int startingHour = date.get(Calendar.HOUR_OF_DAY);
+        boolean sameDate = false;
+        if (date.get(Calendar.DATE) == day.getDate().get(Calendar.DATE)
+                && date.get(Calendar.MONTH) == day.getDate().get(Calendar.MONTH)
+                && date.get(Calendar.YEAR) == day.getDate().get(Calendar.YEAR)) {
+            startingHour = Math.max(userConfig.getRange()[0], startingHour);
+            sameDate = true;
+        } else {
+            startingHour = userConfig.getRange()[0];
+        }
+
+        int maxHours = 0;
+        if (task.getDueDate().equals(day.getDate())) {
+            if (userConfig.isFitDay()) {
+                int remainingHours = 24 - (startingHour + day.getHoursFilled());
+                maxHours = Math.min(remainingHours, task.getSubTotalHoursRemaining());
+            } else {
+                maxHours = task.getSubTotalHoursRemaining();
+            }
+        } else if (sameDate) { // we need to deal with Scenarios C & D [DONE]
+            int remainingHours = userConfig.getRange()[1] - (startingHour + day.getHoursFilled());
+            if (remainingHours > 0) {
+                maxHours = Math.min(remainingHours, task.getSubTotalHoursRemaining());
+            }
+        } else {
+            maxHours = Math.min(day.getSpareHours(), task.getSubTotalHoursRemaining());
+        }
+        return maxHours;
     }
 
     @Override

@@ -52,7 +52,7 @@ public class DynamicSchedulerTest {
         pq = new PriorityQueue<>();
         complete = new PriorityQueue<>();
         taskMap = new HashMap<>();
-        config.setFitSchedule(false);
+        config.setFitDay(false);
     }
 
     /**
