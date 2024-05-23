@@ -1,4 +1,4 @@
-include: __CURR_CONFIG__, __LOG__, __HTML__
+include: __CURR_CONFIG__
 
 jbin_file: input_word("Import JBin -> ")
 import_schedule(jbin_file)

@@ -102,11 +102,12 @@ public class CompactScheduler implements Scheduler {
                 double remainingHours = 24.0 - (startingHour + day.getHoursFilled());
                 maxHours = Math.min(remainingHours, task.getSubTotalHoursRemaining());
                 // this chops off 30 minutes at the end of the day when it's past midnight
-                if (startingHour + maxHours >= 24 && date.get(Calendar.MINUTE) >= 30) {
-//                    if (maxHours >= 1.0) maxHours -= 0.5;
-//                    else if (maxHours == 0.5) maxHours = 0;
+                if (remainingHours - maxHours < 1.0 && date.get(Calendar.MINUTE) >= 30) {
                     maxHours -= 0.5;
                 }
+//                if (startingHour + maxHours >= 24 && date.get(Calendar.MINUTE) >= 30) {
+//                    maxHours -= 0.5;
+//                }
             } else {
                 maxHours = task.getSubTotalHoursRemaining();
             }
@@ -121,6 +122,8 @@ public class CompactScheduler implements Scheduler {
 //            if (maxHours < userConfig.getMinHours() && task.getSubTotalHoursRemaining() > maxHours) maxHours = 0.0;
         }
         // this only works with compact scheduler since it clumps tasks together when assigning them
+        // logic: if our 'maxHours' for the task is less than 'minHours' from config
+        //          AND there are more possible hours you could have utilized, then we disregard it until a later time
         if (maxHours < userConfig.getMinHours() && task.getSubTotalHoursRemaining() > maxHours) maxHours = 0.0;
         return maxHours;
     }

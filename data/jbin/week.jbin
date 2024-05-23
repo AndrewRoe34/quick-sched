@@ -3,7 +3,7 @@
 TASK {
   Fail, 4.5, 0
   Documentation, 2.5, 2
-  Testing, 1.0, 2
+  Testing, 1.0, 3
   Fix CompareTo, 1.0, -1
   Update Dynamic Sched, 4.0, 0
   Apply for jobs, 8.0, 1
