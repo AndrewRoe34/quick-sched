@@ -1,21 +1,18 @@
 22-05-2024
 
 TASK {
-  Documentation, 2, 2
-  Testing, 1, 2
-  Fix CompareTo, 1, -1
-  Update Dynamic Sched, 4, 0
-  Apply for jobs, 8, 1
+  Fail, 4.5, 0
+  Documentation, 2.5, 2
+  Testing, 1.0, 2
+  Fix CompareTo, 1.0, -1
+  Update Dynamic Sched, 4.0, 0
+  Apply for jobs, 8.0, 1
 }
 
 CARD {
-  Default
-  Project, T0, T1, T2, T3
+  Default, T0
+  Project, T1, T2, T3, T4
   DS&A
-  Job Hunting, T4
+  Job Hunting, T5
   Hobbies
-}
-
-DAY {
-  T3 4, T0 2, T1 1
 }

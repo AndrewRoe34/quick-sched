@@ -58,46 +58,47 @@ public class DynamicScheduler implements Scheduler {
 
     @Override
     public int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager, Calendar date) {
-        PriorityQueue<Task> incomplete = new PriorityQueue<>();
-        int numErrors = errorCount;
-        while(day.hasSpareHours() && !taskManager.isEmpty()) {
-            Task task = taskManager.remove();
-            boolean validTaskStatus = true;
-            if(day.getDate().equals(task.getDueDate())) {
-                validTaskStatus = addTaskSameDay(task, day);
-            } else {
-                if(task.getAverageNumHours() == 0) {
-                    task.setAverageNumHours(day.getDate());
-                }
-                int hours = task.getAverageNumHours();
-                //Handles the case where we actually have fewer hours available due to scheduling
-                hours = Math.min(hours, task.getSubTotalHoursRemaining());
-                //Fixes the number of hours according to what the Day has available
-                hours = hours + day.getSize() > day.getCapacity() ? day.getCapacity() - day.getSize() : hours;
-                day.addSubTask(task, hours, false);
-            }
-            if(task.getSubTotalHoursRemaining() > 0) {
-                eventLog.reportDayAction(day, task, validTaskStatus);
-                incomplete.add(task);
-            } else {
-                complete.add(task);
-                eventLog.reportDayAction(day, task, validTaskStatus);
-                numErrors += validTaskStatus ? 0 : 1;
-                if(!day.hasSpareHours()) {
-                    while(!taskManager.isEmpty() && taskManager.peek().getDueDate().equals(day.getDate())) {
-                        Task dueTask = taskManager.remove();
-                        complete.add(dueTask);
-                        validTaskStatus = addTaskSameDay(dueTask, day);
-                        eventLog.reportDayAction(day, dueTask, validTaskStatus);
-                        numErrors++;
-                    }
-                }
-            }
-        }
-        while(!incomplete.isEmpty()) {
-            taskManager.add(incomplete.remove());
-        }
-        return numErrors;
+//        PriorityQueue<Task> incomplete = new PriorityQueue<>();
+//        int numErrors = errorCount;
+//        while(day.hasSpareHours() && !taskManager.isEmpty()) {
+//            Task task = taskManager.remove();
+//            boolean validTaskStatus = true;
+//            if(day.getDate().equals(task.getDueDate())) {
+//                validTaskStatus = addTaskSameDay(task, day);
+//            } else {
+//                if(task.getAverageNumHours() == 0) {
+//                    task.setAverageNumHours(day.getDate());
+//                }
+//                int hours = task.getAverageNumHours();
+//                //Handles the case where we actually have fewer hours available due to scheduling
+//                hours = Math.min(hours, task.getSubTotalHoursRemaining());
+//                //Fixes the number of hours according to what the Day has available
+//                hours = hours + day.getSize() > day.getCapacity() ? day.getCapacity() - day.getSize() : hours;
+//                day.addSubTask(task, hours, false);
+//            }
+//            if(task.getSubTotalHoursRemaining() > 0) {
+//                eventLog.reportDayAction(day, task, validTaskStatus);
+//                incomplete.add(task);
+//            } else {
+//                complete.add(task);
+//                eventLog.reportDayAction(day, task, validTaskStatus);
+//                numErrors += validTaskStatus ? 0 : 1;
+//                if(!day.hasSpareHours()) {
+//                    while(!taskManager.isEmpty() && taskManager.peek().getDueDate().equals(day.getDate())) {
+//                        Task dueTask = taskManager.remove();
+//                        complete.add(dueTask);
+//                        validTaskStatus = addTaskSameDay(dueTask, day);
+//                        eventLog.reportDayAction(day, dueTask, validTaskStatus);
+//                        numErrors++;
+//                    }
+//                }
+//            }
+//        }
+//        while(!incomplete.isEmpty()) {
+//            taskManager.add(incomplete.remove());
+//        }
+//        return numErrors;
+        return -1;
     }
 
     /**
@@ -108,10 +109,11 @@ public class DynamicScheduler implements Scheduler {
      * @return boolean status for whether Task was added without overflow
      */
     private boolean addTaskSameDay(Task task, Day day) {
-        boolean overflow = task.getSubTotalHoursRemaining() > day.getSpareHours();
-        int hours = task.getSubTotalHoursRemaining();
-        day.addSubTask(task, hours, overflow);
-        return !overflow;
+//        boolean overflow = task.getSubTotalHoursRemaining() > day.getSpareHours();
+//        int hours = task.getSubTotalHoursRemaining();
+//        day.addSubTask(task, hours, overflow);
+//        return !overflow;
+        return false;
     }
 
     @Override

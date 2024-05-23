@@ -51,7 +51,7 @@ public class EventLog {
      * Reports a given Task action
      *
      * @param task Task being reported
-     * @param type Action type (0=Add, 1=Remove, 2=EDIT)
+     * @param type Action type (0=Add, 1=Remove, 2=EDIT, 3=ARCHIVE)
      */
     public void reportTaskAction(Task task, int type) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
@@ -61,8 +61,10 @@ public class EventLog {
             sb.append(" ADD(TASK): ");
         } else if(type == 1) {
             sb.append(" REMOVE(TASK): ");
-        } else {
+        } else if (type == 2) {
             sb.append(" EDIT(TASK): ");
+        } else {
+            sb.append(" ARCHIVE(TASK): ");
         }
         sb.append(" ID=").append(task.getId());
         sb.append(", NAME=").append(task.getName());
@@ -403,7 +405,7 @@ public class EventLog {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         sb.append(sdf.format(Calendar.getInstance().getTime()));
         sb.append(" [INFO]");
-        sb.append(" JBIN FILE CREATED\n");
+        sb.append(" JBIN FILE CREATED...\n");
     }
 
     /**
@@ -413,7 +415,7 @@ public class EventLog {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         sb.append(sdf.format(Calendar.getInstance().getTime()));
         sb.append(" [INFO]");
-        sb.append(" JBIN FILE PROCESSED\n");
+        sb.append(" JBIN FILE PROCESSED...\n");
     }
 
     /**

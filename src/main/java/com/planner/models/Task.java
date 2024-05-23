@@ -23,11 +23,11 @@ public class Task implements Comparable<Task>, Linker {
     /** Due date of the Task */
     private Calendar dueDate;
     /** Total number of hours for the Task */
-    private int totalHours;
+    private double totalHours;
     /** Number of SubTask hours */
-    private int subTotalHours;
+    private double subTotalHours;
     /** # of hours / (DueDate - StartingDay) */
-    private int averageNumHours;
+    private double averageNumHours;
     /** CheckList of Items for Task */
     private CheckList checkList;
     /** Label for String */ //TODO will need to finish later
@@ -41,7 +41,7 @@ public class Task implements Comparable<Task>, Linker {
      * @param hours number of hours for Task
      * @param incrementation number of days till due date for Task
      */
-    public Task(int id, String name, int hours, int incrementation) {
+    public Task(int id, String name, double hours, int incrementation) {
         setId(id);
         setName(name);
         setTotalHours(hours);
@@ -57,7 +57,7 @@ public class Task implements Comparable<Task>, Linker {
      * @param hours number of hours for Task
      * @param date number of days till due date for Task
      */
-    public Task(int id, String name, int hours, Calendar date) {
+    public Task(int id, String name, double hours, Calendar date) {
         setId(id);
         setName(name);
         setTotalHours(hours);
@@ -90,7 +90,7 @@ public class Task implements Comparable<Task>, Linker {
      * @param overflow overflow status of the SubTask
      * @return SubTask
      */
-    public SubTask addSubTask(int hours, boolean overflow) {
+    public SubTask addSubTask(double hours, boolean overflow) {
         SubTask subtask = null;
         if(hours > 0 && subTotalHours + hours <= totalHours) {
             subtask = new SubTask(this, hours, overflow);
@@ -112,7 +112,7 @@ public class Task implements Comparable<Task>, Linker {
      *
      * @return number of unfilled hours for SubTasks
      */
-    public int getSubTotalHoursRemaining() {
+    public double getSubTotalHoursRemaining() {
         return totalHours - subTotalHours;
     }
 
@@ -127,8 +127,6 @@ public class Task implements Comparable<Task>, Linker {
             return 0;
         }
     }
-
-    //TODO need an equals method
 
     /**
      * Gets the name of the Task
@@ -171,7 +169,7 @@ public class Task implements Comparable<Task>, Linker {
      *
      * @return number of hours for the Task
      */
-    public int getTotalHours() {
+    public double getTotalHours() {
         return totalHours;
     }
 
@@ -180,7 +178,10 @@ public class Task implements Comparable<Task>, Linker {
      *
      * @param total number of hours for the Task
      */
-    public void setTotalHours(int total) { //TODO will need to include exceptions for the setters
+    public void setTotalHours(double total) {
+        if (total <= 0) throw new IllegalArgumentException("Task hours cannot be zero or negative");
+        double dec = total % 1;
+        if (dec != 0 && dec != 0.5) throw new IllegalArgumentException("Task hours cannot have a decimal besides 0.5");
         this.totalHours = total;
     }
 
@@ -191,7 +192,7 @@ public class Task implements Comparable<Task>, Linker {
      */
     public void setAverageNumHours(Calendar date) {
         int days = Time.determineRangeOfDays(date, this.dueDate) + 1;
-        int avgHours = this.totalHours / days;
+        double avgHours = this.totalHours / days;
         avgHours += this.totalHours % days == 0 ? 0 : 1;
         this.averageNumHours = avgHours;
     }
@@ -201,7 +202,7 @@ public class Task implements Comparable<Task>, Linker {
      *
      * @return average number of hours for the Task
      */
-    public int getAverageNumHours() {
+    public double getAverageNumHours() {
         return averageNumHours;
     }
 
@@ -408,7 +409,7 @@ public class Task implements Comparable<Task>, Linker {
         /** Parent Task of the SubTask */
         private final Task parentTask;
         /** Number of hours for the SubTask */
-        private final int hours;
+        private final double hours;
         /** Number of overflow hours due to scheduling */
         private final boolean overflowStatus;
 
@@ -419,7 +420,7 @@ public class Task implements Comparable<Task>, Linker {
          * @param hours number of hours for the SubTask
          * @param overflow boolean value for overflow status
          */
-        private SubTask(Task parentTask, int hours, boolean overflow) {
+        private SubTask(Task parentTask, double hours, boolean overflow) {
             this.parentTask = parentTask;
             this.hours = hours;
             this.overflowStatus = overflow;
@@ -439,7 +440,7 @@ public class Task implements Comparable<Task>, Linker {
          *
          * @return number of SubTask hours
          */
-        public int getSubTaskHours() {
+        public double getSubTaskHours() {
             return hours;
         }
 

@@ -64,7 +64,7 @@ public class CompactScheduler implements Scheduler {
                 (!taskManager.isEmpty() && taskManager.peek().getDueDate().equals(day.getDate()))) {
             // gets first task from heap and finds max possible hours available
             Task task = taskManager.remove();
-            int maxHours = getMaxHours(day, task, date);
+            double maxHours = getMaxHours(day, task, date);
             // status of task creation
             boolean validTaskStatus = day.addSubTaskManually(task, maxHours);
             // adds task to relevant completion heap
@@ -83,7 +83,7 @@ public class CompactScheduler implements Scheduler {
         return numErrors;
     }
 
-    private int getMaxHours(Day day, Task task, Calendar date) {
+    private double getMaxHours(Day day, Task task, Calendar date) {
         // sets up the starting hour for the day based on the given time from 'date'
         int startingHour = date.get(Calendar.HOUR_OF_DAY);
         boolean sameDate = false;
@@ -96,21 +96,24 @@ public class CompactScheduler implements Scheduler {
             startingHour = userConfig.getRange()[0];
         }
 
-        int maxHours = 0;
+        double maxHours = 0.0;
         if (task.getDueDate().equals(day.getDate())) {
             if (userConfig.isFitDay()) {
-                int remainingHours = 24 - (startingHour + day.getHoursFilled());
+                double remainingHours = 24.0 - (startingHour + day.getHoursFilled());
                 maxHours = Math.min(remainingHours, task.getSubTotalHoursRemaining());
+                // this chops off 30 minutes at the end of the day when it's past midnight
+                if (date.get(Calendar.MINUTE) >= 30 && maxHours >= 1.0) maxHours -= 0.5;
             } else {
                 maxHours = task.getSubTotalHoursRemaining();
             }
         } else if (sameDate) { // we need to deal with Scenarios C & D [DONE]
-            int remainingHours = userConfig.getRange()[1] - (startingHour + day.getHoursFilled());
+            double remainingHours = userConfig.getRange()[1] - (startingHour + day.getHoursFilled());
             if (remainingHours > 0) {
                 maxHours = Math.min(remainingHours, task.getSubTotalHoursRemaining());
             }
         } else {
             maxHours = Math.min(day.getSpareHours(), task.getSubTotalHoursRemaining());
+            if (maxHours < userConfig.getMinHours() && task.getSubTotalHoursRemaining() > maxHours) maxHours = 0.0;
         }
         return maxHours;
     }

@@ -24,7 +24,7 @@ public class UserConfig {
     /** Scheduling algorithm chosen */
     private int schedulingAlgorithm;
     /** Minimum number of hours for a given day */
-    private int minHours;
+    private double minHours;
 
 
     /**
@@ -40,7 +40,7 @@ public class UserConfig {
      * @param schedulingAlgorithm Scheduling algorithm chosen
      * @param minHours            Minimum number of hours for a given day
      */
-    public UserConfig(int[] range, int[] globalHr, int maxDays, int archiveDays, boolean priority, boolean overflow, boolean fitDay, int schedulingAlgorithm, int minHours) {
+    public UserConfig(int[] range, int[] globalHr, int maxDays, int archiveDays, boolean priority, boolean overflow, boolean fitDay, int schedulingAlgorithm, double minHours) {
         this.range = range;
         this.week = globalHr;
         this.maxDays = maxDays;
@@ -191,7 +191,7 @@ public class UserConfig {
      *
      * @return minimum number of hours
      */
-    public int getMinHours() {
+    public double getMinHours() {
         return minHours;
     }
 
@@ -200,7 +200,7 @@ public class UserConfig {
      *
      * @param minHours minimum number of hours
      */
-    public void setMinHours(int minHours) {
+    public void setMinHours(double minHours) {
         this.minHours = minHours;
     }
 }

@@ -113,7 +113,7 @@ public class JBin {
             taskSB.append("TASK {\n");
             for(Task t : taskList) {
                 String name = t.getName();
-                int totalHours = t.getTotalHours();
+                double totalHours = t.getTotalHours();
                 //int remainingHours = t.getSubTotalHoursRemaining();
                 taskSB.append("  ")
                         .append(name)
@@ -322,10 +322,10 @@ public class JBin {
                         taskClosed = true;
                         break;
                     } else if(tokens.length == 3) {
-                        taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1].trim()),
+                        taskList.add(new Task(taskList.size(), tokens[0].trim(), Double.parseDouble(tokens[1].trim()),
                                 Time.getFormattedCalendarInstance(calendar, Integer.parseInt(tokens[2].trim()))));
                     } else if(tokens.length > 3) {
-                        taskList.add(new Task(taskList.size(), tokens[0].trim(), Integer.parseInt(tokens[1].trim()),
+                        taskList.add(new Task(taskList.size(), tokens[0].trim(), Double.parseDouble(tokens[1].trim()),
                                 Time.getFormattedCalendarInstance(calendar, Integer.parseInt(tokens[2].trim()))));
                         for(int i = 3; i < tokens.length; i++) {
                             String item = tokens[i].trim();
@@ -402,12 +402,12 @@ public class JBin {
                     } else {
                         if (Time.differenceOfDays(scheduleDay, currDay) < 0) continue;
                         Day day = new Day(dayCount++, 8, scheduleDay);
-                        int totalHours = 0;
+                        double totalHours = 0.0;
                         for (String taskStr : tokens) {
                             String[] pair = taskStr.trim().split("\\s");
                             if (pair.length == 2 && pair[0].charAt(0) == 'T') {
                                 int taskIdx = Integer.parseInt(pair[0].substring(1));
-                                int hours = Integer.parseInt(pair[1]);
+                                double hours = Double.parseDouble(pair[1]);
                                 totalHours += hours;
                                 if (!table[taskIdx]) {
                                     taskList.get(taskIdx).setTotalHours(hours);
@@ -415,7 +415,7 @@ public class JBin {
                                 } else {
                                     taskList.get(taskIdx).setTotalHours(hours + taskList.get(taskIdx).getTotalHours());
                                 }
-                                day.addSubTask(taskList.get(taskIdx), hours, totalHours > 8);
+                                day.addSubTask(taskList.get(taskIdx), hours, totalHours > 8); // todo need to user UserConfig here
                             } else throw new InputMismatchException();
                         }
                         schedule.add(day);

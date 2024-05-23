@@ -108,7 +108,8 @@ public class GoogleCalendarIO {
                 Event event = GoogleCalendarUtil.formatTaskToEvent(task, subTask.getSubTaskHours(), i, hour, min);
                 event = service.events().insert(calendarId, event).execute();
                 System.out.printf("Event created: %s\n", event.getHtmlLink());
-                hour += subTask.getSubTaskHours();
+                hour += (int) subTask.getSubTaskHours();
+                min += subTask.getSubTaskHours() % 1 == 0.5 ? 30: 0;
             }
             i++;
             hour = userconfig.getRange()[0];

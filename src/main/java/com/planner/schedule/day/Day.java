@@ -20,9 +20,9 @@ public class Day {
     /** Holds the date and time of the particular Day */
     private Calendar date;
     /** Number of hours possible for a given Day */
-    private int capacity;
+    private double capacity;
     /** Number of hours filled for a given Day */
-    private int size;
+    private double size;
     /** TreeSet of all SubTasks */
     private final List<SubTask> subtaskManager;
     /** ID for the specific Day */
@@ -35,22 +35,18 @@ public class Day {
      * @param capacity total capacity for the day
      * @param incrementation number of days from present day (0=today, 1=tomorrow, ...)
      */
-    public Day(int id, int capacity, int incrementation) {
+    public Day(int id, double capacity, int incrementation) {
         setId(id);
         setCapacity(capacity);
         setDate(incrementation);
         subtaskManager = new ArrayList<>();
     }
 
-    public Day(int id, int capacity, Calendar date) {
+    public Day(int id, double capacity, Calendar date) {
         setId(id);
         setCapacity(capacity);
         this.date = date;
         subtaskManager = new ArrayList<>();
-    }
-
-    public int getTotalHours() {
-        return size;
     }
 
     /**
@@ -58,7 +54,7 @@ public class Day {
      *
      * @param capacity total possible hours
      */
-    private void setCapacity(int capacity) {
+    private void setCapacity(double capacity) {
         this.capacity = capacity;
     }
 
@@ -67,7 +63,7 @@ public class Day {
      *
      * @return total capacity for Day
      */
-    public int getCapacity() { return this.capacity; }
+    public double getCapacity() { return this.capacity; }
 
     /**
      * Sets the due date for the Day
@@ -78,7 +74,7 @@ public class Day {
         this.date = Time.getFormattedCalendarInstance(incrementation);
     }
 
-    public int getSize() {
+    public double getSize() {
         return size;
     }
 
@@ -91,7 +87,7 @@ public class Day {
         return date;
     }
 
-    public void addSubTask(Task task, int hours, boolean overflow) {
+    public void addSubTask(Task task, double hours, boolean overflow) {
         Task.SubTask subtask = task.addSubTask(hours, overflow);
         subtaskManager.add(subtask);
         this.size += hours;
@@ -115,7 +111,7 @@ public class Day {
      * @param hours number of hours for the SubTask
      * @return boolean status for success of adding SubTask manually
      */
-    public boolean addSubTaskManually(Task task, int hours) {
+    public boolean addSubTaskManually(Task task, double hours) {
         if (hours <= 0) return false;
         boolean overflow = this.size + hours > this.capacity;
         SubTask subtask = task.addSubTask(hours, overflow);
@@ -156,7 +152,7 @@ public class Day {
      *
      * @return number of free hours available for scheduling
      */
-    public int getSpareHours() {
+    public double getSpareHours() {
         return Math.max(capacity - size, 0);
     }
 
@@ -165,7 +161,7 @@ public class Day {
      *
      * @return number of hours assigned for day
      */
-    public int getHoursFilled() {
+    public double getHoursFilled() {
         return this.size;
     }
 

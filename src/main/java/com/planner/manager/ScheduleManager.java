@@ -189,22 +189,17 @@ public class ScheduleManager {
             Calendar currDate = Time.getFormattedCalendarInstance(0);
             while (!taskManager.isEmpty()) {
                 Task task = taskManager.remove();
-                if (task.getDueDate().compareTo(currDate) < 0) archivedTasks.add(task);
+                if (task.getDueDate().compareTo(currDate) < 0) {
+                    archivedTasks.add(task);
+                    // eventlog needs to report the archiving of a task
+                    eventLog.reportTaskAction(task, 3);
+                }
                 else {
                     taskManager.add(task);
                     break;
                 }
             }
             taskId = taskManager.size();
-//            Calendar curr = Time.getFormattedCalendarInstance(0);
-//            int n = taskManager.size();
-//            for(int i = 0; i < n; i++) {
-//                if(taskManager.peek() != null && taskManager.peek().getDueDate().compareTo(curr) < 0) {
-//                    archivedTasks.add(taskManager.remove()); //todo need to test as well as add EventLog method to document this action (also, need to discard tasks from cards beyond a specific date)
-//                } else {
-//                    break;
-//                }
-//            }
         }
     }
 
