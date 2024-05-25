@@ -1,7 +1,6 @@
 package com.planner.scripter.tools;
 
 import com.planner.models.Card;
-import com.planner.models.Label;
 import com.planner.models.Task;
 import com.planner.models.CheckList;
 import com.planner.scripter.*;
@@ -56,9 +55,6 @@ public class ScriptLog {
             case CHECKLIST:
                 reportCheckListCreation(t);
                 break;
-            case LABEL:
-                reportLabelCreation(t);
-                break;
             case CARD:
                 reportCardCreation(t);
                 break;
@@ -78,18 +74,6 @@ public class ScriptLog {
         sb.append(", NAME=").append(task.getName());
         sb.append(", HOURS=").append(task.getTotalHours()).append("\n");
 //        sb.append(", DUE=").append(task.).append("\n");
-    }
-
-    /**
-     * Reports the creation of a {@link Label} via its attributes for the {@code Simple} language
-     *
-     * @param t variable reference being reported
-     */
-    private void reportLabelCreation(Type t) {
-        sb.append("LABEL_CREATED: VAR=").append(t.getVariableName());
-        Label l = (Label) t.getLinkerData();
-        sb.append(", NAME=").append(l.getName());
-        sb.append(", COLOR=").append(l.getColor()).append("\n");
     }
 
     /**

@@ -1,7 +1,6 @@
 package com.planner.util;
 
 import com.planner.models.Card;
-import com.planner.models.Label;
 import com.planner.models.Task;
 import org.junit.jupiter.api.Test;
 

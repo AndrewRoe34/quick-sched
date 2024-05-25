@@ -3,7 +3,6 @@ package com.planner.scripter;
 import com.planner.scripter.exception.DereferenceNullException;
 import com.planner.scripter.exception.InvalidGrammarException;
 import com.planner.models.Card;
-import com.planner.models.Label;
 import com.planner.models.Task;
 import com.planner.models.CheckList;
 
@@ -476,9 +475,6 @@ public class Parser {
             case "task":
                 inst = parseTask(args);
                 break;
-            case "label":
-                inst = parseLabel(args);
-                break;
             case "checklist":
             case "cl":
                 inst = parseCheckList(args);
@@ -500,7 +496,7 @@ public class Parser {
     private CardInstance parseCard(Type[] args) {
 //        String[] arguments = args.split(FUNC_REGEX, -1);
 //        return arguments.length == 1 ? new CardInstance(arguments[0]) : null;
-        return args.length == 1 ? new CardInstance(args[0].getStringConstant()) : null;
+        return args.length == 2 ? new CardInstance(args[0].getStringConstant(), args[1].getStringConstant()) : null;
     }
 
     /**
@@ -514,17 +510,6 @@ public class Parser {
 //        return arguments.length == 3 ? new TaskInstance(arguments[0].trim(),
 //                Integer.parseInt(arguments[1].trim()), Integer.parseInt(arguments[2].trim())) : null;
         return args.length == 3 ? new TaskInstance(args[0].getStringConstant(), args[1].getIntConstant(), args[2].getIntConstant()) : null;
-    }
-
-    /**
-     * Parses an instance of {@link Label} and wraps it around {@link LabelInstance}
-     *
-     * @param args arguments for the given class
-     * @return formatted {@link LabelInstance}
-     */
-    private LabelInstance parseLabel(Type[] args) {
-//        String[] arguments = args.split(FUNC_REGEX, -1);
-        return args.length == 2 ? new LabelInstance(args[0].getStringConstant(), args[1].getIntConstant()) : null;
     }
 
     /**

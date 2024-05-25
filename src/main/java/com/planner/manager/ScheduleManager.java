@@ -6,17 +6,14 @@ import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.planner.models.Card;
-import com.planner.models.Label;
+import com.planner.models.*;
 import com.planner.io.GoogleCalendarIO;
 import com.planner.io.IOProcessing;
 import com.planner.schedule.Scheduler;
 import com.planner.schedule.day.Day;
-import com.planner.models.Task;
-import com.planner.models.UserConfig;
-import com.planner.models.CheckList;
 import com.planner.util.EventLog;
 import com.planner.util.JBin;
 import com.planner.util.JsonHandler;
@@ -62,9 +59,9 @@ public class ScheduleManager {
     private int cardId;
     /** Last day Task is due */
     private int lastDueDate;
-    private List<Label> labels;
     private final GoogleCalendarIO googleCalendarIO;
     private Calendar scheduleTime;
+    private List<Event> events;
 
     /**
      * Private constructor of ScheduleManager
@@ -90,8 +87,8 @@ public class ScheduleManager {
         customHours = new HashMap<>();
         taskMap = new HashMap<>();
         cards = new ArrayList<>();
-        labels = new ArrayList<>();
         archivedTasks = new PriorityQueue<>();
+        events = new ArrayList<>();
         //processSettingsCfg(filename);
         //processJBinFile("data/week.jbin");
 
@@ -166,7 +163,7 @@ public class ScheduleManager {
         String binStr = IOProcessing.readJBinFile(filename);
         if(binStr != null) {
             eventLog.reportReadJBinFile(filename);
-            JBin.processJBin(binStr, taskManager, cards, labels, schedule, userConfig.getArchiveDays());
+            JBin.processJBin(binStr, taskManager, cards, schedule, userConfig.getArchiveDays());
             eventLog.reportProcessJBin();
             // remove past tasks from current PQ and archives them
 //            Set<Task> set = new HashSet<>();
@@ -256,6 +253,12 @@ public class ScheduleManager {
             cards.add(c);
             eventLog.reportCardAction(c, 0);
         }
+    }
+
+    public Event addEvent(String name, double hours, Calendar date) {
+        Event e1 = new Event(events.size(), name, hours, date);
+        events.add(e1);
+        return e1;
     }
 
     /**
@@ -480,6 +483,48 @@ public class ScheduleManager {
         return t1.resetCheckList();
     }
 
+    public String buildScheduleStr() {
+        StringBuilder sb = new StringBuilder();
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        Calendar date = Time.getFormattedCalendarInstance(0);
+        int maxTasks = 0;
+        for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
+            sb.append(sdf.format(date.getTime()));
+            sb.append("                              |");
+            maxTasks = Math.max(maxTasks, schedule.get(i).getNumSubTasks());
+            date = Time.getFormattedCalendarInstance(date, 1);
+        }
+
+        sb.append("\n");
+        for(int i = 0; i < Math.min(schedule.size(), 6); i++) {
+            sb.append("-----------------------------------------");
+        }
+
+        for (int i = 0; i < maxTasks; i++) {
+            sb.append("\n");
+            for (int d = 0; d < Math.min(schedule.size(), 6); d++) {
+                Day day = schedule.get(d);
+                if (i < day.getNumSubTasks()) {
+                    sb.append(day.getTimeStamps().get(i)).append(" - "); // 18 char
+                    Task.SubTask subTask = day.getSubTask(i);
+                    String outputSubTask = subTask.getParentTask().getName();
+                    if (outputSubTask.length() > 21) {
+                        sb.append(outputSubTask, 0, 21);
+                    } else {
+                        sb.append(outputSubTask);
+                        sb.append(" ".repeat(22 - outputSubTask.length()));
+                    }
+                    sb.append("|");
+                } else {
+                    sb.append("                                        |");
+                }
+            }
+        }
+        sb.append("\n");
+
+        return sb.toString();
+    }
+
     /**
      * Outputs the current day's schedule to console
      */
@@ -565,8 +610,7 @@ public class ScheduleManager {
 
     public void exportScheduleToGoogle() throws IOException {
         googleCalendarIO.cleanGoogleSchedule();
-        assert scheduleTime != null;
-        googleCalendarIO.exportScheduleToGoogle(userConfig, schedule, scheduleTime);
+        googleCalendarIO.exportScheduleToGoogle(userConfig, schedule);
     }
 
     public void importScheduleFromGoogle() throws IOException {

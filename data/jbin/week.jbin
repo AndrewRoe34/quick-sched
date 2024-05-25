@@ -1,7 +1,7 @@
-22-05-2024
+23-05-2024
 
 TASK {
-  Fail, 4.5, 0
+  Fail, 0.5, 0
   Documentation, 2.5, 2
   Testing, 1.0, 3
   Fix CompareTo, 1.0, -1
@@ -10,9 +10,9 @@ TASK {
 }
 
 CARD {
-  Default, T0
-  Project, T1, T2, T3, T4
-  DS&A
-  Job Hunting, T5
-  Hobbies
+  Default, LIGHT_BLUE, T0
+  Project, RED, T1, T2, T3, T4
+  DS&A, ORANGE
+  Job Hunting, GREEN, T5
+  Hobbies, VIOLET
 }

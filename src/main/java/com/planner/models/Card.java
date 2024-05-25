@@ -1,6 +1,5 @@
 package com.planner.models;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -13,30 +12,38 @@ import java.util.List;
  */
 public class Card implements Linker{
 
+    private int id;
     /** Label for Card */
     private String title;
     /** List of Tasks for Card */
     private List<Task> cardTasks;
-    private List<Label> cardLabels;
+    private Colors colorId;
 
     /**
      * Primary constructor for Card
      *
      * @param title title for Card
      */
-    public Card(String title) {
-        this.title = title;
-        cardLabels = new ArrayList<>();
+    public Card(int id, String title, Colors colorId) {
+        this.id = id;
+        setTitle(title);
+        setColorId(colorId);
         cardTasks = new LinkedList<>();
     }
 
-    /**
-     * Gets title for Card
-     *
-     * @return title
-     */
-    public List<Label> getLabel() {
-        return cardLabels;
+    public static enum Colors {
+        RED,
+        ORANGE,
+        YELLOW,
+        GREEN,
+        LIGHT_BLUE,
+        BLUE,
+        INDIGO,
+        VIOLET
+    }
+
+    public int getId() {
+        return id;
     }
 
     /**
@@ -64,6 +71,7 @@ public class Card implements Linker{
      * @return boolean status for success
      */
     public boolean addTask(Task task) {
+        if (task.getColor() == null) task.setColor(colorId);
         return cardTasks.add(task);
     }
 
@@ -87,10 +95,6 @@ public class Card implements Linker{
         return cardTasks.remove(task);
     }
 
-    public boolean addLabel(Label label) {
-        return cardLabels.add(label);
-    }
-
     @Override
     public String toString() {
         return title;
@@ -104,26 +108,27 @@ public class Card implements Linker{
         return title;
     }
 
-    public boolean addLabelList(List<Label> labels) {
-        return cardLabels.addAll(labels);
+    public Colors getColorId() {
+        return colorId;
+    }
+
+    public void setColorId(Colors colorId) {
+        if (colorId == null) throw new IllegalArgumentException("Card color cannot be null");
+        this.colorId = colorId;
     }
 
     @Override
     public boolean add(Linker o) {
-        if(o instanceof Task) {
+        if (o instanceof Task) {
             return cardTasks.add((Task) o);
-        } else if(o instanceof Label) {
-            return cardLabels.add((Label) o);
         }
         return false;
     }
 
     @Override
     public boolean remove(Linker o) {
-        if(o instanceof Task) {
+        if (o instanceof Task) {
             return cardTasks.remove((Task) o);
-        } else if(o instanceof Label) {
-            return cardLabels.remove((Label) o);
         }
         return false;
     }

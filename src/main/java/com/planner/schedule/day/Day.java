@@ -1,13 +1,12 @@
 package com.planner.schedule.day;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
+import com.planner.models.Event;
 import com.planner.models.Task;
 import com.planner.models.Task.SubTask;
+import com.planner.models.UserConfig;
 import com.planner.util.Time;
 
 /**
@@ -25,6 +24,10 @@ public class Day {
     private double size;
     /** TreeSet of all SubTasks */
     private final List<SubTask> subtaskManager;
+    /** List of time stamps for all subtasks */
+    private final List<TimeStamp> timeStamps;
+    /** Map by starting hour and the associated event */
+    private final Map<Integer, Event> eventMap;
     /** ID for the specific Day */
     private int id;
 
@@ -40,6 +43,8 @@ public class Day {
         setCapacity(capacity);
         setDate(incrementation);
         subtaskManager = new ArrayList<>();
+        timeStamps = new ArrayList<>();
+        eventMap = new HashMap<>();
     }
 
     public Day(int id, double capacity, Calendar date) {
@@ -47,6 +52,8 @@ public class Day {
         setCapacity(capacity);
         this.date = date;
         subtaskManager = new ArrayList<>();
+        timeStamps = new ArrayList<>();
+        eventMap = new HashMap<>();
     }
 
     /**
@@ -111,14 +118,50 @@ public class Day {
      * @param hours number of hours for the SubTask
      * @return boolean status for success of adding SubTask manually
      */
-    public boolean addSubTaskManually(Task task, double hours) {
+    public boolean addSubTaskManually(Task task, double hours, UserConfig userConfig, Calendar time, boolean isToday) {
         if (hours <= 0) return false;
         boolean overflow = this.size + hours > this.capacity;
         SubTask subtask = task.addSubTask(hours, overflow);
 
         subtaskManager.add(subtask);
         this.size += hours;
+
+        // handles the creation of timestamps for subtasks created
+        int taskHours = (int) hours;
+        int taskMin = hours % 1 == 0.5 ? 30 : 0;
+        int endHr = 0;
+        int endMin = 0;
+        if (isToday && time.get(Calendar.HOUR_OF_DAY) >= userConfig.getRange()[0] && timeStamps.isEmpty() && !userConfig.isDefaultAtStart()) {
+            Calendar startTime = Time.getNearestQuarterOfHour(time, true);
+            endMin = startTime.get(Calendar.MINUTE) + taskMin;
+            if (endMin >= 60) {
+                endHr++;
+                endMin %= 60;
+            }
+            endHr = (endHr + startTime.get(Calendar.HOUR_OF_DAY) + taskHours) % 24;
+
+            timeStamps.add(new TimeStamp(startTime.get(Calendar.HOUR_OF_DAY), startTime.get(Calendar.MINUTE), endHr, endMin));
+        } else if (timeStamps.isEmpty()) {
+            timeStamps.add(new TimeStamp(userConfig.getRange()[0], 0, (userConfig.getRange()[0] + taskHours) % 24, taskMin));
+        } else {
+            TimeStamp ts = timeStamps.get(timeStamps.size() - 1);
+            endMin = ts.getEndMin() + taskMin;
+            if (endMin >= 60) {
+                endHr++;
+                endMin %= 60;
+            }
+            endHr = (endHr + ts.getEndHour() + taskHours) % 24;
+
+            timeStamps.add(new TimeStamp(ts.getEndHour(), ts.getEndMin(), endHr, endMin));
+        }
+
         return this.size <= this.capacity;
+    }
+
+    public boolean addEvent(Event event) {
+        // todo check that event does not overlap with a preexisting event
+        //   will need to do a quick interval check and then insert it into Day (will need to then check events for the day when scheduling)
+        return false;
     }
 
     public SubTask getSubTask(int subtaskIndex) {
@@ -174,6 +217,10 @@ public class Day {
         return getSpareHours() > 0;
     }
 
+    public List<TimeStamp> getTimeStamps() {
+        return timeStamps;
+    }
+
     @Override
     public String toString() {
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
@@ -208,5 +255,70 @@ public class Day {
      */
     public Iterable<? extends SubTask> getSubTasks() {
         return subtaskManager;
+    }
+
+    public static class TimeStamp {
+        private final int startHour;
+        private final int startMin;
+        private final int endHour;
+        private final int endMin;
+        private String strStamp;
+
+        public TimeStamp(int startHour, int startMin, int endHour, int endMin) {
+            this.startHour = startHour;
+            this.startMin = startMin;
+            this.endHour = endHour;
+            this.endMin = endMin;
+            buildStamp();
+        }
+
+        public int getStartHour() {
+            return startHour;
+        }
+
+        public int getStartMin() {
+            return startMin;
+        }
+
+        public int getEndHour() {
+            return endHour;
+        }
+
+        public int getEndMin() {
+            return endMin;
+        }
+        
+        private void buildStamp() {
+            StringBuilder sb = new StringBuilder();
+
+            int _startHour = startHour - 12;
+            if (startHour <= 9 || startHour >= 13 && startHour <= 21) sb.append("0");
+            if (startHour <= 12) sb.append(startHour);
+            if (startHour > 12) sb.append(_startHour);
+            sb.append(":");
+            if (startMin < 10) sb.append("0");
+            sb.append(startMin);
+            if (startHour < 12) sb.append("am");
+            else sb.append("pm");
+
+            sb.append("-");
+
+            int _endHour = endHour - 12;
+            if (endHour <= 9 || endHour >= 13 && endHour <= 21) sb.append("0");
+            if (endHour <= 12) sb.append(endHour);
+            if (endHour > 12) sb.append(_endHour);
+            sb.append(":");
+            if (endMin < 10) sb.append("0");
+            sb.append(endMin);
+            if (endHour < 12) sb.append("am");
+            else sb.append("pm");
+
+            strStamp = sb.toString();
+        }
+
+        @Override
+        public String toString() {
+            return strStamp;
+        }
     }
 }

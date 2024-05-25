@@ -101,6 +101,11 @@ public class DynamicScheduler implements Scheduler {
         return -1;
     }
 
+    @Override
+    public int optimizeDay(Day day) {
+        return 0;
+    }
+
     /**
      * Handles adding a Task when it is due the same day
      *
@@ -113,11 +118,6 @@ public class DynamicScheduler implements Scheduler {
 //        int hours = task.getSubTotalHoursRemaining();
 //        day.addSubTask(task, hours, overflow);
 //        return !overflow;
-        return false;
-    }
-
-    @Override
-    public boolean correctSchedule(List<Day> schedule, int errorCount) {
         return false;
     }
 }

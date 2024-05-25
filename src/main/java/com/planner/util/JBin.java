@@ -2,7 +2,6 @@ package com.planner.util;
 
 import com.planner.models.Card;
 import com.planner.models.CheckList;
-import com.planner.models.Label;
 import com.planner.models.Task;
 import com.planner.manager.ScheduleManager;
 import com.planner.schedule.day.Day;
@@ -42,20 +41,16 @@ public class JBin {
             --> Otherwise, it simply gets added to the system
 
         FORMATTING OF DATA:
-        LABEL {
-          <Title>, <COLOR>
-          ...
-        }
         CHECKLIST {
           <ITEM0>, <ITEM1>, ...
           ...
         }
         TASK {
-          <NAME>, <DUE_DATE>, <TOTAL_HR>, <USED_HR>, CL#, L#
+          <NAME>, <DUE_DATE>, <TOTAL_HR>, <USED_HR>, CL#
           ...
         }
         CARD {
-          <Title>, T#, L#
+          <Title>, <COLOR>, T#
           ...
         }
         DAY {
@@ -81,27 +76,19 @@ public class JBin {
         calendarSB.append("-").append(calendar.get(Calendar.YEAR)).append("\n\n");
         StringBuilder cardSB = new StringBuilder();
         List<Task> taskList = new ArrayList<>();
-        List<Label> labelList = new ArrayList<>();
         List<CheckList> checkListList = new ArrayList<>();
         if(!cards.isEmpty()) {
             cardSB.append("CARD {\n");
             for(Card c : cards) {
                 String title = c.getTitle();
                 cardSB.append("  ").append(title);
+                cardSB.append(", ").append(c.getColorId()); // todo need to check that this works
                 for(Task t : c.getTask()) {
                     if(!taskList.contains(t)) {
                         taskList.add(t);
                         cardSB.append(", T").append(taskList.size() - 1);
                     } else {
                         cardSB.append(", T").append(taskList.indexOf(t));
-                    }
-                }
-                for(Label l : c.getLabel()) {
-                    if(!labelList.contains(l)) {
-                        labelList.add(l);
-                        cardSB.append(", L").append(labelList.size() - 1);
-                    } else {
-                        cardSB.append(", L").append(labelList.indexOf(l));
                     }
                 }
                 cardSB.append("\n");
@@ -121,14 +108,6 @@ public class JBin {
                         .append(totalHours)
                         .append(", ")
                         .append(Time.differenceOfDays(t.getDueDate(), calendar));
-                for(Label l : t.getLabel()) {
-                    if(!labelList.contains(l)) {
-                        labelList.add(l);
-                        taskSB.append(", L").append(labelList.size() - 1);
-                    } else {
-                        taskSB.append(", L").append(labelList.indexOf(l));
-                    }
-                }
                 CheckList cl = t.getCheckList();
                 if(cl != null) {
                     checkListList.add(cl);
@@ -137,18 +116,6 @@ public class JBin {
                 taskSB.append("\n");
             }
             taskSB.append("}\n");
-        }
-        StringBuilder labelSB = new StringBuilder();
-        if(!labelList.isEmpty()) {
-            labelSB.append("LABEL {\n");
-            for(Label l : labelList) {
-                labelSB.append("  ")
-                        .append(l.getName())
-                        .append(", ")
-                        .append(l.getColor())
-                        .append("\n");
-            }
-            labelSB.append("}\n\n");
         }
         StringBuilder clSB = new StringBuilder();
         if(!checkListList.isEmpty()) {
@@ -196,7 +163,7 @@ public class JBin {
             daySB.append("}\n");
         }
         //now go from top to bottom with all the data you now have
-        return calendarSB.append(labelSB)
+        return calendarSB
                 .append(clSB)
                 .append(taskSB)
                 .append("\n")
@@ -212,11 +179,10 @@ public class JBin {
      * @param data JBin string being processed
      * @param tasks Tasks holder
      * @param cards Cards holder
-     * @param labels Labels holder
      * @param schedule set of Days for the given schedule being processed
      * @param maxArchiveDays maximum number of past Days to include
      */
-    public static void processJBin(String data, PriorityQueue<Task> tasks, List<Card> cards, List<Label> labels, List<Day> schedule, int maxArchiveDays) {
+    public static void processJBin(String data, PriorityQueue<Task> tasks, List<Card> cards, List<Day> schedule, int maxArchiveDays) {
         //NOTE: When processing, you should work from top to bottom (use ArrayLists to easily locate data by index value)
         Scanner jbinScanner = new Scanner(data);
         LocalDate ld = null;
@@ -249,8 +215,6 @@ public class JBin {
         //todo codeblock needs to be refactored and tested further
 
 
-        boolean labelOpen = false;
-        boolean labelClosed = false;
         boolean checklistOpen = false;
         boolean checklistClosed = false;
         boolean taskOpen = false;
@@ -264,24 +228,7 @@ public class JBin {
         while(jbinScanner.hasNextLine()) {
             String type = jbinScanner.nextLine();
             String[] tokens = type.split("\\s");
-            if(!labelOpen && tokens.length == 2 && "LABEL".equals(tokens[0]) && "{".equals(tokens[1])) {
-                labelOpen = true;
-                while(jbinScanner.hasNextLine()) {
-                    type = jbinScanner.nextLine();
-                    tokens = type.split(",");
-                    if("}".equals(tokens[0].trim()) && tokens.length == 1) {
-                        labelClosed = true;
-                        break;
-                    } else if(tokens.length == 2) {
-                        labels.add(new Label(labels.size(), tokens[0].trim(), Integer.parseInt(tokens[1].trim())));
-                    } else {
-                        throw new InputMismatchException();
-                    }
-                }
-                if(!labelClosed) {
-                    throw new IllegalArgumentException();
-                }
-            } else if(!checklistOpen && tokens.length == 2 && "CHECKLIST".equals(tokens[0]) && "{".equals(tokens[1])) {
+            if(!checklistOpen && tokens.length == 2 && "CHECKLIST".equals(tokens[0]) && "{".equals(tokens[1])) {
                 checklistOpen = true;
                 while(jbinScanner.hasNextLine()) {
                     type = jbinScanner.nextLine();
@@ -331,8 +278,6 @@ public class JBin {
                             String item = tokens[i].trim();
                             if(item.length() > 2 && item.charAt(0) == 'C' && item.charAt(1) == 'L') {
                                 taskList.get(taskList.size() - 1).addCheckList(checkLists.get(Integer.parseInt(item.substring(2))));
-                            } else if(item.length() > 1 && item.charAt(0) == 'L') {
-                                taskList.get(taskList.size() - 1).addLabel(labels.get(Integer.parseInt(item.substring(1))));
                             } else {
                                 throw new InputMismatchException();
                             }
@@ -348,33 +293,38 @@ public class JBin {
                 cardOpen = true;
                 Calendar currDay = Time.getFormattedCalendarInstance(0);
                 while(jbinScanner.hasNextLine()) {
-                    type = jbinScanner.nextLine();
+                    type = jbinScanner.nextLine(); // todo need to check that color id is now properly processed
                     tokens = type.split(",");
                     if(tokens.length == 0) {
                         throw new InputMismatchException();
                     } else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
                         cardClosed = true;
                         break;
-                    } else if(tokens.length == 1) {
-                        cards.add(new Card(tokens[0].trim())); //todo need to add id eventually
-                    } else {
-                        cards.add(new Card(tokens[0].trim())); //todo need to add id eventually
-                        for(int i = 1; i < tokens.length; i++) {
+                    } else if(tokens.length == 2) { // need to make this '== 2', change else to 'else if tokens.length > 2', and finally else with exception thrown
+                        cards.add(new Card(cards.size(), tokens[0].trim(), parseCardColor(tokens[1].trim())));
+                    } else if (tokens.length > 2) {
+                        cards.add(new Card(cards.size(), tokens[0].trim(), parseCardColor(tokens[1].trim())));
+                        for(int i = 2; i < tokens.length; i++) {
                             String item = tokens[i].trim();
                             int idx = Integer.parseInt(item.substring(1));
                             if(item.length() > 1 && item.charAt(0) == 'T') {
                                 Task tempTask = taskList.get(idx);
                                 if(tempTask != null) {
                                     int numDays = Time.differenceOfDays(tempTask.getDueDate(), currDay);
-                                    if (numDays >= -1 * maxArchiveDays) cards.get(cards.size() - 1).addTask(tempTask);
+                                    if (numDays >= -1 * maxArchiveDays) {
+                                        cards.get(cards.size() - 1).addTask(tempTask);
+                                        if (tempTask.getColor() == null) {
+                                            tempTask.setColor(cards.get(cards.size() - 1).getColorId());
+                                        }
+                                    }
                                     else taskList.set(idx, null);
                                 }
-                            } else if(item.length() > 1 && item.charAt(0) == 'L') {
-                                cards.get(cards.size() - 1).addLabel(labels.get(idx));
                             } else {
                                 throw new InputMismatchException();
                             }
                         }
+                    } else {
+                        throw new IllegalArgumentException();
                     }
                 }
                 if(!cardClosed) {
@@ -430,6 +380,29 @@ public class JBin {
             if(t != null) {
                 tasks.add(t);
             }
+        }
+    }
+
+    private static Card.Colors parseCardColor(String s) {
+        switch (s) {
+            case "RED":
+                return Card.Colors.RED;
+            case "ORANGE":
+                return Card.Colors.ORANGE;
+            case "YELLOW":
+                return Card.Colors.YELLOW;
+            case "GREEN":
+                return Card.Colors.GREEN;
+            case "LIGHT_BLUE":
+                return Card.Colors.LIGHT_BLUE;
+            case "BLUE":
+                return Card.Colors.BLUE;
+            case "INDIGO":
+                return Card.Colors.INDIGO;
+            case "VIOLET":
+                return Card.Colors.VIOLET;
+            default:
+                return null;
         }
     }
 }

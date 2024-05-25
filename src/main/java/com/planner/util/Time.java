@@ -62,4 +62,41 @@ public class Time {
         return curr;
     }
 
+    /**
+     * Determines the closest available Calendar instance within a quarter of an hour (above or below)
+     *
+     * @param date current date being measured
+     * @param isAbove whether Calendar instance will be above or below to nearest quarter
+     * @return new instance of Calendar to nearest quarter
+     */
+    public static Calendar getNearestQuarterOfHour(Calendar date, boolean isAbove) {
+        int min = date.get(Calendar.MINUTE);
+        Calendar clone = (Calendar) date.clone();
+        if (min == 0 || min == 15 || min == 30 || min == 45) return clone;
+
+        if (isAbove) {
+            if (min > 45) {
+                clone.set(Calendar.MINUTE, 0);
+                clone.add(Calendar.HOUR_OF_DAY, 1); //todo need to check and see if that also updates the 'Day of month' component as well
+            } else if (min > 30) {
+                clone.set(Calendar.MINUTE, 45);
+            } else if (min > 15) {
+                clone.set(Calendar.MINUTE, 30);
+            } else {
+                clone.set(Calendar.MINUTE, 15);
+            }
+        } else {
+            if (min < 15) {
+                clone.set(Calendar.MINUTE, 0);
+            } else if (min <= 30) {
+                clone.set(Calendar.MINUTE, 15);
+            } else if (min <= 45) {
+                clone.set(Calendar.MINUTE, 30);
+            } else {
+                clone.set(Calendar.MINUTE, 45);
+            }
+        }
+        return clone;
+    }
+
 }

@@ -3,7 +3,7 @@ include: __CURR_CONFIG__, __LOG__, __HTML__
 
 #Constructs class instances
 val: "3400"
-c1: card("HW")
+c1: card("HW", "RED")
 
 #Custom function to modify checklist instance with parameter references
 func foo(cl, flag)

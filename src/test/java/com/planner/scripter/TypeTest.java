@@ -1,7 +1,6 @@
 package com.planner.scripter;
 
 import com.planner.models.Card;
-import com.planner.models.Label;
 import com.planner.scripter.exception.InvalidGrammarException;
 
 import org.junit.jupiter.api.Test;

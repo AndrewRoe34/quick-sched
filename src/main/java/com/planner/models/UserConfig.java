@@ -25,6 +25,8 @@ public class UserConfig {
     private int schedulingAlgorithm;
     /** Minimum number of hours for a given day */
     private double minHours;
+    private boolean optimizeDay;
+    private boolean defaultAtStart;
 
 
     /**
@@ -40,7 +42,9 @@ public class UserConfig {
      * @param schedulingAlgorithm Scheduling algorithm chosen
      * @param minHours            Minimum number of hours for a given day
      */
-    public UserConfig(int[] range, int[] globalHr, int maxDays, int archiveDays, boolean priority, boolean overflow, boolean fitDay, int schedulingAlgorithm, double minHours) {
+    public UserConfig(int[] range, int[] globalHr, int maxDays, int archiveDays, boolean priority,
+                      boolean overflow, boolean fitDay, int schedulingAlgorithm, double minHours,
+                      boolean optimizeDay, boolean defaultAtStart) {
         this.range = range;
         this.week = globalHr;
         this.maxDays = maxDays;
@@ -50,6 +54,8 @@ public class UserConfig {
         this.fitDay = fitDay;
         this.schedulingAlgorithm = schedulingAlgorithm;
         this.minHours = minHours;
+        this.optimizeDay = optimizeDay;
+        this.defaultAtStart = defaultAtStart;
     }
 
     public int[] getRange() {
@@ -202,5 +208,25 @@ public class UserConfig {
      */
     public void setMinHours(double minHours) {
         this.minHours = minHours;
+    }
+
+    public boolean getOptimizeDay() {
+        return optimizeDay;
+    }
+
+    public void setOptimizeDay(boolean optimizeDay) {
+        this.optimizeDay = optimizeDay;
+    }
+
+    public boolean isOptimizeDay() {
+        return optimizeDay;
+    }
+
+    public boolean isDefaultAtStart() {
+        return defaultAtStart;
+    }
+
+    public void setDefaultAtStart(boolean defaultAtStart) {
+        this.defaultAtStart = defaultAtStart;
     }
 }

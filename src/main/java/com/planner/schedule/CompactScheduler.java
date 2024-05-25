@@ -15,11 +15,10 @@ import java.util.PriorityQueue;
  * This involves the utilization of Longest-Job-First in order to compute the schedule for the week. {@link UserConfig}
  * options allow for another style such as Shortest-Job-First well as other restraints for scheduling.
  * <p>
- * Schedule corrections occur when overflows happen and are properly handled in accordance with the algorithm type. In {@code CompactScheduler},
- * this involves maintaining that distributive mindset when reallocating the tasks across the given week.
+ * Day optimizations occur when {@link com.planner.models.Task.SubTask} can be more uniformly fitted around {@link com.planner.models.Event}.
+ * However, the user must have 'optimizeDay' config option set to true via the {@link UserConfig}.
  *
  * @author Andrew Roe
- * @since 0.3.0
  */
 public class CompactScheduler implements Scheduler {
 
@@ -29,6 +28,8 @@ public class CompactScheduler implements Scheduler {
     private final UserConfig userConfig;
     /** EventLog for logging data on Day actions */
     private final EventLog eventLog;
+    /** Boolean value for whether we are scheduling a Day that is in fact today */
+    private boolean isToday;
 
     /**
      * Constructs a new {@code CompactScheduler} with a given {@link UserConfig} and {@link EventLog}
@@ -66,7 +67,7 @@ public class CompactScheduler implements Scheduler {
             Task task = taskManager.remove();
             double maxHours = getMaxHours(day, task, date);
             // status of task creation
-            boolean validTaskStatus = day.addSubTaskManually(task, maxHours);
+            boolean validTaskStatus = day.addSubTaskManually(task, maxHours, userConfig, date, isToday);
             // adds task to relevant completion heap
             if (task.getDueDate().equals(day.getDate()) || task.getSubTotalHoursRemaining() == 0) complete.add(task);
             else incomplete.add(task);
@@ -83,18 +84,21 @@ public class CompactScheduler implements Scheduler {
         return numErrors;
     }
 
-    private double getMaxHours(Day day, Task task, Calendar date) {
+    private double getMaxHours(Day day, Task task, Calendar date) { //todo need to utilize the 'defaultAtStart' config option here
         // sets up the starting hour for the day based on the given time from 'date'
         int startingHour = date.get(Calendar.HOUR_OF_DAY);
-        boolean today = false;
+        isToday = false;
         if (date.get(Calendar.DATE) == day.getDate().get(Calendar.DATE)
                 && date.get(Calendar.MONTH) == day.getDate().get(Calendar.MONTH)
                 && date.get(Calendar.YEAR) == day.getDate().get(Calendar.YEAR)) {
             startingHour = Math.max(userConfig.getRange()[0], startingHour);
-            today = true;
+            isToday = true;
         } else {
             startingHour = userConfig.getRange()[0];
         }
+
+        // todo need to test if this functions correctly with 'defaultAtStart'
+        if (userConfig.isDefaultAtStart()) startingHour = userConfig.getRange()[0];
 
         double maxHours = 0.0;
         if (task.getDueDate().equals(day.getDate())) {
@@ -102,7 +106,7 @@ public class CompactScheduler implements Scheduler {
                 double remainingHours = 24.0 - (startingHour + day.getHoursFilled());
                 maxHours = Math.min(remainingHours, task.getSubTotalHoursRemaining());
                 // this chops off 30 minutes at the end of the day when it's past midnight
-                if (remainingHours - maxHours < 1.0 && date.get(Calendar.MINUTE) >= 30) {
+                if (remainingHours - maxHours == 0.0 && date.get(Calendar.MINUTE) >= 30) {
                     maxHours -= 0.5;
                 }
 //                if (startingHour + maxHours >= 24 && date.get(Calendar.MINUTE) >= 30) {
@@ -111,7 +115,7 @@ public class CompactScheduler implements Scheduler {
             } else {
                 maxHours = task.getSubTotalHoursRemaining();
             }
-        } else if (today) { // we need to deal with Scenarios C & D [DONE]
+        } else if (isToday) { // we need to deal with UseCases C & D [DONE]
             double remainingHours = userConfig.getRange()[1] - (startingHour + day.getHoursFilled());
             if (remainingHours > 0 && day.getSpareHours() > 0) {
                 maxHours = Math.min(remainingHours, task.getSubTotalHoursRemaining());
@@ -129,7 +133,7 @@ public class CompactScheduler implements Scheduler {
     }
 
     @Override
-    public boolean correctSchedule(List<Day> schedule, int errorCount) {
-        return false;
+    public int optimizeDay(Day day) {
+        return 0;
     }
 }

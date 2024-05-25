@@ -30,8 +30,7 @@ public class Task implements Comparable<Task>, Linker {
     private double averageNumHours;
     /** CheckList of Items for Task */
     private CheckList checkList;
-    /** Label for String */ //TODO will need to finish later
-    private List<Label> labelList;
+    private Card.Colors color;// todo we will use this in place of the label
 
     /**
      * Primary constructor for Task
@@ -46,7 +45,6 @@ public class Task implements Comparable<Task>, Linker {
         setName(name);
         setTotalHours(hours);
         setDueDate(incrementation);
-        labelList = new ArrayList<>();
     }
 
     /**
@@ -62,7 +60,6 @@ public class Task implements Comparable<Task>, Linker {
         setName(name);
         setTotalHours(hours);
         this.dueDate = date;
-        labelList = new ArrayList<>();
     }
 
     /**
@@ -204,6 +201,14 @@ public class Task implements Comparable<Task>, Linker {
      */
     public double getAverageNumHours() {
         return averageNumHours;
+    }
+
+    public Card.Colors getColor() {
+        return color;
+    }
+
+    public void setColor(Card.Colors color) {
+        this.color = color;
     }
 
     public boolean addCheckList(CheckList checkList) {
@@ -348,29 +353,16 @@ public class Task implements Comparable<Task>, Linker {
         Task task = (Task) o;
         return id == task.id && totalHours == task.totalHours && subTotalHours == task.subTotalHours &&
                 averageNumHours == task.averageNumHours && name.equals(task.name) && dueDate.equals(task.dueDate) &&
-                Objects.equals(checkList, task.checkList) && Objects.equals(labelList, task.labelList);
+                Objects.equals(checkList, task.checkList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, dueDate, totalHours, subTotalHours, averageNumHours, checkList, labelList);
+        return Objects.hash(id, name, dueDate, totalHours, subTotalHours, averageNumHours, checkList);
     }
 
     public CheckList getCheckList() {
         return checkList;
-    }
-
-    //TODO need to add more functionality
-    public boolean addLabel(Label label) {
-        return labelList.add(label);
-    }
-
-    public boolean addLabelList(List<Label> labels) {
-        return labelList.addAll(labels);
-    }
-
-    public List<Label> getLabel() {
-        return labelList;
     }
 
     public CheckList getChecklist() {
@@ -379,9 +371,7 @@ public class Task implements Comparable<Task>, Linker {
 
     @Override
     public boolean add(Linker o) {
-        if(o instanceof Label) {
-            return labelList.add((Label) o);
-        } else if(o instanceof CheckList) {
+        if(o instanceof CheckList) {
             return addCheckList((CheckList) o);
         }
         return false;
@@ -389,9 +379,7 @@ public class Task implements Comparable<Task>, Linker {
 
     @Override
     public boolean remove(Linker o) {
-        if(o instanceof Label) {
-            return labelList.remove((Label) o);
-        } else if(o instanceof CheckList) {
+        if(o instanceof CheckList) {
             //todo need to update this part
         }
         return false;

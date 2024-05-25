@@ -37,14 +37,4 @@ public class JsonHandler {
         Gson gson = new Gson();
         return gson.fromJson(jsonStr, Task.class);
     }
-
-    public static String createLabelJson(Label label) {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        return gson.toJson(label);
-    }
-
-    public static Label readLabelJson(String jsonStr) {
-        Gson gson = new Gson();
-        return gson.fromJson(jsonStr, Label.class);
-    }
 }

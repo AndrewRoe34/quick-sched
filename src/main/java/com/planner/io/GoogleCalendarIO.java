@@ -93,27 +93,19 @@ public class GoogleCalendarIO {
     }
 
     // [COMPLETE]
-    public void exportScheduleToGoogle(UserConfig userconfig, List<Day> week, java.util.Calendar scheduleTime) throws IOException {
-        int i = 0;
+    public void exportScheduleToGoogle(UserConfig userconfig, List<Day> week) throws IOException {
+        int dayIdx = 0;
         // need to handle null pointer here since if we try to export to Google without building, else we'll get an exception
-        int hour = userconfig.getRange()[0];
-        int min = 0;
-        if (scheduleTime != null) {
-            hour = scheduleTime.get(java.util.Calendar.HOUR_OF_DAY);
-            min = scheduleTime.get(java.util.Calendar.MINUTE);
-        }
         for(Day day : week) {
+            int taskIdx = 0;
             for(Task.SubTask subTask : day.getSubTasks()) {
                 Task task = subTask.getParentTask();
-                Event event = GoogleCalendarUtil.formatTaskToEvent(task, subTask.getSubTaskHours(), i, hour, min);
+                Event event = GoogleCalendarUtil.formatTaskToEvent(task, day.getTimeStamps().get(taskIdx), dayIdx);
                 event = service.events().insert(calendarId, event).execute();
                 System.out.printf("Event created: %s\n", event.getHtmlLink());
-                hour += (int) subTask.getSubTaskHours();
-                min += subTask.getSubTaskHours() % 1 == 0.5 ? 30: 0;
+                taskIdx++;
             }
-            i++;
-            hour = userconfig.getRange()[0];
-            min = 0;
+            dayIdx++;
         }
         eventLog.reportGoogleCalendarExportSchedule();
     }

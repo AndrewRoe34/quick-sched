@@ -14,7 +14,6 @@ import java.util.PriorityQueue;
  * The interface {@code Scheduler} is for all scheduling implementations to sort out tasks via the {@link ScheduleManager}
  *
  * @author Andrew Roe
- * @since 0.3.0
  */
 public interface Scheduler {
 
@@ -35,14 +34,14 @@ public interface Scheduler {
     int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager, Calendar date);
 
     /**
-     * Corrects schedule by eliminating all overflows via adjusting number of hours per day
+     * Optimizes a {@link Day}'s set of {@link com.planner.models.Task.SubTask} around {@link com.planner.models.Event}
+     * by reducing the amount of interruptions in task blocks. This functions similar to how dynamic memory is fitted
+     * to maximize spacing.
      * <p>
-     * NOTE: This assumes that past days are stored in an archived list (thus, the first index
-     * of schedule is for today)
+     * NOTE: This operation will only occur if the user has the 'optimizeDay' config option set to 'true'
      *
-     * @param schedule list of days scheduled
-     * @param errorCount number of errors currently in schedule
-     * @return boolean value if successful (e.g. would be false if there are more than 24 hours assigned for a task due today)
+     * @param day day being optimized around {@link com.planner.models.Event}
+     * @return number of times a {@link com.planner.models.Task.SubTask} was not uniformly fitted
      */
-    boolean correctSchedule(List<Day> schedule, int errorCount);
+    int optimizeDay(Day day);
 }

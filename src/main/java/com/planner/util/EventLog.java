@@ -77,7 +77,7 @@ public class EventLog {
      * Reports a given Card action
      *
      * @param card Card being reported
-     * @param type Action type (0=Card Created, 1=Task Added, 2=Task Removed, 3=Label Added, 4=Label Removed)
+     * @param type Action type (0=Card Created, 1=Task Added, 2=Task Removed)
      */
     public void reportCardAction(Card card, int type) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
@@ -90,14 +90,10 @@ public class EventLog {
             sb.append(" ADD(TASK): ");
         } else if(type == 2) {
             sb.append(" REMOVE(TASK): ");
-        } else if(type == 3) {
-            sb.append(" ADD(LABEL): ");
-        } else {
-            sb.append(" REMOVE(LABEL): ");
         }
 
-        //output.print(" ID=" + card.getId()); //TODO: need to finish getId()
-        sb.append(", TITLE=").append(card.getLabel());
+        sb.append(" ID=" + card.getId()); //TODO: need to finish getId()
+        sb.append(", TITLE=").append(card.getTitle());
         sb.append("\n");
     }
 

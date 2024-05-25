@@ -1,7 +1,6 @@
 package com.planner.scripter;
 
 import com.planner.models.Card;
-import com.planner.models.Label;
 import com.planner.models.Task;
 import com.planner.io.IOProcessing;
 import com.planner.manager.ScheduleManager;
@@ -372,11 +371,40 @@ public class ScriptFSM {
         if (classInstance instanceof CardInstance) {
             CardInstance card = (CardInstance) classInstance;
             t1 = lookupVariable(card.getVarName());
+            Card.Colors colorId = null;
+            switch (card.getColor()) {
+                case "RED":
+                    colorId = Card.Colors.RED;
+                    break;
+                case "ORANGE":
+                    colorId = Card.Colors.ORANGE;
+                    break;
+                case "YELLOW":
+                    colorId = Card.Colors.YELLOW;
+                    break;
+                case "GREEN":
+                    colorId = Card.Colors.GREEN;
+                    break;
+                case "LIGHT_BLUE":
+                    colorId = Card.Colors.LIGHT_BLUE;
+                    break;
+                case "BLUE":
+                    colorId = Card.Colors.BLUE;
+                    break;
+                case "INDIGO":
+                    colorId = Card.Colors.INDIGO;
+                    break;
+                case "VIOLET":
+                    colorId = Card.Colors.VIOLET;
+                    break;
+                default:
+                    throw new InvalidFunctionException("Invalid color type was provided");
+            }
             if(t1 == null) {
-                t1 = new Type(new Card(card.getTitle()), card.getVarName(), Type.TypeId.CARD);
+                t1 = new Type(new Card(scheduleManager.getCards().size(), card.getTitle(), colorId), card.getVarName(), Type.TypeId.CARD);
                 globalStack.add(t1);
             } else {
-                t1.setLinkerData(new Card(card.getTitle()), Type.TypeId.CARD);
+                t1.setLinkerData(new Card(scheduleManager.getCards().size(), card.getTitle(), colorId), Type.TypeId.CARD);
             }
             scheduleManager.getCards().add((Card) t1.getLinkerData());
         } else if (classInstance instanceof TaskInstance) {
@@ -398,15 +426,6 @@ public class ScriptFSM {
                 globalStack.add(t1);
             } else {
                 t1.setLinkerData(new CheckList(scheduleManager.getLastCLId() + clList.size(), cl.getTitle()), Type.TypeId.CHECKLIST);
-            }
-        } else if (classInstance instanceof LabelInstance) {
-            LabelInstance label = (LabelInstance) classInstance;
-            t1 = lookupVariable(label.getVarName());
-            if(t1 == null) {
-                t1 = new Type(new Label(scheduleManager.getLastLabelId() + labelList.size(), label.getName(), label.getColor()), label.getVarName(), Type.TypeId.LABEL);
-                globalStack.add(t1);
-            } else {
-                t1.setLinkerData(new Label(scheduleManager.getLastLabelId() + labelList.size(), label.getName(), label.getColor()), Type.TypeId.LABEL);
             }
         } else if (classInstance instanceof StringInstance) {
             StringInstance str = (StringInstance) classInstance;
@@ -986,44 +1005,7 @@ public class ScriptFSM {
     }
 
     protected void funcDisplaySchedule() {
-        List<Day> schedule = scheduleManager.getSchedule();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        Calendar date = Time.getFormattedCalendarInstance(0);
-        int maxTasks = 0;
-        for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
-            System.out.print(sdf.format(date.getTime()));
-            System.out.print("                              |");
-            maxTasks = Math.max(maxTasks, schedule.get(i).getNumSubTasks());
-            date = Time.getFormattedCalendarInstance(date, 1);
-        }
-
-        System.out.println();
-        for(int i = 0; i < Math.min(schedule.size(), 6); i++) {
-            System.out.print("-----------------------------------------");
-        }
-
-        for (int i = 0; i < maxTasks; i++) {
-            System.out.println();
-            for (int d = 0; d < Math.min(schedule.size(), 6); d++) {
-                Day day = schedule.get(d);
-                if (i < day.getNumSubTasks()) {
-                    Task.SubTask subTask = day.getSubTask(i);
-                    String outputSubTask = subTask.toString();
-                    if (outputSubTask.length() > 40) {
-                        System.out.print(outputSubTask.substring(0, 40));
-                    } else {
-                        System.out.print(outputSubTask);
-                        for (int j = outputSubTask.length(); j < 40; j++) {
-                            System.out.print(" ");
-                        }
-                    }
-                    System.out.print("|");
-                } else {
-                    System.out.print("                                        |");
-                }
-            }
-        }
-        System.out.println();
+        System.out.println(scheduleManager.buildScheduleStr());
     }
 
     /**

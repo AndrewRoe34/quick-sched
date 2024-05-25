@@ -7,12 +7,13 @@ func create_card()
   flag: input_bool("Create Card(T/F) -> ")
   if (flag)
     _name: input_line("Name -> ")
-    _c1: card(_name)
+    _color: input_line("Color -> ")
+    _c1: card(_name, _color)
     create_card()
   else
     println()
 
-create_card()
+#create_card()
 display_board()
 
 func process_card(_t1)
@@ -47,7 +48,7 @@ if (task_added)
   add_all_tasks()
 
 build()
-export_google()
+#export_google()
 
 println("\n")
 display_schedule()

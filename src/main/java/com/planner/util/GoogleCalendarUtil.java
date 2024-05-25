@@ -5,6 +5,7 @@ import com.planner.models.Task;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
+import com.planner.schedule.day.Day;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.List;
  */
 public class GoogleCalendarUtil {
 
-    public static Event formatTaskToEvent(Task task, double subTaskHours, int dayIdx, int dayHour, int dayMin) {
+    public static Event formatTaskToEvent(Task task, Day.TimeStamp timeStamp, int dayIdx) {
         Event event = new Event().setSummary(task.getName()); //todo need to display labels with given Task
         StringBuilder sb = new StringBuilder("Due: ");
         sb.append(task.getDueDate().get(Calendar.YEAR))
@@ -42,20 +43,52 @@ public class GoogleCalendarUtil {
         event.setDescription(sb.toString());
 
         Calendar now = Time.getFormattedCalendarInstance(dayIdx);
-        now.add(Calendar.HOUR, dayHour);
-        now.add(Calendar.MINUTE, dayMin);
+        now.set(Calendar.HOUR, timeStamp.getStartHour());
+        now.set(Calendar.MINUTE, timeStamp.getStartMin());
         DateTime startDateTime = new DateTime(now.getTime());
         EventDateTime start = new EventDateTime().setDateTime(startDateTime);
         event.setStart(start);
 
-        now.add(Calendar.HOUR, (int) subTaskHours);
-        if (subTaskHours % 1 == 0.5) now.add(Calendar.MINUTE, 30);
+        now.set(Calendar.HOUR, timeStamp.getEndHour());
+        now.set(Calendar.MINUTE, timeStamp.getEndMin());
         DateTime endDateTime = new DateTime(now.getTime());
         EventDateTime end = new EventDateTime().setDateTime(endDateTime);
         event.setEnd(end);
-        if (!task.getLabel().isEmpty()) {
-            event.setColorId("" + task.getLabel().get(0).getColor());
-        } else event.setColorId("7");
+
+        // todo will use a switch case here with regards to setting the color ids
+        if (task.getColor() != null) {
+            switch (task.getColor()) {
+                case RED:
+                    event.setColorId("");
+                    break;
+                case ORANGE:
+                    event.setColorId("");
+                    break;
+                case YELLOW:
+                    event.setColorId("");
+                    break;
+                case GREEN:
+                    event.setColorId("");
+                    break;
+                case LIGHT_BLUE:
+                    event.setColorId("7");
+                    break;
+                case BLUE:
+                    event.setColorId("");
+                    break;
+                case INDIGO:
+                    event.setColorId("");
+                    break;
+                case VIOLET:
+                    event.setColorId("");
+                    break;
+            }
+        } else {
+            event.setColorId("7");
+        }
+//        if (!task.getLabel().isEmpty()) {
+//            event.setColorId("" + task.getLabel().get(0).getColor());
+//        } else event.setColorId("7");
 
         return event;
     }

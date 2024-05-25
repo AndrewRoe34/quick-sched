@@ -1,7 +1,6 @@
 package com.planner.scripter;
 
 import com.planner.models.Card;
-import com.planner.models.Label;
 import com.planner.models.Linker;
 import com.planner.scripter.exception.InvalidGrammarException;
 import com.planner.models.CheckList;
@@ -25,8 +24,6 @@ public class Type implements Comparable<Type> {
         CARD,
         /** Enum value for the Task class */
         TASK,
-        /** Enum value for the Label class */
-        LABEL,
         /** Enum value for the CheckList class */
         CHECKLIST,
         /** Enum value for the Integer class */
@@ -123,7 +120,6 @@ public class Type implements Comparable<Type> {
                 setBoolConstant(ret.getBoolConstant());
                 break;
             case CARD:
-            case LABEL:
             case CHECKLIST:
             case TASK:
             case BOARD:
@@ -295,25 +291,6 @@ public class Type implements Comparable<Type> {
             case TASK:
                 if(args.length != 1) throw new InvalidGrammarException();
                 return new Type(addType(args[0]), null);
-            case LABEL:
-                switch(attr) {
-                    case GET_TITLE:
-                        if(args.length != 0) throw new InvalidGrammarException();
-                        return new Type(((Label) datatype).getName(), null);
-                    case GET_COLOR:
-                        if(args.length != 0) throw new InvalidGrammarException();
-                        return new Type(((Label) datatype).getColor(), null);
-                    case SET_TITLE:
-                        if(args.length != 1) throw new InvalidGrammarException();
-                        ((Label) datatype).setName(args[0].getStringConstant());
-                        return null;
-                    case SET_COLOR:
-                        if(args.length != 1) throw new InvalidGrammarException();
-                        ((Label) datatype).setColor(args[0].getIntConstant());
-                        return null;
-                    default:
-                        throw new InvalidGrammarException();
-                }
             case CHECKLIST:
                 switch(attr) {
                     case GET_ID:
