@@ -50,7 +50,7 @@ if (task_added)
 build()
 display_schedule()
 println()
-#export_google()
+export_google()
 
 if (task_added)
   jbin_file: input_word("Export JBin -> ")

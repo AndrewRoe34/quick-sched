@@ -150,7 +150,13 @@ public class Day {
         // handles the creation of timestamps for subtasks created
         int taskHours = (int) hours;
         int taskMin = hours % 1 == 0.5 ? 30 : 0;
-        Calendar startTime = Time.getFirstAvailableTimeInDay(taskTimeStamps, eventTimeStamps, userConfig, time, isToday);
+        Calendar temp;
+        if (isToday) {
+            temp = time;
+        } else {
+            temp = this.date;
+        }
+        Calendar startTime = Time.getFirstAvailableTimeInDay(taskTimeStamps, eventTimeStamps, userConfig, temp, isToday);
         Calendar endTime = (Calendar) startTime.clone();
         endTime.add(Calendar.HOUR_OF_DAY, taskHours);
         endTime.add(Calendar.MINUTE, taskMin);

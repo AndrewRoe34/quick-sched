@@ -146,7 +146,7 @@ public class Time {
         return startTime;
     }
 
-    public static List<Double> computeDayTimeBlocks(Day day) {
+    public static List<Double> computeTimeBlocks(Day day) {
         List<Double> intervals = new ArrayList<>();
         for (TimeStamp taskTimeStamp : day.getTaskTimeStamps()) {
             intervals.add(Time.getTimeInterval(taskTimeStamp.getStart(), taskTimeStamp.getEnd()));
