@@ -48,11 +48,9 @@ if (task_added)
   add_all_tasks()
 
 build()
-#export_google()
-
-println("\n")
 display_schedule()
 println()
+export_google()
 
 if (task_added)
   jbin_file: input_word("Export JBin -> ")

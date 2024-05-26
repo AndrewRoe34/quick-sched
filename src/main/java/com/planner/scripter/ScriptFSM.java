@@ -181,10 +181,10 @@ public class ScriptFSM {
 //        System.out.println("\nSCHEDULE:");
 //        scheduleManager.outputScheduleToConsole();
 
+        IOProcessing.writeScripterLogToFile(scriptLog.toString());
+        IOProcessing.writeSysLogToFile(eventLog.toString());
         if(preProcessor.isLog()) {
-            IOProcessing.writeScripterLogToFile(scriptLog.toString());
-            IOProcessing.writeSysLogToFile(eventLog.toString());
-            System.out.println("\nSYSTEM LOG:\n" + eventLog.toString());
+            System.out.println("\nSYSTEM LOG:\n" + eventLog);
             System.out.println("SCRIPT:");
             scriptScanner = new Scanner(new File(filename));
             while (scriptScanner.hasNextLine()) {

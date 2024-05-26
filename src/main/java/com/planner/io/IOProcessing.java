@@ -2,14 +2,10 @@ package com.planner.io;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 import com.planner.schedule.day.Day;
-import com.planner.models.Task;
 import com.planner.scripter.exception.InvalidGrammarException;
-import com.planner.models.UserConfig;
 
 /**
  * Handles all input/output functionality for the ScheduleManager

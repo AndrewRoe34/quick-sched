@@ -27,7 +27,7 @@ public class Day {
     /** List of time stamps for all subtasks */
     private final List<TimeStamp> timeStamps;
     /** Map by starting hour and the associated event */
-    private final Map<Integer, Event> eventMap;
+    private final List<Event> eventList;
     /** ID for the specific Day */
     private int id;
 
@@ -44,7 +44,7 @@ public class Day {
         setDate(incrementation);
         subtaskManager = new ArrayList<>();
         timeStamps = new ArrayList<>();
-        eventMap = new HashMap<>();
+        eventList = new ArrayList<>();
     }
 
     public Day(int id, double capacity, Calendar date) {
@@ -53,7 +53,7 @@ public class Day {
         this.date = date;
         subtaskManager = new ArrayList<>();
         timeStamps = new ArrayList<>();
-        eventMap = new HashMap<>();
+        eventList = new ArrayList<>();
     }
 
     /**
@@ -126,6 +126,32 @@ public class Day {
         subtaskManager.add(subtask);
         this.size += hours;
 
+        // nothing changes here (thank God)
+        if (eventList.isEmpty()) {
+            createTimeStamp(hours, userConfig, time, isToday);
+            return this.size <= this.capacity;
+        }
+
+        // todo this right here is wrong (we need to check the last timestamp in the list for subtasks to figure this out)
+        //   and also, retrieving the first event doesn't make sense either (we need to properly vet here)
+        //   however, once we fix these, we can use the 'createTimeStamp' method with full force like the while loop below
+        //   after this, we can then work on the optimize day method to allocate tasks according to their length
+        //  this shit is a real pain in the ass
+        double capableHours = Time.getTimeUntilEvent(Time.getNearestQuarterOfHour(time, true), eventList.get(0).getTimeStamp());
+        if (hours <= capableHours) {
+            createTimeStamp(hours, userConfig, time, isToday);
+        } else {
+            while (hours > 0) {
+                createTimeStamp(capableHours, userConfig, time, isToday);
+                hours -= capableHours;
+                capableHours = Time.getTimeUntilEvent(Time.getNearestQuarterOfHour(time, true), eventList.get(0).getTimeStamp());
+            }
+        }
+        // todo might need to change this tbh
+        return this.size <= this.capacity;
+    }
+
+    private void createTimeStamp(double hours, UserConfig userConfig, Calendar time, boolean isToday) {
         // handles the creation of timestamps for subtasks created
         int taskHours = (int) hours;
         int taskMin = hours % 1 == 0.5 ? 30 : 0;
@@ -154,8 +180,6 @@ public class Day {
 
             timeStamps.add(new TimeStamp(ts.getEndHour(), ts.getEndMin(), endHr, endMin));
         }
-
-        return this.size <= this.capacity;
     }
 
     public boolean addEvent(Event event) {
@@ -195,7 +219,7 @@ public class Day {
      *
      * @return number of free hours available for scheduling
      */
-    public double getSpareHours() {
+    public double getSpareHours() {  // todo need to overhaul due to Events and their spacing relative to other items
         return Math.max(capacity - size, 0);
     }
 
@@ -204,7 +228,7 @@ public class Day {
      *
      * @return number of hours assigned for day
      */
-    public double getHoursFilled() {
+    public double getHoursFilled() { // todo need to overhaul due to Events and their spacing relative to other items
         return this.size;
     }
 
@@ -213,7 +237,7 @@ public class Day {
      *
      * @return boolean value for opening in Day
      */
-    public boolean hasSpareHours() {
+    public boolean hasSpareHours() { // todo need to overhaul due to Events and their spacing relative to other items
         return getSpareHours() > 0;
     }
 
@@ -257,6 +281,17 @@ public class Day {
         return subtaskManager;
     }
 
+    public List<SubTask> getSubtaskManager() {
+        return subtaskManager;
+    }
+
+    /**
+     * Manages the creation of a time interval along with properly formatting its display.
+     * <p>
+     * Example: 12:30pm-4:15pm
+     *
+     * @author Andrew Roe
+     */
     public static class TimeStamp {
         private final int startHour;
         private final int startMin;

@@ -1,6 +1,10 @@
 package com.planner.util;
 
+import com.planner.models.UserConfig;
+import com.planner.schedule.day.Day;
+
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Handles all time operations involving Calendar instances
@@ -97,6 +101,35 @@ public class Time {
             }
         }
         return clone;
+    }
+
+    public static double getTimeUntilEvent(Calendar curr, Day.TimeStamp event) {
+        // todo determine how many hours or minutes exist between current time and upcoming event
+        //   if the minutes is less than 30, return 0
+        //     e.g. 1 hour and 27 minutes --> 1 hour
+        //     e.g. 1 hour and 40 minutes --> 1.5 hours
+        //   we can safely assume that the event is properly aligned within the quarter period of the day (0, 15, 30, 45)
+        if (curr.get(Calendar.HOUR_OF_DAY) < event.getStartHour()) {
+            // compute difference
+            double hours = event.getStartHour() - curr.get(Calendar.HOUR_OF_DAY);
+            int min = 0;
+            if (event.getStartMin() >= curr.get(Calendar.MINUTE)) {
+                min = event.getStartMin() - curr.get(Calendar.MINUTE);
+                hours += min < 30 ? 0 : 0.5;
+            } else {
+                min = curr.get(Calendar.MINUTE) - event.getStartMin();
+                if (min > 30) hours--;
+                else hours -= 0.5;
+            }
+            return hours < 0 ? 0 : hours;
+        } else {
+            return 0;
+        }
+    }
+
+    public static List<Double> computeDayTimeBlocks(Day day, UserConfig userConfig) {
+        // todo this will help with the 'optimizeDay' config
+        return null;
     }
 
 }

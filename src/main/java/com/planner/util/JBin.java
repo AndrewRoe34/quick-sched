@@ -82,7 +82,7 @@ public class JBin {
             for(Card c : cards) {
                 String title = c.getTitle();
                 cardSB.append("  ").append(title);
-                cardSB.append(", ").append(c.getColorId()); // todo need to check that this works
+                cardSB.append(", ").append(c.getColorId());
                 for(Task t : c.getTask()) {
                     if(!taskList.contains(t)) {
                         taskList.add(t);
@@ -293,7 +293,7 @@ public class JBin {
                 cardOpen = true;
                 Calendar currDay = Time.getFormattedCalendarInstance(0);
                 while(jbinScanner.hasNextLine()) {
-                    type = jbinScanner.nextLine(); // todo need to check that color id is now properly processed
+                    type = jbinScanner.nextLine();
                     tokens = type.split(",");
                     if(tokens.length == 0) {
                         throw new InputMismatchException();
@@ -365,7 +365,7 @@ public class JBin {
                                 } else {
                                     taskList.get(taskIdx).setTotalHours(hours + taskList.get(taskIdx).getTotalHours());
                                 }
-                                day.addSubTask(taskList.get(taskIdx), hours, totalHours > 8); // todo need to user UserConfig here
+                                day.addSubTask(taskList.get(taskIdx), hours, totalHours > 8); // todo need to use UserConfig here
                             } else throw new InputMismatchException();
                         }
                         schedule.add(day);

@@ -84,7 +84,7 @@ public class CompactScheduler implements Scheduler {
         return numErrors;
     }
 
-    private double getMaxHours(Day day, Task task, Calendar date) { //todo need to utilize the 'defaultAtStart' config option here
+    private double getMaxHours(Day day, Task task, Calendar date) {
         // sets up the starting hour for the day based on the given time from 'date'
         int startingHour = date.get(Calendar.HOUR_OF_DAY);
         isToday = false;
@@ -97,7 +97,7 @@ public class CompactScheduler implements Scheduler {
             startingHour = userConfig.getRange()[0];
         }
 
-        // todo need to test if this functions correctly with 'defaultAtStart'
+        // resets startingHour to beginning of day
         if (userConfig.isDefaultAtStart()) startingHour = userConfig.getRange()[0];
 
         double maxHours = 0.0;
@@ -134,6 +134,12 @@ public class CompactScheduler implements Scheduler {
 
     @Override
     public int optimizeDay(Day day) {
+        List<Double> timeBlocks = Time.computeDayTimeBlocks(day, userConfig);
+        List<Task.SubTask> subTasks = day.getSubtaskManager();
+        // todo need to combine subTasks that were possibly broken up due to events
+        //   also, if there are no events (and subTasks were not broken up), there is no further optimization
+        //   while we could sort the subTasks, there is little need since the most we'll realistically have is 24 (tiny number, so bruteforce is acceptable)
+
         return 0;
     }
 }

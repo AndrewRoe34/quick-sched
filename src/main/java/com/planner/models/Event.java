@@ -1,19 +1,19 @@
 package com.planner.models;
 
-import java.util.Calendar;
+import com.planner.schedule.day.Day;
 
 public class Event {
 
     private int id;
     private String name;
     private double hours;
-    private Calendar date;
+    private Day.TimeStamp timeStamp;
 
-    public Event(int id, String name, double hours, Calendar date) {
+    public Event(int id, String name, double hours, Day.TimeStamp timeStamp) {
         this.id = id;
         this.name = name;
         this.hours = hours;
-        this.date = date;
+        this.timeStamp = timeStamp;
     }
 
     public int getId() {
@@ -40,11 +40,11 @@ public class Event {
         this.hours = hours;
     }
 
-    public Calendar getDate() {
-        return date;
+    public Day.TimeStamp getTimeStamp() {
+        return timeStamp;
     }
 
-    public void setDate(Calendar date) {
-        this.date = date;
+    public void setTimeStamp(Day.TimeStamp timeStamp) {
+        this.timeStamp = timeStamp;
     }
 }

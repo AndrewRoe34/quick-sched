@@ -6,12 +6,12 @@ TASK {
   Testing, 1.0, 3
   Fix CompareTo, 1.0, -1
   Update Dynamic Sched, 4.0, 0
-  Apply for jobs, 8.0, 1
+  Apply for jobs, 7.0, 1
 }
 
 CARD {
   Default, LIGHT_BLUE, T0
-  Project, RED, T1, T2, T3, T4
+  Project, INDIGO, T1, T2, T3, T4
   DS&A, ORANGE
   Job Hunting, GREEN, T5
   Hobbies, VIOLET

@@ -43,48 +43,46 @@ public class GoogleCalendarUtil {
         event.setDescription(sb.toString());
 
         Calendar now = Time.getFormattedCalendarInstance(dayIdx);
-        now.set(Calendar.HOUR, timeStamp.getStartHour());
+        now.set(Calendar.HOUR_OF_DAY, timeStamp.getStartHour());
         now.set(Calendar.MINUTE, timeStamp.getStartMin());
         DateTime startDateTime = new DateTime(now.getTime());
         EventDateTime start = new EventDateTime().setDateTime(startDateTime);
         event.setStart(start);
 
-        now.set(Calendar.HOUR, timeStamp.getEndHour());
+        now.set(Calendar.HOUR_OF_DAY, timeStamp.getEndHour());
         now.set(Calendar.MINUTE, timeStamp.getEndMin());
         DateTime endDateTime = new DateTime(now.getTime());
         EventDateTime end = new EventDateTime().setDateTime(endDateTime);
         event.setEnd(end);
 
-        // todo will use a switch case here with regards to setting the color ids
+        // will use a switch case here with regards to setting the color ids
         if (task.getColor() != null) {
             switch (task.getColor()) {
                 case RED:
-                    event.setColorId("");
+                    event.setColorId("11");
                     break;
                 case ORANGE:
-                    event.setColorId("");
+                    event.setColorId("6");
                     break;
                 case YELLOW:
-                    event.setColorId("");
+                    event.setColorId("5");
                     break;
                 case GREEN:
-                    event.setColorId("");
+                    event.setColorId("10");
                     break;
                 case LIGHT_BLUE:
                     event.setColorId("7");
                     break;
                 case BLUE:
-                    event.setColorId("");
+                    event.setColorId("1");
                     break;
                 case INDIGO:
-                    event.setColorId("");
+                    event.setColorId("9");
                     break;
                 case VIOLET:
-                    event.setColorId("");
+                    event.setColorId("3");
                     break;
             }
-        } else {
-            event.setColorId("7");
         }
 //        if (!task.getLabel().isEmpty()) {
 //            event.setColorId("" + task.getLabel().get(0).getColor());
