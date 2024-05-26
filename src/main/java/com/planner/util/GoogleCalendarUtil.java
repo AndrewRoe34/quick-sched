@@ -59,7 +59,7 @@ public class GoogleCalendarUtil {
         if (task.getColor() != null) {
             switch (task.getColor()) {
                 case RED:
-                    event.setColorId("11");
+                    event.setColorId("4");
                     break;
                 case ORANGE:
                     event.setColorId("6");
@@ -68,7 +68,7 @@ public class GoogleCalendarUtil {
                     event.setColorId("5");
                     break;
                 case GREEN:
-                    event.setColorId("10");
+                    event.setColorId("2");
                     break;
                 case LIGHT_BLUE:
                     event.setColorId("7");
@@ -81,6 +81,9 @@ public class GoogleCalendarUtil {
                     break;
                 case VIOLET:
                     event.setColorId("3");
+                    break;
+                case BLACK:
+                    event.setColorId("8");
                     break;
             }
         }

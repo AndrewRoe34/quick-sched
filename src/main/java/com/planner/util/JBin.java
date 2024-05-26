@@ -401,6 +401,8 @@ public class JBin {
                 return Card.Colors.INDIGO;
             case "VIOLET":
                 return Card.Colors.VIOLET;
+            case "BLACK":
+                return Card.Colors.BLACK;
             default:
                 return null;
         }

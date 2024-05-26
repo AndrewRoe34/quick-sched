@@ -11,8 +11,8 @@ TASK {
 
 CARD {
   Default, LIGHT_BLUE, T0
-  Project, INDIGO, T1, T2, T3, T4
-  DS&A, ORANGE
-  Job Hunting, GREEN, T5
+  Project, RED, T1, T2, T3, T4
+  DS&A, BLACK
+  Job Hunting, BLACK, T5
   Hobbies, VIOLET
 }

@@ -256,7 +256,7 @@ public class ScheduleManager {
     }
 
     public Event addEvent(String name, double hours, Calendar date) {
-        Event e1 = new Event(events.size(), name, hours, null);
+        Event e1 = new Event(events.size(), name, hours, null); // todo need to fix
         events.add(e1);
         return e1;
     }
