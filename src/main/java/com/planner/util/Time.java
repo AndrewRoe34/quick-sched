@@ -3,6 +3,7 @@ package com.planner.util;
 import com.planner.models.UserConfig;
 import com.planner.schedule.day.Day;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -103,33 +104,139 @@ public class Time {
         return clone;
     }
 
-    public static double getTimeUntilEvent(Calendar curr, Day.TimeStamp event) {
-        // todo determine how many hours or minutes exist between current time and upcoming event
+    // [COMPLETE]
+    public static double getTimeInterval(Calendar curr, Calendar event) {
+        // determine how many hours or minutes exist between current time and upcoming event
         //   if the minutes is less than 30, return 0
         //     e.g. 1 hour and 27 minutes --> 1 hour
         //     e.g. 1 hour and 40 minutes --> 1.5 hours
         //   we can safely assume that the event is properly aligned within the quarter period of the day (0, 15, 30, 45)
-        if (curr.get(Calendar.HOUR_OF_DAY) < event.getStartHour()) {
-            // compute difference
-            double hours = event.getStartHour() - curr.get(Calendar.HOUR_OF_DAY);
-            int min = 0;
-            if (event.getStartMin() >= curr.get(Calendar.MINUTE)) {
-                min = event.getStartMin() - curr.get(Calendar.MINUTE);
-                hours += min < 30 ? 0 : 0.5;
-            } else {
-                min = curr.get(Calendar.MINUTE) - event.getStartMin();
-                if (min > 30) hours--;
-                else hours -= 0.5;
-            }
-            return hours < 0 ? 0 : hours;
-        } else {
-            return 0;
-        }
+        long milliseconds = Math.abs(curr.getTimeInMillis() - event.getTimeInMillis());
+        int min = (int) Math.round(milliseconds / 1000.0 / 60.0);
+        double hours = (int) (min / 60.0);
+        min %= 60;
+        hours += min >= 30 ? 0.5 : 0;
+        return hours;
     }
 
-    public static List<Double> computeDayTimeBlocks(Day day, UserConfig userConfig) {
-        // todo this will help with the 'optimizeDay' config
-        return null;
+    // todo once this piece is done, i'm going to get some sleep
+    public static Calendar getFirstAvailableTimeInDay(List<TimeStamp> taskTimeStamps, List<TimeStamp> eventTimeStamps, UserConfig userConfig, Calendar time, boolean isToday) {
+        Calendar startTime;
+        if (eventTimeStamps.isEmpty()) {
+            if (isToday && time.get(Calendar.HOUR_OF_DAY) >= userConfig.getRange()[0] && taskTimeStamps.isEmpty() && !userConfig.isDefaultAtStart()) {
+                startTime = Time.getNearestQuarterOfHour(time, true);
+            } else if (taskTimeStamps.isEmpty()) {
+                startTime = Time.getFormattedCalendarInstance(time, 0);
+                startTime.set(Calendar.HOUR_OF_DAY, userConfig.getRange()[0]);
+                startTime.set(Calendar.MINUTE, 0);
+            } else {
+                TimeStamp ts = taskTimeStamps.get(taskTimeStamps.size() - 1);
+                startTime = (Calendar) ts.getEnd().clone();
+            }
+        } else {
+            // todo this is where we add code for events that exist
+            /*
+            Steps for how we'll solve this:
+            1. Use the above conditions
+            2. Check for event appearance
+            3. Determine the appropriate starting point in relation to its existence
+             */
+            startTime = null;
+        }
+        return startTime;
+    }
+
+    public static List<Double> computeDayTimeBlocks(Day day) {
+        List<Double> intervals = new ArrayList<>();
+        for (TimeStamp taskTimeStamp : day.getTaskTimeStamps()) {
+            intervals.add(Time.getTimeInterval(taskTimeStamp.getStart(), taskTimeStamp.getEnd()));
+        }
+        return intervals;
+    }
+
+    /**
+     * Manages the creation of a time interval along with properly formatting its display.
+     * <p>
+     * Example: 12:30pm-4:15pm
+     *
+     * @author Andrew Roe
+     */
+    public static class TimeStamp implements Comparable<TimeStamp> {
+        private final Calendar start;
+        private final Calendar end;
+        private String strStamp;
+
+        public TimeStamp(Calendar start, Calendar end) {
+            this.start = start;
+            this.end = end;
+            buildStamp();
+        }
+
+        public Calendar getStart() {
+            return start;
+        }
+
+        public Calendar getEnd() {
+            return end;
+        }
+
+        public int getStartHour() {
+            return start.get(Calendar.HOUR_OF_DAY);
+        }
+
+        public int getStartMin() {
+            return start.get(Calendar.MINUTE);
+        }
+
+        public int getEndHour() {
+            return end.get(Calendar.HOUR_OF_DAY);
+        }
+
+        public int getEndMin() {
+            return end.get(Calendar.MINUTE);
+        }
+
+        private void buildStamp() {
+            StringBuilder sb = new StringBuilder();
+
+            int _startHour = getStartHour() - 12;
+            if (getStartHour() <= 9 || getStartHour() >= 13 && getStartHour() <= 21) sb.append("0");
+            if (getStartHour() <= 12) sb.append(getStartHour());
+            if (getStartHour() > 12) sb.append(_startHour);
+            sb.append(":");
+            if (getStartMin() < 10) sb.append("0");
+            sb.append(getStartMin());
+            if (getStartHour() < 12) sb.append("am");
+            else sb.append("pm");
+
+            sb.append("-");
+
+            int _endHour = getEndHour() - 12;
+            if (getEndHour() <= 9 || getEndHour() >= 13 && getEndHour() <= 21) sb.append("0");
+            if (getEndHour() <= 12) sb.append(getEndHour());
+            if (getEndHour() > 12) sb.append(_endHour);
+            sb.append(":");
+            if (getEndMin() < 10) sb.append("0");
+            sb.append(getEndMin());
+            if (getEndHour() < 12) sb.append("am");
+            else sb.append("pm");
+
+            strStamp = sb.toString();
+        }
+
+        @Override
+        public String toString() {
+            return strStamp;
+        }
+
+        @Override
+        public int compareTo(TimeStamp o) {
+            if (this.getStartHour() < o.getStartHour()) return -1;
+            else if (this.getStartHour() > o.getStartHour()) return 1;
+            else {
+                return Integer.compare(this.getStartMin(), o.getStartMin());
+            }
+        }
     }
 
 }

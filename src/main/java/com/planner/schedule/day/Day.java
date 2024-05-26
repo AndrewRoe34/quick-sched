@@ -8,6 +8,7 @@ import com.planner.models.Task;
 import com.planner.models.Task.SubTask;
 import com.planner.models.UserConfig;
 import com.planner.util.Time;
+import com.planner.util.Time.TimeStamp;
 
 /**
  * Represents a single Day in the year
@@ -25,9 +26,11 @@ public class Day {
     /** TreeSet of all SubTasks */
     private final List<SubTask> subtaskManager;
     /** List of time stamps for all subtasks */
-    private final List<TimeStamp> timeStamps;
+    private final List<TimeStamp> taskTimeStamps;
     /** Map by starting hour and the associated event */
     private final List<Event> eventList;
+
+    private final List<TimeStamp> eventTimeStamps;
     /** ID for the specific Day */
     private int id;
 
@@ -43,8 +46,9 @@ public class Day {
         setCapacity(capacity);
         setDate(incrementation);
         subtaskManager = new ArrayList<>();
-        timeStamps = new ArrayList<>();
+        taskTimeStamps = new ArrayList<>();
         eventList = new ArrayList<>();
+        eventTimeStamps = new ArrayList<>();
     }
 
     public Day(int id, double capacity, Calendar date) {
@@ -52,8 +56,9 @@ public class Day {
         setCapacity(capacity);
         this.date = date;
         subtaskManager = new ArrayList<>();
-        timeStamps = new ArrayList<>();
+        taskTimeStamps = new ArrayList<>();
         eventList = new ArrayList<>();
+        eventTimeStamps = new ArrayList<>();
     }
 
     /**
@@ -121,65 +126,72 @@ public class Day {
     public boolean addSubTaskManually(Task task, double hours, UserConfig userConfig, Calendar time, boolean isToday) {
         if (hours <= 0) return false;
         boolean overflow = this.size + hours > this.capacity;
-        SubTask subtask = task.addSubTask(hours, overflow);
+        SubTask subtask = task.addSubTask(hours, overflow); // todo need to rearrange this here
 
         subtaskManager.add(subtask);
         this.size += hours;
 
+        // todo will end up using the while loop code below since we'll be merging the two methods together
         // nothing changes here (thank God)
         if (eventList.isEmpty()) {
-            createTimeStamp(hours, userConfig, time, isToday);
-            return this.size <= this.capacity;
-        }
-
-        // todo this right here is wrong (we need to check the last timestamp in the list for subtasks to figure this out)
-        //   and also, retrieving the first event doesn't make sense either (we need to properly vet here)
-        //   however, once we fix these, we can use the 'createTimeStamp' method with full force like the while loop below
-        //   after this, we can then work on the optimize day method to allocate tasks according to their length
-        //  this shit is a real pain in the ass
-        double capableHours = Time.getTimeUntilEvent(Time.getNearestQuarterOfHour(time, true), eventList.get(0).getTimeStamp());
-        if (hours <= capableHours) {
-            createTimeStamp(hours, userConfig, time, isToday);
+            createNonEventTimeStamps(hours, userConfig, time, isToday);
+            // add subtask to subtaskManager
         } else {
             while (hours > 0) {
-                createTimeStamp(capableHours, userConfig, time, isToday);
-                hours -= capableHours;
-                capableHours = Time.getTimeUntilEvent(Time.getNearestQuarterOfHour(time, true), eventList.get(0).getTimeStamp());
+                hours -= createEventTimeStamps(hours, userConfig, time, isToday);
+                // add subtask to subtaskManager
             }
         }
-        // todo might need to change this tbh
+
         return this.size <= this.capacity;
     }
 
-    private void createTimeStamp(double hours, UserConfig userConfig, Calendar time, boolean isToday) {
+    private void createNonEventTimeStamps(double hours, UserConfig userConfig, Calendar time, boolean isToday) {
         // handles the creation of timestamps for subtasks created
         int taskHours = (int) hours;
         int taskMin = hours % 1 == 0.5 ? 30 : 0;
-        int endHr = 0;
-        int endMin = 0;
-        if (isToday && time.get(Calendar.HOUR_OF_DAY) >= userConfig.getRange()[0] && timeStamps.isEmpty() && !userConfig.isDefaultAtStart()) {
-            Calendar startTime = Time.getNearestQuarterOfHour(time, true);
-            endMin = startTime.get(Calendar.MINUTE) + taskMin;
-            if (endMin >= 60) {
-                endHr++;
-                endMin %= 60;
-            }
-            endHr = (endHr + startTime.get(Calendar.HOUR_OF_DAY) + taskHours) % 24;
+        Calendar startTime = Time.getFirstAvailableTimeInDay(taskTimeStamps, eventTimeStamps, userConfig, time, isToday);
+        Calendar endTime = (Calendar) startTime.clone();
+        endTime.add(Calendar.HOUR_OF_DAY, taskHours);
+        endTime.add(Calendar.MINUTE, taskMin);
 
-            timeStamps.add(new TimeStamp(startTime.get(Calendar.HOUR_OF_DAY), startTime.get(Calendar.MINUTE), endHr, endMin));
-        } else if (timeStamps.isEmpty()) {
-            timeStamps.add(new TimeStamp(userConfig.getRange()[0], 0, (userConfig.getRange()[0] + taskHours) % 24, taskMin));
-        } else {
-            TimeStamp ts = timeStamps.get(timeStamps.size() - 1);
-            endMin = ts.getEndMin() + taskMin;
-            if (endMin >= 60) {
-                endHr++;
-                endMin %= 60;
-            }
-            endHr = (endHr + ts.getEndHour() + taskHours) % 24;
+        taskTimeStamps.add(new TimeStamp(startTime, endTime));
+    }
 
-            timeStamps.add(new TimeStamp(ts.getEndHour(), ts.getEndMin(), endHr, endMin));
+    // [COMPLETE]
+    private double createEventTimeStamps(double hours, UserConfig userConfig, Calendar time, boolean isToday) {
+        // todo need to merge 'createEventTimeStamps(...)' and 'createNonEventTimeStamps(...)' (can't believe I simplified it this much)
+        /*
+        Steps:
+        1. Call getFirstAvailableTime(...) to determine first available (and usable) timeslot (Note: usable means > 30 min)
+        2. Call getTimeUntilEvent(...) to determine how much time is available
+            a. If enough for all, add the task
+            b. If not enough for all but some, add the task and return how many hours/min are remaining
+            c. If not enough at all, return 0 (return value represent how much time the task was just scheduled)
+            d. Repeat until task is completed (remember, Day needs a method that tells the scheduler how many hours are AVAILABLE, so we can assume we have enough)
+        3. Done
+         */
+        Calendar startTime = Time.getFirstAvailableTimeInDay(taskTimeStamps, eventTimeStamps, userConfig, time, isToday);
+        TimeStamp eventTimeStamp = null;
+        for (TimeStamp eTS : eventTimeStamps) { // todo this list needs to be sorted (given assumption here)
+            if (eTS.getStartHour() >= startTime.get(Calendar.HOUR_OF_DAY) || eTS.getEndHour() >= startTime.get(Calendar.HOUR_OF_DAY)) { // todo need to revise since this falls under the '48 hour window' bug type
+                eventTimeStamp = eTS;
+            }
         }
+
+        if (eventTimeStamp != null) {
+            hours = Time.getTimeInterval(startTime, eventTimeStamp.getStart());
+        }
+
+        int taskHours = (int) hours;
+        int taskMin = hours % 1 == 0.5 ? 30 : 0;
+
+        Calendar endTime = (Calendar) startTime.clone();
+        endTime.add(Calendar.HOUR_OF_DAY, taskHours);
+        endTime.add(Calendar.MINUTE, taskMin);
+
+        taskTimeStamps.add(new TimeStamp(startTime, endTime));
+        return hours;
     }
 
     public boolean addEvent(Event event) {
@@ -241,8 +253,8 @@ public class Day {
         return getSpareHours() > 0;
     }
 
-    public List<TimeStamp> getTimeStamps() {
-        return timeStamps;
+    public List<TimeStamp> getTaskTimeStamps() {
+        return taskTimeStamps;
     }
 
     @Override
@@ -277,83 +289,19 @@ public class Day {
      *
      * @return List of SubTasks
      */
-    public Iterable<? extends SubTask> getSubTasks() {
+    public Iterable<? extends SubTask> getSubTasks() { // todo need to replace with getSubTasks() --> List<SubTask>
         return subtaskManager;
     }
 
-    public List<SubTask> getSubtaskManager() {
+    public List<SubTask> getSubtaskManager() { // todo need to delete for refactoring purposes
         return subtaskManager;
     }
 
-    /**
-     * Manages the creation of a time interval along with properly formatting its display.
-     * <p>
-     * Example: 12:30pm-4:15pm
-     *
-     * @author Andrew Roe
-     */
-    public static class TimeStamp {
-        private final int startHour;
-        private final int startMin;
-        private final int endHour;
-        private final int endMin;
-        private String strStamp;
+    public List<Event> getEventList() {
+        return eventList;
+    }
 
-        public TimeStamp(int startHour, int startMin, int endHour, int endMin) {
-            this.startHour = startHour;
-            this.startMin = startMin;
-            this.endHour = endHour;
-            this.endMin = endMin;
-            buildStamp();
-        }
-
-        public int getStartHour() {
-            return startHour;
-        }
-
-        public int getStartMin() {
-            return startMin;
-        }
-
-        public int getEndHour() {
-            return endHour;
-        }
-
-        public int getEndMin() {
-            return endMin;
-        }
-        
-        private void buildStamp() {
-            StringBuilder sb = new StringBuilder();
-
-            int _startHour = startHour - 12;
-            if (startHour <= 9 || startHour >= 13 && startHour <= 21) sb.append("0");
-            if (startHour <= 12) sb.append(startHour);
-            if (startHour > 12) sb.append(_startHour);
-            sb.append(":");
-            if (startMin < 10) sb.append("0");
-            sb.append(startMin);
-            if (startHour < 12) sb.append("am");
-            else sb.append("pm");
-
-            sb.append("-");
-
-            int _endHour = endHour - 12;
-            if (endHour <= 9 || endHour >= 13 && endHour <= 21) sb.append("0");
-            if (endHour <= 12) sb.append(endHour);
-            if (endHour > 12) sb.append(_endHour);
-            sb.append(":");
-            if (endMin < 10) sb.append("0");
-            sb.append(endMin);
-            if (endHour < 12) sb.append("am");
-            else sb.append("pm");
-
-            strStamp = sb.toString();
-        }
-
-        @Override
-        public String toString() {
-            return strStamp;
-        }
+    public List<TimeStamp> getEventTimeStamps() {
+        return eventTimeStamps;
     }
 }

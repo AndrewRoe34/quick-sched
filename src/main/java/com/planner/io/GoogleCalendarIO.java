@@ -94,18 +94,24 @@ public class GoogleCalendarIO {
 
     // [COMPLETE]
     public void exportScheduleToGoogle(UserConfig userconfig, List<Day> week) throws IOException {
-        int dayIdx = 0;
         // need to handle null pointer here since if we try to export to Google without building, else we'll get an exception
         for(Day day : week) {
+            int eventIdx = 0;
+            for (com.planner.models.Event e1 : day.getEventList()) {
+                Event event = GoogleCalendarUtil.formatEventToGoogleEvent(e1, day.getEventTimeStamps().get(eventIdx));
+                event = service.events().insert(calendarId, event).execute();
+                System.out.printf("Event created: %s\n", event.getHtmlLink());
+                eventIdx++;
+            }
+
             int taskIdx = 0;
             for(Task.SubTask subTask : day.getSubTasks()) {
                 Task task = subTask.getParentTask();
-                Event event = GoogleCalendarUtil.formatTaskToEvent(task, day.getTimeStamps().get(taskIdx), dayIdx);
+                Event event = GoogleCalendarUtil.formatTaskToGoogleEvent(task, day.getTaskTimeStamps().get(taskIdx));
                 event = service.events().insert(calendarId, event).execute();
-                System.out.printf("Event created: %s\n", event.getHtmlLink());
+                System.out.printf("Task created: %s\n", event.getHtmlLink());
                 taskIdx++;
             }
-            dayIdx++;
         }
         eventLog.reportGoogleCalendarExportSchedule();
     }
@@ -120,7 +126,7 @@ public class GoogleCalendarIO {
                 .setSingleEvents(true)
                 .execute();
         List<Event> items = events.getItems();
-        List<String> tasks = GoogleCalendarUtil.formatEventsToTasks(items);
+        List<String> tasks = GoogleCalendarUtil.formatGoogleEventsToTasks(items);
         if (tasks.isEmpty()) {
             System.out.println("No upcoming tasks found.");
         } else {

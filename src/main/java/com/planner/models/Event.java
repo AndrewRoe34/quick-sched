@@ -1,15 +1,16 @@
 package com.planner.models;
 
 import com.planner.schedule.day.Day;
+import com.planner.util.Time.TimeStamp;
 
 public class Event {
 
     private int id;
     private String name;
     private double hours;
-    private Day.TimeStamp timeStamp;
+    private TimeStamp timeStamp;
 
-    public Event(int id, String name, double hours, Day.TimeStamp timeStamp) {
+    public Event(int id, String name, double hours, TimeStamp timeStamp) {
         this.id = id;
         this.name = name;
         this.hours = hours;
@@ -40,11 +41,11 @@ public class Event {
         this.hours = hours;
     }
 
-    public Day.TimeStamp getTimeStamp() {
+    public TimeStamp getTimeStamp() {
         return timeStamp;
     }
 
-    public void setTimeStamp(Day.TimeStamp timeStamp) {
+    public void setTimeStamp(TimeStamp timeStamp) {
         this.timeStamp = timeStamp;
     }
 }

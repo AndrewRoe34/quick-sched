@@ -5,7 +5,6 @@ import com.planner.models.Task;
 import com.google.api.client.util.DateTime;
 import com.google.api.services.calendar.model.Event;
 import com.google.api.services.calendar.model.EventDateTime;
-import com.planner.schedule.day.Day;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -19,8 +18,8 @@ import java.util.List;
  */
 public class GoogleCalendarUtil {
 
-    public static Event formatTaskToEvent(Task task, Day.TimeStamp timeStamp, int dayIdx) {
-        Event event = new Event().setSummary(task.getName()); //todo need to display labels with given Task
+    public static Event formatTaskToGoogleEvent(Task task, Time.TimeStamp timeStamp) {
+        Event event = new Event().setSummary(task.getName()); //todo need to display label names with given Task
         StringBuilder sb = new StringBuilder("Due: ");
         sb.append(task.getDueDate().get(Calendar.YEAR))
                 .append("-")
@@ -42,24 +41,28 @@ public class GoogleCalendarUtil {
         sb.append("Agile Planner\n\neb007aba6df2559a02ceb17ddba47c85b3e2b930");
         event.setDescription(sb.toString());
 
-        Calendar startCalendar = Time.getFormattedCalendarInstance(dayIdx);
-        startCalendar.set(Calendar.HOUR_OF_DAY, timeStamp.getStartHour());
-        startCalendar.set(Calendar.MINUTE, timeStamp.getStartMin());
-        DateTime startDateTime = new DateTime(startCalendar.getTime());
+        // the changes below now fix possible bugs where a task spanned multiple days when it was due tonight
+        //   e.g. due tonight but has 72 hours remaining
+        // todo need to check that not resetting seconds doesn't impact output
+//        Calendar startCalendar = Time.getFormattedCalendarInstance(dayIdx);
+//        startCalendar.setTime(timeStamp.getStart().getTime());
+//        startCalendar.set(Calendar.HOUR_OF_DAY, timeStamp.getStartHour());
+//        startCalendar.set(Calendar.MINUTE, timeStamp.getStartMin());
+        DateTime startDateTime = new DateTime(timeStamp.getStart().getTime());
         EventDateTime start = new EventDateTime().setDateTime(startDateTime);
         event.setStart(start);
 
-        Calendar endCalendar = Time.getFormattedCalendarInstance(dayIdx);
-        endCalendar.set(Calendar.HOUR_OF_DAY, timeStamp.getEndHour());
-        endCalendar.set(Calendar.MINUTE, timeStamp.getEndMin());
+//        Calendar endCalendar = Time.getFormattedCalendarInstance(dayIdx);
+//        endCalendar.set(Calendar.HOUR_OF_DAY, timeStamp.getEndHour());
+//        endCalendar.set(Calendar.MINUTE, timeStamp.getEndMin());
+//
+//        // Check if end time is after midnight, adjust the day accordingly
+//        if (timeStamp.getEndHour() < timeStamp.getStartHour() ||
+//                (timeStamp.getEndHour() == 0 && timeStamp.getEndMin() < timeStamp.getStartMin())) {
+//            endCalendar.add(Calendar.DAY_OF_MONTH, 1);
+//        }
 
-        // Check if end time is after midnight, adjust the day accordingly
-        if (timeStamp.getEndHour() < timeStamp.getStartHour() ||
-                (timeStamp.getEndHour() == 0 && timeStamp.getEndMin() < timeStamp.getStartMin())) {
-            endCalendar.add(Calendar.DAY_OF_MONTH, 1);
-        }
-
-        DateTime endDateTime = new DateTime(endCalendar.getTime());
+        DateTime endDateTime = new DateTime(timeStamp.getEnd().getTime());
         EventDateTime end = new EventDateTime().setDateTime(endDateTime);
         event.setEnd(end);
 
@@ -102,7 +105,7 @@ public class GoogleCalendarUtil {
         return event;
     }
 
-    public static List<String> formatEventsToTasks(List<Event> items) throws IOException {
+    public static List<String> formatGoogleEventsToTasks(List<Event> items) throws IOException {
         List<String> tasks = new ArrayList<>();
         for(Event i1 : items) {
             if(i1.getDescription() != null && i1.getDescription().contains("eb007aba6df2559a02ceb17ddba47c85b3e2b930")) {
@@ -115,4 +118,9 @@ public class GoogleCalendarUtil {
         return tasks;
     }
 
+
+    public static Event formatEventToGoogleEvent(com.planner.models.Event e, Time.TimeStamp timeStamp) {
+        // todo need to be finished
+        return null;
+    }
 }

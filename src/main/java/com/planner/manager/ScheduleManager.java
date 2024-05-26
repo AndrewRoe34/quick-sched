@@ -505,7 +505,7 @@ public class ScheduleManager {
             for (int d = 0; d < Math.min(schedule.size(), 6); d++) {
                 Day day = schedule.get(d);
                 if (i < day.getNumSubTasks()) {
-                    sb.append(day.getTimeStamps().get(i)).append(" - "); // 18 char
+                    sb.append(day.getTaskTimeStamps().get(i)).append(" - "); // 18 char
                     Task.SubTask subTask = day.getSubTask(i);
                     String outputSubTask = subTask.getParentTask().getName();
                     if (outputSubTask.length() > 21) {
