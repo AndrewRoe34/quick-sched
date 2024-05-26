@@ -1,0 +1,25 @@
+25-05-2024
+
+TASK {
+  Something Something, 0.5, 2
+  Documentation, 2.5, 0
+  Testing, 1.0, 1
+  Fix CompareTo, 1.0, -3
+  Update Dynamic Sched, 4.0, -2
+  Read Ch4, 4.0, 3
+  Finish HW3, 8.0, 4
+  Apply for jobs, 7.0, 5
+}
+
+CARD {
+  Default, BLACK, T0
+  Project, RED, T1, T2, T3, T4
+  DS&A, LIGHT_BLUE, T5, T6
+  Job Hunting, GREEN, T7
+  Hobbies, VIOLET
+}
+
+DAY {
+  T1 2.5, T2 1.0, T5 4.0, T6 0.5
+  T6 7.5
+}

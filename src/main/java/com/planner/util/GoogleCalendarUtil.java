@@ -42,16 +42,24 @@ public class GoogleCalendarUtil {
         sb.append("Agile Planner\n\neb007aba6df2559a02ceb17ddba47c85b3e2b930");
         event.setDescription(sb.toString());
 
-        Calendar now = Time.getFormattedCalendarInstance(dayIdx);
-        now.set(Calendar.HOUR_OF_DAY, timeStamp.getStartHour());
-        now.set(Calendar.MINUTE, timeStamp.getStartMin());
-        DateTime startDateTime = new DateTime(now.getTime());
+        Calendar startCalendar = Time.getFormattedCalendarInstance(dayIdx);
+        startCalendar.set(Calendar.HOUR_OF_DAY, timeStamp.getStartHour());
+        startCalendar.set(Calendar.MINUTE, timeStamp.getStartMin());
+        DateTime startDateTime = new DateTime(startCalendar.getTime());
         EventDateTime start = new EventDateTime().setDateTime(startDateTime);
         event.setStart(start);
 
-        now.set(Calendar.HOUR_OF_DAY, timeStamp.getEndHour());
-        now.set(Calendar.MINUTE, timeStamp.getEndMin());
-        DateTime endDateTime = new DateTime(now.getTime());
+        Calendar endCalendar = Time.getFormattedCalendarInstance(dayIdx);
+        endCalendar.set(Calendar.HOUR_OF_DAY, timeStamp.getEndHour());
+        endCalendar.set(Calendar.MINUTE, timeStamp.getEndMin());
+
+        // Check if end time is after midnight, adjust the day accordingly
+        if (timeStamp.getEndHour() < timeStamp.getStartHour() ||
+                (timeStamp.getEndHour() == 0 && timeStamp.getEndMin() < timeStamp.getStartMin())) {
+            endCalendar.add(Calendar.DAY_OF_MONTH, 1);
+        }
+
+        DateTime endDateTime = new DateTime(endCalendar.getTime());
         EventDateTime end = new EventDateTime().setDateTime(endDateTime);
         event.setEnd(end);
 
