@@ -22,9 +22,11 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.*;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -51,7 +53,7 @@ public class GoogleCalendarIO {
             Collections.singletonList(CalendarScopes.CALENDAR);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
     private static final String calendarId = "primary";
-    private static Calendar service;
+    private final Calendar service;
     private EventLog eventLog;
 
     public GoogleCalendarIO(EventLog eventLog) throws GeneralSecurityException, IOException {
@@ -83,7 +85,7 @@ public class GoogleCalendarIO {
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
+                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
                 .setAccessType("offline")
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
@@ -157,44 +159,18 @@ public class GoogleCalendarIO {
         return count;
     }
 
+    private void testWriteEvent() throws IOException {
+        com.planner.models.Event e1 = new com.planner.models.Event(0, "A", 4.0, new Time.TimeStamp(java.util.Calendar.getInstance(), java.util.Calendar.getInstance()));
+        e1.setColor(Card.Colors.BLACK);
+        Event event = GoogleCalendarUtil.formatEventToGoogleEvent(e1);
+        event = service.events().insert(calendarId, event).execute();
+        System.out.printf("Event created: %s\n", event.getHtmlLink());
+    }
+
     public static void main(String... args) throws IOException, GeneralSecurityException {
         // Build a new authorized API client service.
         GoogleCalendarIO quickstart = new GoogleCalendarIO(EventLog.getEventLog());
         quickstart.importScheduleFromGoogle();
-
-        // This was for testing purposes
-        // -----------------------------
-        List<com.planner.models.Event> events = Arrays.asList(
-                new com.planner.models.Event(
-                        1,
-                        "test",
-                        1.0,
-                        new Time.TimeStamp(java.util.Calendar.getInstance(), java.util.Calendar.getInstance())
-                ),
-                new com.planner.models.Event(
-                        1,
-                        "another test",
-                        1.0,
-                        new Time.TimeStamp(java.util.Calendar.getInstance(), java.util.Calendar.getInstance())
-                )
-        );
-
-        events.get(0).setColor(Card.Colors.RED);
-        events.get(1).setColor(Card.Colors.BLACK);
-
-        Day day = new Day(1, 1, 1);
-
-        // Change the eventList access modifier from 'private final' to 'public' and uncomment the line below to test
-        // This is probably not standard
-//        day.eventList = events;
-
-        for (com.planner.models.Event e1 : day.getEventList()) {
-            Event event = GoogleCalendarUtil.formatEventToGoogleEvent(e1);
-            event = service.events().insert(calendarId, event).execute();
-            System.out.printf("Event created: %s\n", event.getHtmlLink());
-        }
-        // -----------------------------
-
 //        String s1 = "Read";
 //        String s2 = "Write";
 //        String s3 = "Study";
@@ -202,7 +178,8 @@ public class GoogleCalendarIO {
 //        list.add(s1);
 //        list.add(s2);
 //        list.add(s3);
-//        quickstart.exportScheduleToGoogle(null, days);
+//        quickstart.exportScheduleToGoogle(list);
 //        System.out.println(quickstart.cleanGoogleSchedule() + " events were removed...");
+        quickstart.testWriteEvent();
     }
 }

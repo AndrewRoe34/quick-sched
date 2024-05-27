@@ -122,28 +122,31 @@ public class Time {
     // todo once this piece is done, i'm going to get some sleep
     public static Calendar getFirstAvailableTimeInDay(List<TimeStamp> taskTimeStamps, List<TimeStamp> eventTimeStamps, UserConfig userConfig, Calendar time, boolean isToday) {
         Calendar startTime;
-        if (eventTimeStamps.isEmpty()) {
-            if (isToday && time.get(Calendar.HOUR_OF_DAY) >= userConfig.getRange()[0] && taskTimeStamps.isEmpty() && !userConfig.isDefaultAtStart()) {
-                startTime = Time.getNearestQuarterOfHour(time, true);
-            } else if (taskTimeStamps.isEmpty()) {
-                startTime = Time.getFormattedCalendarInstance(time, 0);
-                startTime.set(Calendar.HOUR_OF_DAY, userConfig.getRange()[0]);
-                startTime.set(Calendar.MINUTE, 0);
-            } else {
-                TimeStamp ts = taskTimeStamps.get(taskTimeStamps.size() - 1);
-                startTime = (Calendar) ts.getEnd().clone();
-            }
+        if (isToday && time.get(Calendar.HOUR_OF_DAY) >= userConfig.getRange()[0] && taskTimeStamps.isEmpty() && !userConfig.isDefaultAtStart()) {
+            startTime = Time.getNearestQuarterOfHour(time, true);
+        } else if (taskTimeStamps.isEmpty()) {
+            startTime = Time.getFormattedCalendarInstance(time, 0);
+            startTime.set(Calendar.HOUR_OF_DAY, userConfig.getRange()[0]);
+            startTime.set(Calendar.MINUTE, 0);
         } else {
-            // todo this is where we add code for events that exist
-            /*
-            Steps for how we'll solve this:
-            1. Use the above conditions
-            2. Check for event appearance
-            3. Determine the appropriate starting point in relation to its existence
-             */
-            startTime = null;
+            TimeStamp ts = taskTimeStamps.get(taskTimeStamps.size() - 1);
+            startTime = (Calendar) ts.getEnd().clone();
         }
+
+        if (eventTimeStamps.isEmpty()) {
+            return startTime;
+        }
+
+        // todo there are events tho, so we need to use a loop that keeps on checking until we find a valid starting point
+        for (TimeStamp eTS : eventTimeStamps) {
+            isInsideEventBlock(startTime, eTS);
+        }
+        // not sure what to do here yet (might need to update the startTime inside the for loop
         return startTime;
+    }
+
+    private static boolean isInsideEventBlock(Calendar startTime, TimeStamp eventTimeStamp) {
+        return false;
     }
 
     public static List<Double> computeTimeBlocks(Day day) {
