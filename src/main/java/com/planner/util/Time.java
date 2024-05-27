@@ -1,6 +1,5 @@
 package com.planner.util;
 
-import com.planner.models.Event;
 import com.planner.models.UserConfig;
 import com.planner.schedule.day.Day;
 
@@ -112,7 +111,9 @@ public class Time {
         //     e.g. 1 hour and 27 minutes --> 1 hour
         //     e.g. 1 hour and 40 minutes --> 1.5 hours
         //   we can safely assume that the event is properly aligned within the quarter period of the day (0, 15, 30, 45)
-        long milliseconds = Math.abs(curr.getTimeInMillis() - event.getTimeInMillis());
+        Calendar currTemp = cloneAndResetSecMillis(curr);
+        Calendar eventTemp = cloneAndResetSecMillis(event);
+        long milliseconds = Math.abs(currTemp.getTimeInMillis() - eventTemp.getTimeInMillis());
         int min = (int) Math.round(milliseconds / 1000.0 / 60.0);
         double hours = (int) (min / 60.0);
         min %= 60;
@@ -166,28 +167,27 @@ public class Time {
         return startTime;
     }
 
-    private static boolean isInsideEventBlock(Calendar startTime, TimeStamp eventTimeStamp) {
+    public static boolean isInsideEventBlock(Calendar startTime, TimeStamp eventTimeStamp) {
         return !isPastEvent(startTime, eventTimeStamp.getEnd()) && !isBeforeEvent(startTime, eventTimeStamp.getStart());
     }
 
-    private static boolean isPastEvent(Calendar startTime, Calendar eventEnd) {
-        Calendar startTemp = (Calendar) startTime.clone();
-        startTemp.set(Calendar.SECOND, 0);
-        startTemp.set(Calendar.MILLISECOND, 0);
-        Calendar eventTemp = (Calendar) eventEnd.clone();
-        eventTemp.set(Calendar.SECOND, 0);
-        eventTemp.set(Calendar.MILLISECOND, 0);
-        return startTemp.compareTo(eventEnd) >= 0;
+    public static boolean isPastEvent(Calendar startTime, Calendar eventEnd) {
+        Calendar startTemp = cloneAndResetSecMillis(startTime);
+        Calendar eventTemp = cloneAndResetSecMillis(eventEnd);
+        return startTemp.compareTo(eventTemp) >= 0;
     }
 
-    private static boolean isBeforeEvent(Calendar startTime, Calendar eventStart) {
-        Calendar startTemp = (Calendar) startTime.clone();
-        startTemp.set(Calendar.SECOND, 0);
-        startTemp.set(Calendar.MILLISECOND, 0);
-        Calendar eventTemp = (Calendar) eventStart.clone();
-        eventTemp.set(Calendar.SECOND, 0);
-        eventTemp.set(Calendar.MILLISECOND, 0);
-        return startTemp.compareTo(eventStart) < 0;
+    public static boolean isBeforeEvent(Calendar startTime, Calendar eventStart) {
+        Calendar startTemp = cloneAndResetSecMillis(startTime);
+        Calendar eventTemp = cloneAndResetSecMillis(eventStart);
+        return startTemp.compareTo(eventTemp) < 0;
+    }
+
+    public static Calendar cloneAndResetSecMillis(Calendar date) {
+        Calendar temp = (Calendar) date.clone();
+        temp.set(Calendar.SECOND, 0);
+        temp.set(Calendar.MILLISECOND, 0);
+        return temp;
     }
 
     public static List<Double> computeTimeBlocks(Day day) {

@@ -166,7 +166,6 @@ public class Day {
 
     // [COMPLETE]
     private double createEventTimeStamps(double hours, UserConfig userConfig, Calendar time, boolean isToday) {
-        // todo need to merge 'createEventTimeStamps(...)' and 'createNonEventTimeStamps(...)' (can't believe I simplified it this much)
         /*
         Steps:
         1. Call getFirstAvailableTime(...) to determine first available (and usable) timeslot (Note: usable means > 30 min)
@@ -179,9 +178,10 @@ public class Day {
          */
         Calendar startTime = Time.getFirstAvailableTimeInDay(taskTimeStamps, eventTimeStamps, userConfig, time, isToday);
         TimeStamp eventTimeStamp = null;
-        for (TimeStamp eTS : eventTimeStamps) { // todo this list needs to be sorted (given assumption here)
-            if (eTS.getStartHour() >= startTime.get(Calendar.HOUR_OF_DAY) || eTS.getEndHour() >= startTime.get(Calendar.HOUR_OF_DAY)) { // todo need to revise since this falls under the '48 hour window' bug type
+        for (TimeStamp eTS : eventTimeStamps) { // this list needs to be sorted (given assumption below)
+            if (Time.isBeforeEvent(startTime, eTS.getStart())) {
                 eventTimeStamp = eTS;
+                break;
             }
         }
 
@@ -237,7 +237,7 @@ public class Day {
      *
      * @return number of free hours available for scheduling
      */
-    public double getSpareHours() {  // todo need to overhaul due to Events and their spacing relative to other items
+    public double getSpareHours() {
         return Math.max(capacity - size, 0);
     }
 
@@ -246,7 +246,7 @@ public class Day {
      *
      * @return number of hours assigned for day
      */
-    public double getHoursFilled() { // todo need to overhaul due to Events and their spacing relative to other items
+    public double getHoursFilled() {
         return this.size;
     }
 
@@ -255,7 +255,7 @@ public class Day {
      *
      * @return boolean value for opening in Day
      */
-    public boolean hasSpareHours() { // todo need to overhaul due to Events and their spacing relative to other items
+    public boolean hasSpareHours() {
         return getSpareHours() > 0;
     }
 
