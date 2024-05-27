@@ -22,10 +22,7 @@ import com.google.api.services.calendar.Calendar;
 import com.google.api.services.calendar.CalendarScopes;
 import com.google.api.services.calendar.model.*;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.security.GeneralSecurityException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -54,7 +51,7 @@ public class GoogleCalendarIO {
             Collections.singletonList(CalendarScopes.CALENDAR);
     private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
     private static final String calendarId = "primary";
-    private final Calendar service;
+    private static Calendar service;
     private EventLog eventLog;
 
     public GoogleCalendarIO(EventLog eventLog) throws GeneralSecurityException, IOException {
@@ -86,7 +83,7 @@ public class GoogleCalendarIO {
         // Build flow and trigger user authorization request.
         GoogleAuthorizationCodeFlow flow = new GoogleAuthorizationCodeFlow.Builder(
                 HTTP_TRANSPORT, JSON_FACTORY, clientSecrets, SCOPES)
-                .setDataStoreFactory(new FileDataStoreFactory(new java.io.File(TOKENS_DIRECTORY_PATH)))
+                .setDataStoreFactory(new FileDataStoreFactory(new File(TOKENS_DIRECTORY_PATH)))
                 .setAccessType("offline")
                 .build();
         LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
@@ -189,10 +186,15 @@ public class GoogleCalendarIO {
 
         // Change the eventList access modifier from 'private final' to 'public' and uncomment the line below to test
         // This is probably not standard
-//         day.eventList = events;
+//        day.eventList = events;
+
+        for (com.planner.models.Event e1 : day.getEventList()) {
+            Event event = GoogleCalendarUtil.formatEventToGoogleEvent(e1);
+            event = service.events().insert(calendarId, event).execute();
+            System.out.printf("Event created: %s\n", event.getHtmlLink());
+        }
         // -----------------------------
 
-        List<Day> days = List.of(day);
 //        String s1 = "Read";
 //        String s2 = "Write";
 //        String s3 = "Study";
@@ -200,7 +202,7 @@ public class GoogleCalendarIO {
 //        list.add(s1);
 //        list.add(s2);
 //        list.add(s3);
-        quickstart.exportScheduleToGoogle(null, days);
+//        quickstart.exportScheduleToGoogle(null, days);
 //        System.out.println(quickstart.cleanGoogleSchedule() + " events were removed...");
     }
 }
