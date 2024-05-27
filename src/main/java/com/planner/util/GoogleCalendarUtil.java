@@ -119,8 +119,52 @@ public class GoogleCalendarUtil {
     }
 
 
-    public static Event formatEventToGoogleEvent(com.planner.models.Event e, Time.TimeStamp timeStamp) {
-        // todo need to be finished
-        return null;
+    public static Event formatEventToGoogleEvent(com.planner.models.Event e) {
+        Event event = new Event().setSummary(e.getName());
+
+        event.setDescription("Agile Planner\n\neb007aba6df2559a02ceb17ddba47c85b3e2b930");
+
+        DateTime startDateTime = new DateTime(e.getTimeStamp().getStart().getTime());
+        EventDateTime start = new EventDateTime().setDateTime(startDateTime);
+        event.setStart(start);
+
+        DateTime endDateTime = new DateTime(e.getTimeStamp().getEnd().getTime());
+        EventDateTime end = new EventDateTime().setDateTime(endDateTime);
+        event.setEnd(end);
+
+        // Switch case for color IDs
+        if (e.getColor() != null) {
+            switch (e.getColor()) {
+                case RED:
+                    event.setColorId("4");
+                    break;
+                case ORANGE:
+                    event.setColorId("6");
+                    break;
+                case YELLOW:
+                    event.setColorId("5");
+                    break;
+                case GREEN:
+                    event.setColorId("2");
+                    break;
+                case LIGHT_BLUE:
+                    event.setColorId("7");
+                    break;
+                case BLUE:
+                    event.setColorId("1");
+                    break;
+                case INDIGO:
+                    event.setColorId("9");
+                    break;
+                case VIOLET:
+                    event.setColorId("3");
+                    break;
+                case BLACK:
+                    event.setColorId("8");
+                    break;
+            }
+        }
+
+        return event;
     }
 }
