@@ -1,5 +1,6 @@
 package com.planner.io;
 
+import com.planner.models.Card;
 import com.planner.models.Task;
 import com.planner.models.UserConfig;
 import com.planner.schedule.day.Day;
@@ -26,6 +27,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -96,12 +98,10 @@ public class GoogleCalendarIO {
     public void exportScheduleToGoogle(UserConfig userconfig, List<Day> week) throws IOException {
         // need to handle null pointer here since if we try to export to Google without building, else we'll get an exception
         for(Day day : week) {
-            int eventIdx = 0;
             for (com.planner.models.Event e1 : day.getEventList()) {
-                Event event = GoogleCalendarUtil.formatEventToGoogleEvent(e1, day.getEventTimeStamps().get(eventIdx));
+                Event event = GoogleCalendarUtil.formatEventToGoogleEvent(e1);
                 event = service.events().insert(calendarId, event).execute();
                 System.out.printf("Event created: %s\n", event.getHtmlLink());
-                eventIdx++;
             }
 
             int taskIdx = 0;
@@ -164,6 +164,35 @@ public class GoogleCalendarIO {
         // Build a new authorized API client service.
         GoogleCalendarIO quickstart = new GoogleCalendarIO(EventLog.getEventLog());
         quickstart.importScheduleFromGoogle();
+
+        // This was for testing purposes
+        // -----------------------------
+        List<com.planner.models.Event> events = Arrays.asList(
+                new com.planner.models.Event(
+                        1,
+                        "test",
+                        1.0,
+                        new Time.TimeStamp(java.util.Calendar.getInstance(), java.util.Calendar.getInstance())
+                ),
+                new com.planner.models.Event(
+                        1,
+                        "another test",
+                        1.0,
+                        new Time.TimeStamp(java.util.Calendar.getInstance(), java.util.Calendar.getInstance())
+                )
+        );
+
+        events.get(0).setColor(Card.Colors.RED);
+        events.get(1).setColor(Card.Colors.BLACK);
+
+        Day day = new Day(1, 1, 1);
+
+        // Change the eventList access modifier from 'private final' to 'public' and uncomment the line below to test
+        // This is probably not standard
+//         day.eventList = events;
+        // -----------------------------
+
+        List<Day> days = List.of(day);
 //        String s1 = "Read";
 //        String s2 = "Write";
 //        String s3 = "Study";
@@ -171,7 +200,7 @@ public class GoogleCalendarIO {
 //        list.add(s1);
 //        list.add(s2);
 //        list.add(s3);
-//        quickstart.exportScheduleToGoogle(list);
-        System.out.println(quickstart.cleanGoogleSchedule() + " events were removed...");
+        quickstart.exportScheduleToGoogle(null, days);
+//        System.out.println(quickstart.cleanGoogleSchedule() + " events were removed...");
     }
 }

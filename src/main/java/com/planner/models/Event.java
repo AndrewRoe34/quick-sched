@@ -9,6 +9,7 @@ public class Event {
     private String name;
     private double hours;
     private TimeStamp timeStamp;
+    private Card.Colors color;
 
     public Event(int id, String name, double hours, TimeStamp timeStamp) {
         this.id = id;
@@ -47,5 +48,13 @@ public class Event {
 
     public void setTimeStamp(TimeStamp timeStamp) {
         this.timeStamp = timeStamp;
+    }
+
+    public Card.Colors getColor() {
+        return color;
+    }
+
+    public void setColor(Card.Colors color) {
+        this.color = color;
     }
 }
