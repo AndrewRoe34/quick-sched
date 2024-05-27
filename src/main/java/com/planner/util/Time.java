@@ -1,5 +1,6 @@
 package com.planner.util;
 
+import com.planner.models.Event;
 import com.planner.models.UserConfig;
 import com.planner.schedule.day.Day;
 
@@ -119,7 +120,7 @@ public class Time {
         return hours;
     }
 
-    // todo once this piece is done, i'm going to get some sleep
+
     public static Calendar getFirstAvailableTimeInDay(List<TimeStamp> taskTimeStamps, List<TimeStamp> eventTimeStamps, UserConfig userConfig, Calendar time, boolean isToday) {
         Calendar startTime;
         if (isToday && time.get(Calendar.HOUR_OF_DAY) >= userConfig.getRange()[0] && taskTimeStamps.isEmpty() && !userConfig.isDefaultAtStart()) {
@@ -137,16 +138,56 @@ public class Time {
             return startTime;
         }
 
-        // todo there are events tho, so we need to use a loop that keeps on checking until we find a valid starting point
+        /*
+        Steps for determining correct start time with events throughout day:
+        1. Check whether startTime interferes with the event
+        2. If it does, assign the end of the event to startTime
+            a. If no more events, loop will break with correct value (so, do nothing here)
+            b. If there are events, simply continue (so, do nothing here)
+        3. If it doesn't, check whether it is before or after startTime
+            a. If it's before, continue (if no more events, no changes to startTime)
+            b. If it's after, check how much time there is between
+                i. If enough, break
+                ii. If not enough, assign end of event to startTime and loop again
+         */
         for (TimeStamp eTS : eventTimeStamps) {
-            isInsideEventBlock(startTime, eTS);
+            if (isInsideEventBlock(startTime, eTS)) startTime = eTS.getEnd();
+            else {
+                if (isPastEvent(startTime, eTS.getEnd())) {
+                    // do nothing here
+                } else {
+                    double hours = getTimeInterval(startTime, eTS.getStart());
+                    if (hours > 0) break;
+                    else startTime = eTS.getEnd();
+                }
+            }
         }
-        // not sure what to do here yet (might need to update the startTime inside the for loop
+
         return startTime;
     }
 
     private static boolean isInsideEventBlock(Calendar startTime, TimeStamp eventTimeStamp) {
-        return false;
+        return !isPastEvent(startTime, eventTimeStamp.getEnd()) && !isBeforeEvent(startTime, eventTimeStamp.getStart());
+    }
+
+    private static boolean isPastEvent(Calendar startTime, Calendar eventEnd) {
+        Calendar startTemp = (Calendar) startTime.clone();
+        startTemp.set(Calendar.SECOND, 0);
+        startTemp.set(Calendar.MILLISECOND, 0);
+        Calendar eventTemp = (Calendar) eventEnd.clone();
+        eventTemp.set(Calendar.SECOND, 0);
+        eventTemp.set(Calendar.MILLISECOND, 0);
+        return startTemp.compareTo(eventEnd) >= 0;
+    }
+
+    private static boolean isBeforeEvent(Calendar startTime, Calendar eventStart) {
+        Calendar startTemp = (Calendar) startTime.clone();
+        startTemp.set(Calendar.SECOND, 0);
+        startTemp.set(Calendar.MILLISECOND, 0);
+        Calendar eventTemp = (Calendar) eventStart.clone();
+        eventTemp.set(Calendar.SECOND, 0);
+        eventTemp.set(Calendar.MILLISECOND, 0);
+        return startTemp.compareTo(eventStart) < 0;
     }
 
     public static List<Double> computeTimeBlocks(Day day) {
