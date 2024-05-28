@@ -483,10 +483,112 @@ public class ScheduleManager {
         return t1.resetCheckList();
     }
 
+    private String getColorANSICode(Card.Colors color) {
+        // Color Code - \001B[38;2;<r>;<g>;<b>m
+        switch (color) {
+            case RED:
+                return "\u001B[38;2;213;0;0m";
+            case ORANGE:
+                return "\u001B[38;2;244;81;30m";
+            case YELLOW:
+                return "\u001B[38;2;246;191;38m";
+            case GREEN:
+                return "\u001B[38;2;11;128;67m";
+            case LIGHT_BLUE:
+                return "\u001B[38;2;3;155;229m";
+            case BLUE:
+                return "\u001B[38;2;63;81;181m";
+            case INDIGO:
+                return "\u001B[38;2;142;36;170m";
+            case VIOLET:
+                return "\u001B[38;2;121;134;203m";
+            case BLACK:
+                return "\u001B[38;2;97;97;97m";
+            case LIGHT_GREEN:
+                return "\u001B[38;2;51;182;121m";
+            case LIGHT_CORAL:
+                return "\u001B[38;2;230;124;115m";
+            default:
+                return "\u001B[38;2;207;211;203m";
+        }
+    }
+
+    public String buildBoardString() {
+        StringBuilder sb = new StringBuilder();
+
+        // use foreach loop to determine max number of tasks while printing out the first line of Cards
+        int maxTasks = 0;
+        for(Card c1 : cards) {
+            if (userConfig.isLocalScheduleColors()) {
+                String colorANSICode = getColorANSICode((c1.getColorId()));
+                sb.append(colorANSICode);
+            }
+
+            maxTasks = Math.max(c1.getTask().size(), maxTasks);
+            if(c1.toString().length() > 40)
+                sb.append(c1.toString(), 0, 40);
+            else {
+                sb.append(c1);
+
+                for(int i = c1.toString().length(); i < 40; i++) {
+                    sb.append(" ");
+                }
+            }
+
+            if (userConfig.isLocalScheduleColors())
+                sb.append("\u001B[0m");
+
+            sb.append("|");
+        }
+
+        sb.append("\n");
+        for(int i = 0; i < cards.size(); i++) {
+            sb.append("-----------------------------------------");
+        }
+
+        // use foreach loop inside a for loop to output the tasks
+        for(int i = 0; i < maxTasks; i++) {
+            sb.append("\n");
+
+            for(Card c1 : cards) {
+                if(i < c1.getTask().size()) {
+                    // print out the task (up to 18 characters)
+                    Task t1 = c1.getTask().get(i);
+                    String outputTask = "";
+//                    if (Time.differenceOfDays(t1.getDueDate(), currDate) < 0) {
+//                        outputTask = "*";
+//                    }
+
+                    if (isArchivedTask(t1))
+                        outputTask = "*";
+
+                    outputTask += t1.toString();
+
+                    if(outputTask.length() > 40)
+                        sb.append(outputTask, 0, 40);
+                    else {
+                        sb.append(outputTask);
+                        for(int j = outputTask.length(); j < 40; j++) {
+                            sb.append(" ");
+                        }
+                    }
+
+                    sb.append("|");
+                }
+                else
+                    sb.append("                                        |");
+            }
+        }
+        sb.append("\n");
+
+        return sb.toString();
+    }
+
     public String buildScheduleStr() {
         StringBuilder sb = new StringBuilder();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Calendar date = Time.getFormattedCalendarInstance(0);
+
         int maxTasks = 0;
         for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
             sb.append(sdf.format(date.getTime()));
@@ -496,24 +598,37 @@ public class ScheduleManager {
         }
 
         sb.append("\n");
-        for(int i = 0; i < Math.min(schedule.size(), 6); i++) {
+        for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
             sb.append("-----------------------------------------");
         }
 
         for (int i = 0; i < maxTasks; i++) {
             sb.append("\n");
+
             for (int d = 0; d < Math.min(schedule.size(), 6); d++) {
                 Day day = schedule.get(d);
+
                 if (i < day.getNumSubTasks()) {
-                    sb.append(day.getTaskTimeStamps().get(i)).append(" - "); // 18 char
                     Task.SubTask subTask = day.getSubTask(i);
+
+                    if (userConfig.isLocalScheduleColors()) {
+                        String colorANSICode = getColorANSICode((subTask.getParentTask().getColor()));
+                        sb.append(colorANSICode);
+                    }
+
+                    sb.append(day.getTaskTimeStamps().get(i)).append(" - "); // 18 char
                     String outputSubTask = subTask.getParentTask().getName();
+
                     if (outputSubTask.length() > 21) {
                         sb.append(outputSubTask, 0, 21);
                     } else {
                         sb.append(outputSubTask);
                         sb.append(" ".repeat(22 - outputSubTask.length()));
                     }
+
+                    if (userConfig.isLocalScheduleColors())
+                        sb.append("\u001B[0m");
+
                     sb.append("|");
                 } else {
                     sb.append("                                        |");

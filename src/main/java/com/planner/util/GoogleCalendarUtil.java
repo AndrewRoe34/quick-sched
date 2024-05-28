@@ -67,37 +67,45 @@ public class GoogleCalendarUtil {
         event.setEnd(end);
 
         // will use a switch case here with regards to setting the color ids
-        if (task.getColor() != null) {
-            switch (task.getColor()) {
-                case RED:
-                    event.setColorId("4");
-                    break;
-                case ORANGE:
-                    event.setColorId("6");
-                    break;
-                case YELLOW:
-                    event.setColorId("5");
-                    break;
-                case GREEN:
-                    event.setColorId("2");
-                    break;
-                case LIGHT_BLUE:
-                    event.setColorId("7");
-                    break;
-                case BLUE:
-                    event.setColorId("1");
-                    break;
-                case INDIGO:
-                    event.setColorId("9");
-                    break;
-                case VIOLET:
-                    event.setColorId("3");
-                    break;
-                case BLACK:
-                    event.setColorId("8");
-                    break;
-            }
+        if (task.getColor() == null)
+            return event;
+
+        switch (task.getColor()) {
+            case RED:
+                event.setColorId("11");
+                break;
+            case ORANGE:
+                event.setColorId("6");
+                break;
+            case YELLOW:
+                event.setColorId("5");
+                break;
+            case GREEN:
+                event.setColorId("10");
+                break;
+            case LIGHT_GREEN:
+                event.setColorId("2");
+                break;
+            case LIGHT_BLUE:
+                event.setColorId("7");
+                break;
+            case BLUE:
+                event.setColorId("1");
+                break;
+            case INDIGO:
+                event.setColorId("3");
+                break;
+            case VIOLET:
+                event.setColorId("9");
+                break;
+            case BLACK:
+                event.setColorId("8");
+                break;
+            case LIGHT_CORAL:
+                event.setColorId("4");
+                break;
         }
+
 //        if (!task.getLabel().isEmpty()) {
 //            event.setColorId("" + task.getLabel().get(0).getColor());
 //        } else event.setColorId("7");
@@ -132,37 +140,43 @@ public class GoogleCalendarUtil {
         EventDateTime end = new EventDateTime().setDateTime(endDateTime);
         event.setEnd(end);
 
-        // Switch case for color IDs
-        if (e.getColor() != null) {
-            switch (e.getColor()) {
-                case RED:
-                    event.setColorId("4");
-                    break;
-                case ORANGE:
-                    event.setColorId("6");
-                    break;
-                case YELLOW:
-                    event.setColorId("5");
-                    break;
-                case GREEN:
-                    event.setColorId("2");
-                    break;
-                case LIGHT_BLUE:
-                    event.setColorId("7");
-                    break;
-                case BLUE:
-                    event.setColorId("1");
-                    break;
-                case INDIGO:
-                    event.setColorId("9");
-                    break;
-                case VIOLET:
-                    event.setColorId("3");
-                    break;
-                case BLACK:
-                    event.setColorId("8");
-                    break;
-            }
+        if (e.getColor() == null)
+            return event;
+
+        switch (e.getColor()) {
+            case RED:
+                event.setColorId("11");
+                break;
+            case ORANGE:
+                event.setColorId("6");
+                break;
+            case YELLOW:
+                event.setColorId("5");
+                break;
+            case GREEN:
+                event.setColorId("10");
+                break;
+            case LIGHT_GREEN:
+                event.setColorId("2");
+                break;
+            case LIGHT_BLUE:
+                event.setColorId("7");
+                break;
+            case BLUE:
+                event.setColorId("1");
+                break;
+            case INDIGO:
+                event.setColorId("3");
+                break;
+            case VIOLET:
+                event.setColorId("9");
+                break;
+            case BLACK:
+                event.setColorId("8");
+                break;
+            case LIGHT_CORAL:
+                event.setColorId("4");
+                break;
         }
 
         return event;
