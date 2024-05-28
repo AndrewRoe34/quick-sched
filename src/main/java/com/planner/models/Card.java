@@ -40,7 +40,9 @@ public class Card implements Linker{
         BLUE,
         INDIGO,
         VIOLET,
-        BLACK
+        BLACK,
+        LIGHT_GREEN,
+        LIGHT_CORAL
     }
 
     public int getId() {

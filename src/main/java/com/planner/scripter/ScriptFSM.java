@@ -1012,58 +1012,7 @@ public class ScriptFSM {
      * Outputs a text based version of Cards as a UI
      */
     protected void funcDisplayBoard() {
-        Calendar currDate = Time.getFormattedCalendarInstance(0);
-        List<Card> cards = scheduleManager.getCards();
-        // use foreach loop to determine max number of tasks while printing out the first line of Cards
-        int maxTasks = 0;
-        for(Card c1 : cards) {
-            maxTasks = Math.max(c1.getTask().size(), maxTasks);
-            if(c1.toString().length() > 40) {
-                System.out.print(c1.toString().substring(0, 40));
-            } else {
-                System.out.print(c1);
-                for(int i = c1.toString().length(); i < 40; i++) {
-                    System.out.print(" ");
-                }
-            }
-            System.out.print("|");
-        }
-
-        System.out.println();
-        for(int i = 0; i < cards.size(); i++) {
-            System.out.print("-----------------------------------------"); //will print out this line for the number of cards there are
-        }
-
-        // use foreach loop inside a for loop to output the tasks
-        for(int i = 0; i < maxTasks; i++) {
-            System.out.println();
-            for(Card c1 : cards) {
-                if(i < c1.getTask().size()) {
-                    //print out the task (up to 18 characters)
-                    Task t1 = c1.getTask().get(i);
-                    String outputTask = "";
-//                    if (Time.differenceOfDays(t1.getDueDate(), currDate) < 0) {
-//                        outputTask = "*";
-//                    }
-                    if (scheduleManager.isArchivedTask(t1)) {
-                        outputTask = "*";
-                    }
-                    outputTask += t1.toString();
-                    if(outputTask.length() > 40) {
-                        System.out.print(outputTask.substring(0, 40));
-                    } else {
-                        System.out.print(outputTask);
-                        for(int j = outputTask.length(); j < 40; j++) {
-                            System.out.print(" ");
-                        }
-                    }
-                    System.out.print("|");
-                } else {
-                    System.out.print("                                        |");
-                }
-            }
-        }
-        System.out.println();
+        System.out.println(scheduleManager.buildBoardString());
     }
 
     protected void funcDisplayCard(int idx) {

@@ -27,6 +27,7 @@ public class UserConfig {
     private double minHours;
     private boolean optimizeDay;
     private boolean defaultAtStart;
+    private boolean localScheduleColors;
 
 
     /**
@@ -38,13 +39,16 @@ public class UserConfig {
      * @param archiveDays         Maximum number of past days to display
      * @param priority            Whether to enable priority for tasks
      * @param overflow            Whether to display overflow
-     * @param fitDay         Whether to fit schedule
+     * @param fitDay              Whether to fit schedule
      * @param schedulingAlgorithm Scheduling algorithm chosen
      * @param minHours            Minimum number of hours for a given day
+     * @param optimizeDay         Whether to maximize the positioning of tasks in relation to each other
+     * @param defaultAtStart      Whether the scheduling begins at the start of day
+     * @param localScheduleColors Whether the local schedule shares the colors of its Google counterpart
      */
     public UserConfig(int[] range, int[] globalHr, int maxDays, int archiveDays, boolean priority,
                       boolean overflow, boolean fitDay, int schedulingAlgorithm, double minHours,
-                      boolean optimizeDay, boolean defaultAtStart) {
+                      boolean optimizeDay, boolean defaultAtStart, boolean localScheduleColors) {
         this.range = range;
         this.week = globalHr;
         this.maxDays = maxDays;
@@ -56,6 +60,7 @@ public class UserConfig {
         this.minHours = minHours;
         this.optimizeDay = optimizeDay;
         this.defaultAtStart = defaultAtStart;
+        this.localScheduleColors = localScheduleColors;
     }
 
     public int[] getRange() {
@@ -214,19 +219,21 @@ public class UserConfig {
         return optimizeDay;
     }
 
-    public void setOptimizeDay(boolean optimizeDay) {
-        this.optimizeDay = optimizeDay;
-    }
+    public void setOptimizeDay(boolean optimizeDay) { this.optimizeDay = optimizeDay; }
 
     public boolean isOptimizeDay() {
         return optimizeDay;
     }
 
-    public boolean isDefaultAtStart() {
-        return defaultAtStart;
-    }
+    public boolean isDefaultAtStart() { return defaultAtStart; }
 
     public void setDefaultAtStart(boolean defaultAtStart) {
         this.defaultAtStart = defaultAtStart;
+    }
+
+    public boolean isLocalScheduleColors() { return localScheduleColors; }
+
+    public void setLocalScheduleColors(boolean localScheduleColors) {
+        this.localScheduleColors = localScheduleColors;
     }
 }

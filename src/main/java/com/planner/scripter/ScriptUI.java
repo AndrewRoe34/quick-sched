@@ -11,10 +11,12 @@ public class ScriptUI {
     public static void main(String[] args) throws IOException, GeneralSecurityException {
         System.out.println("Simple Script 0.4.0\n");
         ScriptFSM fsm = new ScriptFSM();
+
         File file = new File("data/scripts");
         File[] list = file.listFiles();
         List<File> files = new ArrayList<>();
         assert list != null;
+
         System.out.println("Files:");
         int i = 0;
         for(File l : list) {
