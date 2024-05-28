@@ -1,5 +1,6 @@
 package com.planner.util;
 
+import com.planner.models.Event;
 import com.planner.models.UserConfig;
 import com.planner.schedule.day.Day;
 
@@ -82,7 +83,7 @@ public class Time {
         if (isAbove) {
             if (min > 45) {
                 clone.set(Calendar.MINUTE, 0);
-                clone.add(Calendar.HOUR_OF_DAY, 1); //todo need to check and see if that also updates the 'Day of month' component as well
+                clone.add(Calendar.HOUR_OF_DAY, 1);
             } else if (min > 30) {
                 clone.set(Calendar.MINUTE, 45);
             } else if (min > 15) {
@@ -121,7 +122,7 @@ public class Time {
         return hours;
     }
 
-
+    // [COMPLETE]
     public static Calendar getFirstAvailableTimeInDay(List<TimeStamp> taskTimeStamps, List<TimeStamp> eventTimeStamps, UserConfig userConfig, Calendar time, boolean isToday) {
         Calendar startTime;
         if (isToday && time.get(Calendar.HOUR_OF_DAY) >= userConfig.getRange()[0] && taskTimeStamps.isEmpty() && !userConfig.isDefaultAtStart()) {
@@ -167,22 +168,26 @@ public class Time {
         return startTime;
     }
 
+    // [COMPLETE]
     public static boolean isInsideEventBlock(Calendar startTime, TimeStamp eventTimeStamp) {
         return !isPastEvent(startTime, eventTimeStamp.getEnd()) && !isBeforeEvent(startTime, eventTimeStamp.getStart());
     }
 
+    // [COMPLETE]
     public static boolean isPastEvent(Calendar startTime, Calendar eventEnd) {
         Calendar startTemp = cloneAndResetSecMillis(startTime);
         Calendar eventTemp = cloneAndResetSecMillis(eventEnd);
         return startTemp.compareTo(eventTemp) >= 0;
     }
 
+    // [COMPLETE]
     public static boolean isBeforeEvent(Calendar startTime, Calendar eventStart) {
         Calendar startTemp = cloneAndResetSecMillis(startTime);
         Calendar eventTemp = cloneAndResetSecMillis(eventStart);
         return startTemp.compareTo(eventTemp) < 0;
     }
 
+    // [COMPLETE]
     public static Calendar cloneAndResetSecMillis(Calendar date) {
         Calendar temp = (Calendar) date.clone();
         temp.set(Calendar.SECOND, 0);
@@ -190,6 +195,18 @@ public class Time {
         return temp;
     }
 
+    // [COMPLETE]
+    public static boolean isConflictingEvent(Event curr, Event other) {
+        Calendar currStart = cloneAndResetSecMillis(curr.getTimeStamp().getStart());
+        Calendar currEnd = cloneAndResetSecMillis(curr.getTimeStamp().getEnd());
+        Calendar otherStart = cloneAndResetSecMillis(other.getTimeStamp().getEnd());
+        Calendar otherEnd = cloneAndResetSecMillis(other.getTimeStamp().getEnd());
+
+        if (currStart.compareTo(otherStart) >= 0 && currStart.compareTo(otherEnd) < 0) return true;
+        else return currEnd.compareTo(otherStart) > 0 && currEnd.compareTo(otherEnd) < 0;
+    }
+
+    // [COMPLETE]
     public static List<Double> computeTimeBlocks(Day day) {
         List<Double> intervals = new ArrayList<>();
         for (TimeStamp taskTimeStamp : day.getTaskTimeStamps()) {

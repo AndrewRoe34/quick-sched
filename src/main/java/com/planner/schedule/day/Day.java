@@ -201,9 +201,31 @@ public class Day {
     }
 
     public boolean addEvent(Event event) {
-        // todo check that event does not overlap with a preexisting event
-        //   will need to do a quick interval check and then insert it into Day (will need to then check events for the day when scheduling)
-        return false;
+        int idx = 0;
+        boolean idxFound = false;
+        for (Event e1 : eventList) {
+            if (Time.isConflictingEvent(event, e1)) {
+                return false;
+            } else {
+                if (Time.isBeforeEvent(event.getTimeStamp().getStart(), e1.getTimeStamp().getStart())) {
+                    idxFound = true;
+                } else {
+                    idx++;
+                }
+            }
+        }
+
+        if (idxFound) {
+            eventList.add(idx, event);
+            eventTimeStamps.add(idx, event.getTimeStamp());
+        } else {
+            eventList.add(event);
+            eventTimeStamps.add(event.getTimeStamp());
+        }
+
+        // todo will need to add config option here that tallies event hours just the same as tasks (used with counting hours left in day)
+
+        return true;
     }
 
     public SubTask getSubTask(int subtaskIndex) {
