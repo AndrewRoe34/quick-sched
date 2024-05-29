@@ -292,6 +292,7 @@ public class JBin {
             } else if(!cardOpen && tokens.length == 2 && "CARD".equals(tokens[0]) && "{".equals(tokens[1])) {
                 cardOpen = true;
                 Calendar currDay = Time.getFormattedCalendarInstance(0);
+                boolean firstCard = true;
                 while(jbinScanner.hasNextLine()) {
                     type = jbinScanner.nextLine();
                     tokens = type.split(",");
@@ -301,9 +302,22 @@ public class JBin {
                         cardClosed = true;
                         break;
                     } else if(tokens.length == 2) { // need to make this '== 2', change else to 'else if tokens.length > 2', and finally else with exception thrown
-                        cards.add(new Card(cards.size(), tokens[0].trim(), parseCardColor(tokens[1].trim())));
+                        if (firstCard && tokens[0].trim().equals(cards.get(0).getTitle())) {
+                            // do nothing here
+                        } else {
+                            cards.add(new Card(cards.size(), tokens[0].trim(), parseCardColor(tokens[1].trim())));
+                        }
+                        firstCard = false;
                     } else if (tokens.length > 2) {
-                        cards.add(new Card(cards.size(), tokens[0].trim(), parseCardColor(tokens[1].trim())));
+                        Card card = null;
+                        if (firstCard && tokens[0].trim().equals(cards.get(0).getTitle())) {
+                            // do nothing here
+                            card = cards.get(0);
+                        } else {
+                            cards.add(new Card(cards.size(), tokens[0].trim(), parseCardColor(tokens[1].trim())));
+                            card = cards.get(cards.size() - 1);
+                        }
+                        firstCard = false;
                         for(int i = 2; i < tokens.length; i++) {
                             String item = tokens[i].trim();
                             int idx = Integer.parseInt(item.substring(1));
@@ -312,9 +326,9 @@ public class JBin {
                                 if(tempTask != null) {
                                     int numDays = Time.differenceOfDays(tempTask.getDueDate(), currDay);
                                     if (numDays >= -1 * maxArchiveDays) {
-                                        cards.get(cards.size() - 1).addTask(tempTask);
+                                        card.addTask(tempTask);
                                         if (tempTask.getColor() == null) {
-                                            tempTask.setColor(cards.get(cards.size() - 1).getColorId());
+                                            tempTask.setColor(card.getColorId());
                                         }
                                     }
                                     else taskList.set(idx, null);

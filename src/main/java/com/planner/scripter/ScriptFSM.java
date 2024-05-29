@@ -29,7 +29,7 @@ public class ScriptFSM {
     private final ScriptLog scriptLog = new ScriptLog();
     private List<Type> clList = new ArrayList<>();
     private List<Type> labelList = new ArrayList<>();
-    private List<Task> taskList = new ArrayList<>();
+//    private List<Task> taskList = new ArrayList<>();
     private List<Type> primitiveVariables = new ArrayList<>();
     private final Map<String, CustomFunction> funcMap = new HashMap<>();
     private PreProcessor preProcessor = null;
@@ -410,14 +410,15 @@ public class ScriptFSM {
         } else if (classInstance instanceof TaskInstance) {
             TaskInstance task = (TaskInstance) classInstance;
             t1 = lookupVariable(task.getVarName());
-            Task createdTask = new Task(scheduleManager.getLastTaskId() + taskList.size(), task.getName(), task.getTotalHours(), task.getDueDate());
+            Task createdTask = new Task(scheduleManager.getLastTaskId(), task.getName(), task.getTotalHours(), task.getDueDate());
             if(t1 == null) {
                 t1 = new Type(createdTask, task.getVarName(), Type.TypeId.TASK);
                 globalStack.add(t1);
             } else {
                 t1.setLinkerData(createdTask, Type.TypeId.TASK);
             }
-            taskList.add(createdTask);
+            scheduleManager.addTask(createdTask);
+//            taskList.add(createdTask);
         } else if(classInstance instanceof CheckListInstance) {
             CheckListInstance cl = (CheckListInstance) classInstance;
             t1 = lookupVariable(cl.getVarName());
@@ -538,10 +539,10 @@ public class ScriptFSM {
                 if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.STRING) throw new InvalidFunctionException();
                 funcExportSchedule(args[0].getStringConstant());
                 return null;
-            case "add_all_tasks":
-                if(args.length != 0) throw new InvalidFunctionException();
-                funcAddAllTasks();
-                return null;
+//            case "add_all_tasks":
+//                if(args.length != 0) throw new InvalidFunctionException();
+//                funcAddAllTasks();
+//                return null;
             case "input_tasks":
                 if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.INTEGER) throw new InvalidFunctionException();
                 funcInputTasks(args[0].getIntConstant());
@@ -621,6 +622,10 @@ public class ScriptFSM {
             case "import_google":
                 if(args.length != 0) throw new InvalidFunctionException();
                 funcImportGoogle();
+                return null;
+            case "add_task_card":
+                if (args.length != 2 && args[0].getVariabTypeId() != Type.TypeId.TASK && args[1].getVariabTypeId() != Type.TypeId.CARD) throw new InvalidFunctionException();
+                funcAddTaskCard((Task) args[0].getLinkerData(), (Card) args[1].getLinkerData());
                 return null;
             default:
                 processCustomFunction(func, args);
@@ -892,9 +897,9 @@ public class ScriptFSM {
         return types;
     }
 
-    protected void funcAddAllTasks() {
-        scheduleManager.addTaskList(taskList);
-    }
+//    protected void funcAddAllTasks() {
+//        scheduleManager.addTaskList(taskList);
+//    }
 
     protected void funcBuild() {
         scheduleManager.buildSchedule();
@@ -928,6 +933,10 @@ public class ScriptFSM {
                 scheduleManager.addTask(tokens[0].trim(), Integer.parseInt(tokens[1].trim()), Integer.parseInt(tokens[2].trim()));
             }
         }
+    }
+
+    protected void funcAddTaskCard(Task task, Card card) {
+        scheduleManager.addTaskToCard(task, card);
     }
 
     protected  void funcInputCheckLists(int num) {

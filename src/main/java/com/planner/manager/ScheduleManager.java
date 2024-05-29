@@ -87,6 +87,7 @@ public class ScheduleManager {
         customHours = new HashMap<>();
         taskMap = new HashMap<>();
         cards = new ArrayList<>();
+        cards.add(new Card(0, "Default", Card.Colors.LIGHT_BLUE));
         archivedTasks = new PriorityQueue<>();
         events = new ArrayList<>();
         //processSettingsCfg(filename);
@@ -274,7 +275,23 @@ public class ScheduleManager {
         taskManager.add(task);
         taskMap.put(taskId - 1, task);
         eventLog.reportTaskAction(task, 0);
+        cards.get(0).addTask(task);
         return task;
+    }
+
+    public void addTask(Task createdTask) {
+        taskManager.add(createdTask);
+        taskMap.put(taskId - 1, createdTask);
+        cards.get(0).addTask(createdTask);
+    }
+
+    public boolean addTaskToCard(Task task, Card card) {
+        if (card.getTask().contains(task)) return false;
+        card.addTask(task);
+        if (cards.get(0).getTask().contains(task)) {
+            cards.get(0).removeTask(task);
+        }
+        return true;
     }
 
     /**
@@ -519,7 +536,14 @@ public class ScheduleManager {
 
         // use foreach loop to determine max number of tasks while printing out the first line of Cards
         int maxTasks = 0;
+        boolean defaultCardIsEmpty = false;
+        int cardIdx = 0;
         for(Card c1 : cards) {
+            if (cardIdx == 0 && c1.getTask().isEmpty()) {
+                cardIdx++;
+                defaultCardIsEmpty = true;
+                continue;
+            }
             if (userConfig.isLocalScheduleColors()) {
                 String colorANSICode = getColorANSICode((c1.getColorId()));
                 sb.append(colorANSICode);
@@ -543,7 +567,8 @@ public class ScheduleManager {
         }
 
         sb.append("\n");
-        for(int i = 0; i < cards.size(); i++) {
+        int cardCount = defaultCardIsEmpty ? 1 : 0;
+        for(; cardCount < cards.size(); cardCount++) {
             sb.append("-----------------------------------------");
         }
 
@@ -551,7 +576,10 @@ public class ScheduleManager {
         for(int i = 0; i < maxTasks; i++) {
             sb.append("\n");
 
+            cardIdx = 0;
             for(Card c1 : cards) {
+                if (cardIdx++ == 0 && c1.getTask().isEmpty()) continue;
+
                 if(i < c1.getTask().size()) {
                     // print out the task (up to 18 characters)
                     Task t1 = c1.getTask().get(i);

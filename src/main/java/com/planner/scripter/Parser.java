@@ -287,6 +287,7 @@ public class Parser {
             case "set_schedule":
             case "export_google":
             case "import_google":
+            case "add_task_card":
                 return new StaticFunction(funcName, arguments, true);
             default:
                 return new StaticFunction(funcName, arguments, false);
