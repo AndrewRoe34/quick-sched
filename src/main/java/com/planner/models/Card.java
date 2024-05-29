@@ -123,7 +123,7 @@ public class Card implements Linker{
     @Override
     public boolean add(Linker o) {
         if (o instanceof Task) {
-            return cardTasks.add((Task) o);
+            return addTask((Task) o);
         }
         return false;
     }

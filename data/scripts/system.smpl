@@ -3,6 +3,17 @@ include: __CURR_CONFIG__
 jbin_file: input_word("Import JBin -> ")
 import_schedule(jbin_file)
 
+func create_card()
+  flag: input_bool("Create Card(T/F) -> ")
+  if (flag)
+    _name: input_line("Name -> ")
+    _color: input_line("Color -> ")
+    _c1: card(_name, _color)
+    create_card()
+  else
+    println()
+
+#create_card()
 display_board()
 
 func process_card(_t1)
@@ -12,6 +23,9 @@ func process_card(_t1)
   else
     c1: get_card(idx)
     c1.add(_t1)
+  x: input_bool("View Card(T/F) ")
+  if (x)
+    display_card(idx)
 
 task_added: false
 func create_task()
