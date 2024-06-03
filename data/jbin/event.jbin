@@ -1,0 +1,25 @@
+03-06-2024
+
+TASK {
+  Something Something, 0.5, 2
+  Documentation, 2.5, 0
+  Testing, 1.0, 1
+  Fix CompareTo, 1.0, -3
+  Update Dynamic Sched, 4.0, -2
+  Read Ch4, 4.0, 3
+  Finish HW3, 8.0, 4
+  Apply for jobs, 7.0, 5
+}
+
+EVENT {
+  I have an event, LIGHT_BLUE, 13:50:3:6:2024-15:50:3:6:2024, false
+  Multiple days, LIGHT_CORAL, 17:00:3:6:2024-18:50:3:6:2024, true, Monday Thursday Friday
+  I wanna try a stupidly long name just to see how it breaks, GREEN, 13:50:4:6:2024-15:50:4:6:2024, false
+}
+
+DAY {
+  N/A
+  N/A
+  N/A
+  N/A
+}

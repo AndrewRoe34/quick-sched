@@ -1,10 +1,7 @@
 package com.planner.util;
 
-import com.planner.models.Card;
-import com.planner.models.CheckList;
+import com.planner.models.*;
 import com.planner.schedule.day.Day;
-import com.planner.models.Task;
-import com.planner.models.UserConfig;
 
 import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
@@ -69,8 +66,43 @@ public class EventLog {
         sb.append(" ID=").append(task.getId());
         sb.append(", NAME=").append(task.getName());
         sb.append(", HOURS=").append(task.getTotalHours());
+
         SimpleDateFormat sdf2 = new SimpleDateFormat("MM-dd-yyyy");
         sb.append(", DUE_DATE=").append(sdf2.format(task.getDueDate().getTime())).append("\n");
+    }
+
+    /**
+     * Reports a given Event action
+     *
+     * @param event Event being reported
+     * @param type Action type (0=Add, 1=Remove, 2=EDIT)
+     */
+    public void reportEventAction(Event event, int type) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+
+        if(type == 0)
+            sb.append(" ADD(EVENT): ");
+        else if(type == 1)
+            sb.append(" REMOVE(EVENT): ");
+        else if (type == 2)
+            sb.append(" EDIT(EVENT): ");
+
+        sb.append(" ID=").append(event.getId());
+        sb.append(", NAME=").append(event.getName());
+        sb.append(", TIME_SLOT=").append(event.getTimeStamp().toString());
+
+        SimpleDateFormat sdf2 = new SimpleDateFormat("MM-dd-yyyy");
+        sb.append(", DATE=").append(sdf2.format(event.getTimeStamp().getStart().getTime()));
+
+        sb.append(", RECURRENCE=").append(event.isRecurring());
+
+        if (event.isRecurring())
+            sb.append(", DAYS=").append(Arrays.toString(event.getDays()));
+
+        sb.append("\n");
     }
 
     /**

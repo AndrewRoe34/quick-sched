@@ -233,6 +233,28 @@ public class Time {
             buildStamp();
         }
 
+        // Another copy class, made for the same reason as the Event copy class.
+        public TimeStamp(TimeStamp t) {
+            this.start = Calendar.getInstance();
+            this.start.set(
+                    t.start.get(Calendar.YEAR),
+                    t.start.get(Calendar.MONTH),
+                    t.start.get(Calendar.DAY_OF_MONTH),
+                    t.start.get(Calendar.HOUR_OF_DAY),
+                    t.start.get(Calendar.MINUTE)
+            );
+
+            this.end = Calendar.getInstance();
+            this.end.set(
+                    t.end.get(Calendar.YEAR),
+                    t.end.get(Calendar.MONTH),
+                    t.end.get(Calendar.DAY_OF_MONTH),
+                    t.end.get(Calendar.HOUR_OF_DAY),
+                    t.end.get(Calendar.MINUTE)
+            );
+            buildStamp();
+        }
+
         public Calendar getStart() {
             return start;
         }

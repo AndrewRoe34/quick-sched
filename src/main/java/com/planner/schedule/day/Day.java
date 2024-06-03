@@ -203,15 +203,15 @@ public class Day {
     public boolean addEvent(Event event) {
         int idx = 0;
         boolean idxFound = false;
+
         for (Event e1 : eventList) {
-            if (Time.isConflictingEvent(event, e1)) {
+            if (Time.isConflictingEvent(event, e1))
                 return false;
-            } else {
-                if (Time.isBeforeEvent(event.getTimeStamp().getStart(), e1.getTimeStamp().getStart())) {
+            else {
+                if (Time.isBeforeEvent(event.getTimeStamp().getStart(), e1.getTimeStamp().getStart()))
                     idxFound = true;
-                } else {
+                else
                     idx++;
-                }
             }
         }
 

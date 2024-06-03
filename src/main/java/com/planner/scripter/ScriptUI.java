@@ -26,6 +26,7 @@ public class ScriptUI {
             }
             i++;
         }
+
         System.out.print("\nChoose from the above: ");
         Scanner input = new Scanner(System.in);
         if(input.hasNextInt()) {
