@@ -272,6 +272,8 @@ public class Parser {
             case "add_all_tasks":
             case "add_all_cards":
             case "input_tasks":
+            case "create_event":
+            case "display_events":
             case "input_int":
             case "input_word":
             case "input_line":

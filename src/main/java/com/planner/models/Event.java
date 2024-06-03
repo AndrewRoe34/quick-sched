@@ -7,15 +7,28 @@ public class Event {
 
     private int id;
     private String name;
-    private double hours;
     private TimeStamp timeStamp;
     private Card.Colors color;
+    private boolean recurring;
+    private String[] days;
 
-    public Event(int id, String name, double hours, TimeStamp timeStamp) {
+    public Event(int id, String name, Card.Colors color, TimeStamp timeStamp, boolean recurring, String[] days) {
         this.id = id;
         this.name = name;
-        this.hours = hours;
+        this.color = color;
         this.timeStamp = timeStamp;
+        this.recurring = recurring;
+        this.days = days;
+    }
+
+    // Copy constructor to avoid "reference"-based issues when modifying event time..
+    public Event (Event e) {
+        this.id = e.id;
+        this.name = e.name;
+        this.color = e.color;
+        this.timeStamp = new TimeStamp(e.timeStamp);
+        this.recurring = e.recurring;
+        this.days = e.days;
     }
 
     public int getId() {
@@ -34,13 +47,11 @@ public class Event {
         this.name = name;
     }
 
-    public double getHours() {
-        return hours;
+    public Card.Colors getColor() {
+        return color;
     }
 
-    public void setHours(double hours) {
-        this.hours = hours;
-    }
+    public void setColor(Card.Colors color) { this.color = color; }
 
     public TimeStamp getTimeStamp() {
         return timeStamp;
@@ -50,11 +61,15 @@ public class Event {
         this.timeStamp = timeStamp;
     }
 
-    public Card.Colors getColor() {
-        return color;
+    public boolean isRecurring() {
+        return recurring;
     }
 
-    public void setColor(Card.Colors color) {
-        this.color = color;
+    public void setRecurring(boolean recurring) { this.recurring = recurring; }
+
+    public String[] getDays() {
+        return days;
     }
+
+    public void setDays(String[] days) { this.days = days; }
 }

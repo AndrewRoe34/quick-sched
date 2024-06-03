@@ -2,6 +2,7 @@ package com.planner.util;
 
 import com.planner.models.Card;
 import com.planner.models.CheckList;
+import com.planner.models.Event;
 import com.planner.models.Task;
 import com.planner.manager.ScheduleManager;
 import com.planner.schedule.day.Day;
@@ -47,6 +48,10 @@ public class JBin {
         }
         TASK {
           <NAME>, <DUE_DATE>, <TOTAL_HR>, <USED_HR>, CL#
+          ...
+        }
+        EVENT {
+          <NAME>, <COLOR>, <DURATION_TIMESTAMPS>, <RECURRING_BOOLEAN>, <DAYS [Optional - Depends on 'recurring_boolean']>
           ...
         }
         CARD {
@@ -182,7 +187,8 @@ public class JBin {
      * @param schedule set of Days for the given schedule being processed
      * @param maxArchiveDays maximum number of past Days to include
      */
-    public static void processJBin(String data, PriorityQueue<Task> tasks, List<Card> cards, List<Day> schedule, int maxArchiveDays) {
+    public static void processJBin(String data, PriorityQueue<Task> tasks, List<Event> events, List<Card> cards,
+                                   List<Day> schedule, int maxArchiveDays) {
         //NOTE: When processing, you should work from top to bottom (use ArrayLists to easily locate data by index value)
         Scanner jbinScanner = new Scanner(data);
         LocalDate ld = null;
@@ -190,41 +196,32 @@ public class JBin {
             DateTimeFormatter df = DateTimeFormatter.ofPattern("dd-MM-yyyy");
             ld = LocalDate.parse(jbinScanner.nextLine(), df);
         }
+
         Calendar calendar = Time.getFormattedCalendarInstance(0);
         assert ld != null;
-        int[] monthSet = {
-                Calendar.JANUARY,
-                Calendar.FEBRUARY,
-                Calendar.MARCH,
-                Calendar.APRIL,
-                Calendar.MAY,
-                Calendar.JUNE,
-                Calendar.JULY,
-                Calendar.AUGUST,
-                Calendar.SEPTEMBER,
-                Calendar.OCTOBER,
-                Calendar.NOVEMBER,
-                Calendar.DECEMBER};
 
         //todo codeblock needs to be refactored and tested further
-        int x = ld.getDayOfMonth(); //debugging values
-//        calendar = Calendar.getInstance();
-        calendar.set(ld.getYear(), Calendar.MAY, ld.getDayOfMonth());
-        calendar.add(Calendar.DAY_OF_MONTH, 1);
-        calendar.add(Calendar.DAY_OF_MONTH, -1);
-        //todo codeblock needs to be refactored and tested further
 
+        // Calendar.MONTH is zero-indexed
+        calendar.set(ld.getYear(), ld.getMonthValue() - 1, ld.getDayOfMonth());
+
+        //todo codeblock needs to be refactored and tested further
 
         boolean checklistOpen = false;
         boolean checklistClosed = false;
         boolean taskOpen = false;
         boolean taskClosed = false;
+        boolean eventOpen = false;
+        boolean eventClosed = false;
         boolean cardOpen = false;
         boolean cardClosed = false;
         boolean dayOpen = false;
         boolean dayClosed = false;
+
         List<CheckList> checkLists = new ArrayList<>();
         List<Task> taskList = new ArrayList<>();
+        List<Event> eventList = new ArrayList<>();
+
         while(jbinScanner.hasNextLine()) {
             String type = jbinScanner.nextLine();
             String[] tokens = type.split("\\s");
@@ -255,6 +252,7 @@ public class JBin {
                         }
                     }
                 }
+
                 if(!checklistClosed) {
                     throw new IllegalArgumentException();
                 }
@@ -286,10 +284,60 @@ public class JBin {
                         throw new InputMismatchException();
                     }
                 }
+
                 if(!taskClosed) {
                     throw new IllegalArgumentException();
                 }
-            } else if(!cardOpen && tokens.length == 2 && "CARD".equals(tokens[0]) && "{".equals(tokens[1])) {
+            }
+
+            else if(!eventOpen && tokens.length == 2 && "EVENT".equals(tokens[0]) && "{".equals(tokens[1])) {
+                eventOpen = true;
+
+                while(jbinScanner.hasNextLine()) {
+                    tokens = jbinScanner.nextLine().split(",");
+
+                    if(tokens.length == 0)
+                        throw new InputMismatchException();
+
+                    else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
+                        eventClosed = true;
+                        break;
+                    }
+
+                    else if(tokens.length == 5 || tokens.length == 4) {
+                        String duration = tokens[2].trim();
+                        String startString = duration.split("-")[0].trim();
+                        String endString = duration.split("-")[1].trim();
+
+                        Calendar start = getEventCalendar(startString);
+                        Calendar end = getEventCalendar(endString);
+
+                        String eventName = tokens[0].trim();
+                        String colorString = tokens[1].trim();
+
+                        boolean recurring = Boolean.parseBoolean(tokens[3].trim());
+                        String[] days = recurring ? tokens[4].trim().split(" ") : null;
+                        eventList.add(
+                            new Event(
+                                eventList.size(),
+                                eventName,
+                                parseColor(colorString),
+                                new Time.TimeStamp(start, end),
+                                recurring,
+                                days
+                            )
+                        );
+                    }
+
+                    else
+                        throw new InputMismatchException();
+                }
+
+                if(!eventClosed)
+                    throw new IllegalArgumentException();
+            }
+
+            else if(!cardOpen && tokens.length == 2 && "CARD".equals(tokens[0]) && "{".equals(tokens[1])) {
                 cardOpen = true;
                 Calendar currDay = Time.getFormattedCalendarInstance(0);
                 boolean firstCard = true;
@@ -305,7 +353,7 @@ public class JBin {
                         if (firstCard && tokens[0].trim().equals(cards.get(0).getTitle())) {
                             // do nothing here
                         } else {
-                            cards.add(new Card(cards.size(), tokens[0].trim(), parseCardColor(tokens[1].trim())));
+                            cards.add(new Card(cards.size(), tokens[0].trim(), parseColor(tokens[1].trim())));
                         }
                         firstCard = false;
                     } else if (tokens.length > 2) {
@@ -314,7 +362,7 @@ public class JBin {
                             // do nothing here
                             card = cards.get(0);
                         } else {
-                            cards.add(new Card(cards.size(), tokens[0].trim(), parseCardColor(tokens[1].trim())));
+                            cards.add(new Card(cards.size(), tokens[0].trim(), parseColor(tokens[1].trim())));
                             card = cards.get(cards.size() - 1);
                         }
                         firstCard = false;
@@ -352,6 +400,7 @@ public class JBin {
                 int dayCount = 0;
                 while (jbinScanner.hasNextLine()) {
                     Calendar scheduleDay = Time.getFormattedCalendarInstance(calendar, dayIdx++);
+
                     type = jbinScanner.nextLine();
                     tokens = type.split(",");
                     if(tokens.length == 0) {
@@ -360,9 +409,8 @@ public class JBin {
                         dayClosed = true;
                         break;
                     } else if ("N/A".equals(tokens[0].trim()) && tokens.length == 1) {
-//                        Day day = new Day(dayCount++, 8, scheduleDay);
-//                        schedule.add(day);
-                        dayCount++;
+                        Day day = new Day(dayCount++, 8, scheduleDay);
+                        schedule.add(day);
                     } else {
                         if (Time.differenceOfDays(scheduleDay, currDay) < 0) continue;
                         Day day = new Day(dayCount++, 8, scheduleDay);
@@ -390,14 +438,31 @@ public class JBin {
                 throw new InputMismatchException();
             }
         }
+
         for(Task t : taskList) {
             if(t != null) {
                 tasks.add(t);
             }
         }
+
+        events.addAll(eventList);
     }
 
-    private static Card.Colors parseCardColor(String s) {
+    private static Calendar getEventCalendar(String timeString) {
+        Calendar calendar = Calendar.getInstance();
+
+        calendar.set(
+                Integer.parseInt(timeString.split(":")[4]),
+                Integer.parseInt(timeString.split(":")[3]) - 1,
+                Integer.parseInt(timeString.split(":")[2]),
+                Integer.parseInt(timeString.split(":")[0]),
+                Integer.parseInt(timeString.split(":")[1])
+        );
+
+        return calendar;
+    }
+
+    private static Card.Colors parseColor(String s) {
         switch (s) {
             case "RED":
                 return Card.Colors.RED;
@@ -407,8 +472,6 @@ public class JBin {
                 return Card.Colors.YELLOW;
             case "GREEN":
                 return Card.Colors.GREEN;
-            case "LIGHT_BLUE":
-                return Card.Colors.LIGHT_BLUE;
             case "BLUE":
                 return Card.Colors.BLUE;
             case "INDIGO":
@@ -422,7 +485,7 @@ public class JBin {
             case "LIGHT_GREEN":
                 return Card.Colors.LIGHT_GREEN;
             default:
-                return null;
+                return Card.Colors.LIGHT_BLUE;
         }
     }
 }

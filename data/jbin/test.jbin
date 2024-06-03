@@ -19,6 +19,11 @@ CARD {
   Hobbies, VIOLET
 }
 
+EVENT {
+  I have an event, LIGHT_BLUE, 13:50:6:2:2024-15:50:6:2:2024, false
+  Multiple days, LIGHT_CORAL, 17:00:6:2:2024-18:50:6:2:2024, true, Monday Thursday Friday
+}
+
 DAY {
   T1 2.5, T2 1.0, T5 4.0, T6 0.5
   T6 7.5
