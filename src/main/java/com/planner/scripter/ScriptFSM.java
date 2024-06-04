@@ -21,6 +21,11 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * Processes scripts written in the custom 'smpl' language.
+ *
+ * @author Abah Olotuche Gabriel
+ */
 public class ScriptFSM {
 
     private final Scanner inputScanner = new Scanner(System.in);
