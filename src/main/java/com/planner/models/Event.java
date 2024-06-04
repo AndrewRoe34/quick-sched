@@ -3,6 +3,11 @@ package com.planner.models;
 import com.planner.schedule.day.Day;
 import com.planner.util.Time.TimeStamp;
 
+/**
+ * Represents a user-created event.
+ *
+ * @author Abah Olotuche Gabriel
+ */
 public class Event {
 
     private int id;

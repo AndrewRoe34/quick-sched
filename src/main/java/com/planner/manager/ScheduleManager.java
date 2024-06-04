@@ -23,6 +23,7 @@ import com.planner.util.Time;
  * Handles the generation and management of the overall schedule
  *
  * @author Andrew Roe
+ * @author Abah Olotuche Gabriel
  */
 public class ScheduleManager {
 

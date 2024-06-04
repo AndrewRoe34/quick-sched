@@ -12,6 +12,7 @@ import java.util.List;
  * Handles all time operations involving Calendar instances
  *
  * @author Andrew Roe
+ * @author Abah Olotuche Gabriel
  */
 public class Time {
 

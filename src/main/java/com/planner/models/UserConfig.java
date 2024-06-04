@@ -4,6 +4,7 @@ package com.planner.models;
  * Handles the management of all user config settings and data
  *
  * @author Andrew Roe
+ * @author Abah Olotuche Gabriel
  */
 public class UserConfig {
 

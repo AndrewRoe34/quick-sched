@@ -17,6 +17,7 @@ import java.util.*;
  * of data with the Front-End component
  *
  * @author Andrew Roe
+ * @author Abah Olotuche Gabriel
  */
 public class JBin {
 

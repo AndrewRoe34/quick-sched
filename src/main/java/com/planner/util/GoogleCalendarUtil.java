@@ -15,6 +15,7 @@ import java.util.List;
  * Handler of all core linker and utility functions for GoogleIO
  *
  * @author Andrew Roe
+ * @author Abah Olotuche Gabriel
  */
 public class GoogleCalendarUtil {
 

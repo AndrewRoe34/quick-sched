@@ -14,6 +14,7 @@ import com.planner.util.Time.TimeStamp;
  * Represents a single Day in the year
  *
  * @author Andrew Roe
+ * @author Abah Olotuche Gabriel
  */
 public class Day {
 

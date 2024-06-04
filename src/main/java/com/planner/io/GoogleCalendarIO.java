@@ -30,7 +30,11 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 
-/* class to demonstrate use of Calendar events list API */
+/**
+ * Class to demonstrate use of Calendar events list API.
+ *
+ * @author Abah Olotuche Gabriel
+ */
 public class GoogleCalendarIO {
     /**
      * Application name.

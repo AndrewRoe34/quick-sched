@@ -8,6 +8,11 @@ import com.planner.models.CheckList;
 
 import java.util.*;
 
+/**
+ * Processes instructions written in a 'smpl' script.
+ *
+ * @author Abah Olotuche Gabriel
+ */
 public class Parser {
 
 //    private static final String FUNC_REGEX = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
