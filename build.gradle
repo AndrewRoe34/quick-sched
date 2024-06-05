@@ -37,3 +37,15 @@ jar {
         configurations.runtimeClasspath.collect {it.isDirectory() ? it : zipTree(it)}
     }
 }
+
+// Define the 'run' task
+tasks.register('run') {
+    dependsOn['jar']
+    doLast {
+        javaexec {
+            main = 'com.planner.scripter.ScriptUI'
+            classpath = sourceSets.main.runtimeClasspath
+            standardInput = System.in
+        }
+    }
+}
