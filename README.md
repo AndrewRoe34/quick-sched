@@ -1,4 +1,7 @@
-# Agile Planner v0.4.0
+<p align="center">
+  <img src="logo.png" alt="Agile Planner">
+</p>
+
 ![Maven Central Version](https://img.shields.io/maven-central/v/com.google.code.gson/gson?versionPrefix=2.10.1&style=flat&label=gson&labelColor=%23f8b500&color=%23555555)
 ![Maven Central Version](https://img.shields.io/maven-central/v/com.google.api-client/google-api-client?versionSuffix=2.6.0&style=flat&label=google-api-client&labelColor=%230f9d58&color=%23555555)
 ![Maven Central Version](https://img.shields.io/maven-central/v/com.google.oauth-client/google-oauth-client-jetty?versionSuffix=1.34.1&style=flat&label=google-oauth-client-jetty&labelColor=%234285f4&color=%23555555)
