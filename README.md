@@ -57,7 +57,115 @@ After building the project, you can open it in IntelliJ IDEA:
 Now, you’re ready to start developing with Agile Planner!
 
 ## Usage
-Agile Planner runs directly off Simple Script with creating and managing your entire weekly schedule. This section will go over all core components need to have your schedules running!
+Agile Planner runs directly off Simple Script with creating and managing your weekly schedules. Below you'll find the basics to get started with scripting in Agile Planner. Here's a typical script you might encounter:
+```
+include: __CURR_CONFIG__, __LOG__
+
+jbin_file: input_word("Import JBin -> ")
+import_schedule(jbin_file)
+display_board()
+
+build()
+export_google()
+```
+
+### Include Flags
+This part of the script tells Simple what to include when it’s interpreting your code. This can range from type of configuration settings to logging out the stack trace. Here’s all the possible options:
+```
+__CURR_CONFIG__ (Uses the current config settings)
+__DEF_CONFIG__  (Uses the default config settings)
+__HTML__        (Generates an HTML page for the session)
+__LOG__	        (Stores a log of the stack trace)
+```
+
+### Variables
+Variables, similar to Python, are dynamic in nature and allow switching between types as often as you please. Declaration and instantiation are done simultaneously in Simple and cannot be separated. Below is the syntax:
+```
+<var_name>: <data_type>(<arg1>, <arg2>, ...>)
+```
+And the following are examples of how you could create an instance of each built-in type:
+```
+c1: card(“Calc 3”)
+my_task: task(“Math HW”, 4, 2)
+var: label(“HW”, 2)
+_cl: checklist(“ToDo”)
+x: 34
+str: “Hello World”
+flag: false
+```
+Whenever a variable is attempting to hold an object instance, it must attach the ‘:’ to the end of its name. Thankfully, memory is dynamic here and allows for switching of types with storage like the following:
+```
+c1: card(“Calc 3”)
+c1: “This is some string”
+c1: 34
+# Will print out the value of ‘34’
+println(c1)
+```
+
+### Built-In Functions
+Simple script provides an extensive list of built-in functions that solve a wide variety of problems. Below are considered foundational to Simple Script.
+
+These two functions are for reading and writing scheduling data via the JBin format:
+```
+import_schedule(<filename : String>)
+export_schedule(<filename : String>)
+```
+
+The google import/export functions deal with reading and writing Calendar data back and forth. The import function will display all Agile Planner tasks with a JSON format while the export function will schedule the tasks with timeslots according to the generated schedule (note: scheduled tasks are printed with links to their Calendar counterparts):
+```
+import_google()
+export_google()
+```
+
+These functions allow you to build the schedule, visualize the current Board setup, which comprises of all the Cards and their associated Tasks, and the generated schedule that was produced (either via ‘build()’ or from a prior session stored by JBin):
+```
+build()
+display_board()
+display_schedule()
+```
+
+### Custom Functions
+Simple Script's custom functions are very similar to Python and allow for repeated efficiency and offer recursive capabilities. They follow this format here:
+```
+func <func_name>(<arg1>, <arg2>, . . .>)
+```
+A sample script is provided below as to what is possible outside of scheduling:
+```
+include: __CURR_CONFIG__, __LOG__
+# Outputs all binary codes of a specified length
+str: ""
+func binary(bin, x)
+  if(x.==(0))
+    str.concat(bin, "\n")
+    return
+  x.--()
+  binary(bin.add("0"), x)
+  binary(bin.add("1"), x)
+print("Enter number: ")
+x: input_int()
+binary("", x)
+write_file("data/bin.txt", str)
+```
+
+### Object Methods
+Simple has an extensive list of methods for each type in order to leverage the Object-Oriented structure. A typical example would be as follows:
+```
+my_card: card(“HW”)
+t1: task(“Math”, 4, 2)
+# Adds the task to the card
+my_card.add(t1)
+```
+
+### Control Structure
+If conditions work a bit differently compared to Python in that arguments are comma delimited (this is being changed with the next version of Simple script). Here is a typical example below:
+```
+if(x.==(0))
+    print(“Play games with friends”)
+elif(x.==(1))
+    print(“Watch latest Marvel movie”)
+else
+    print(“Study for test”)
+```
 
 ## Configuration
 Agile Planner can be customized through a `settings.cfg` file. Below are the available settings and their descriptions:
@@ -98,5 +206,3 @@ Here's an example `settings.cfg` file with default values:
 If you're interested in contributing to this project, be sure to check out <file> and join our slack group down below.
 
 [![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)](https://join.slack.com/t/agileplannergroup/shared_invite/zt-2k0bmf49j-V6avYCrNJFFWVTpdER69tg)
-
-## License
