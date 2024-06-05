@@ -3,6 +3,7 @@ package com.planner.models;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,6 +35,10 @@ class CardTest {
 
     @Test
     void setCardTasks() {
+        List<Task> taskList = new ArrayList<>();
+        taskList.add(new Task(0, "F", 4.0, 0));
+        c1.setCardTasks(taskList);
+        assertEquals(taskList, c1.getTask());
     }
 
     @Test
