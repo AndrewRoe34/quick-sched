@@ -104,24 +104,27 @@ println(c1)
 ```
 
 ### Built-In Functions
-Simple script provides an extensive list of built-in functions that solve a wide variety of problems. Below are considered foundational to Simple Script.
-
-These two functions are for reading and writing scheduling data via the JBin format:
+Simple script provides an extensive list of built-in functions that solve a wide variety of problems. Below are considered fundamental:
 ```
+# reads in schedule to session
 import_schedule(<filename : String>)
+
+# writes schedule to file
 export_schedule(<filename : String>)
-```
 
-The google import/export functions deal with reading and writing Calendar data back and forth. The import function will display all Agile Planner tasks with a JSON format while the export function will schedule the tasks with timeslots according to the generated schedule (note: scheduled tasks are printed with links to their Calendar counterparts):
-```
+# reads data from google calendar
 import_google()
-export_google()
-```
 
-These functions allow you to build the schedule, visualize the current Board setup, which comprises of all the Cards and their associated Tasks, and the generated schedule that was produced (either via ‘build()’ or from a prior session stored by JBin):
-```
+# writes schedule to google calendar
+export_google()
+
+# builds the schedule
 build()
+
+# displays the board (i.e. all the cards and their tasks)
 display_board()
+
+# displays the week schedule
 display_schedule()
 ```
 
