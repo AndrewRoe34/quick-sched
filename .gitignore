@@ -44,5 +44,11 @@ bin/
 ### Mac OS ###
 .DS_Store
 
-### Documentation for build ###
-/docs/
+### Preserve core files to system and testing
+!data/jbin
+!data/scripts
+
+### Remaining are just result of session runs ###
+data/
+logs/
+docs/

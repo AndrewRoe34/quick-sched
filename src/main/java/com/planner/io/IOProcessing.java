@@ -2,6 +2,9 @@ package com.planner.io;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import com.planner.schedule.day.Day;
@@ -113,18 +116,51 @@ public class IOProcessing {
         }
     }
 
-    public static void writeScripterLogToFile(String str) throws FileNotFoundException {
-        PrintStream outputStream = new PrintStream("logs/scripter.log");
-        outputStream.print(str);
+    public static void writeScripterLogToFile(String str) throws IOException {
+        // Define the path for the 'logs' directory
+        Path logsDirectory = Paths.get("logs");
+
+        // Create the 'logs' directory if it does not exist
+        if (!Files.exists(logsDirectory)) {
+            Files.createDirectories(logsDirectory);
+        }
+
+        // Create a PrintStream to write to a file in the 'logs' directory
+        Path logFile = logsDirectory.resolve("scripter.log");
+        try (PrintStream outputStream = new PrintStream(logFile.toFile())) {
+            outputStream.print(str);
+        }
     }
 
-    public static void writeSysLogToFile(String str) throws FileNotFoundException {
-        PrintStream outputStream = new PrintStream("logs/system.log");
-        outputStream.print(str);
+    public static void writeSysLogToFile(String str) throws IOException {
+        // Define the path for the 'logs' directory
+        Path logsDirectory = Paths.get("logs");
+
+        // Create the 'logs' directory if it does not exist
+        if (!Files.exists(logsDirectory)) {
+            Files.createDirectories(logsDirectory);
+        }
+
+        // Create a PrintStream to write to a file in the 'logs' directory
+        Path logFile = logsDirectory.resolve("system.log");
+        try (PrintStream outputStream = new PrintStream(logFile.toFile())) {
+            outputStream.print(str);
+        }
     }
 
-    public static void writeScripterPage(String page, String scriptName) throws FileNotFoundException {
-        PrintStream outputStream = new PrintStream("data/html/" + scriptName + ".html");
-        outputStream.print(page);
+    public static void writeScripterPage(String page, String scriptName) throws IOException {
+        // Define the path for the 'logs' directory
+        Path htmlDirectory = Paths.get("data/html");
+
+        // Create the 'logs' directory if it does not exist
+        if (!Files.exists(htmlDirectory)) {
+            Files.createDirectories(htmlDirectory);
+        }
+
+        // Create a PrintStream to write to a file in the 'logs' directory
+        Path htmlFile = htmlDirectory.resolve(scriptName + ".html");
+        try (PrintStream outputStream = new PrintStream(htmlFile.toFile())) {
+            outputStream.print(page);
+        }
     }
 }
