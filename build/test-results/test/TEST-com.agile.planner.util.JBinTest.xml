@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.agile.planner.util.JBinTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2024-03-08T00:03:43" hostname="DIGITALSTORM-PC" time="0.008">
-  <properties/>
-  <testcase name="processJBin()" classname="com.agile.planner.util.JBinTest" time="0.0"/>
-  <testcase name="createJBin()" classname="com.agile.planner.util.JBinTest" time="0.008"/>
-  <system-out><![CDATA[]]></system-out>
-  <system-err><![CDATA[]]></system-err>
-</testsuite>

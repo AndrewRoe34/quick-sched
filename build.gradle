@@ -1,14 +1,9 @@
 plugins {
     id 'java'
-    id 'jacoco'
 }
 
-jacoco {
-    toolVersion = "0.8.7"
-}
-
-group 'agile.planner'
-version '0.4.1-SNAPSHOT'
+group = 'agile.planner'
+version = '0.4.1-SNAPSHOT'
 
 repositories {
     mavenCentral()
@@ -29,10 +24,6 @@ dependencies {
 
 test {
     useJUnitPlatform()
-    jacoco {
-        // This will output the execution data to the file system for further analysis later
-        destinationFile = file("$buildDir/jacoco/test.exec")
-    }
 }
 
 jar {
@@ -45,13 +36,4 @@ jar {
     from {
         configurations.runtimeClasspath.collect {it.isDirectory() ? it : zipTree(it)}
     }
-}
-
-jacocoTestReport {
-    reports {
-        xml.enabled true
-        html.enabled true
-        html.destination file("${buildDir}/jacocoHtml")
-    }
-    dependsOn(test)
 }

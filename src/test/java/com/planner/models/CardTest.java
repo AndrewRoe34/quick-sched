@@ -1,124 +1,103 @@
-package com.planner.models;//package agile.planner.data;
-//
-//import org.junit.Test;
-//
-//import java.util.ArrayList;
-//import java.util.List;
-//
-//import static org.junit.Assert.*;
-//
-///**
-// * Tests Card functionality
-// *
-// * @author lucialanganey
-// */
-//public class CardTest {
-//
-//    /**
-//     * Tests getLabel() functionality
-//     */
-//    @Test
-//    public void testGetLabel() {
-//        Card c1 = new Card("0");
-//        Card c2 = new Card("1");
-//        Card c3 = new Card("2");
-//        assertEquals("0", c1.getLabel());
-//        assertEquals("1", c2.getLabel());
-//        assertEquals("2", c3.getLabel());
-//    }
-//
-//    /**
-//     * Tests setLabel() functionality
-//     */
-//    @Test
-//    public void testSetLabel() {
-//        Card c1 = new Card("0");
-//        Card c2 = new Card("1");
-//        Card c3 = new Card("2");
-//        c1.setLabel("1");
-//        c2.setLabel("2");
-//        c3.setLabel("0");
-//        assertEquals("1", c1.getLabel());
-//        assertEquals("2", c2.getLabel());
-//        assertEquals("0", c3.getLabel());
-//    }
-//
-//    /**
-//     * Tests getList() functionality
-//     */
-//    @Test
-//    public void testGetList() {
-//        Card c1 = new Card("0");
-//        Task t1 = new Task(0, "A", 5, 2);
-//        Task t2 = new Task(1, "B", 5, 2);
-//        Task t3 = new Task(2, "C", 5, 2);
-//        List<Task> list = new ArrayList<>();
-//        list.add(t1);
-//        list.add(t2);
-//        list.add(t3);
-//
-//        c1.setCardTasks(list);
-//        assertEquals(list, c1.getCardTasks());
-//    }
-//
-//    /**
-//     * Tests setList() functionality
-//     */
-//    @Test
-//    public void testSetList() {
-//        Card c1 = new Card("0");
-//        Task t1 = new Task(0, "A", 5, 2);
-//        Task t2 = new Task(1, "B", 5, 2);
-//        Task t3 = new Task(2, "C", 5, 2);
-//        List<Task> list = new ArrayList<>();
-//        list.add(t1);
-//        list.add(t2);
-//        list.add(t3);
-//
-//        c1.setCardTasks(list);
-//        assertEquals(list, c1.getCardTasks());
-//    }
-//
-//    /**
-//     * Tests addTask() functionality
-//     */
-//    @Test
-//    public void testAddTask() {
-//        Card c1 = new Card("0");
-//        Task t1 = new Task(0, "A", 5, 2);
-//        Task t2 = new Task(1, "B", 5, 2);
-//        Task t3 = new Task(2, "C", 5, 2);
-//
-//        List<Task> list = new ArrayList<>();
-//        list.add(t1);
-//        list.add(t2);
-//        list.add(t3);
-//        c1.setCardTasks(list);
-//
-//        Task t4 = new Task(2, "C", 5, 2);
-//        c1.addTask(t4);
-//
-//        assertEquals(list, c1.getCardTasks());
-//    }
-//
-//    /**
-//     * Tests removeTask() functionality
-//     */
-//    @Test
-//    public void testRemoveTask() {
-//        Card c1 = new Card("0");
-//        Task t1 = new Task(0, "A", 5, 2);
-//        Task t2 = new Task(1, "B", 5, 2);
-//        Task t3 = new Task(2, "C", 5, 2);
-//
-//        List<Task> list = new ArrayList<>();
-//        list.add(t1);
-//        list.add(t2);
-//        list.add(t3);
-//        c1.setCardTasks(list);
-//
-//        c1.removeTask(1);
-//
-//        assertEquals(list, c1.getCardTasks());
-//    }
-//}
+package com.planner.models;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+/**
+ * Tests all Card methods
+ *
+ * @author Andrew Roe
+ */
+class CardTest {
+
+    private Card c1;
+
+    @BeforeEach
+    void setUp() {
+        c1 = new Card(0, "Math", Card.Colors.LIGHT_BLUE);
+    }
+
+    @Test
+    void getId() {
+        assertEquals(0, c1.getId());
+    }
+
+    @Test
+    void setTitle() {
+        c1.setTitle("Chemistry");
+        assertEquals("Chemistry", c1.getTitle());
+    }
+
+    @Test
+    void setCardTasks() {
+    }
+
+    @Test
+    void addTask() {
+        Task t1 = new Task(0, "Read Ch4", 4, 1);
+        assertTrue(c1.getTask().isEmpty());
+        c1.addTask(t1);
+        assertEquals(1, c1.getTask().size());
+        assertEquals(t1, c1.getTask().get(0));
+    }
+
+    @Test
+    void removeTaskBool() {
+        Task t1 = new Task(0, "Read Ch4", 4, 1);
+        assertTrue(c1.getTask().isEmpty());
+        c1.addTask(t1);
+        assertEquals(1, c1.getTask().size());
+        assertEquals(t1, c1.getTask().get(0));
+
+        assertTrue(c1.removeTask(t1));
+        assertTrue(c1.getTask().isEmpty());
+    }
+
+    @Test
+    void removeTaskObject() {
+        Task t1 = new Task(0, "Read Ch4", 4, 1);
+        assertTrue(c1.getTask().isEmpty());
+        c1.addTask(t1);
+        assertEquals(1, c1.getTask().size());
+        assertEquals(t1, c1.getTask().get(0));
+
+        assertEquals(t1, c1.removeTask(0));
+        assertTrue(c1.getTask().isEmpty());
+    }
+
+    @Test
+    void testToString() {
+        assertEquals("Math", c1.toString());
+    }
+
+    @Test
+    void getTask() {
+        Task t1 = new Task(0, "Read Ch4", 4, 1);
+        assertTrue(c1.getTask().isEmpty());
+        c1.addTask(t1);
+        assertEquals(1, c1.getTask().size());
+        List<Task> taskList = c1.getTask();
+        assertEquals(1, taskList.size());
+        assertEquals(t1, taskList.get(0));
+    }
+
+    @Test
+    void getTitle() {
+        assertEquals("Math", c1.getTitle());
+    }
+
+    @Test
+    void getColorId() {
+        assertEquals(Card.Colors.LIGHT_BLUE, c1.getColorId());
+    }
+
+    @Test
+    void setColorId() {
+        c1.setColorId(Card.Colors.INDIGO);
+        assertEquals(Card.Colors.INDIGO, c1.getColorId());
+    }
+}

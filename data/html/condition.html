@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agile Planner Simple Script</title>
+    <style>
+        html, body {
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #eaeaea;
+        }
+        h1 {
+	    margin: 0;
+	    margin-top: 0;
+            text-align: center;
+            background-color: #dcd0ff; /* Light purple background */
+            color: #333;
+            padding: 10px 0;
+            margin-bottom: 20px; /* Added space below the header */
+	    font-size: 2em;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .box {
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 10px;
+            background-color: #f2f2f2; /* Light gray background for boxes */
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 30%;
+            overflow: auto;
+            height: 800px; /* Adjust this value as needed */
+        }
+	.box:hover {
+    		box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+	}
+
+        h2 {
+	    font-size: 1.5em;
+	    margin-top: 0;
+            border-bottom: 2px solid #5b9bd5;
+            color: #5b9bd5;
+        }
+        code {
+    	font-family: 'Consolas', 'Courier New', monospace; /* This is a monospace font */
+    	background-color: #f3f3f3; /* Light grey background */
+    	border-left: 3px solid #5b9bd5; /* A blue border on the left */
+    	padding: 2px 10px;
+    	display: block; /* Makes it a block element */
+    	color: #333; /* Darker text for better contrast */
+    	margin: 5px 0; /* Adds spacing above and below the code block */
+    	overflow-x: auto; /* Allows horizontal scrolling if needed */
+	}
+    </style>
+</head><body>
+    <h1>Simple Script v0.4.0</h1>
+    <div class="container">
+        <div class="box">
+            <h2>condition.smpl</h2>
+            <pre>
+                <code>
+include: __CURR_CONFIG__, __LOG__, __HTML__
+
+func prompt_user()
+  x: input_int("Enter a number between 0 and 3 -> ")
+  if (x.==(0))
+    println("Cond 1")
+  elif (x.==(1))
+    println("Cond 2")
+  elif (x.==(2))
+    println("Cond 3")
+  else
+    println("Cond 4")
+  if (x.==(2))
+    println("Cond 5")
+  else
+    println("Cond 6")
+
+prompt_user()
+                </code>
+            </pre>
+        </div>
+        <div class="box">
+            <h2>Script Log</h2>
+            <pre>
+                <code>
+[05-06-2024] Log of all activities from current session: 
+
+[00:00:56] PREPROC_ATTR: DEF_CONFIG=false, LOG=true, STATS=false, HTML=true
+[00:00:56] FUNC_SETUP: NAME= prompt_user, PARAM=[]
+[00:00:58] FUNC_CALLS: NAME=input_int, ARGS=["Enter a number between 0 and 3 -> "]
+[00:00:58] VAR_SETUP: NAME=x, VALUE=2
+[00:00:58] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:00:58] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
+[00:00:58] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[1]
+[00:00:58] IF_CONDITION: ARGS=[x.==(1)], RESULT=false
+[00:00:58] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[2]
+[00:00:58] IF_CONDITION: ARGS=[x.==(2)], RESULT=true
+[00:00:58] FUNC_CALLS: NAME=println, ARGS=["Cond 3"]
+[00:00:58] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[2]
+[00:00:58] IF_CONDITION: ARGS=[x.==(2)], RESULT=true
+[00:00:58] FUNC_CALLS: NAME=println, ARGS=["Cond 5"]
+[00:00:58] FUNC_CALLS: NAME=prompt_user, ARGS=[]
+                </code>
+            </pre>
+        </div>
+        <div class="box">
+            <h2>System Log:</h2>
+            <pre>
+                <code>
+[05-06-2024] Log of all activities from current session: 
+
+[00:00:48] [INFO] CURRENT SESSION HAS BEGUN...
+[00:00:48] [INFO] Reading Config: FILE=profile.cfg
+[00:00:48] [INFO] RANGE=[9, 20], WEEK_HOURS=[8, 8, 8, 8, 8, 8, 8], MAX_DAYS=14, ARCHIVE_DAYS=5, PRIORITY=false, OVERFLOW=true, FIT_SCHEDULE=true, SCHEDULE_ALGO=1, MIN_HOURS=1.0, OPTIMIZE_DAY=false, DEFAULT_AT_START=true
+[00:00:48] [INFO] GOOGLE CALENDAR AUTHORIZATION PROCESSED...
+[00:00:56] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\condition.smpl, SCRIPT INSTANCE HAS BEGUN...
+[00:00:58] [INFO] SCRIPT_NAME=C:\Users\Student\Desktop\agile-planner\data\scripts\condition.smpl, SCRIPT INSTANCE HAS ENDED...
+                </code>
+            </pre>
+        </div>
+    </div>
+</body>
+</html>
