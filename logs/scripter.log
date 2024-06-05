@@ -1,0 +1,17 @@
+[05-06-2024] Log of all activities from current session: 
+
+[00:00:56] PREPROC_ATTR: DEF_CONFIG=false, LOG=true, STATS=false, HTML=true
+[00:00:56] FUNC_SETUP: NAME= prompt_user, PARAM=[]
+[00:00:58] FUNC_CALLS: NAME=input_int, ARGS=["Enter a number between 0 and 3 -> "]
+[00:00:58] VAR_SETUP: NAME=x, VALUE=2
+[00:00:58] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[0]
+[00:00:58] IF_CONDITION: ARGS=[x.==(0)], RESULT=false
+[00:00:58] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[1]
+[00:00:58] IF_CONDITION: ARGS=[x.==(1)], RESULT=false
+[00:00:58] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[2]
+[00:00:58] IF_CONDITION: ARGS=[x.==(2)], RESULT=true
+[00:00:58] FUNC_CALLS: NAME=println, ARGS=["Cond 3"]
+[00:00:58] ATTR_CALL: VAR_NAME=x, NAME===, ARGS[2]
+[00:00:58] IF_CONDITION: ARGS=[x.==(2)], RESULT=true
+[00:00:58] FUNC_CALLS: NAME=println, ARGS=["Cond 5"]
+[00:00:58] FUNC_CALLS: NAME=prompt_user, ARGS=[]
