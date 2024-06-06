@@ -3,13 +3,14 @@ package com.planner.models;
 import com.planner.schedule.day.Day;
 import com.planner.util.Time.TimeStamp;
 
+import java.util.Calendar;
+
 /**
  * Represents a user-created event.
  *
  * @author Abah Olotuche Gabriel
  */
-public class Event {
-
+public class Event implements Comparable<Event> {
     private int id;
     private String name;
     private TimeStamp timeStamp;
@@ -24,16 +25,6 @@ public class Event {
         this.timeStamp = timeStamp;
         this.recurring = recurring;
         this.days = days;
-    }
-
-    // Copy constructor to avoid "reference"-based issues when modifying event time..
-    public Event (Event e) {
-        this.id = e.id;
-        this.name = e.name;
-        this.color = e.color;
-        this.timeStamp = new TimeStamp(e.timeStamp);
-        this.recurring = e.recurring;
-        this.days = e.days;
     }
 
     public int getId() {
@@ -62,6 +53,14 @@ public class Event {
         return timeStamp;
     }
 
+    public String getDateString() {
+        return timeStamp.getStart().get(Calendar.DAY_OF_MONTH)
+                + "-" +
+                timeStamp.getStart().get(Calendar.MONTH)
+                + "-" +
+                timeStamp.getStart().get(Calendar.YEAR);
+    }
+
     public void setTimeStamp(TimeStamp timeStamp) {
         this.timeStamp = timeStamp;
     }
@@ -77,4 +76,9 @@ public class Event {
     }
 
     public void setDays(String[] days) { this.days = days; }
+
+    @Override
+    public int compareTo(Event o) {
+        return this.timeStamp.getStart().compareTo(o.getTimeStamp().getStart());
+    }
 }

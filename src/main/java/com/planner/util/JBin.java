@@ -306,27 +306,31 @@ public class JBin {
                     }
 
                     else if(tokens.length == 5 || tokens.length == 4) {
-                        String duration = tokens[2].trim();
-                        String startString = duration.split("-")[0].trim();
-                        String endString = duration.split("-")[1].trim();
+                        String name = tokens[0].trim();
+                        Card.Colors color = parseColor(tokens[1].trim().toUpperCase());
+                        boolean recurring = Boolean.parseBoolean(tokens[2].trim());
 
-                        Calendar start = getEventCalendar(startString);
-                        Calendar end = getEventCalendar(endString);
+                        String startString = tokens[3].split("-")[0];
+                        String endString = tokens[3].split("-")[1];
 
-                        String eventName = tokens[0].trim();
-                        String colorString = tokens[1].trim();
-
-                        boolean recurring = Boolean.parseBoolean(tokens[3].trim());
+                        Calendar start = recurring ? getEventCalendar(null, startString) : getEventCalendar(tokens[4], startString);
+                        Calendar end = recurring ? getEventCalendar(null, endString) : getEventCalendar(tokens[4], endString);
                         String[] days = recurring ? tokens[4].trim().split(" ") : null;
+
+                        if (days != null) {
+                            for (int i = 0; i < days.length; i++)
+                                days[i] = days[i].substring(0, 3).toLowerCase();
+                        }
+
                         eventList.add(
-                            new Event(
-                                eventList.size(),
-                                eventName,
-                                parseColor(colorString),
-                                new Time.TimeStamp(start, end),
-                                recurring,
-                                days
-                            )
+                                new Event(
+                                        eventList.size(),
+                                        name,
+                                        color,
+                                        new Time.TimeStamp(start, end),
+                                        recurring,
+                                        days
+                                )
                         );
                     }
 
@@ -404,15 +408,20 @@ public class JBin {
 
                     type = jbinScanner.nextLine();
                     tokens = type.split(",");
-                    if(tokens.length == 0) {
+
+                    if(tokens.length == 0)
                         throw new InputMismatchException();
-                    } else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
+
+                    else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
                         dayClosed = true;
                         break;
-                    } else if ("N/A".equals(tokens[0].trim()) && tokens.length == 1) {
+                    }
+                    else if ("N/A".equals(tokens[0].trim()) && tokens.length == 1) {
+                        if (Time.differenceOfDays(scheduleDay, currDay) < 0) continue;
                         Day day = new Day(dayCount++, 8, scheduleDay);
                         schedule.add(day);
-                    } else {
+                    }
+                    else {
                         if (Time.differenceOfDays(scheduleDay, currDay) < 0) continue;
                         Day day = new Day(dayCount++, 8, scheduleDay);
                         double totalHours = 0.0;
@@ -449,15 +458,21 @@ public class JBin {
         events.addAll(eventList);
     }
 
-    private static Calendar getEventCalendar(String timeString) {
+    private static Calendar getEventCalendar(String dateString, String timeString) {
         Calendar calendar = Calendar.getInstance();
 
+        // If dateString is null, then this event is recurring. So, use random numbers
+        // we don't care about for the day, month and year.
+        int day = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[0].trim());
+        int month = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[1].trim());
+        int year = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[2].trim());
+
         calendar.set(
-                Integer.parseInt(timeString.split(":")[4]),
-                Integer.parseInt(timeString.split(":")[3]) - 1,
-                Integer.parseInt(timeString.split(":")[2]),
-                Integer.parseInt(timeString.split(":")[0]),
-                Integer.parseInt(timeString.split(":")[1])
+                year,
+                month,
+                day,
+                Integer.parseInt(timeString.split(":")[0].trim()),
+                Integer.parseInt(timeString.split(":")[1].trim())
         );
 
         return calendar;

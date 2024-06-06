@@ -63,6 +63,8 @@ public class ScheduleManager {
     private final GoogleCalendarIO googleCalendarIO;
     private Calendar scheduleTime;
     private List<Event> events;
+    private List<Event> indivEvents;
+    private List<List<Event>> recurringEvents;
 
     /**
      * Private constructor of ScheduleManager
@@ -92,6 +94,13 @@ public class ScheduleManager {
         cards.add(new Card(0, "Default", Card.Colors.LIGHT_BLUE));
         archivedTasks = new PriorityQueue<>();
         events = new ArrayList<>();
+        indivEvents = new ArrayList<>();
+
+        // Gotta initialize all the lists lol
+        recurringEvents = new ArrayList<>(7);
+        for (int i = 0; i < 7; i++)
+            recurringEvents.add(new ArrayList<>());
+
         //processSettingsCfg(filename);
         //processJBinFile("data/week.jbin");
 
@@ -157,112 +166,42 @@ public class ScheduleManager {
 //        }
 //    }
 
-    private void addEventsToSchedule() {
-        // Forgive me, algorithm gods. O(N^2) is never cool.
+    private void addEventsToEventList() {
         for (Event e : events) {
-            addEventToSchedule(e);
+            addEventToEventList(e);
         }
     }
 
-    private void addEventToSchedule(Event event) {
-        List<Day> createdDays = new ArrayList<>();
-        for (Day day : schedule) {
-            int eventDayOfMonth = event.getTimeStamp().getStart().get(Calendar.DAY_OF_MONTH);
-            int currentDayMonth = day.getDate().get(Calendar.DAY_OF_MONTH);
-
-            if (!event.isRecurring()) {
-                if (eventDayOfMonth == currentDayMonth) {
-                    day.addEvent(event);
-                    break;
-                }
-            }
-            else {
-                if (eventDayOfMonth != currentDayMonth)
-                    continue;
-
-                // O(N^3)? Sure, why not. (I hate what I have done here today.)
-                // Steps:
-                //  1. Get the int value of the event's current day in the week.
-                //  2. Get the difference between the current day and the specified day (Monday, Thursday, etc).
-                //  3. Update the current day in the MONTH with the difference to "copy" it to the specified day in the week.
-                //  4. Create a new day for the "copied" event
-                for (String d : event.getDays()) {
-                    int daysDifference = 0;
-                    int eventCurrentDayInWeek = event.getTimeStamp().getStart().get(Calendar.DAY_OF_WEEK);
-
-                    switch (d.toLowerCase()){
-                        case "sunday":
-                            daysDifference = Calendar.SUNDAY - eventCurrentDayInWeek;
-                            break;
-                        case "monday":
-                            daysDifference = Calendar.MONDAY - eventCurrentDayInWeek;
-                            break;
-                        case "tuesday":
-                            daysDifference = Calendar.TUESDAY - eventCurrentDayInWeek;
-                            break;
-                        case "wednesday":
-                            daysDifference = Calendar.WEDNESDAY - eventCurrentDayInWeek;
-                            break;
-                        case "thursday":
-                            daysDifference = Calendar.THURSDAY - eventCurrentDayInWeek;
-                            break;
-                        case "friday":
-                            daysDifference = Calendar.FRIDAY - eventCurrentDayInWeek;
-                            break;
-                        case "saturday":
-                            daysDifference = Calendar.SATURDAY - eventCurrentDayInWeek;
-                            break;
-                    }
-
-                    // If the user added the same day as an option in
-                    // the recurring days for some reason, just add the event.
-                    if (daysDifference == 0) {
-                        day.addEvent(event);
-                        continue;
-                    }
-
-                    // I'm tired of writing for-loops.
-                    // This code block looks for any existing Day objects that already match
-                    // with any of the listed days in a recurring event.
-                    int daysDifference_ = daysDifference;
-                    Optional<Day> existingDayForRecurringTask = schedule
-                            .stream()
-                            .filter(n -> n.getDate().get(Calendar.DAY_OF_MONTH) == (eventDayOfMonth + daysDifference_))
-                            .findFirst();
-
-                    if (existingDayForRecurringTask.isPresent()) {
-                        existingDayForRecurringTask.get().addEvent(event);
-                        continue;
-                    }
-
-                    // No existing day found. A new day has to be created to store the event.
-                    Calendar eventDate = Calendar.getInstance();
-                    eventDate.set(
-                            event.getTimeStamp().getStart().get(Calendar.YEAR),
-                            event.getTimeStamp().getStart().get(Calendar.MONTH),
-                            event.getTimeStamp().getStart().get(Calendar.DAY_OF_MONTH),
-                            event.getTimeStamp().getStart().get(Calendar.HOUR_OF_DAY),
-                            event.getTimeStamp().getStart().get(Calendar.MINUTE)
-                    );
-                    eventDate.add(Calendar.DAY_OF_MONTH, daysDifference);
-                    Day newDay = new Day(
-                            schedule.size() + createdDays.size(),
-                            8,
-                            eventDate
-                    );
-
-                    // "Copies" event to current day of reoccurrence (This just shifts the start day of
-                    // the event and treats it as a new event).
-                    Event e = new Event(event);
-                    e.getTimeStamp().getStart().add(Calendar.DAY_OF_MONTH, daysDifference);
-
-                    newDay.addEvent(e);
-                    createdDays.add(newDay);
-                }
-            }
+    private void addEventToEventList(Event event) {
+        if (!event.isRecurring()) {
+            indivEvents.add(event);
+            return;
         }
 
-        schedule.addAll(createdDays);
+        for (String day : event.getDays())
+            switch (day.toLowerCase()){
+                case "sun":
+                    recurringEvents.get(0).add(event);
+                    break;
+                case "mon":
+                    recurringEvents.get(1).add(event);
+                    break;
+                case "tue":
+                    recurringEvents.get(2).add(event);
+                    break;
+                case "wed":
+                    recurringEvents.get(3).add(event);
+                    break;
+                case "thu":
+                    recurringEvents.get(4).add(event);
+                    break;
+                case "fri":
+                    recurringEvents.get(5).add(event);
+                    break;
+                case "sat":
+                    recurringEvents.get(6).add(event);
+                    break;
+            }
     }
 
     /**
@@ -310,7 +249,7 @@ public class ScheduleManager {
             }
             taskId = taskManager.size();
 
-            addEventsToSchedule();
+            addEventsToEventList();
         }
     }
 
@@ -395,7 +334,7 @@ public class ScheduleManager {
         );
 
         events.add(e);
-        addEventToSchedule(e);
+        addEventToEventList(e);
 
         eventLog.reportEventAction(e, 0);
         return e;
@@ -491,7 +430,7 @@ public class ScheduleManager {
         resetSchedule();
         //Tasks that are "finished scheduling" are added here
         PriorityQueue<Task> complete = new PriorityQueue<>();
-        
+
         schedule = new ArrayList<>(userConfig.getMaxDays());
         scheduleTime = Calendar.getInstance();
         int idx = scheduleTime.get(Calendar.DAY_OF_WEEK) - 1;
@@ -814,57 +753,83 @@ public class ScheduleManager {
     public String buildEventStr() {
         StringBuilder sb = new StringBuilder();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        Calendar date = Time.getFormattedCalendarInstance(0);
+        boolean recurringEventsExist = false;
+        for (List<Event> events : recurringEvents) {
+            if (!events.isEmpty()) {
+                recurringEventsExist = true;
+                break;
+            }
+        }
 
-        int maxNumberOfEvents = 0;
-        for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
-            sb.append(sdf.format(date.getTime()));
-            sb.append(" ".repeat(30)).append("|");
-            date = Time.getFormattedCalendarInstance(date, 1);
+        if (recurringEventsExist) {
+            sb.append("RECURRING:").append("\n");
+            sb.append("ID").append(" ".repeat(5)).append("|");
+            sb.append("NAME").append(" ".repeat(16)).append("|");
+            sb.append("COLOR").append(" ".repeat(10)).append("|");
+            sb.append("TIME").append(" ".repeat(16)).append("|");
+            sb.append("DAYS").append(" ".repeat(29)).append("|");
 
-            maxNumberOfEvents = Math.max(maxNumberOfEvents, schedule.get(i).getEventList().size());
+            sb.append("\n");
+            sb.append("-".repeat(100));
+            sb.append("\n");
+        }
+
+        HashSet<Event> uniqueRecurringEvents = new HashSet<>();
+        for (List<Event> events : recurringEvents) {
+            uniqueRecurringEvents.addAll(events);
+        }
+
+        for (Event e : uniqueRecurringEvents) {
+            sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
+
+            if (e.getName().length() > 20)
+                sb.append(e.getName(), 0, 21).append("|");
+            else
+                sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
+
+            sb.append(e.getColor()).append(" ".repeat(15 - String.valueOf(e.getColor()).length())).append("|");
+
+            sb.append(e.getTimeStamp().toString()).append(" ".repeat(
+                    20 - e.getTimeStamp().toString().length())
+            ).append("|");
+
+            sb.append(Arrays.toString(
+                            e.getDays()),
+                    1,
+                    Arrays.toString(e.getDays()).length() - 1
+            ).append(" ".repeat(33 - Arrays.toString(e.getDays()).length() + 2)).append("|");
+
+            sb.append("\n");
         }
 
         sb.append("\n");
-        sb.append("-----------------------------------------".repeat(Math.min(schedule.size(), 6)));
 
-        for (int i = 0; i < maxNumberOfEvents; i++) {
+        if (!indivEvents.isEmpty()) {
+            sb.append("INDIVIDUAL:").append("\n");
+            sb.append("ID").append(" ".repeat(5)).append("|");
+            sb.append("NAME").append(" ".repeat(16)).append("|");
+            sb.append("COLOR").append(" ".repeat(10)).append("|");
+            sb.append("TIME").append(" ".repeat(16)).append("|");
+            sb.append("DATE").append(" ".repeat(8)).append("|");
+
             sb.append("\n");
+            sb.append("-".repeat(79));
+            sb.append("\n");
+        }
 
-            for (int j = 0; j < Math.min(schedule.size(), 6); j++) {
-                Day day = schedule.get(j); // For each day
+        for (Event e : indivEvents) {
+            sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
 
-                Event event = null; // Get ith event
-                try {
-                    event = day.getEventList().get(i);
-                }
-                catch (Exception e) {
-                    sb.append(" ".repeat(40)).append("|");
-                    continue;
-                }
+            if (e.getName().length() > 20)
+                sb.append(e.getName(), 0, 21).append("|");
+            else
+                sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
 
-                if (userConfig.isLocalScheduleColors()) {
-                    String colorANSICode = getColorANSICode((event.getColor()));
-                    sb.append(colorANSICode);
-                }
+            sb.append(e.getColor()).append(" ".repeat(15 - String.valueOf(e.getColor()).length())).append("|");
+            sb.append(e.getTimeStamp().toString()).append(" ".repeat(20 - e.getTimeStamp().toString().length())).append("|");
+            sb.append(e.getDateString()).append(" ".repeat(12 - e.getDateString().length())).append("|");
 
-                sb.append(day.getEventTimeStamps().get(i)).append(" - "); // 18 char
-                String outputEvent = event.getName();
-
-
-                if (outputEvent.length() > 21) {
-                    sb.append(outputEvent, 0, 22);
-                } else {
-                    sb.append(outputEvent);
-                    sb.append(" ".repeat(22 - outputEvent.length()));
-                }
-
-                if (userConfig.isLocalScheduleColors())
-                    sb.append("\u001B[0m");
-
-                sb.append("|");
-            }
+            sb.append("\n");
         }
 
         return sb.toString();
@@ -927,7 +892,7 @@ public class ScheduleManager {
         eventLog.reportExitSession();
         System.exit(0);
     }
-    
+
     public boolean createCard(String title) {
         eventLog.reportCardAction(null, 0);
         return false;

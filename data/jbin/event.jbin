@@ -12,9 +12,7 @@ TASK {
 }
 
 EVENT {
-  I have an event, LIGHT_BLUE, 13:50:3:6:2024-15:50:3:6:2024, false
-  Multiple days, LIGHT_CORAL, 17:00:3:6:2024-18:50:3:6:2024, true, Monday Thursday Friday
-  I wanna try a stupidly long name just to see how it breaks, GREEN, 13:50:4:6:2024-15:50:4:6:2024, false
+  Multiple days, LIGHT_CORAL, true, 17:00-18:50, Monday Thursday Friday
 }
 
 DAY {

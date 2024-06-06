@@ -34,7 +34,7 @@ public class ScriptFSM {
     private final ScriptLog scriptLog = new ScriptLog();
     private List<Type> clList = new ArrayList<>();
     private List<Type> labelList = new ArrayList<>();
-//    private List<Task> taskList = new ArrayList<>();
+    //    private List<Task> taskList = new ArrayList<>();
     private List<Type> primitiveVariables = new ArrayList<>();
     private final Map<String, CustomFunction> funcMap = new HashMap<>();
     private PreProcessor preProcessor = null;
@@ -987,15 +987,21 @@ public class ScriptFSM {
         }
     }
 
-    private static Calendar getEventCalendar(String timeString) {
+    private static Calendar getEventCalendar(String dateString, String timeString) {
         Calendar calendar = Calendar.getInstance();
 
+        // If dateString is null, then this event is recurring. So, use random numbers
+        // we don't care about for the day, month and year.
+        int day = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[0].trim());
+        int month = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[1].trim());
+        int year = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[2].trim());
+
         calendar.set(
-                Integer.parseInt(timeString.split(":")[4]),
-                Integer.parseInt(timeString.split(":")[3]) - 1,
-                Integer.parseInt(timeString.split(":")[2]),
-                Integer.parseInt(timeString.split(":")[0]),
-                Integer.parseInt(timeString.split(":")[1])
+                year,
+                month,
+                day,
+                Integer.parseInt(timeString.split(":")[0].trim()),
+                Integer.parseInt(timeString.split(":")[1].trim())
         );
 
         return calendar;
@@ -1008,23 +1014,37 @@ public class ScriptFSM {
         String name = inputScanner.nextLine();
 
         System.out.print("Color: ");
-        Card.Colors color = parseColor(inputScanner.nextLine());
-
-        System.out.print("Start: ");
-        Calendar start = getEventCalendar(inputScanner.nextLine());
-
-        System.out.print("End: ");
-        Calendar end = getEventCalendar(inputScanner.nextLine());
+        Card.Colors color = parseColor(inputScanner.nextLine().toUpperCase());
 
         System.out.print("Recurring: ");
         boolean recurring = inputScanner.nextBoolean();
         inputScanner.nextLine(); // Skips over ignored '\n'
 
+        String date = null;
+        Calendar start, end;
         String[] days = null;
+
         if (recurring) {
+            System.out.print("Start: ");
+            start = getEventCalendar(date, inputScanner.nextLine());
+
+            System.out.print("End: ");
+            end = getEventCalendar(date, inputScanner.nextLine());
+
             System.out.print("Days: ");
-            String daysString = inputScanner.nextLine();
-            days = daysString.split(" ");
+            days = inputScanner.nextLine().split(" ");
+            for (int i = 0; i < days.length; i++)
+                days[i] = days[i].substring(0, 3).toLowerCase();
+        }
+        else {
+            System.out.print("Date: ");
+            date = inputScanner.nextLine();
+
+            System.out.print("Start: ");
+            start = getEventCalendar(date, inputScanner.nextLine());
+
+            System.out.print("End: ");
+            end = getEventCalendar(date, inputScanner.nextLine());
         }
 
         scheduleManager.addEvent(
