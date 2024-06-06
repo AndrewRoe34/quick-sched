@@ -783,7 +783,7 @@ public class ScheduleManager {
             sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
 
             if (e.getName().length() > 20)
-                sb.append(e.getName(), 0, 21).append("|");
+                sb.append(e.getName(), 0, 20).append("|");
             else
                 sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
 
@@ -821,7 +821,7 @@ public class ScheduleManager {
             sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
 
             if (e.getName().length() > 20)
-                sb.append(e.getName(), 0, 21).append("|");
+                sb.append(e.getName(), 0, 20).append("|");
             else
                 sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
 

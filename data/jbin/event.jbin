@@ -13,6 +13,7 @@ TASK {
 
 EVENT {
   Multiple days, LIGHT_CORAL, true, 17:00-18:50, Monday Thursday Friday
+  Just me testing the text cutoff, green, false, 17:00-18:50, 06-06-2024
 }
 
 DAY {
