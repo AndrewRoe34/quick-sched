@@ -30,7 +30,11 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 
-/* class to demonstrate use of Calendar events list API */
+/**
+ * Class to demonstrate use of Calendar events list API.
+ *
+ * @author Abah Olotuche Gabriel
+ */
 public class GoogleCalendarIO {
     /**
      * Application name.
@@ -160,10 +164,18 @@ public class GoogleCalendarIO {
     }
 
     private void testWriteEvent() throws IOException {
-        com.planner.models.Event e1 = new com.planner.models.Event(0, "A", 4.0, new Time.TimeStamp(java.util.Calendar.getInstance(), java.util.Calendar.getInstance()));
-        e1.setColor(Card.Colors.BLACK);
+        com.planner.models.Event e1 = new com.planner.models.Event(
+                0,
+                "A",
+                Card.Colors.BLACK,
+                new Time.TimeStamp(java.util.Calendar.getInstance(), java.util.Calendar.getInstance()),
+                false,
+                null
+        );
+
         Event event = GoogleCalendarUtil.formatEventToGoogleEvent(e1);
         event = service.events().insert(calendarId, event).execute();
+
         System.out.printf("Event created: %s\n", event.getHtmlLink());
     }
 

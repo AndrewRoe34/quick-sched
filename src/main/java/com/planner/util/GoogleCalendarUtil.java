@@ -15,11 +15,13 @@ import java.util.List;
  * Handler of all core linker and utility functions for GoogleIO
  *
  * @author Andrew Roe
+ * @author Abah Olotuche Gabriel
  */
 public class GoogleCalendarUtil {
 
     public static Event formatTaskToGoogleEvent(Task task, Time.TimeStamp timeStamp) {
         Event event = new Event().setSummary(task.getName()); //todo need to display label names with given Task
+
         StringBuilder sb = new StringBuilder("Due: ");
         sb.append(task.getDueDate().get(Calendar.YEAR))
                 .append("-")
@@ -27,6 +29,7 @@ public class GoogleCalendarUtil {
                 .append("-")
                 .append(task.getDueDate().get(Calendar.DAY_OF_MONTH))
                 .append("\n\n");
+
         CheckList cl = task.getCheckList();
         if(cl != null) {
             sb.append(cl.getName()).append(":<ul>");

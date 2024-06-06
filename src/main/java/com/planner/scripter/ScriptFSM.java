@@ -21,6 +21,11 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * Processes scripts written in the custom 'smpl' language.
+ *
+ * @author Abah Olotuche Gabriel
+ */
 public class ScriptFSM {
 
     private final Scanner inputScanner = new Scanner(System.in);
@@ -29,7 +34,7 @@ public class ScriptFSM {
     private final ScriptLog scriptLog = new ScriptLog();
     private List<Type> clList = new ArrayList<>();
     private List<Type> labelList = new ArrayList<>();
-//    private List<Task> taskList = new ArrayList<>();
+    //    private List<Task> taskList = new ArrayList<>();
     private List<Type> primitiveVariables = new ArrayList<>();
     private final Map<String, CustomFunction> funcMap = new HashMap<>();
     private PreProcessor preProcessor = null;
@@ -42,6 +47,7 @@ public class ScriptFSM {
     public void executeScript(String filename) throws IOException {
         EventLog eventLog = scheduleManager.getEventLog();
         eventLog.reportScriptInstance(filename, true);
+
         scriptScanner = new Scanner(new File(filename));
         while (scriptScanner.hasNextLine() || !injectScript.isEmpty() && injectScriptIdx < injectScript.size()) {
             String untrimmed;
@@ -50,6 +56,7 @@ public class ScriptFSM {
             } else {
                 untrimmed = scriptScanner.nextLine();
             }
+
             String line = untrimmed.trim();
             boolean status = true;
             while(status) {
@@ -169,11 +176,13 @@ public class ScriptFSM {
                     }
                     System.exit(1);
                 }
+
                 if(operation != Parser.Operation.SETUP_CUST_FUNC) {
                     status = false;
                 }
             }
         }
+
         eventLog.reportScriptInstance(filename, false);
 //        if(preProcessor.isBuild()) {
 //            scheduleManager.outputScheduleToConsole();
@@ -186,11 +195,13 @@ public class ScriptFSM {
         if(preProcessor.isLog()) {
             System.out.println("\nSYSTEM LOG:\n" + eventLog);
             System.out.println("SCRIPT:");
+
             scriptScanner = new Scanner(new File(filename));
             while (scriptScanner.hasNextLine()) {
                 System.out.println(scriptScanner.nextLine());
             }
         }
+
         if(preProcessor.isHtml()) {
             File script = new File(filename);
             String scriptName = script.getName();
@@ -546,6 +557,14 @@ public class ScriptFSM {
             case "input_tasks":
                 if(args.length != 1 || args[0].getVariabTypeId() != Type.TypeId.INTEGER) throw new InvalidFunctionException();
                 funcInputTasks(args[0].getIntConstant());
+                return null;
+            case "create_event":
+                if(args.length != 0) throw new InvalidFunctionException();
+                funcCreateEvent();
+                return null;
+            case "display_events":
+                if(args.length != 0) throw new InvalidFunctionException();
+                funcDisplayEvents();
                 return null;
             case "input_int":
                 if(args.length > 1) throw new InvalidFunctionException();
@@ -939,6 +958,104 @@ public class ScriptFSM {
         scheduleManager.addTaskToCard(task, card);
     }
 
+    private static Card.Colors parseColor(String s) {
+        switch (s) {
+            case "RED":
+                return Card.Colors.RED;
+            case "ORANGE":
+                return Card.Colors.ORANGE;
+            case "YELLOW":
+                return Card.Colors.YELLOW;
+            case "GREEN":
+                return Card.Colors.GREEN;
+            case "LIGHT_BLUE":
+                return Card.Colors.LIGHT_BLUE;
+            case "BLUE":
+                return Card.Colors.BLUE;
+            case "INDIGO":
+                return Card.Colors.INDIGO;
+            case "VIOLET":
+                return Card.Colors.VIOLET;
+            case "BLACK":
+                return Card.Colors.BLACK;
+            case "LIGHT_CORAL":
+                return Card.Colors.LIGHT_CORAL;
+            case "LIGHT_GREEN":
+                return Card.Colors.LIGHT_GREEN;
+            default:
+                return Card.Colors.LIGHT_BLUE;
+        }
+    }
+
+    private static Calendar getEventCalendar(String dateString, String timeString) {
+        Calendar calendar = Calendar.getInstance();
+
+        // If dateString is null, then this event is recurring. So, use random numbers
+        // we don't care about for the day, month and year.
+        int day = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[0].trim());
+        int month = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[1].trim());
+        int year = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[2].trim());
+
+        calendar.set(
+                year,
+                month,
+                day,
+                Integer.parseInt(timeString.split(":")[0].trim()),
+                Integer.parseInt(timeString.split(":")[1].trim())
+        );
+
+        return calendar;
+    }
+
+    protected void funcCreateEvent() {
+        System.out.println("Create Event: ");
+
+        System.out.print("Name: ");
+        String name = inputScanner.nextLine();
+
+        System.out.print("Color: ");
+        Card.Colors color = parseColor(inputScanner.nextLine().toUpperCase());
+
+        System.out.print("Recurring: ");
+        boolean recurring = inputScanner.nextBoolean();
+        inputScanner.nextLine(); // Skips over ignored '\n'
+
+        String date = null;
+        Calendar start, end;
+        String[] days = null;
+
+        if (recurring) {
+            System.out.print("Start: ");
+            start = getEventCalendar(date, inputScanner.nextLine());
+
+            System.out.print("End: ");
+            end = getEventCalendar(date, inputScanner.nextLine());
+
+            System.out.print("Days: ");
+            days = inputScanner.nextLine().split(" ");
+            for (int i = 0; i < days.length; i++)
+                days[i] = days[i].substring(0, 3).toLowerCase();
+        }
+        else {
+            System.out.print("Date: ");
+            date = inputScanner.nextLine();
+
+            System.out.print("Start: ");
+            start = getEventCalendar(date, inputScanner.nextLine());
+
+            System.out.print("End: ");
+            end = getEventCalendar(date, inputScanner.nextLine());
+        }
+
+        scheduleManager.addEvent(
+                name,
+                color,
+                new Time.TimeStamp(start, end),
+                recurring,
+                days
+        );
+    }
+
     protected  void funcInputCheckLists(int num) {
         //todo
     }
@@ -1015,6 +1132,10 @@ public class ScriptFSM {
 
     protected void funcDisplaySchedule() {
         System.out.println(scheduleManager.buildScheduleStr());
+    }
+
+    protected void funcDisplayEvents() {
+        System.out.println(scheduleManager.buildEventStr());
     }
 
     /**

@@ -9,6 +9,7 @@ import java.util.List;
  * the column is the card, and the card is the task)
  *
  * @author Andrew Roe
+ * @author Abah Olotuche Gabriel
  */
 public class Card implements Linker{
 

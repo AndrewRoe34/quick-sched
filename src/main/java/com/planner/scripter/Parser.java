@@ -8,6 +8,11 @@ import com.planner.models.CheckList;
 
 import java.util.*;
 
+/**
+ * Processes instructions written in a 'smpl' script.
+ *
+ * @author Abah Olotuche Gabriel
+ */
 public class Parser {
 
 //    private static final String FUNC_REGEX = ",(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)";
@@ -272,6 +277,8 @@ public class Parser {
             case "add_all_tasks":
             case "add_all_cards":
             case "input_tasks":
+            case "create_event":
+            case "display_events":
             case "input_int":
             case "input_word":
             case "input_line":

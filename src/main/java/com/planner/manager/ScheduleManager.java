@@ -23,6 +23,7 @@ import com.planner.util.Time;
  * Handles the generation and management of the overall schedule
  *
  * @author Andrew Roe
+ * @author Abah Olotuche Gabriel
  */
 public class ScheduleManager {
 
@@ -62,6 +63,8 @@ public class ScheduleManager {
     private final GoogleCalendarIO googleCalendarIO;
     private Calendar scheduleTime;
     private List<Event> events;
+    private List<Event> indivEvents;
+    private List<List<Event>> recurringEvents;
 
     /**
      * Private constructor of ScheduleManager
@@ -75,6 +78,7 @@ public class ScheduleManager {
         }
         eventLog.reportUserLogin();
         processUserConfigFile();
+
         taskManager = new PriorityQueue<>();
         try {
             googleCalendarIO = new GoogleCalendarIO(eventLog);
@@ -90,6 +94,13 @@ public class ScheduleManager {
         cards.add(new Card(0, "Default", Card.Colors.LIGHT_BLUE));
         archivedTasks = new PriorityQueue<>();
         events = new ArrayList<>();
+        indivEvents = new ArrayList<>();
+
+        // Gotta initialize all the lists lol
+        recurringEvents = new ArrayList<>(7);
+        for (int i = 0; i < 7; i++)
+            recurringEvents.add(new ArrayList<>());
+
         //processSettingsCfg(filename);
         //processJBinFile("data/week.jbin");
 
@@ -155,6 +166,44 @@ public class ScheduleManager {
 //        }
 //    }
 
+    private void addEventsToEventList() {
+        for (Event e : events) {
+            addEventToEventList(e);
+        }
+    }
+
+    private void addEventToEventList(Event event) {
+        if (!event.isRecurring()) {
+            indivEvents.add(event);
+            return;
+        }
+
+        for (String day : event.getDays())
+            switch (day.toLowerCase()){
+                case "sun":
+                    recurringEvents.get(0).add(event);
+                    break;
+                case "mon":
+                    recurringEvents.get(1).add(event);
+                    break;
+                case "tue":
+                    recurringEvents.get(2).add(event);
+                    break;
+                case "wed":
+                    recurringEvents.get(3).add(event);
+                    break;
+                case "thu":
+                    recurringEvents.get(4).add(event);
+                    break;
+                case "fri":
+                    recurringEvents.get(5).add(event);
+                    break;
+                case "sat":
+                    recurringEvents.get(6).add(event);
+                    break;
+            }
+    }
+
     /**
      * Imports JBin file to generate cards and possible schedule
      *
@@ -164,7 +213,7 @@ public class ScheduleManager {
         String binStr = IOProcessing.readJBinFile(filename);
         if(binStr != null) {
             eventLog.reportReadJBinFile(filename);
-            JBin.processJBin(binStr, taskManager, cards, schedule, userConfig.getArchiveDays());
+            JBin.processJBin(binStr, taskManager, events, cards, schedule, userConfig.getArchiveDays());
             eventLog.reportProcessJBin();
             // remove past tasks from current PQ and archives them
 //            Set<Task> set = new HashSet<>();
@@ -184,6 +233,7 @@ public class ScheduleManager {
 //                }
 //            }
 //            taskManager = copy;
+
             Calendar currDate = Time.getFormattedCalendarInstance(0);
             while (!taskManager.isEmpty()) {
                 Task task = taskManager.remove();
@@ -198,6 +248,8 @@ public class ScheduleManager {
                 }
             }
             taskId = taskManager.size();
+
+            addEventsToEventList();
         }
     }
 
@@ -221,6 +273,10 @@ public class ScheduleManager {
 
     public List<Card> getCards() {
         return cards;
+    }
+
+    public List<Event> getEvents() {
+        return events;
     }
 
     /**
@@ -256,10 +312,32 @@ public class ScheduleManager {
         }
     }
 
-    public Event addEvent(String name, double hours, Calendar date) {
-        Event e1 = new Event(events.size(), name, hours, null); // todo need to fix
-        events.add(e1);
-        return e1;
+    /**
+     * Adds an event to the schedule
+     *
+     * @param name name of event
+     * @param color color for event classification
+     * @param timeStamp event duration
+     * @param recurring whether the event occurs only once or not
+     * @param days days of event occurrence, if recurring
+     * @return newly generated Task
+     */
+    public Event addEvent(String name, Card.Colors color, Time.TimeStamp timeStamp,
+                          boolean recurring, String[] days) {
+        Event e = new Event(
+                events.size(),
+                name,
+                color,
+                timeStamp,
+                recurring,
+                days
+        );
+
+        events.add(e);
+        addEventToEventList(e);
+
+        eventLog.reportEventAction(e, 0);
+        return e;
     }
 
     /**
@@ -272,8 +350,10 @@ public class ScheduleManager {
      */
     public Task addTask(String name, int hours, int incrementation) {
         Task task = new Task(taskId++, name, hours, incrementation);
+
         taskManager.add(task);
         taskMap.put(taskId - 1, task);
+
         eventLog.reportTaskAction(task, 0);
         cards.get(0).addTask(task);
         return task;
@@ -307,6 +387,7 @@ public class ScheduleManager {
             eventLog.reportTaskAction(t1, 1);
             return true;
         }
+
         return false;
     }
 
@@ -349,7 +430,7 @@ public class ScheduleManager {
         resetSchedule();
         //Tasks that are "finished scheduling" are added here
         PriorityQueue<Task> complete = new PriorityQueue<>();
-        
+
         schedule = new ArrayList<>(userConfig.getMaxDays());
         scheduleTime = Calendar.getInstance();
         int idx = scheduleTime.get(Calendar.DAY_OF_WEEK) - 1;
@@ -669,6 +750,91 @@ public class ScheduleManager {
         return sb.toString();
     }
 
+    public String buildEventStr() {
+        StringBuilder sb = new StringBuilder();
+
+        boolean recurringEventsExist = false;
+        for (List<Event> events : recurringEvents) {
+            if (!events.isEmpty()) {
+                recurringEventsExist = true;
+                break;
+            }
+        }
+
+        if (recurringEventsExist) {
+            sb.append("RECURRING:").append("\n");
+            sb.append("ID").append(" ".repeat(5)).append("|");
+            sb.append("NAME").append(" ".repeat(16)).append("|");
+            sb.append("COLOR").append(" ".repeat(10)).append("|");
+            sb.append("TIME").append(" ".repeat(16)).append("|");
+            sb.append("DAYS").append(" ".repeat(29)).append("|");
+
+            sb.append("\n");
+            sb.append("-".repeat(100));
+            sb.append("\n");
+        }
+
+        HashSet<Event> uniqueRecurringEvents = new HashSet<>();
+        for (List<Event> events : recurringEvents) {
+            uniqueRecurringEvents.addAll(events);
+        }
+
+        for (Event e : uniqueRecurringEvents) {
+            sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
+
+            if (e.getName().length() > 20)
+                sb.append(e.getName(), 0, 20).append("|");
+            else
+                sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
+
+            sb.append(e.getColor()).append(" ".repeat(15 - String.valueOf(e.getColor()).length())).append("|");
+
+            sb.append(e.getTimeStamp().toString()).append(" ".repeat(
+                    20 - e.getTimeStamp().toString().length())
+            ).append("|");
+
+            sb.append(Arrays.toString(
+                            e.getDays()),
+                    1,
+                    Arrays.toString(e.getDays()).length() - 1
+            ).append(" ".repeat(33 - Arrays.toString(e.getDays()).length() + 2)).append("|");
+
+            sb.append("\n");
+        }
+
+        sb.append("\n");
+
+        if (!indivEvents.isEmpty()) {
+            sb.append("INDIVIDUAL:").append("\n");
+            sb.append("ID").append(" ".repeat(5)).append("|");
+            sb.append("NAME").append(" ".repeat(16)).append("|");
+            sb.append("COLOR").append(" ".repeat(10)).append("|");
+            sb.append("TIME").append(" ".repeat(16)).append("|");
+            sb.append("DATE").append(" ".repeat(8)).append("|");
+
+            sb.append("\n");
+            sb.append("-".repeat(79));
+            sb.append("\n");
+        }
+
+        for (Event e : indivEvents) {
+            sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
+
+            if (e.getName().length() > 20)
+                sb.append(e.getName(), 0, 20).append("|");
+            else
+                sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
+
+            sb.append(e.getColor()).append(" ".repeat(15 - String.valueOf(e.getColor()).length())).append("|");
+            sb.append(e.getTimeStamp().toString()).append(" ".repeat(20 - e.getTimeStamp().toString().length())).append("|");
+            sb.append(e.getDateString()).append(" ".repeat(12 - e.getDateString().length())).append("|");
+
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
     /**
      * Outputs the current day's schedule to console
      */
@@ -726,7 +892,7 @@ public class ScheduleManager {
         eventLog.reportExitSession();
         System.exit(0);
     }
-    
+
     public boolean createCard(String title) {
         eventLog.reportCardAction(null, 0);
         return false;

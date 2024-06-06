@@ -1,0 +1,24 @@
+03-06-2024
+
+TASK {
+  Something Something, 0.5, 2
+  Documentation, 2.5, 0
+  Testing, 1.0, 1
+  Fix CompareTo, 1.0, -3
+  Update Dynamic Sched, 4.0, -2
+  Read Ch4, 4.0, 3
+  Finish HW3, 8.0, 4
+  Apply for jobs, 7.0, 5
+}
+
+EVENT {
+  Multiple days, LIGHT_CORAL, true, 17:00-18:50, Monday Thursday Friday
+  Just me testing the text cutoff, green, false, 17:00-18:50, 06-06-2024
+}
+
+DAY {
+  N/A
+  N/A
+  N/A
+  N/A
+}
