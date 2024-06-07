@@ -1,6 +1,7 @@
 package com.planner.scripter;
 
 import com.planner.models.Card;
+import com.planner.models.Event;
 import com.planner.models.Task;
 import com.planner.io.IOProcessing;
 import com.planner.manager.ScheduleManager;
@@ -24,6 +25,7 @@ import java.util.*;
 /**
  * Processes scripts written in the custom 'smpl' language.
  *
+ * @author Andrew Roe
  * @author Abah Olotuche Gabriel
  */
 public class ScriptFSM {
@@ -1022,7 +1024,7 @@ public class ScriptFSM {
 
         String date = null;
         Calendar start, end;
-        String[] days = null;
+        Event.DayOfWeek[] week = null;
 
         if (recurring) {
             System.out.print("Start: ");
@@ -1032,9 +1034,43 @@ public class ScriptFSM {
             end = getEventCalendar(date, inputScanner.nextLine());
 
             System.out.print("Days: ");
-            days = inputScanner.nextLine().split(" ");
+            String[] days = inputScanner.nextLine().split(" ");
             for (int i = 0; i < days.length; i++)
                 days[i] = days[i].substring(0, 3).toLowerCase();
+
+            if (days.length > 7 || days.length == 0) throw new InvalidGrammarException("Invalid days or empty set was provided");
+
+            week = new Event.DayOfWeek[days.length];
+            int count = 0;
+            for (String s : days) {
+                if (s.length() < 3) throw new InvalidGrammarException("Provided days for Event are invalid");
+                switch (s.substring(0, 3).toLowerCase()) {
+                    case "sun":
+                        week[count++] = Event.DayOfWeek.SUN;
+                        break;
+                    case "mon":
+                        week[count++] = Event.DayOfWeek.MON;
+                        break;
+                    case "tue":
+                        week[count++] = Event.DayOfWeek.TUE;
+                        break;
+                    case "wed":
+                        week[count++] = Event.DayOfWeek.WED;
+                        break;
+                    case "thu":
+                        week[count++] = Event.DayOfWeek.THU;
+                        break;
+                    case "fri":
+                        week[count++] = Event.DayOfWeek.FRI;
+                        break;
+                    case "sat":
+                        week[count++] = Event.DayOfWeek.SAT;
+                        break;
+                    default:
+                        throw new InvalidGrammarException("Invalid type was passed");
+                }
+            }
+
         }
         else {
             System.out.print("Date: ");
@@ -1052,7 +1088,7 @@ public class ScriptFSM {
                 color,
                 new Time.TimeStamp(start, end),
                 recurring,
-                days
+                week
         );
     }
 

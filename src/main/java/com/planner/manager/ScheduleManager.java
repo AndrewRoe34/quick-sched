@@ -62,9 +62,9 @@ public class ScheduleManager {
     private int lastDueDate;
     private final GoogleCalendarIO googleCalendarIO;
     private Calendar scheduleTime;
-    private List<Event> events;
     private List<Event> indivEvents;
     private List<List<Event>> recurringEvents;
+    private int eventId;
 
     /**
      * Private constructor of ScheduleManager
@@ -93,13 +93,14 @@ public class ScheduleManager {
         cards = new ArrayList<>();
         cards.add(new Card(0, "Default", Card.Colors.LIGHT_BLUE));
         archivedTasks = new PriorityQueue<>();
-        events = new ArrayList<>();
         indivEvents = new ArrayList<>();
 
         // Gotta initialize all the lists lol
         recurringEvents = new ArrayList<>(7);
         for (int i = 0; i < 7; i++)
             recurringEvents.add(new ArrayList<>());
+
+        eventId = 0;
 
         //processSettingsCfg(filename);
         //processJBinFile("data/week.jbin");
@@ -136,74 +137,6 @@ public class ScheduleManager {
         }
     }
 
-//    /**
-//     * Sets standard hours for a day
-//     *
-//     * @param day a Day to be modified
-//     * @param hours number of hours to be set
-//     */
-//    public void setGlobalHours(int day, int hours) {
-//        if(day >= 0 && day < 7 && hours >= 0 && hours <= 24) {
-//            week[day] = hours;
-//            eventLog.reportWeekEdit(Time.getFormattedCalendarInstance(day), hours, true);
-//        } else {
-//            throw new IllegalArgumentException("Invalid data for standard days of week");
-//        }
-//    }
-//
-//    /**
-//     * Sets custom hours for a single instance of a day
-//     *
-//     * @param day a Day to be modified
-//     * @param hours number of hours to be set
-//     */
-//    public void setCustomHours(int day, int hours) {
-//        if(day >= 0 && hours >= 0 && hours <= 24) {
-//            customHours.put(day, hours);
-//            eventLog.reportWeekEdit(Time.getFormattedCalendarInstance(day), hours, false);
-//        } else {
-//            throw new IllegalArgumentException("Invalid data for custom days of week");
-//        }
-//    }
-
-    private void addEventsToEventList() {
-        for (Event e : events) {
-            addEventToEventList(e);
-        }
-    }
-
-    private void addEventToEventList(Event event) {
-        if (!event.isRecurring()) {
-            indivEvents.add(event);
-            return;
-        }
-
-        for (String day : event.getDays())
-            switch (day.toLowerCase()){
-                case "sun":
-                    recurringEvents.get(0).add(event);
-                    break;
-                case "mon":
-                    recurringEvents.get(1).add(event);
-                    break;
-                case "tue":
-                    recurringEvents.get(2).add(event);
-                    break;
-                case "wed":
-                    recurringEvents.get(3).add(event);
-                    break;
-                case "thu":
-                    recurringEvents.get(4).add(event);
-                    break;
-                case "fri":
-                    recurringEvents.get(5).add(event);
-                    break;
-                case "sat":
-                    recurringEvents.get(6).add(event);
-                    break;
-            }
-    }
-
     /**
      * Imports JBin file to generate cards and possible schedule
      *
@@ -213,26 +146,9 @@ public class ScheduleManager {
         String binStr = IOProcessing.readJBinFile(filename);
         if(binStr != null) {
             eventLog.reportReadJBinFile(filename);
-            JBin.processJBin(binStr, taskManager, events, cards, schedule, userConfig.getArchiveDays());
+            List<Event> eventList = new ArrayList<>();
+            JBin.processJBin(binStr, taskManager, eventList, eventId, cards, schedule, userConfig.getArchiveDays());
             eventLog.reportProcessJBin();
-            // remove past tasks from current PQ and archives them
-//            Set<Task> set = new HashSet<>();
-//            for (Day day : schedule) {
-//                for (Task.SubTask subTask : day.getSubTasks()) {
-//                    set.add(subTask.getParentTask());
-//                }
-//            }
-//            PriorityQueue<Task> copy = new PriorityQueue<>();
-//            int n = taskManager.size();
-//            for (int i = 0; i < n; i++) {
-//                Task task = taskManager.remove();
-//                if (!set.contains(task)) {
-//                    archivedTasks.add(task);
-//                } else {
-//                    copy.add(task);
-//                }
-//            }
-//            taskManager = copy;
 
             Calendar currDate = Time.getFormattedCalendarInstance(0);
             while (!taskManager.isEmpty()) {
@@ -249,7 +165,14 @@ public class ScheduleManager {
             }
             taskId = taskManager.size();
 
-            addEventsToEventList();
+            for (Event e : eventList) {
+                if (e.isRecurring()) {
+                    for (Event.DayOfWeek dayOfWeek : e.getDays()) {
+                        recurringEvents.get(dayOfWeek.ordinal()).add(e);
+                    }
+                } else indivEvents.add(e);
+            }
+            eventId = eventList.get(eventList.size() - 1).getId() + 1;
         }
     }
 
@@ -275,8 +198,12 @@ public class ScheduleManager {
         return cards;
     }
 
-    public List<Event> getEvents() {
-        return events;
+    public List<Event> getIndivEvents() {
+        return indivEvents;
+    }
+
+    public List<List<Event>> getRecurringEvents() {
+        return recurringEvents;
     }
 
     /**
@@ -313,28 +240,37 @@ public class ScheduleManager {
     }
 
     /**
-     * Adds an event to the schedule
+     * Adds an event to the manager
      *
      * @param name name of event
      * @param color color for event classification
      * @param timeStamp event duration
      * @param recurring whether the event occurs only once or not
      * @param days days of event occurrence, if recurring
-     * @return newly generated Task
+     * @return newly generated Event
      */
     public Event addEvent(String name, Card.Colors color, Time.TimeStamp timeStamp,
-                          boolean recurring, String[] days) {
-        Event e = new Event(
-                events.size(),
-                name,
-                color,
-                timeStamp,
-                recurring,
-                days
-        );
+                          boolean recurring, Event.DayOfWeek[] days) {
 
-        events.add(e);
-        addEventToEventList(e);
+        Event e;
+        if (recurring) {
+            e = new Event(
+                    eventId,
+                    name,
+                    color,
+                    timeStamp,
+                    days
+            );
+        } else {
+            if (days != null) throw new IllegalArgumentException("Event is non-recurring but has recurrent days");
+            e = new Event(eventId, name, color, timeStamp);
+        }
+
+        if (recurring) {
+            for (int i = 0; i < e.getDays().length; i++) {
+                recurringEvents.get(e.getDays()[i].ordinal()).add(e);
+            }
+        } else indivEvents.add(e);
 
         eventLog.reportEventAction(e, 0);
         return e;
@@ -827,7 +763,7 @@ public class ScheduleManager {
 
             sb.append(e.getColor()).append(" ".repeat(15 - String.valueOf(e.getColor()).length())).append("|");
             sb.append(e.getTimeStamp().toString()).append(" ".repeat(20 - e.getTimeStamp().toString().length())).append("|");
-            sb.append(e.getDateString()).append(" ".repeat(12 - e.getDateString().length())).append("|");
+            sb.append(e.getDateStamp()).append(" ".repeat(12 - e.getDateStamp().length())).append("|");
 
             sb.append("\n");
         }

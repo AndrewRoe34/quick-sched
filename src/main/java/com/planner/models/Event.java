@@ -1,6 +1,5 @@
 package com.planner.models;
 
-import com.planner.schedule.day.Day;
 import com.planner.util.Time.TimeStamp;
 
 import java.util.Calendar;
@@ -9,6 +8,7 @@ import java.util.Calendar;
  * Represents a user-created event.
  *
  * @author Abah Olotuche Gabriel
+ * @author Andrew Roe
  */
 public class Event implements Comparable<Event> {
     private int id;
@@ -16,15 +16,33 @@ public class Event implements Comparable<Event> {
     private TimeStamp timeStamp;
     private Card.Colors color;
     private boolean recurring;
-    private String[] days;
+    private DayOfWeek[] days;
 
-    public Event(int id, String name, Card.Colors color, TimeStamp timeStamp, boolean recurring, String[] days) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.timeStamp = timeStamp;
-        this.recurring = recurring;
-        this.days = days;
+    // this constructor is for individual events (second one is for recurring)
+    public Event(int id, String name, Card.Colors color, TimeStamp timeStamp) {
+        setId(id);
+        setName(name);
+        setColor(color);
+        setTimeStamp(timeStamp);
+    }
+
+    public Event(int id, String name, Card.Colors color, TimeStamp timeStamp, DayOfWeek[] days) {
+        setId(id);
+        setName(name);
+        setColor(color);
+        setTimeStamp(timeStamp);
+        this.recurring = true;
+        setDays(days);
+    }
+
+    public enum DayOfWeek {
+        SUN,
+        MON,
+        TUE,
+        WED,
+        THU,
+        FRI,
+        SAT
     }
 
     public int getId() {
@@ -40,6 +58,7 @@ public class Event implements Comparable<Event> {
     }
 
     public void setName(String name) {
+        if (name == null || name.isEmpty()) throw new IllegalArgumentException("Name for Event cannot be empty or null");
         this.name = name;
     }
 
@@ -47,38 +66,94 @@ public class Event implements Comparable<Event> {
         return color;
     }
 
-    public void setColor(Card.Colors color) { this.color = color; }
+    public void setColor(Card.Colors color) {
+        this.color = color;
+    }
 
     public TimeStamp getTimeStamp() {
         return timeStamp;
     }
 
-    public String getDateString() {
-        return timeStamp.getStart().get(Calendar.DAY_OF_MONTH)
-                + "-" +
-                timeStamp.getStart().get(Calendar.MONTH)
-                + "-" +
-                timeStamp.getStart().get(Calendar.YEAR);
+    public void setTimeStamp(TimeStamp timeStamp) {
+        Calendar start = timeStamp.getStart();
+        Calendar end = timeStamp.getEnd();
+        if (start.get(Calendar.YEAR) != end.get(Calendar.YEAR) || start.get(Calendar.MONTH) != end.get(Calendar.MONTH)
+                || start.get(Calendar.DAY_OF_MONTH) != end.get(Calendar.DAY_OF_MONTH)) {
+            throw new IllegalArgumentException("Start and end times for timestamp don't share same date");
+        }
+
+        this.timeStamp = timeStamp;
     }
 
-    public void setTimeStamp(TimeStamp timeStamp) {
-        this.timeStamp = timeStamp;
+    public String getDateStamp() {
+        int day = timeStamp.getStart().get(Calendar.DAY_OF_MONTH);
+        int month = timeStamp.getStart().get(Calendar.MONTH);
+        int year = timeStamp.getStart().get(Calendar.YEAR);
+
+        StringBuilder dateStamp = new StringBuilder();
+        if (day < 10) dateStamp.append("0");
+        dateStamp.append(day);
+        dateStamp.append("-");
+        if (month < 10) dateStamp.append("0");
+        dateStamp.append(month);
+        dateStamp.append("-");
+        dateStamp.append(year);
+
+        return dateStamp.toString();
     }
 
     public boolean isRecurring() {
         return recurring;
     }
 
-    public void setRecurring(boolean recurring) { this.recurring = recurring; }
-
-    public String[] getDays() {
+    public DayOfWeek[] getDays() {
         return days;
     }
 
-    public void setDays(String[] days) { this.days = days; }
+    public void setDays(DayOfWeek[] days) {
+        if (days == null || days.length == 0 || days.length > 7) throw new IllegalArgumentException("Invalid set of days provided to Event");
+        boolean[] week = new boolean[7];
+        for (DayOfWeek d : days) {
+            if (!week[d.ordinal()]) week[d.ordinal()] = true;
+            else throw new IllegalArgumentException("Repeats of days cannot occur");
+        }
+
+        // this code below ensures that days of week are in sorted order (which is helpful for eventlog and displays)
+        int count = 0;
+        for (int i = 0; i < week.length; i++) {
+            if (week[i]) {
+                switch (i) {
+                    case 0:
+                        days[count++] = DayOfWeek.SUN;
+                        break;
+                    case 1:
+                        days[count++] = DayOfWeek.MON;
+                        break;
+                    case 2:
+                        days[count++] = DayOfWeek.TUE;
+                        break;
+                    case 3:
+                        days[count++] = DayOfWeek.WED;
+                        break;
+                    case 4:
+                        days[count++] = DayOfWeek.THU;
+                        break;
+                    case 5:
+                        days[count++] = DayOfWeek.FRI;
+                        break;
+                    case 6:
+                        days[count++] = DayOfWeek.SAT;
+                        break;
+                }
+            }
+        }
+        this.days = days;
+    }
 
     @Override
     public int compareTo(Event o) {
-        return this.timeStamp.getStart().compareTo(o.getTimeStamp().getStart());
+        return this.timeStamp
+                .getStart()
+                .compareTo(o.getTimeStamp().getStart());
     }
 }

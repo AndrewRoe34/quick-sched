@@ -6,6 +6,7 @@ import com.planner.models.Event;
 import com.planner.models.Task;
 import com.planner.manager.ScheduleManager;
 import com.planner.schedule.day.Day;
+import com.planner.scripter.exception.InvalidGrammarException;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -188,8 +189,8 @@ public class JBin {
      * @param schedule set of Days for the given schedule being processed
      * @param maxArchiveDays maximum number of past Days to include
      */
-    public static void processJBin(String data, PriorityQueue<Task> tasks, List<Event> events, List<Card> cards,
-                                   List<Day> schedule, int maxArchiveDays) {
+    public static void processJBin(String data, PriorityQueue<Task> tasks, List<Event> events, int eventId,
+                                   List<Card> cards, List<Day> schedule, int maxArchiveDays) {
         //NOTE: When processing, you should work from top to bottom (use ArrayLists to easily locate data by index value)
         Scanner jbinScanner = new Scanner(data);
         LocalDate ld = null;
@@ -201,12 +202,8 @@ public class JBin {
         Calendar calendar = Time.getFormattedCalendarInstance(0);
         assert ld != null;
 
-        //todo codeblock needs to be refactored and tested further
-
         // Calendar.MONTH is zero-indexed
         calendar.set(ld.getYear(), ld.getMonthValue() - 1, ld.getDayOfMonth());
-
-        //todo codeblock needs to be refactored and tested further
 
         boolean checklistOpen = false;
         boolean checklistClosed = false;
@@ -221,7 +218,6 @@ public class JBin {
 
         List<CheckList> checkLists = new ArrayList<>();
         List<Task> taskList = new ArrayList<>();
-        List<Event> eventList = new ArrayList<>();
 
         while(jbinScanner.hasNextLine()) {
             String type = jbinScanner.nextLine();
@@ -317,21 +313,65 @@ public class JBin {
                         Calendar end = recurring ? getEventCalendar(null, endString) : getEventCalendar(tokens[4], endString);
                         String[] days = recurring ? tokens[4].trim().split(" ") : null;
 
+//                        if (days != null) {
+//                            for (int i = 0; i < days.length; i++)
+//                                days[i] = days[i].substring(0, 3).toLowerCase();
+//                        }
+
+                        Event.DayOfWeek[] week = null;
                         if (days != null) {
-                            for (int i = 0; i < days.length; i++)
-                                days[i] = days[i].substring(0, 3).toLowerCase();
+                            week = new Event.DayOfWeek[days.length];
+                            int count = 0;
+                            for (String s : days) {
+                                // since this is a jbin file, all the days should be fully and properly spelled
+                                switch (s.toUpperCase()) {
+                                    case "SUN":
+                                        week[count++] = Event.DayOfWeek.SUN;
+                                        break;
+                                    case "MON":
+                                        week[count++] = Event.DayOfWeek.MON;
+                                        break;
+                                    case "TUE":
+                                        week[count++] = Event.DayOfWeek.TUE;
+                                        break;
+                                    case "WED":
+                                        week[count++] = Event.DayOfWeek.WED;
+                                        break;
+                                    case "THU":
+                                        week[count++] = Event.DayOfWeek.THU;
+                                        break;
+                                    case "FRI":
+                                        week[count++] = Event.DayOfWeek.FRI;
+                                        break;
+                                    case "SAT":
+                                        week[count++] = Event.DayOfWeek.SAT;
+                                        break;
+                                    default:
+                                        throw new InvalidGrammarException("Invalid recurrent day was passed to Event");
+                                }
+                            }
                         }
 
-                        eventList.add(
-                                new Event(
-                                        eventList.size(),
-                                        name,
-                                        color,
-                                        new Time.TimeStamp(start, end),
-                                        recurring,
-                                        days
-                                )
-                        );
+                        if (recurring) {
+                            events.add(
+                                    new Event(
+                                            eventId++,
+                                            name,
+                                            color,
+                                            new Time.TimeStamp(start, end),
+                                            week
+                                    )
+                            );
+                        } else {
+                            events.add(
+                                    new Event(
+                                            eventId++,
+                                            name,
+                                            color,
+                                            new Time.TimeStamp(start, end)
+                                    )
+                            );
+                        }
                     }
 
                     else
@@ -454,8 +494,6 @@ public class JBin {
                 tasks.add(t);
             }
         }
-
-        events.addAll(eventList);
     }
 
     private static Calendar getEventCalendar(String dateString, String timeString) {

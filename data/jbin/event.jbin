@@ -1,4 +1,4 @@
-03-06-2024
+06-06-2024
 
 TASK {
   Something Something, 0.5, 2
@@ -12,13 +12,6 @@ TASK {
 }
 
 EVENT {
-  Multiple days, LIGHT_CORAL, true, 17:00-18:50, Monday Thursday Friday
+  Multiple days, LIGHT_CORAL, true, 17:00-18:50, MON THU FRI
   Just me testing the text cutoff, green, false, 17:00-18:50, 06-06-2024
-}
-
-DAY {
-  N/A
-  N/A
-  N/A
-  N/A
 }

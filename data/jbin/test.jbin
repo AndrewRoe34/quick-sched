@@ -1,4 +1,4 @@
-27-05-2024
+06-06-2024
 
 TASK {
   Something Something, 0.5, 2
@@ -20,8 +20,8 @@ CARD {
 }
 
 EVENT {
-  I have an event, LIGHT_BLUE, 13:50:6:2:2024-15:50:6:2:2024, false
-  Multiple days, LIGHT_CORAL, 17:00:6:2:2024-18:50:6:2:2024, true, Monday Thursday Friday
+  Multiple days, LIGHT_CORAL, true, 17:00-18:50, MON THU FRI
+  Just me testing the text cutoff, green, false, 17:00-18:50, 06-06-2024
 }
 
 DAY {

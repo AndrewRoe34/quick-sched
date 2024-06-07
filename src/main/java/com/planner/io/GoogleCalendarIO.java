@@ -162,36 +162,4 @@ public class GoogleCalendarIO {
         eventLog.reportGoogleCalendarCleanSchedule(count);
         return count;
     }
-
-    private void testWriteEvent() throws IOException {
-        com.planner.models.Event e1 = new com.planner.models.Event(
-                0,
-                "A",
-                Card.Colors.BLACK,
-                new Time.TimeStamp(java.util.Calendar.getInstance(), java.util.Calendar.getInstance()),
-                false,
-                null
-        );
-
-        Event event = GoogleCalendarUtil.formatEventToGoogleEvent(e1);
-        event = service.events().insert(calendarId, event).execute();
-
-        System.out.printf("Event created: %s\n", event.getHtmlLink());
-    }
-
-    public static void main(String... args) throws IOException, GeneralSecurityException {
-        // Build a new authorized API client service.
-        GoogleCalendarIO quickstart = new GoogleCalendarIO(EventLog.getEventLog());
-        quickstart.importScheduleFromGoogle();
-//        String s1 = "Read";
-//        String s2 = "Write";
-//        String s3 = "Study";
-//        List<String> list = new ArrayList<>();
-//        list.add(s1);
-//        list.add(s2);
-//        list.add(s3);
-//        quickstart.exportScheduleToGoogle(list);
-//        System.out.println(quickstart.cleanGoogleSchedule() + " events were removed...");
-        quickstart.testWriteEvent();
-    }
 }
