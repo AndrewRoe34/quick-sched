@@ -1044,26 +1044,26 @@ public class ScriptFSM {
             int count = 0;
             for (String s : days) {
                 if (s.length() < 3) throw new InvalidGrammarException("Provided days for Event are invalid");
-                switch (s.substring(0, 3).toLowerCase()) {
-                    case "sun":
+                switch (s.substring(0, 3).toUpperCase()) {
+                    case "SUN":
                         week[count++] = Event.DayOfWeek.SUN;
                         break;
-                    case "mon":
+                    case "MON":
                         week[count++] = Event.DayOfWeek.MON;
                         break;
-                    case "tue":
+                    case "TUE":
                         week[count++] = Event.DayOfWeek.TUE;
                         break;
-                    case "wed":
+                    case "WED":
                         week[count++] = Event.DayOfWeek.WED;
                         break;
-                    case "thu":
+                    case "THU":
                         week[count++] = Event.DayOfWeek.THU;
                         break;
-                    case "fri":
+                    case "FRI":
                         week[count++] = Event.DayOfWeek.FRI;
                         break;
-                    case "sat":
+                    case "SAT":
                         week[count++] = Event.DayOfWeek.SAT;
                         break;
                     default:

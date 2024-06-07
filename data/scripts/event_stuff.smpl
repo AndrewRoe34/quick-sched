@@ -3,4 +3,5 @@ include: __CURR_CONFIG__, __LOG__
 jbin_file: input_word("Import JBin -> ")
 import_schedule(jbin_file)
 
+create_event()
 display_events()
