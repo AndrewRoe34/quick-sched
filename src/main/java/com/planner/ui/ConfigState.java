@@ -16,7 +16,7 @@ public class ConfigState implements TUIState {
     private boolean configHasUpdate;
     private UserConfig userConfig;
     private String configTable;
-    private Scanner scanner;
+    private final Scanner scanner;
 
     public ConfigState() {
         try {
@@ -30,21 +30,17 @@ public class ConfigState implements TUIState {
 
     @Override
     public void setupAndDisplayPage() {
-        scanner = new Scanner(System.in);
-        while (true) {
-            TUIState.clearScreen();
-            if (configHasUpdate) {
-                configTable = TableFormatter.formatUserConfigTable(userConfig);
-                configHasUpdate = false;
-                writeToFile = true;
-            }
-            formatTablePrompt();
-            if (scanner.hasNextLine()) {
-                String input = scanner.nextLine();
-                if (input.isBlank()) continue;
-                if (Character.toUpperCase(input.charAt(0)) == 'Y') {
-                    formatOptionPrompt();
-                } else break;
+        if (configHasUpdate) {
+            configTable = TableFormatter.formatUserConfigTable(userConfig);
+            configHasUpdate = false;
+            writeToFile = true;
+        }
+        formatTablePrompt();
+        if (scanner.hasNextLine()) {
+            String input = scanner.nextLine();
+            if (input.isBlank()) return;
+            if (Character.toUpperCase(input.charAt(0)) == 'Y') {
+                formatOptionPrompt();
             }
         }
 
