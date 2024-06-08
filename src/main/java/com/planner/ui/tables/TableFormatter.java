@@ -4,7 +4,11 @@ import com.planner.models.Card;
 import com.planner.models.UserConfig;
 import com.planner.schedule.day.Day;
 
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class TableFormatter {
@@ -49,8 +53,23 @@ public class TableFormatter {
         return sb.toString();
     }
 
-    public static String formatScriptOptionsTable() {
-        return "";
+    public static String formatScriptOptionsTable(List<File> scriptList) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("                                                      Script Options\n");
+        sb.append("                                         ____________________________________________\n");
+        sb.append("                                         |ID    |Name                 | DATE        |\n");
+        sb.append("                                         |______|_____________________|_____________|\n");
+        int id = 0;
+        for (File file : scriptList) {
+            Date date = new Date(file.lastModified());
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            String strDate = simpleDateFormat.format(date);
+            sb.append("                                         ");
+            String formattedOptionValue = String.format("|%-6d|%-19s  |%-13s|\n", id++, file.getName(), strDate);
+            sb.append(formattedOptionValue);
+        }
+        sb.append("                                         |______|_____________________|_____________|");
+        return sb.toString();
     }
 
     public static String formatScheduleTable(List<Day> schedule) {
@@ -79,5 +98,14 @@ public class TableFormatter {
 
     public static String formatCardsTable() {
         return "";
+    }
+
+    public static void main(String[] args) {
+        File file = new File("data/scripts");
+        File[] list = file.listFiles();
+        assert list != null;
+        List<File> files = Arrays.asList(list);
+
+        System.out.println(formatScriptOptionsTable(files));
     }
 }
