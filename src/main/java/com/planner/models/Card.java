@@ -1,6 +1,6 @@
 package com.planner.models;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,6 +18,7 @@ public class Card implements Linker{
     private String title;
     /** List of Tasks for Card */
     private List<Task> cardTasks;
+    /** Color for Card */
     private Colors colorId;
 
     /**
@@ -29,10 +30,15 @@ public class Card implements Linker{
         this.id = id;
         setTitle(title);
         setColorId(colorId);
-        cardTasks = new LinkedList<>();
+        cardTasks = new ArrayList<>();
     }
 
-    public static enum Colors {
+    /**
+     * Set of all available colors for a Card
+     *
+     * @author Andrew Roe
+     */
+    public enum Colors {
         RED,
         ORANGE,
         YELLOW,
@@ -46,16 +52,14 @@ public class Card implements Linker{
         LIGHT_CORAL
     }
 
-    public int getId() {
-        return id;
-    }
-
     /**
      * Sets title for Card
      *
      * @param title title for Card
+     * @throws IllegalArgumentException if title is empty or null
      */
     public void setTitle(String title) {
+        if (title == null || title.isBlank()) throw new IllegalArgumentException("Name for Card cannot be empty or whitespace");
         this.title = title;
     }
 
@@ -63,9 +67,58 @@ public class Card implements Linker{
      * Sets List of Tasks for Card
      *
      * @param cardTasks List of Tasks
+     * @throws IllegalArgumentException if list of Tasks is empty or null
      */
     public void setCardTasks(List<Task> cardTasks) {
+        if (cardTasks == null || cardTasks.isEmpty()) throw new IllegalArgumentException("Task list cannot be empty or null for Card");
         this.cardTasks = cardTasks;
+    }
+
+    /**
+     * Sets color value for Card
+     *
+     * @param colorId color id for Card
+     * @throws IllegalArgumentException if color id is null
+     */
+    public void setColorId(Colors colorId) {
+        if (colorId == null) throw new IllegalArgumentException("Card color cannot be null");
+        this.colorId = colorId;
+    }
+
+    /**
+     * Gets the ID for the Card
+     *
+     * @return ID for Card
+     */
+    public int getId() {
+        return id;
+    }
+
+    /**
+     * Gets the list of Tasks from Card
+     *
+     * @return list of Tasks from Card
+     */
+    public List<Task> getTask() {
+        return cardTasks;
+    }
+
+    /**
+     * Gets the title for the Card
+     *
+     * @return title for Card
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * Gets the color id for the Card
+     *
+     * @return color id for Card
+     */
+    public Colors getColorId() {
+        return colorId;
     }
 
     /**
@@ -73,14 +126,16 @@ public class Card implements Linker{
      *
      * @param task Task being added
      * @return boolean status for success
+     * @throws IllegalArgumentException if Task is null
      */
     public boolean addTask(Task task) {
+        if (task == null) throw new IllegalArgumentException("Task cannot be null for Card");
         if (task.getColor() == null) task.setColor(colorId);
         return cardTasks.add(task);
     }
 
     /**
-     * Removes Task from Card
+     * Removes Task from Card given specified index
      *
      * @param idx index of Task
      * @return Task being removed
@@ -94,31 +149,16 @@ public class Card implements Linker{
      *
      * @param task Task being removed
      * @return boolean status for successful removal
+     * @throws IllegalArgumentException if Task provided is null
      */
     public boolean removeTask(Task task) {
+        if (task == null) throw new IllegalArgumentException("Task cannot be null when attempting to remove from Card");
         return cardTasks.remove(task);
     }
 
     @Override
     public String toString() {
         return title;
-    }
-
-    public List<Task> getTask() {
-        return cardTasks;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public Colors getColorId() {
-        return colorId;
-    }
-
-    public void setColorId(Colors colorId) {
-        if (colorId == null) throw new IllegalArgumentException("Card color cannot be null");
-        this.colorId = colorId;
     }
 
     @Override

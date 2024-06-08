@@ -64,11 +64,31 @@ public class UserConfig {
         this.localScheduleColors = localScheduleColors;
     }
 
+    /**
+     * Constructor for UserConfig that utilizes default values
+     */
+    public UserConfig() {
+        this.range = new int[]{8, 20};
+        this.week = new int[]{8, 8, 8, 8, 8, 8, 8};
+        this.maxDays = 14;
+        this.archiveDays = 5;
+        this.priority = false;
+        this.overflow = true;
+        this.fitDay = true;
+        this.schedulingAlgorithm = 1;
+        this.minHours = 1.0;
+        this.optimizeDay = true;
+        this.defaultAtStart = true;
+        this.localScheduleColors = true;
+    }
+
     public int[] getRange() {
         return range;
     }
 
     public void setRange(int[] range) {
+        if (range == null || range.length != 2 || range[0] < 0 || range[0] > 23
+                || range[1] < 0 || range[1] > 23) throw new IllegalArgumentException("Range was null, empty, or outside of valid set for UserConfig");
         this.range = range;
     }
 
@@ -86,7 +106,18 @@ public class UserConfig {
      *
      * @param week array of week hours
      */
-    public void setWeek(int[] week) { //TODO need to check hours
+    public void setWeek(int[] week) {
+        if (week == null) throw new IllegalArgumentException("Global hours array cannot be null for UserConfig");
+        if (week.length == 7) {
+            for (int hour : week) {
+                if (hour < 0 || hour > 24) {
+                    throw new IllegalArgumentException("Hours for week cannot be below 0 or above 24");
+                }
+            }
+        } else {
+            throw new IllegalArgumentException("Invalid number of inputs provided for config option Global hours for week. Expected 7 integers");
+        }
+
         this.week = week;
     }
 
@@ -104,7 +135,8 @@ public class UserConfig {
      *
      * @param maxDays max days to display
      */
-    public void setMaxDays(int maxDays) { //TODO need to set max days
+    public void setMaxDays(int maxDays) {
+        if (maxDays <= 0 || maxDays > 30) throw new IllegalArgumentException("Max day is outside of valid set for UserConfig");
         this.maxDays = maxDays;
     }
 
@@ -122,7 +154,8 @@ public class UserConfig {
      *
      * @param archiveDays archive days to display
      */
-    public void setArchiveDays(int archiveDays) { ////TODO need to set max archive days
+    public void setArchiveDays(int archiveDays) {
+        if (archiveDays < 0 || archiveDays > 30) throw new IllegalArgumentException("Archive day is outside of valid set for UserConfig");
         this.archiveDays = archiveDays;
     }
 
@@ -194,7 +227,8 @@ public class UserConfig {
      *
      * @param schedulingAlgorithm algorithm option
      */
-    public void setSchedulingAlgorithm(int schedulingAlgorithm) { //TODO need to provide max of 4 (currently only 1)
+    public void setSchedulingAlgorithm(int schedulingAlgorithm) {
+        if (schedulingAlgorithm < 0 || schedulingAlgorithm > 1) throw new IllegalArgumentException("Scheduling algorithm option is out of index for UserConfig");
         this.schedulingAlgorithm = schedulingAlgorithm;
     }
 
@@ -213,18 +247,16 @@ public class UserConfig {
      * @param minHours minimum number of hours
      */
     public void setMinHours(double minHours) {
+        double decimal = minHours % 1;
+        if (decimal != 0.0 && decimal != 0.5) throw new IllegalArgumentException("Invalid min hour was provided for UserConfig");
         this.minHours = minHours;
     }
-
-    public boolean getOptimizeDay() {
-        return optimizeDay;
-    }
-
-    public void setOptimizeDay(boolean optimizeDay) { this.optimizeDay = optimizeDay; }
 
     public boolean isOptimizeDay() {
         return optimizeDay;
     }
+
+    public void setOptimizeDay(boolean optimizeDay) { this.optimizeDay = optimizeDay; }
 
     public boolean isDefaultAtStart() { return defaultAtStart; }
 

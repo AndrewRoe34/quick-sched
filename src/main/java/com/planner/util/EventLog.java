@@ -475,7 +475,7 @@ public class EventLog {
         sb.append(", FIT_SCHEDULE=").append(userConfig.isFitDay());
         sb.append(", SCHEDULE_ALGO=").append(userConfig.getSchedulingAlgorithm());
         sb.append(", MIN_HOURS=").append(userConfig.getMinHours());
-        sb.append(", OPTIMIZE_DAY=").append(userConfig.getOptimizeDay());
+        sb.append(", OPTIMIZE_DAY=").append(userConfig.isOptimizeDay());
         sb.append(", DEFAULT_AT_START=").append(userConfig.isDefaultAtStart());
         sb.append(", LOCAL_SCHEDULE_COLORS=").append(userConfig.isLocalScheduleColors()).append("\n");
 

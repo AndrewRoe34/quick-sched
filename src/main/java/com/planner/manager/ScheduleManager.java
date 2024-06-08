@@ -385,6 +385,9 @@ public class ScheduleManager {
         while(!taskManager.isEmpty() && dayId < userConfig.getMaxDays()) {
             currDay = new Day(dayId++, userConfig.getWeek()[idx++ % 7], dayCount++);
             schedule.add(currDay);
+
+            // todo add individual and recurring events here
+
             // don't need incomplete as argument (should be local to schedulers)
             errorCount = scheduler.assignDay(currDay, errorCount, complete, taskManager, scheduleTime);
         }
@@ -406,6 +409,7 @@ public class ScheduleManager {
         taskManager = copy;
         errorCount = 0;
         dayId = 0;
+        Collections.sort(indivEvents);
     }
 
     /**

@@ -166,6 +166,9 @@ public class Time {
             }
         }
 
+        // todo need to think about whether we should have startTime configured with getNearestQuarterOfHour() (at most, we're losing 14 minutes, but that could theoretically cost us 30 min due to formatting)
+        // todo might need another config option to allow tasks to be scheduled with 'unclean' times around events (not an issue without events, at most you'd be losing is 14 minutes)
+        // todo would need to update line 162
         return startTime;
     }
 
@@ -262,10 +265,14 @@ public class Time {
         private void buildStamp() {
             StringBuilder sb = new StringBuilder();
 
-            int _startHour = getStartHour() - 12;
-            if (getStartHour() <= 9 || getStartHour() >= 13 && getStartHour() <= 21) sb.append("0");
-            if (getStartHour() <= 12) sb.append(getStartHour());
-            if (getStartHour() > 12) sb.append(_startHour);
+            if (getStartHour() == 0) {
+                sb.append("12");
+            } else {
+                int _startHour = getStartHour() - 12;
+                if (getStartHour() <= 9 || getStartHour() >= 13 && getStartHour() <= 21) sb.append("0");
+                if (getStartHour() <= 12) sb.append(getStartHour());
+                if (getStartHour() > 12) sb.append(_startHour);
+            }
             sb.append(":");
             if (getStartMin() < 10) sb.append("0");
             sb.append(getStartMin());
@@ -274,10 +281,14 @@ public class Time {
 
             sb.append("-");
 
-            int _endHour = getEndHour() - 12;
-            if (getEndHour() <= 9 || getEndHour() >= 13 && getEndHour() <= 21) sb.append("0");
-            if (getEndHour() <= 12) sb.append(getEndHour());
-            if (getEndHour() > 12) sb.append(_endHour);
+            if (getEndHour() == 0) {
+                sb.append("12");
+            } else {
+                int _endHour = getEndHour() - 12;
+                if (getEndHour() <= 9 || getEndHour() >= 13 && getEndHour() <= 21) sb.append("0");
+                if (getEndHour() <= 12) sb.append(getEndHour());
+                if (getEndHour() > 12) sb.append(_endHour);
+            }
             sb.append(":");
             if (getEndMin() < 10) sb.append("0");
             sb.append(getEndMin());
