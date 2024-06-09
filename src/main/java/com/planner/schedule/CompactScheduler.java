@@ -65,7 +65,7 @@ public class CompactScheduler implements Scheduler {
                 (!taskManager.isEmpty() && taskManager.peek().getDueDate().equals(day.getDate()))) {
             // gets first task from heap and finds max possible hours available
             Task task = taskManager.remove();
-            double maxHours = getMaxHours(day, task, date);
+            double maxHours = getNonEventMaxHours(day, task, date);
             // status of task creation
             boolean validTaskStatus = day.addSubTaskManually(task, maxHours, userConfig, date, isToday);
             // adds task to relevant completion heap
@@ -84,7 +84,7 @@ public class CompactScheduler implements Scheduler {
         return numErrors;
     }
 
-    private double getMaxHours(Day day, Task task, Calendar date) {
+    private double getNonEventMaxHours(Day day, Task task, Calendar date) {
         // sets up the starting hour for the day based on the given time from 'date'
         int startingHour = date.get(Calendar.HOUR_OF_DAY);
         isToday = false;
@@ -130,6 +130,11 @@ public class CompactScheduler implements Scheduler {
         //          AND there are more possible hours you could have utilized, then we disregard it until a later time
         if (maxHours < userConfig.getMinHours() && task.getSubTotalHoursRemaining() > maxHours) maxHours = 0.0;
         return maxHours;
+    }
+
+    private double getEventMaxHours(Day day, Task task, Calendar date) {
+        // todo
+        return 0.0;
     }
 
     @Override

@@ -56,6 +56,7 @@ public class ConfigState implements TUIState {
     }
 
     private void formatTablePrompt() {
+        System.out.println();
         System.out.println(configTable);
         System.out.print("\n" +
                 "\n" +

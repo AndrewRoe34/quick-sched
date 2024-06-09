@@ -24,6 +24,7 @@ public class SessionState implements TUIState {
                 scriptList.add(f);
             }
         }
+        System.out.println();
         System.out.println(TableFormatter.formatScriptOptionsTable(scriptList));
         System.out.print("\n                                                         Enter ID: ");
         if (scanner.hasNextLine()) {
@@ -39,6 +40,10 @@ public class SessionState implements TUIState {
                     }
                 }
             }
+        }
+        System.out.print("\n\nWould you like to leave? ");
+        if (scanner.hasNextLine()) {
+            scanner.nextLine();
         }
     }
 

@@ -382,11 +382,26 @@ public class ScheduleManager {
             archivedTasks.add(taskManager.remove());
         }
 
+        int eventIdx = 0;
         while(!taskManager.isEmpty() && dayId < userConfig.getMaxDays()) {
             currDay = new Day(dayId++, userConfig.getWeek()[idx++ % 7], dayCount++);
             schedule.add(currDay);
 
             // todo add individual and recurring events here
+            if (!recurringEvents.get(currDay.getDate().get(Calendar.DAY_OF_WEEK) - 1).isEmpty()) {
+                for (Event e1 : recurringEvents.get(currDay.getDate().get(Calendar.DAY_OF_WEEK) - 1)) {
+                    currDay.addEvent(e1);
+                }
+            }
+            while (eventIdx < indivEvents.size()) {
+                Calendar eventDate = indivEvents.get(eventIdx).getTimeStamp().getStart();
+                Calendar dayDate = currDay.getDate();
+                if (eventDate.get(Calendar.YEAR) == dayDate.get(Calendar.YEAR) && eventDate.get(Calendar.MONTH) == dayDate.get(Calendar.MONTH)
+                        && eventDate.get(Calendar.DAY_OF_MONTH) == dayDate.get(Calendar.DAY_OF_MONTH)) {
+                    currDay.addEvent(indivEvents.get(eventIdx));
+                    eventIdx++;
+                } else break;
+            }
 
             // don't need incomplete as argument (should be local to schedulers)
             errorCount = scheduler.assignDay(currDay, errorCount, complete, taskManager, scheduleTime);
