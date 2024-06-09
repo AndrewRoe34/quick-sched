@@ -1325,5 +1325,9 @@ public class ScriptFSM {
          */
     }
 
+    public ScheduleManager getScheduleManager() {
+        return  scheduleManager;
+    }
+
     //todo add your static functions down here...
 }

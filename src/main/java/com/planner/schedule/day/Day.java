@@ -35,6 +35,9 @@ public class Day {
     /** ID for the specific Day */
     private int id;
 
+    // used purely for testing
+    static SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+
     /**
      * Primary constructor for Day
      *
@@ -178,6 +181,7 @@ public class Day {
         3. Done
          */
         Calendar startTime = Time.getFirstAvailableTimeInDay(taskTimeStamps, eventTimeStamps, userConfig, time, isToday);
+        String s = sdf.format(startTime.getTime());
         TimeStamp eventTimeStamp = null;
         for (TimeStamp eTS : eventTimeStamps) { // this list needs to be sorted (given assumption below)
             if (Time.isBeforeEvent(startTime, eTS.getStart())) {
@@ -202,6 +206,15 @@ public class Day {
     }
 
     public boolean addEvent(Event event) {
+        if (event.isRecurring()) { // this fixes issue for recurring events since they can happen on any day
+            Calendar start = (Calendar) date.clone();
+            start.set(Calendar.HOUR_OF_DAY, event.getTimeStamp().getStartHour());
+            start.set(Calendar.MINUTE, event.getTimeStamp().getStartMin());
+            Calendar end = (Calendar) date.clone();
+            end.set(Calendar.HOUR_OF_DAY, event.getTimeStamp().getEndHour());
+            end.set(Calendar.MINUTE, event.getTimeStamp().getEndMin());
+            event = new Event(event.getId(), event.getName(), event.getColor(), new TimeStamp(start, end), event.getDays());
+        }
         int idx = 0;
         boolean idxFound = false;
         for (Event e1 : eventList) {

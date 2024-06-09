@@ -885,4 +885,8 @@ public class ScheduleManager {
     public boolean isArchivedTask(Task t1) {
         return archivedTasks.contains(t1);
     }
+
+    public void resetData() {
+        singleton = new ScheduleManager();
+    }
 }
