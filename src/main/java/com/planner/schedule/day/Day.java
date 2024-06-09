@@ -104,7 +104,7 @@ public class Day {
     }
 
     public void addSubTask(Task task, double hours, boolean overflow) {
-        Task.SubTask subtask = task.addSubTask(hours, overflow);
+        Task.SubTask subtask = task.addSubTask(hours, overflow, null);
         subtaskManager.add(subtask);
         this.size += hours;
     }
@@ -130,20 +130,26 @@ public class Day {
     public boolean addSubTaskManually(Task task, double hours, UserConfig userConfig, Calendar time, boolean isToday) {
         if (hours <= 0) return false;
         boolean overflow = this.size + hours > this.capacity;
-        SubTask subtask = task.addSubTask(hours, overflow); // todo need to rearrange this here
+//        SubTask subtask = task.addSubTask(hours, overflow); // todo need to rearrange this here
 
-        subtaskManager.add(subtask);
-        this.size += hours;
+//        subtaskManager.add(subtask);
+//        this.size += hours;
 
         // todo will end up using the while loop code below since we'll be merging the two methods together
         // nothing changes here (thank God)
         if (eventList.isEmpty()) {
             createNonEventTimeStamps(hours, userConfig, time, isToday);
-            // add subtask to subtaskManager
+            SubTask subTask = task.addSubTask(hours, overflow, taskTimeStamps.get(taskTimeStamps.size() - 1));
+            subtaskManager.add(subTask);
+            this.size += hours;
         } else {
             while (hours > 0) {
+                double prevHours = hours;
                 hours -= createEventTimeStamps(hours, userConfig, time, isToday);
                 // add subtask to subtaskManager
+                SubTask subTask = task.addSubTask(prevHours - hours, overflow, taskTimeStamps.get(taskTimeStamps.size() - 1));
+                subtaskManager.add(subTask);
+                this.size += (prevHours - hours);
             }
         }
 
@@ -247,6 +253,10 @@ public class Day {
         return subtaskManager.get(subtaskIndex);
     }
 
+    public Event getEvent(int eventIdx) {
+        return eventList.get(eventIdx);
+    }
+
     /**
      * Gets the number of SubTasks possessed by the Day
      *
@@ -254,6 +264,10 @@ public class Day {
      */
     public int getNumSubTasks() {
         return subtaskManager.size();
+    }
+
+    public int getNumEvents() {
+        return eventList.size();
     }
 
     private void setId(int id) {

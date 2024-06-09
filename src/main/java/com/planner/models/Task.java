@@ -87,10 +87,10 @@ public class Task implements Comparable<Task>, Linker {
      * @param overflow overflow status of the SubTask
      * @return SubTask
      */
-    public SubTask addSubTask(double hours, boolean overflow) {
+    public SubTask addSubTask(double hours, boolean overflow, Time.TimeStamp timeStamp) {
         SubTask subtask = null;
         if(hours > 0 && subTotalHours + hours <= totalHours) {
-            subtask = new SubTask(this, hours, overflow);
+            subtask = new SubTask(this, hours, overflow, timeStamp);
             subTotalHours += hours;
         }
         return subtask;
@@ -400,6 +400,7 @@ public class Task implements Comparable<Task>, Linker {
         private final double hours;
         /** Number of overflow hours due to scheduling */
         private final boolean overflowStatus;
+        private final Time.TimeStamp timeStamp;
 
         /**
          * Primary constructor for SubTask
@@ -408,10 +409,11 @@ public class Task implements Comparable<Task>, Linker {
          * @param hours number of hours for the SubTask
          * @param overflow boolean value for overflow status
          */
-        private SubTask(Task parentTask, double hours, boolean overflow) {
+        private SubTask(Task parentTask, double hours, boolean overflow, Time.TimeStamp timeStamp) {
             this.parentTask = parentTask;
             this.hours = hours;
             this.overflowStatus = overflow;
+            this.timeStamp = timeStamp;
         }
 
         /**
@@ -439,6 +441,10 @@ public class Task implements Comparable<Task>, Linker {
          */
         public boolean isOverflow() {
             return overflowStatus;
+        }
+
+        public Time.TimeStamp getTimeStamp() {
+            return timeStamp;
         }
 
         @Override

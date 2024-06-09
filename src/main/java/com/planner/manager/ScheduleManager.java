@@ -654,11 +654,14 @@ public class ScheduleManager {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Calendar date = Time.getFormattedCalendarInstance(0);
 
-        int maxTasks = 0;
+        int maxItems = 0;
+        int[][] task_eventPair = new int[schedule.size()][2];
         for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
             sb.append(sdf.format(date.getTime()));
             sb.append("                              |");
-            maxTasks = Math.max(maxTasks, schedule.get(i).getNumSubTasks());
+            maxItems = Math.max(maxItems, schedule.get(i).getNumSubTasks() + schedule.get(i).getEventList().size());
+            task_eventPair[i][0] = 0;
+            task_eventPair[i][1] = 0;
             date = Time.getFormattedCalendarInstance(date, 1);
         }
 
@@ -667,34 +670,64 @@ public class ScheduleManager {
             sb.append("-----------------------------------------");
         }
 
-        for (int i = 0; i < maxTasks; i++) {
+        for (int i = 0; i < maxItems; i++) {
             sb.append("\n");
 
             for (int d = 0; d < Math.min(schedule.size(), 6); d++) {
                 Day day = schedule.get(d);
 
-                if (i < day.getNumSubTasks()) {
-                    Task.SubTask subTask = day.getSubTask(i);
+                // todo need to pick either event or subtask based on their timestamps
+                if (i < (day.getNumSubTasks() + day.getNumEvents())) {
+                    Time.TimeStamp ts = null;
+                    String name = null;
+                    Card.Colors color = null;
+                    if (task_eventPair[d][0] >= day.getNumSubTasks()) {
+                        Event e1 = day.getEvent(task_eventPair[d][1]);
+                        ts = e1.getTimeStamp();
+                        name = e1.getName();
+                        color = e1.getColor();
+                        task_eventPair[d][1]++;
+                    } else if (task_eventPair[d][1] >= day.getNumEvents()) {
+                        Task.SubTask st1 = day.getSubTask(task_eventPair[d][0]);
+                        ts = st1.getTimeStamp();
+                        name = st1.getParentTask().getName();
+                        color = st1.getParentTask().getColor();
+                        task_eventPair[d][0]++;
+                    } else {
+                        Event e1 = day.getEvent(task_eventPair[d][1]);
+                        Task.SubTask st1 = day.getSubTask(task_eventPair[d][0]);
+                        if (Time.isBeforeEvent(e1.getTimeStamp().getStart(), st1.getTimeStamp().getStart())) {
+                            ts = e1.getTimeStamp();
+                            name = e1.getName();
+                            color = e1.getColor();
+                            task_eventPair[d][1]++;
+                        } else {
+                            ts = st1.getTimeStamp();
+                            name = st1.getParentTask().getName();
+                            color = st1.getParentTask().getColor();
+                            task_eventPair[d][0]++;
+                        }
+                    }
 
                     if (userConfig.isLocalScheduleColors()) {
-                        String colorANSICode = getColorANSICode((subTask.getParentTask().getColor()));
+                        String colorANSICode = getColorANSICode((color));
                         sb.append(colorANSICode);
                     }
 
-                    sb.append(day.getTaskTimeStamps().get(i)).append(" - "); // 18 char
-                    String outputSubTask = subTask.getParentTask().getName();
+                    sb.append(ts).append(" - "); // 18 char
 
-                    if (outputSubTask.length() > 21) {
-                        sb.append(outputSubTask, 0, 21);
+                    if (name.length() > 21) {
+                        sb.append(name, 0, 21);
                     } else {
-                        sb.append(outputSubTask);
-                        sb.append(" ".repeat(22 - outputSubTask.length()));
+                        sb.append(name);
+                        sb.append(" ".repeat(22 - name.length()));
                     }
 
                     if (userConfig.isLocalScheduleColors())
                         sb.append("\u001B[0m");
 
                     sb.append("|");
+
                 } else {
                     sb.append("                                        |");
                 }
