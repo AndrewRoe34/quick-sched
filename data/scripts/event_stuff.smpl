@@ -5,6 +5,8 @@ import_schedule(jbin_file)
 
 #create_event()
 display_events()
+display_board()
 
 build()
 display_schedule()
+export_google()

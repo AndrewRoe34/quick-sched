@@ -1,4 +1,4 @@
-07-06-2024
+08-06-2024
 
 TASK {
   Something Something, 0.5, 2
@@ -12,7 +12,7 @@ TASK {
 }
 
 EVENT {
-  Class-PHI, GREEN, true, 9:23-10:51, SUN WED
-  Class-LAW, RED, true, 11:52-12:38, SUN WED
-  Class-SC, YELLOW, true, 12:45-14:15, SUN WED
+  Class-PHI, GREEN, true, 9:23-10:51, MON WED
+  Class-LAW, RED, true, 11:52-12:38, TUE THU
+  Class-SC, YELLOW, true, 12:45-14:15, MON WED
 }

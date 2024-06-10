@@ -169,6 +169,13 @@ public class JBin {
             }
             daySB.append("}\n");
         }
+        StringBuilder eventSB = new StringBuilder();
+        if (!sm.getIndivEvents().isEmpty()) {
+
+        }
+        if (!sm.getRecurringEvents().isEmpty()) {
+
+        }
         //now go from top to bottom with all the data you now have
         return calendarSB
                 .append(clSB)

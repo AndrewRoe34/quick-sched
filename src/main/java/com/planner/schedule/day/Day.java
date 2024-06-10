@@ -203,7 +203,7 @@ public class Day {
         }
 
         if (eventTimeStamp != null) {
-            hours = Time.getTimeInterval(startTime, eventTimeStamp.getStart());
+            hours = Math.min(hours, Time.getTimeInterval(startTime, eventTimeStamp.getStart()));
         }
 
         int taskHours = (int) hours;
