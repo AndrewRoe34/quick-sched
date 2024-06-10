@@ -101,19 +101,17 @@ public class GoogleCalendarIO {
     public void exportScheduleToGoogle(UserConfig userconfig, List<Day> week) throws IOException {
         // need to handle null pointer here since if we try to export to Google without building, else we'll get an exception
         for(Day day : week) {
+            // todo need config option that prevents writing of log output to console
             for (com.planner.models.Event e1 : day.getEventList()) {
                 Event event = GoogleCalendarUtil.formatEventToGoogleEvent(e1);
                 event = service.events().insert(calendarId, event).execute();
                 System.out.printf("Event created: %s\n", event.getHtmlLink());
             }
 
-            int taskIdx = 0;
             for(Task.SubTask subTask : day.getSubTasks()) {
-                Task task = subTask.getParentTask();
-                Event event = GoogleCalendarUtil.formatTaskToGoogleEvent(task, day.getTaskTimeStamps().get(taskIdx));
+                Event event = GoogleCalendarUtil.formatTaskToGoogleEvent(subTask);
                 event = service.events().insert(calendarId, event).execute();
                 System.out.printf("Task created: %s\n", event.getHtmlLink());
-                taskIdx++;
             }
         }
         eventLog.reportGoogleCalendarExportSchedule();

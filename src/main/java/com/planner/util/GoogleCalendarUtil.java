@@ -1,5 +1,6 @@
 package com.planner.util;
 
+import com.planner.models.Card;
 import com.planner.models.CheckList;
 import com.planner.models.Task;
 import com.google.api.client.util.DateTime;
@@ -19,7 +20,8 @@ import java.util.List;
  */
 public class GoogleCalendarUtil {
 
-    public static Event formatTaskToGoogleEvent(Task task, Time.TimeStamp timeStamp) {
+    public static Event formatTaskToGoogleEvent(Task.SubTask subTask) {
+        Task task = subTask.getParentTask();
         Event event = new Event().setSummary(task.getName()); //todo need to display label names with given Task
 
         StringBuilder sb = new StringBuilder("Due: ");
@@ -44,26 +46,11 @@ public class GoogleCalendarUtil {
         sb.append("Agile Planner\n\neb007aba6df2559a02ceb17ddba47c85b3e2b930");
         event.setDescription(sb.toString());
 
-        // the changes below now fix possible bugs where a task spanned multiple days when it was due tonight
-        //   e.g. due tonight but has 72 hours remaining
-        // todo need to check that not resetting seconds doesn't impact output
-//        Calendar startCalendar = Time.getFormattedCalendarInstance(dayIdx);
-//        startCalendar.setTime(timeStamp.getStart().getTime());
-//        startCalendar.set(Calendar.HOUR_OF_DAY, timeStamp.getStartHour());
-//        startCalendar.set(Calendar.MINUTE, timeStamp.getStartMin());
+        Time.TimeStamp timeStamp = subTask.getTimeStamp();
+
         DateTime startDateTime = new DateTime(timeStamp.getStart().getTime());
         EventDateTime start = new EventDateTime().setDateTime(startDateTime);
         event.setStart(start);
-
-//        Calendar endCalendar = Time.getFormattedCalendarInstance(dayIdx);
-//        endCalendar.set(Calendar.HOUR_OF_DAY, timeStamp.getEndHour());
-//        endCalendar.set(Calendar.MINUTE, timeStamp.getEndMin());
-//
-//        // Check if end time is after midnight, adjust the day accordingly
-//        if (timeStamp.getEndHour() < timeStamp.getStartHour() ||
-//                (timeStamp.getEndHour() == 0 && timeStamp.getEndMin() < timeStamp.getStartMin())) {
-//            endCalendar.add(Calendar.DAY_OF_MONTH, 1);
-//        }
 
         DateTime endDateTime = new DateTime(timeStamp.getEnd().getTime());
         EventDateTime end = new EventDateTime().setDateTime(endDateTime);
@@ -73,45 +60,7 @@ public class GoogleCalendarUtil {
         if (task.getColor() == null)
             return event;
 
-        switch (task.getColor()) {
-            case RED:
-                event.setColorId("11");
-                break;
-            case ORANGE:
-                event.setColorId("6");
-                break;
-            case YELLOW:
-                event.setColorId("5");
-                break;
-            case GREEN:
-                event.setColorId("10");
-                break;
-            case LIGHT_GREEN:
-                event.setColorId("2");
-                break;
-            case LIGHT_BLUE:
-                event.setColorId("7");
-                break;
-            case BLUE:
-                event.setColorId("1");
-                break;
-            case INDIGO:
-                event.setColorId("3");
-                break;
-            case VIOLET:
-                event.setColorId("9");
-                break;
-            case BLACK:
-                event.setColorId("8");
-                break;
-            case LIGHT_CORAL:
-                event.setColorId("4");
-                break;
-        }
-
-//        if (!task.getLabel().isEmpty()) {
-//            event.setColorId("" + task.getLabel().get(0).getColor());
-//        } else event.setColorId("7");
+        event.setColorId(convertAnsiToGoogleColor(task.getColor()));
 
         return event;
     }
@@ -146,42 +95,36 @@ public class GoogleCalendarUtil {
         if (e.getColor() == null)
             return event;
 
-        switch (e.getColor()) {
-            case RED:
-                event.setColorId("11");
-                break;
-            case ORANGE:
-                event.setColorId("6");
-                break;
-            case YELLOW:
-                event.setColorId("5");
-                break;
-            case GREEN:
-                event.setColorId("10");
-                break;
-            case LIGHT_GREEN:
-                event.setColorId("2");
-                break;
-            case LIGHT_BLUE:
-                event.setColorId("7");
-                break;
-            case BLUE:
-                event.setColorId("1");
-                break;
-            case INDIGO:
-                event.setColorId("3");
-                break;
-            case VIOLET:
-                event.setColorId("9");
-                break;
-            case BLACK:
-                event.setColorId("8");
-                break;
-            case LIGHT_CORAL:
-                event.setColorId("4");
-                break;
-        }
+        event.setColorId(convertAnsiToGoogleColor(e.getColor()));
 
         return event;
+    }
+
+    private static String convertAnsiToGoogleColor(Card.Colors color) {
+        switch (color) {
+            case RED:
+                return "11";
+            case ORANGE:
+                return "6";
+            case YELLOW:
+                return "5";
+            case GREEN:
+                return "10";
+            case LIGHT_GREEN:
+                return "2";
+            case LIGHT_BLUE:
+                return "7";
+            case BLUE:
+                return "1";
+            case INDIGO:
+                return "3";
+            case VIOLET:
+                return "9";
+            case BLACK:
+                return "8";
+            case LIGHT_CORAL:
+                return "4";
+        }
+        return null;
     }
 }
