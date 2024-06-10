@@ -29,6 +29,10 @@ public class UserConfig {
     private boolean optimizeDay;
     private boolean defaultAtStart;
     private boolean localScheduleColors;
+    private boolean formatPrettyTime;
+    private boolean formatPrettyTable;
+    private boolean formatAMPM;
+    private boolean resetLog;
 
 
     /**
@@ -49,7 +53,9 @@ public class UserConfig {
      */
     public UserConfig(int[] range, int[] globalHr, int maxDays, int archiveDays, boolean priority,
                       boolean overflow, boolean fitDay, int schedulingAlgorithm, double minHours,
-                      boolean optimizeDay, boolean defaultAtStart, boolean localScheduleColors) {
+                      boolean optimizeDay, boolean defaultAtStart, boolean localScheduleColors,
+                      boolean formatPrettyTime, boolean formatPrettyTable, boolean formatAMPM,
+                      boolean resetLog) {
         this.range = range;
         this.week = globalHr;
         this.maxDays = maxDays;
@@ -62,6 +68,10 @@ public class UserConfig {
         this.optimizeDay = optimizeDay;
         this.defaultAtStart = defaultAtStart;
         this.localScheduleColors = localScheduleColors;
+        this.formatPrettyTime = formatPrettyTime;
+        this.formatPrettyTable = formatPrettyTable;
+        this.formatAMPM = formatAMPM;
+        this.resetLog = resetLog;
     }
 
     /**
@@ -80,6 +90,10 @@ public class UserConfig {
         this.optimizeDay = true;
         this.defaultAtStart = true;
         this.localScheduleColors = true;
+        this.formatPrettyTime = true;
+        this.formatPrettyTable = true;
+        this.formatAMPM = true;
+        this.resetLog = true;
     }
 
     public int[] getRange() {
@@ -268,5 +282,37 @@ public class UserConfig {
 
     public void setLocalScheduleColors(boolean localScheduleColors) {
         this.localScheduleColors = localScheduleColors;
+    }
+
+    public boolean isFormatPrettyTime() {
+        return formatPrettyTime;
+    }
+
+    public void setFormatPrettyTime(boolean formatPrettyTime) {
+        this.formatPrettyTime = formatPrettyTime;
+    }
+
+    public boolean isFormatPrettyTable() {
+        return formatPrettyTable;
+    }
+
+    public void setFormatPrettyTable(boolean formatPrettyTable) {
+        this.formatPrettyTable = formatPrettyTable;
+    }
+
+    public boolean isFormatAMPM() {
+        return formatAMPM;
+    }
+
+    public void setFormatAMPM(boolean formatAMPM) {
+        this.formatAMPM = formatAMPM;
+    }
+
+    public boolean isResetLog() {
+        return resetLog;
+    }
+
+    public void setResetLog(boolean resetLog) {
+        this.resetLog = resetLog;
     }
 }

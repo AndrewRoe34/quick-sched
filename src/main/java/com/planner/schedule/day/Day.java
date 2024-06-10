@@ -186,7 +186,13 @@ public class Day {
             d. Repeat until task is completed (remember, Day needs a method that tells the scheduler how many hours are AVAILABLE, so we can assume we have enough)
         3. Done
          */
-        Calendar startTime = Time.getFirstAvailableTimeInDay(taskTimeStamps, eventTimeStamps, userConfig, time, isToday);
+        Calendar temp;
+        if (isToday) {
+            temp = time;
+        } else {
+            temp = this.date;
+        }
+        Calendar startTime = Time.getFirstAvailableTimeInDay(taskTimeStamps, eventTimeStamps, userConfig, temp, isToday);
         String s = sdf.format(startTime.getTime());
         TimeStamp eventTimeStamp = null;
         for (TimeStamp eTS : eventTimeStamps) { // this list needs to be sorted (given assumption below)
