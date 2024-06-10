@@ -35,9 +35,9 @@ public class SessionState implements TUIState {
                     try {
                         TUIState.clearScreen();
                         ScriptFSM scriptFSM = new ScriptFSM();
+                        scriptFSM.getScheduleManager().resetData();
                         scriptFSM.executeScript(scriptList.get(id).getAbsolutePath());
                         // need to have ScheduleManager reset (causing a lot of glitches when you keep rerunning the same file over and over)
-                        scriptFSM.getScheduleManager().resetData();
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }

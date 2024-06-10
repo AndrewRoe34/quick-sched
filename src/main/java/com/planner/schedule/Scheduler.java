@@ -44,4 +44,6 @@ public interface Scheduler {
      * @return number of times a {@link com.planner.models.Task.SubTask} was not uniformly fitted
      */
     int optimizeDay(Day day);
+
+    void updateConfig(UserConfig userConfig);
 }

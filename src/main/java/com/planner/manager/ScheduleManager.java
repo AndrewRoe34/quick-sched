@@ -86,6 +86,8 @@ public class ScheduleManager {
             throw new IllegalArgumentException();
         }
         scheduler = Scheduler.getInstance(userConfig, eventLog, userConfig.getSchedulingAlgorithm());
+        // in situations where ScheduleManager is run multiple times after updates to config, this ensures options are set up properly
+        scheduler.updateConfig(userConfig);
 
         schedule = new LinkedList<>();
         customHours = new HashMap<>();

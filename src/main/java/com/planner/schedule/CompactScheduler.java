@@ -25,7 +25,7 @@ public class CompactScheduler implements Scheduler {
     /** Singleton for CompactScheduler */
     private static CompactScheduler singleton;
     /** Holds relevant data for user settings in scheduling */
-    private final UserConfig userConfig;
+    private UserConfig userConfig;
     /** EventLog for logging data on Day actions */
     private final EventLog eventLog;
     /** Boolean value for whether we are scheduling a Day that is in fact today */
@@ -146,5 +146,10 @@ public class CompactScheduler implements Scheduler {
         //   while we could sort the subTasks, there is little need since the most we'll realistically have is 24 (tiny number, so bruteforce is acceptable)
 
         return 0;
+    }
+
+    @Override
+    public void updateConfig(UserConfig userConfig) {
+        this.userConfig = userConfig;
     }
 }

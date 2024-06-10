@@ -13,7 +13,6 @@ import java.util.Scanner;
 public class ConfigState implements TUIState {
 
     private boolean writeToFile;
-    private boolean configHasUpdate;
     private UserConfig userConfig;
     private String configTable;
     private final Scanner scanner;
@@ -30,11 +29,6 @@ public class ConfigState implements TUIState {
 
     @Override
     public void setupAndDisplayPage() {
-        if (configHasUpdate) {
-            configTable = TableFormatter.formatUserConfigTable(userConfig);
-            configHasUpdate = false;
-            writeToFile = true;
-        }
         formatTablePrompt();
         if (scanner.hasNextLine()) {
             String input = scanner.nextLine();
@@ -52,6 +46,8 @@ public class ConfigState implements TUIState {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            writeToFile = false;
+            configTable = TableFormatter.formatUserConfigTable(userConfig);
         }
     }
 
@@ -82,7 +78,7 @@ public class ConfigState implements TUIState {
     }
 
     private void formatConfigPrompt(int id) {
-        configHasUpdate = true;
+        writeToFile = true;
         switch (id) {
             case 0:
                 System.out.print("\n                                                 Hours of operation range");

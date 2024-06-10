@@ -27,7 +27,7 @@ public class DynamicScheduler implements Scheduler {
     /** Singleton for DynamicScheduler */
     private static DynamicScheduler singleton;
     /** Holds relevant data for user settings in scheduling */
-    private final UserConfig userConfig;
+    private UserConfig userConfig;
     /** EventLog for logging data on Day actions */
     private final EventLog eventLog;
 
@@ -104,6 +104,11 @@ public class DynamicScheduler implements Scheduler {
     @Override
     public int optimizeDay(Day day) {
         return 0;
+    }
+
+    @Override
+    public void updateConfig(UserConfig userConfig) {
+        this.userConfig = userConfig;
     }
 
     /**
