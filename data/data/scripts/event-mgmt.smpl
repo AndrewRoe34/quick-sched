@@ -1,0 +1,15 @@
+include: __CURR_CONFIG__, __LOG__
+
+jbin_file: input_word("Import JBin -> ")
+import_schedule(jbin_file)
+
+display_events()
+x: input_bool("Create a flag(True/False)? ")
+if (x)
+  create_event()
+  display_events()
+
+display_board()
+build()
+display_schedule()
+export_google()
