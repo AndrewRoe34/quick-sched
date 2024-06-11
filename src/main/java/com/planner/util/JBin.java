@@ -320,11 +320,6 @@ public class JBin {
                         Calendar end = recurring ? getEventCalendar(null, endString) : getEventCalendar(tokens[4], endString);
                         String[] days = recurring ? tokens[4].trim().split(" ") : null;
 
-//                        if (days != null) {
-//                            for (int i = 0; i < days.length; i++)
-//                                days[i] = days[i].substring(0, 3).toLowerCase();
-//                        }
-
                         Event.DayOfWeek[] week = null;
                         if (days != null) {
                             week = new Event.DayOfWeek[days.length];
@@ -509,8 +504,10 @@ public class JBin {
         // If dateString is null, then this event is recurring. So, use random numbers
         // we don't care about for the day, month and year.
         int day = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[0].trim());
-        int month = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[1].trim());
         int year = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[2].trim());
+
+        // Calendar.MONTH is zero-indexed. This change allows individual events to be added to their corresponding days on the schedule.
+        int month = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[1].trim()) - 1;
 
         calendar.set(
                 year,

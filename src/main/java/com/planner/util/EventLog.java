@@ -500,6 +500,27 @@ public class EventLog {
         //todo
     }
 
+    public void reportExcelFileNameChange(String newName) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" EXCEL FILE NAME HAS BEEN CHANGED TO '").append(newName).append(".xlsx'...\n");
+    }
+
+    public void reportExcelFileCreation() {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" EXCEL FILE CREATION PROCESSED...\n");
+    }
+
+    public void reportExcelExportSchedule() {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+        sb.append(" [INFO]");
+        sb.append(" SCHEDULE EXPORTED TO EXCEL FILE...\n");
+    }
+
     public void reportGoogleCalendarAuthorization() {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         sb.append(sdf.format(Calendar.getInstance().getTime()));

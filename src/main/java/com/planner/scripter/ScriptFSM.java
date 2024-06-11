@@ -636,6 +636,10 @@ public class ScriptFSM {
                     throw new InvalidFunctionException();
                 }
                 return null;
+            case "export_excel":
+                if(args.length != 0) throw new InvalidFunctionException();
+                funcExportExcel();
+                return null;
             case "export_google":
                 if(args.length != 0) throw new InvalidFunctionException();
                 funcExportGoogle();
@@ -1262,6 +1266,20 @@ public class ScriptFSM {
 
     protected void funcSetSchedule(int idx) {
         this.scheduleManager.setScheduleOption(idx);
+    }
+
+    protected void funcExportExcel() {
+        System.out.println("Default excel file name: schedule.xlsx.");
+        System.out.println("Input 'none' to keep the default name.");
+        System.out.print("File name: ");
+
+        String file = inputScanner.nextLine();
+
+        try {
+            scheduleManager.exportScheduleToExcel(file);
+        } catch (IOException e) {
+            throw new InvalidFunctionException();
+        }
     }
 
     protected void funcExportGoogle() {
