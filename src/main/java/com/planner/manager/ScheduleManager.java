@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.*;
 
+import com.planner.io.SpreadsheetIO;
 import com.planner.models.*;
 import com.planner.io.GoogleCalendarIO;
 import com.planner.io.IOProcessing;
@@ -61,6 +62,7 @@ public class ScheduleManager {
     /** Last day Task is due */
     private int lastDueDate;
     private final GoogleCalendarIO googleCalendarIO;
+    private SpreadsheetIO spreadsheetIO;
     private Calendar scheduleTime;
     private List<Event> indivEvents;
     private List<List<Event>> recurringEvents;
@@ -82,9 +84,12 @@ public class ScheduleManager {
         taskManager = new PriorityQueue<>();
         try {
             googleCalendarIO = new GoogleCalendarIO(eventLog);
-        } catch (GeneralSecurityException | IOException e) {
+            spreadsheetIO = new SpreadsheetIO(eventLog);
+        }
+        catch (GeneralSecurityException | IOException e) {
             throw new IllegalArgumentException();
         }
+
         scheduler = Scheduler.getInstance(userConfig, eventLog, userConfig.getSchedulingAlgorithm());
         // in situations where ScheduleManager is run multiple times after updates to config, this ensures options are set up properly
         scheduler.updateConfig(userConfig);
@@ -713,6 +718,11 @@ public class ScheduleManager {
 
     public EventLog getEventLog() {
         return eventLog;
+    }
+
+    public void exportScheduleToExcel(String filename) throws IOException {
+        spreadsheetIO.setFilename(filename);
+        spreadsheetIO.exportScheduleToExcel(schedule);
     }
 
     public void exportScheduleToGoogle() throws IOException {

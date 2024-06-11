@@ -292,6 +292,7 @@ public class Parser {
             case "display_schedule":
             case "display_card":
             case "set_schedule":
+            case "export_excel":
             case "export_google":
             case "import_google":
             case "add_task_card":

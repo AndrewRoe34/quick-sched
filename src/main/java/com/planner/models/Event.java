@@ -87,8 +87,12 @@ public class Event implements Comparable<Event> {
 
     public String getDateStamp() {
         int day = timeStamp.getStart().get(Calendar.DAY_OF_MONTH);
-        int month = timeStamp.getStart().get(Calendar.MONTH);
         int year = timeStamp.getStart().get(Calendar.YEAR);
+
+        // Calendar.MONTH is zero-indexed, so we have to increment the
+        // month value to get the correct month.
+        // I hate this.
+        int month = timeStamp.getStart().get(Calendar.MONTH) + 1;
 
         StringBuilder dateStamp = new StringBuilder();
         if (day < 10) dateStamp.append("0");

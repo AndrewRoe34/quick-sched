@@ -161,6 +161,25 @@ public class Task implements Comparable<Task>, Linker {
         this.dueDate = Time.getFormattedCalendarInstance(incrementation);
     }
 
+    public String getDateStamp() {
+        int day = dueDate.get(Calendar.DAY_OF_MONTH);
+        int year = dueDate.get(Calendar.YEAR);
+
+        // Calendar.MONTH is zero-indexed.
+        int month = dueDate.get(Calendar.MONTH) + 1;
+
+        StringBuilder dateStamp = new StringBuilder();
+        if (day < 10) dateStamp.append("0");
+        dateStamp.append(day);
+        dateStamp.append("-");
+        if (month < 10) dateStamp.append("0");
+        dateStamp.append(month);
+        dateStamp.append("-");
+        dateStamp.append(year);
+
+        return dateStamp.toString();
+    }
+
     /**
      * Gets the total number of hours for the Task
      *

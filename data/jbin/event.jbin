@@ -21,6 +21,11 @@ CARD {
 }
 
 EVENT {
+  Class-PHI, GREEN, true, 9:23-10:51, SUN WED
+  Class-LAW, RED, true, 11:52-12:38, SUN WED
+  Class-SC, YELLOW, true, 12:45-14:15, SUN WED
+  What the hell is a free day?, LIGHT_CORAL, true, 16:00-17:00, SUN MON TUE WED THU FRI SAT
+  One-off, BLUE, false, 17:30-18:00, 11-06-2024
   Class-PHI, GREEN, true, 9:23-10:51, TUE THU
   Class-LAW, RED, true, 11:52-12:38, MON WED
   Class-SC, YELLOW, true, 12:45-14:15, TUE THU

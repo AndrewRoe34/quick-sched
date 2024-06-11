@@ -145,7 +145,7 @@ public class TableFormatter {
                     sb.append(ts).append(" - "); // 18 char
 
                     if (name.length() > 21) {
-                        sb.append(name, 0, 21);
+                        sb.append(name, 0, 22);
                     } else {
                         sb.append(name);
                         sb.append(" ".repeat(22 - name.length()));
