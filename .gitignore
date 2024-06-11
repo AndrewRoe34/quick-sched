@@ -45,8 +45,8 @@ bin/
 .DS_Store
 
 ### Preserve core files to system and testing
-!data/jbin
-!data/scripts
+!data/jbin/
+!data/scripts/
 
 ### Remaining are just result of session runs ###
 data/
