@@ -12,4 +12,3 @@ func binary(bin, x)
 print("Enter number: ")
 x: input_int()
 binary("", x)
-
