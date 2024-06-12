@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="logo.png" alt="Agile Planner">
+  <img src="images/logo.png" alt="Agile Planner">
 </p>
 
 ![Maven Central Version](https://img.shields.io/maven-central/v/com.google.code.gson/gson?versionPrefix=2.10.1&style=flat&label=gson&labelColor=%23f8b500&color=%23555555)

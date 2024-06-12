@@ -79,7 +79,7 @@ public class TUIContext {
                 }
             } else break;
             // clear the screen here to refresh the page
-            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            TUIState.clearScreen();
         }
     }
 }
