@@ -61,9 +61,9 @@ public class CodeEditor extends JFrame {
 
     private void createLabels() {
         JPanel labelPanel = new JPanel(new GridLayout(1, 3));
-        openLabel = new JLabel(" F1 for Open File ");
-        saveLabel = new JLabel(" F2 for Save ");
-        quitLabel = new JLabel(" F3 for Quit ");
+        openLabel = new JLabel(" F1 - Open File ");
+        saveLabel = new JLabel(" F2 - Save ");
+        quitLabel = new JLabel(" F3 - Quit ");
 
         labelPanel.add(openLabel);
         labelPanel.add(saveLabel);
@@ -77,27 +77,28 @@ public class CodeEditor extends JFrame {
         textPane.getActionMap().put("openFile", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                File currentDirectory = new File(".");
+                File currentDirectory = new File("data/scripts/");
                 File[] files = currentDirectory.listFiles();
                 if (files != null && files.length > 0) {
                     String[] fileNames = new String[files.length];
                     for (int i = 0; i < files.length; i++) {
                         fileNames[i] = files[i].getName();
                     }
-                    String selectedFile = (String) JOptionPane.showInputDialog(null, "Select a file:", "Open File",
+                    String selectedFile = (String) JOptionPane.showInputDialog(null, "Choose a script:", "Open File",
                             JOptionPane.PLAIN_MESSAGE, null, fileNames, fileNames[0]);
                     if (selectedFile != null) {
-                        currentFile = new File(selectedFile);
+                        currentFile = new File(currentDirectory, selectedFile);
                         try {
                             byte[] bytes = Files.readAllBytes(currentFile.toPath());
                             String content = new String(bytes, StandardCharsets.UTF_8);
-                            textPane.setText(content); // Set the text of the JTextArea to the file content
+                            textPane.setText(content); // Set the text of the JTextPane to the file content
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
+                        hasSaved = true;
                     }
                 } else {
-                    JOptionPane.showMessageDialog(null, "No files in the current directory.");
+                    JOptionPane.showMessageDialog(null, "No scripts are available.");
                 }
             }
         });
