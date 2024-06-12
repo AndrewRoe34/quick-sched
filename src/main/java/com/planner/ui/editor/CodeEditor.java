@@ -26,7 +26,7 @@ public class CodeEditor extends JFrame {
         createLabels();
         setKeyBindings();
         setTitle("Simple Script Editor");
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setSize(800, 600);
         setLocationRelativeTo(null);
         ImageIcon imageIcon = new ImageIcon("images/icon.png");
@@ -108,15 +108,30 @@ public class CodeEditor extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!hasSaved) {
-                    String fileName = (String) JOptionPane.showInputDialog(null, "Enter file name:", "Save File",
+                    String fileName = (String) JOptionPane.showInputDialog(null, "Enter script name:", "Save File",
                             JOptionPane.PLAIN_MESSAGE);
-                    if (fileName != null) {
-                        currentFile = new File(fileName);
-                        // Save file logic
+                    if (fileName != null && !fileName.isBlank()) {
+                        if (fileName.length() > 5 && ".smpl".equals(fileName.substring(fileName.length() - 5))) {
+                            // do nothing
+                        } else {
+                            fileName += ".smpl";
+                        }
+                        currentFile = new File("data/scripts/" + fileName);
+                        String content = textPane.getText();
+                        try {
+                            Files.write(currentFile.toPath(), content.getBytes(StandardCharsets.UTF_8));
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
                         hasSaved = true;
                     }
                 } else {
-                    // Save file logic
+                    String content = textPane.getText();
+                    try {
+                        Files.write(currentFile.toPath(), content.getBytes(StandardCharsets.UTF_8));
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
         });
