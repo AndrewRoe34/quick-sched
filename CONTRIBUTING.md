@@ -68,26 +68,92 @@ Now, you’re ready to start developing with Agile Planner!
 Thank you for contributing!
 
 ## Issue and Pull Request Templates
-We use templates for issues and pull requests to ensure consistency and completeness. Please use the provided templates when creating issues or pull requests.
 
-## Building and Testing
+We use templates for issues and pull requests to ensure consistency and completeness. When creating issues or pull requests, please use one of the following templates:
+
+- **Bug Report**: Use this template when reporting a bug or issue. It helps us gather necessary information for debugging and fixing the problem.
+
+- **Feature Request**: Use this template when proposing a new feature or enhancement. It helps us understand the purpose and scope of the proposed change.
+
+Please select the appropriate template when creating your issue or pull request to provide clear and structured information. This ensures that your contributions are addressed promptly and effectively.
+
+## Testing
+![Testing](images/testing.png)
+
+### Running Unit Tests
+
+1. **Unit Tests:**
+   - To run unit tests, navigate to the project root directory in IntelliJ.
+   - Open the Gradle tool window (`View -> Tool Windows -> Gradle`), and expand the project name.
+   - Navigate to `Tasks -> verification -> test` and double-click to run all unit tests.
+
+### Writing Unit Tests
+
+1. **Creating JUnit 5 Tests:**
+   - IntelliJ provides a convenient way to generate JUnit 5 test classes and methods.
+   - After creating a new Java class for your component or class, IntelliJ allows you to easily create corresponding test classes.
+   - Inside the newly created class, position your cursor on the class name, press `Alt + Enter`, and select `Create Test` to generate a test class.
+   - IntelliJ will prompt you to select methods to generate test methods for or create new ones.
+
+2. **Organizing Tests:**
+   - Make sure your unit tests are under the `src/test/java` directory.
+   - They should be organized according to the appropriate package structure that mirrors your main source code (`src/main/java`).
+
+3. **Running Tests from IntelliJ:**
+   - To run a single test or a group of tests, navigate to the test class or method, right-click, and select `Run 'ClassName'` or `Run 'MethodName()'`.
+   - IntelliJ will execute the selected tests and display the results in the Run tool window.
+
+### Test Coverage
+
+1. **Code Coverage Reports:**
+   - IntelliJ provides built-in support for generating code coverage reports.
+   - After running your tests, go to `Run -> Show Coverage Data` to view the coverage report.
+   - Ensure that your tests cover critical parts of your codebase to maintain high code quality.
+
+2. **Improving Test Coverage:**
+   - Regularly review the coverage report to identify areas of code that are not adequately covered by tests.
+   - Write additional tests or enhance existing ones to improve overall test coverage to at least 80%.
+
 
 ## Commit Message Guidelines
-For our community, we utilize one of the following styles ... [TODO] [TODO, include link to a commit]
+
+Each commit message should start with a tag indicating the type of change, followed by a brief description. Optionally, you can list specific items or details related to the commit.
+
+### Tags and Examples
+
+- **[Feature]**: Implemented user authentication
+   - Added login form
+   - Implemented JWT token handling
+   - Added user registration endpoint
+
+- **[Batch]**: Updated dependencies and fixed UI bugs
+   - Updated packages to latest versions
+   - Fixed responsive design issues
+
+- **[Test]**: Added unit tests for user service
+   - Created test cases for login and registration
+
+- **[Refactor]**: Optimized database query performance
+   - Refactored SQL queries for efficiency
+
+- **[Doc]**: Updated API documentation
+   - Added detailed usage instructions
+
+By adhering to these guidelines, you help us maintain consistency and clarity in our project's commit history.
 
 ## Code Style
-Code is a written expression of logic, and as such, must be formatted properly if we are to maintain readability and clarity.
+Code is an expression of logical thought, and therefore, it must be properly formatted to ensure readability and clarity.
 
 ### Variable Naming
 As the saying goes, good code explains itself. Well, the most fundamental aspect to any programming language is how you name your variables. When creating a variable, it is important that you give it a meaningful/purposeful name.
 
 Below contain two examples of both good and bad variable naming standards for our community:
 
-**Poor variables**
+**Bad**
 ```java
 String x2 = TableFormatter.formatPrettyScheduleTable(x1);
 ```
-**Good variables**
+**Good**
 ```java
 String prettyScheduleTable = TableFormatter.formatPrettyScheduleTable(schedule);
 ```
@@ -98,21 +164,21 @@ Similar to variable naming, methods and classes need to provide an almost immedi
 
 When creating a class, it's important that you both package it appropriately and give it a proper name. In a grammar sense, class names should emulate a noun. Below are two examples as to what is and is not appropriate:
 
-**Poor class**
+**Bad**
 ```java
 public class CreateCompactSchedule {}
 ```
-**Good class**
+**Good**
 ```java
 public class CompactScheduler {}
 ```
 Thus, we maintain the consistency of the latter example with all class scenarios. However, methods operate quite differently. Their naming convention acts closer to a verb as demonstrated below:
 
-**Poor method**
+**Bad**
 ```java
 public static String the_jbin(List<Card> cards) {}
 ```
-**Good method**
+**Good**
 ```java
 public static String createJBin(List<Card> cards) {}
 ```
@@ -156,7 +222,7 @@ Each individual snippet is purposeful with what it's aiming to solve and serves 
 ### Control Structures
 With Agile Planner, we require that all control structures maintain proper horizontal spacing in order to increase readability as demonstrated below:
 
-**Poor spacing**
+**Bad**
 ```java
 while(x > 3){
     foo(x);
@@ -164,7 +230,7 @@ while(x > 3){
 }
 if(flag)System.out.println();
 ```
-**Good spacing**
+**Good**
 ```java
 while (x > 3) {
     foo(x);
@@ -176,12 +242,12 @@ This provides for improved clarity to the reader, which allows us to work more e
 
 Another topic to touch upon is the usage of curly braces with loops and conditions. With Agile Planner, we require that all loops maintain curly braces to avoid possible confusion or cryptic bugs, but single line conditions are permitted due to their once-off nature and their intrinsic simplicity:
 
-**Poor style**
+**Bad**
 ```java
 for (int i = 0; i < arr.length; i++)
     foo(arr[i]);
 ```
-**Good style**
+**Good**
 ```java
 for (int i = 0; i < arr.length; i++) {
     foo(arr[i]);
@@ -215,9 +281,6 @@ sb.append(task.getDueDate().get(Calendar.DAY_OF_MONTH));
 sb.append("\n\n");
 ```
 
-### Additional Notes
-For further clarification on proper standards, refer to Effective Java and Gang of Four Design Patterns. These two texts offer plenty of valuable insights for how you should be writing Object-Oriented Java code. 
-
 ## Documentation
 When integrating a new feature or performing an edit, good documentation must always persist with change. While we don't require comments, classes and methods are an absolute requirement. We will go through the style enforced by this community.
 
@@ -230,7 +293,7 @@ When documenting a class, we require that you provide a detailed description dis
 
 Below I've provided contrasting examples for both poor and good documentation:
 
-**Poor documentation**
+**Bad**
 ```java
 /**
  * Handles scheduling in a compact manner
@@ -238,7 +301,7 @@ Below I've provided contrasting examples for both poor and good documentation:
 public class CompactScheduler implements Scheduler {}
 ```
 
-**Good documentation**
+**Good**
 ```java
 /**
  * The class {@code CompactScheduler} implements the interface {@link Scheduler} for compact scheduling actions.
@@ -261,7 +324,7 @@ When documenting a method, we require that you provide an informative descriptio
 
 Below I've provided contrasting examples for both poor and good documentation:
 
-**Poor documentation**
+**Bad**
 ```java
 /**
  * Updates day by optimizing it
@@ -269,7 +332,7 @@ Below I've provided contrasting examples for both poor and good documentation:
 int optimizeDay(Day day);
 ```
 
-**Good documentation**
+**Good**
 ```java
 /**
  * Optimizes a {@link Day}'s set of {@link com.planner.models.Task.SubTask} around {@link com.planner.models.Event}
@@ -285,10 +348,22 @@ int optimizeDay(Day day);
 ```
 
 ## Review Process
-After you submit a pull request, the project maintainers will review your changes, suggest any needed changes/improvements, approve your changes, and finally, merge your pull request.
+Thank you for contributing to our project! Here’s what happens after you submit a pull request:
+1. **Initial Review:**
+    - Project maintainers will review your changes to ensure they align with our project's goals and guidelines.
 
-Here's a typical interaction as part of the review process:
-[Include image here]
+2. **Feedback and Revisions:**
+    - If any adjustments are needed, maintainers will provide feedback and suggest improvements. Please address these suggestions promptly to facilitate the review process.
+
+3. **Approval:**
+    - Once your changes meet the project standards, maintainers will approve your pull request.
+
+4. **Merge:**
+    - After approval, your changes will be merged into the main branch.
+
+For reference, you can check out a [Sample Pull Request](https://github.com/AndrewRoe34/agile-planner/pull/45) to see an example of a successful review process.
+
+We appreciate your contribution and look forward to collaborating with you!
 
 ## Recognition
 Contributors who provide significant improvements or help fix major issues will be recognized in the project's documentation.
