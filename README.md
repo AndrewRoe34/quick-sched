@@ -12,7 +12,7 @@
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/AndrewRoe34/agile-planner/gradle.yml?style=flat)
 ![GitHub Release](https://img.shields.io/github/v/release/AndrewRoe34/agile-planner?include_prereleases&color=%23ffeb3b)
 
-Agile Planner is a robust, dynamic shceduling platform that provides unparalled automation for students seeking to generate both daily and weekly planners. It is the only scheduling platform to date that provides its own Object Oriented scripting language fully integrated with a CLI interface for streamlining the pipeline even further. Futher, Agile Planner offers plenty of proprietary software such as logging, scheduling algorithms, serialization, and as stated before, a custom scripting language. The goal is to continue expanding upon the current CLI iteration and eventually offer a web-based component.
+Agile Planner is a robust, dynamic scheduling platform that provides unparalleled automation for students seeking to generate both daily and weekly planners. It is the only scheduling platform to date that provides its own Object Oriented scripting language fully integrated with a CLI interface for streamlining the pipeline even further. Futher, Agile Planner offers plenty of proprietary software such as logging, scheduling algorithms, serialization, and as stated before, a custom scripting language. The goal is to continue expanding upon the current CLI iteration and eventually offer a web-based component.
 
 ![Promo](images/preview.gif)
 ## Getting Started
@@ -213,7 +213,7 @@ Here's an example `settings.cfg` file with default values:
 
 We welcome contributions from everyone who is interested in improving Agile Planner and expanding its capabilities. Whether you're fixing bugs, adding new features, or improving documentation, your help is appreciated!
 
-Before you start contributing, please make sure to read our CONTRIBUTING.md file. It contains all the information you need to get started, including how to submit pull requests, our coding standards, and the process for reporting bugs.
+Before you start contributing, please make sure to read our [CONTRIBUTING.md](CONTRIBUTING.md) file. It contains all the information you need to get started, including how to submit pull requests, our coding standards, and the process for reporting bugs.
 
 If you have any questions or want to discuss your ideas before diving in, be sure to join our Slack group:
 
