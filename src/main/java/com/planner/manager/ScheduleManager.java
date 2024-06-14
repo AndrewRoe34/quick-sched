@@ -722,7 +722,7 @@ public class ScheduleManager {
 
     public void exportScheduleToExcel(String filename) throws IOException {
         spreadsheetIO.setFilename(filename);
-        spreadsheetIO.exportScheduleToExcel(schedule);
+        spreadsheetIO.exportScheduleToExcel(schedule, cards, archivedTasks, userConfig);
     }
 
     public void exportScheduleToGoogle() throws IOException {
