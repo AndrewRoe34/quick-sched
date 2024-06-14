@@ -10,7 +10,7 @@
 ![Maven Central Version](https://img.shields.io/maven-central/v/org.junit.jupiter/junit-jupiter-engine?versionSuffix=5.9.2&style=flat&label=junit-jupiter-engine&labelColor=%239c27b0&color=%23555555)
 
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/AndrewRoe34/agile-planner/gradle.yml?style=flat)](https://github.com/AndrewRoe34/agile-planner/actions)
-[![GitHub Release](https://img.shields.io/github/v/release/AndrewRoe34/agile-planner?include_prereleases&color=%23ffeb3b)](https://github.com/AndrewRoe34/agile-planner/releases)
+<!-- [![GitHub Release](https://img.shields.io/github/v/release/AndrewRoe34/agile-planner?include_prereleases&color=%23ffeb3b)](https://github.com/AndrewRoe34/agile-planner/releases) -->
 
 Agile Planner is a robust, dynamic scheduling platform that provides unparalleled automation for students seeking to generate both daily and weekly planners. It is the only scheduling platform to date that provides its own Object Oriented scripting language fully integrated with a CLI interface for streamlining the pipeline even further. Futher, Agile Planner offers plenty of proprietary software such as logging, scheduling algorithms, serialization, and as stated before, a custom scripting language. The goal is to continue expanding upon the current CLI iteration and eventually offer a web-based component.
 
