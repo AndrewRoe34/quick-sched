@@ -139,6 +139,9 @@ Each commit message should start with a tag indicating the type of change, follo
 - **[Doc]**: Updated API documentation
    - Added detailed usage instructions
 
+- **[Fix/Hotfix]**: Fixed critical error when attempting to serialize schedule
+    - Resolved issue causing serialization failure due to incorrect data format handling
+
 By adhering to these guidelines, you help us maintain consistency and clarity in our project's commit history.
 
 ## Code Style
@@ -239,21 +242,6 @@ while (x > 3) {
 if (flag) System.out.println();
 ```
 This provides for improved clarity to the reader, which allows us to work more efficiently.
-
-Another topic to touch upon is the usage of curly braces with loops and conditions. With Agile Planner, we require that all loops maintain curly braces to avoid possible confusion or cryptic bugs, but single line conditions are permitted due to their once-off nature and their intrinsic simplicity:
-
-**Bad**
-```java
-for (int i = 0; i < arr.length; i++)
-    foo(arr[i]);
-```
-**Good**
-```java
-for (int i = 0; i < arr.length; i++) {
-    foo(arr[i]);
-}
-if (status) System.out.println("Success...");
-```
 
 ### Method chaining
 When dealing with Object Oriented languages, you're apt to encounter a long series of method chaining. Here we discuss what are the standards we enforce when encountering said situations.
