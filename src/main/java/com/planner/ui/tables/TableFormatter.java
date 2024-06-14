@@ -11,9 +11,20 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
+/**
+ * Handles the creation of both dotted and pretty tables for scheduling related data
+ *
+ * @author Andrew Roe
+ */
 public class TableFormatter {
 
-    public static String formatUserConfigTable(UserConfig userConfig) {
+    /**
+     * Creates a {@link UserConfig} table utilizing the pretty format
+     *
+     * @param userConfig provided user options
+     * @return pretty config table
+     */
+    public static String formatPrettyUserConfigTable(UserConfig userConfig) {
         String[] optionNames = {"RANGE", "WEEK", "MAX_DAYS", "ARCHIVE_DAYS", "PRIORITY", "OVERFLOW", "FIT_DAY",
                 "SCHED_ALGORITHM", "MIN_HOURS", "OPTIMIZE_DAY", "DEFAULT_AT_START", "LOCAL_SCHED_COLORS"};
 
@@ -53,7 +64,13 @@ public class TableFormatter {
         return sb.toString();
     }
 
-    public static String formatScriptOptionsTable(List<File> scriptList) {
+    /**
+     * Creates a script options table utilizing the pretty format
+     *
+     * @param scriptList list of available script options
+     * @return pretty script options table
+     */
+    public static String formatPrettyScriptOptionsTable(List<File> scriptList) {
         StringBuilder sb = new StringBuilder();
         sb.append("                                                      Script Options\n");
         sb.append("                                         ____________________________________________\n");
@@ -72,6 +89,12 @@ public class TableFormatter {
         return sb.toString();
     }
 
+    /**
+     * Creates a schedule table consisting of {@link Day} utilizing the pretty format
+     *
+     * @param schedule list of scheduled days
+     * @return pretty schedule table
+     */
     public static String formatPrettyScheduleTable(List<Day> schedule) {
         StringBuilder sb = new StringBuilder();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -171,6 +194,12 @@ public class TableFormatter {
         return sb.toString();
     }
 
+    /**
+     * Creates a schedule table consisting of {@link Day} utilizing the dotted format
+     *
+     * @param schedule list of scheduled days
+     * @return dotted schedule table
+     */
     public static String formatDottedScheduleTable(List<Day> schedule, UserConfig userConfig) {
         StringBuilder sb = new StringBuilder();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -259,10 +288,26 @@ public class TableFormatter {
         return sb.toString();
     }
 
-    public static String formatPrettyBoardTable(List<Card> cards) {
+    /**
+     * Creates a board table consisting of {@link Card} and {@link Task} utilizing the dotted format
+     *
+     * @param cards list of scheduled cards
+     * @param userConfig provided user options
+     * @param archivedTasks previously archived tasks
+     * @return dotted board table
+     */
+    public static String formatPrettyBoardTable(List<Card> cards, UserConfig userConfig, PriorityQueue<Task> archivedTasks) {
         return "";
     }
 
+    /**
+     * Creates a board table consisting of {@link Card} and {@link Task} utilizing the pretty format
+     *
+     * @param cards list of scheduled cards
+     * @param userConfig provided user options
+     * @param archivedTasks previously archived tasks
+     * @return dotted board table
+     */
     public static String formatDottedBoardTable(List<Card> cards, UserConfig userConfig, PriorityQueue<Task> archivedTasks) {
         StringBuilder sb = new StringBuilder();
 
@@ -343,19 +388,19 @@ public class TableFormatter {
         return sb.toString();
     }
 
-    public static String formatRecurringEventsTable() {
+    public static String formatDottedEventSetTables() {
         return "";
     }
 
-    public static String formatIndividualEventsTable() {
+    public static String formatPrettyEventSetTables() {
         return "";
     }
 
-    public static String formatEventSetTables() {
+    public static String formatDottedTasksTable() {
         return "";
     }
 
-    public static String formatTasksTable() {
+    public static String formatPrettyTasksTable() {
         return "";
     }
 
@@ -369,7 +414,7 @@ public class TableFormatter {
         assert list != null;
         List<File> files = Arrays.asList(list);
 
-        System.out.println(formatScriptOptionsTable(files));
+        System.out.println(formatPrettyScriptOptionsTable(files));
     }
 
     private static String getColorANSICode(Card.Colors color) {
