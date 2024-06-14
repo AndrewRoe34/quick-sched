@@ -61,8 +61,12 @@ After building the project, you can open it in IntelliJ IDEA:
 
 Now, you’re ready to start developing with Agile Planner!
 
-## Usage
-Agile Planner runs directly off Simple Script with creating and managing your weekly schedules. Below you'll find the basics to get started with scripting in Agile Planner. Here's a typical script you might encounter:
+## Usage with Agile Planner
+
+[Under construction]
+
+## Learning the Simple Script Environment
+This section covers the Simple Script environment, including: syntax, variables, functions, control structures, and object methods. This part is more tutorial-oriented to help you get acquainted with scripting in Simple as quickly as possible.
 ```
 include: __CURR_CONFIG__, __LOG__
 
