@@ -1,10 +1,12 @@
 include: __CURR_CONFIG__, __LOG__, __HTML__
 
+str: input_line("Enter text --> ")
+
 # prints out a line of '*'
 func line(y)
   if(y.==(0))
     return
-  print("*")
+  print(str)
   line(y.--())
 
 # determines number of lines and length for each

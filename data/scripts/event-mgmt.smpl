@@ -4,12 +4,22 @@ jbin_file: input_word("Import JBin -> ")
 import_schedule(jbin_file)
 
 display_events()
-x: input_bool("Create a flag(True/False)? ")
-if (x)
+event_flag: input_bool("Create an Event(T/F)? ")
+if (event_flag)
   create_event()
   display_events()
+
+println("Now to display all the scheduling data...\n")
 
 display_board()
 build()
 display_schedule()
-export_excel()
+
+xslx_flag: input_bool("Generate Excel report(T/F)? ")
+if (xslx_flag)
+  export_excel()
+
+google_flag: input_bool("Export to Google(T/F)? ")
+if (google_flag)
+  export_google()
+  pause()

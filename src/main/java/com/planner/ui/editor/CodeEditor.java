@@ -35,13 +35,15 @@ public class CodeEditor extends JFrame {
 
     private void createEditor() {
         textPane = new JTextPane();
-        textPane.setBackground(Color.DARK_GRAY);
-        textPane.setForeground(Color.WHITE);
-        textPane.setCaretColor(Color.WHITE);
+        textPane.setBackground(Color.BLACK);
+        textPane.setForeground(Color.GREEN);
+        textPane.setCaretColor(Color.GREEN);
         textPane.setBorder(new EmptyBorder(0, 30, 0, 0));
 
         LineNumbering lineNumbering = new LineNumbering(textPane);
         JScrollPane scrollPane = new JScrollPane(textPane);
+        scrollPane.setBackground(Color.BLACK);
+        scrollPane.setForeground(Color.GREEN);
         scrollPane.setRowHeaderView(lineNumbering);
 
         textPane.getDocument().addDocumentListener(new DocumentListener() {

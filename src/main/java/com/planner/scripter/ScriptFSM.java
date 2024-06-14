@@ -18,9 +18,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static java.lang.Thread.sleep;
 
 /**
  * Processes scripts written in the custom 'smpl' language.
@@ -194,20 +197,23 @@ public class ScriptFSM {
 
         IOProcessing.writeScripterLogToFile(scriptLog.toString());
         IOProcessing.writeSysLogToFile(eventLog.toString());
+        Path path = Paths.get(filename);
         if(preProcessor.isLog()) {
-            System.out.println("\nSYSTEM LOG:\n" + eventLog);
-            System.out.println("SCRIPT:");
-
-            scriptScanner = new Scanner(new File(filename));
-            while (scriptScanner.hasNextLine()) {
-                System.out.println(scriptScanner.nextLine());
+            try {
+                System.out.println("\nSYSTEM LOG:\n" + eventLog);
+                sleep(2000);
+                System.out.println("SCRIPT:");
+                System.out.println(Files.readString(path));
+                sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
 
         if(preProcessor.isHtml()) {
             File script = new File(filename);
             String scriptName = script.getName();
-            String scriptStr = Files.readString(Paths.get(filename));
+            String scriptStr = Files.readString(path);
             ScriptPage scriptPage = new ScriptPage(scriptLog.toString(), eventLog.toString(), scriptStr, scriptName);
             IOProcessing.writeScripterPage(scriptPage.buildPage(), scriptName.substring(0, scriptName.length() - 5));
         }
@@ -1284,9 +1290,20 @@ public class ScriptFSM {
 
     protected void funcExportGoogle() {
         try {
+            DotPrinter dotPrinter = new DotPrinter();
+            Thread dotThread = new Thread(dotPrinter);
+            System.out.println("Cleaning Google Calendar:");
+            dotThread.start();
+            scheduleManager.cleanGoogleSchedule();
+            dotPrinter.terminate();
+            dotThread.join();
+            System.out.println();
+            System.out.println("Google Calendar Links:");
             scheduleManager.exportScheduleToGoogle();
         } catch (IOException e) {
             throw new InvalidFunctionException();
+        } catch(InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
@@ -1348,4 +1365,27 @@ public class ScriptFSM {
     }
 
     //todo add your static functions down here...
+
+    public class DotPrinter implements Runnable {
+        private volatile boolean running = true;
+
+        public void terminate() {
+            running = false;
+        }
+
+        @Override
+        public void run() {
+            while (running) {
+                System.out.print(".");
+                try {
+                    Thread.sleep(500); // Adjust the sleep time as needed
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    System.out.println("Dot printing interrupted");
+                    return;
+                }
+            }
+        }
+    }
+
 }
