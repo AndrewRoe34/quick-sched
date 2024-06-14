@@ -14,6 +14,7 @@
 
 Agile Planner is a robust, dynamic shceduling platform that provides unparalled automation for students seeking to generate both daily and weekly planners. It is the only scheduling platform to date that provides its own Object Oriented scripting language fully integrated with a CLI interface for streamlining the pipeline even further. Futher, Agile Planner offers plenty of proprietary software such as logging, scheduling algorithms, serialization, and as stated before, a custom scripting language. The goal is to continue expanding upon the current CLI iteration and eventually offer a web-based component.
 
+![Promo](images/preview.gif)
 ## Getting Started
 
 These instructions will guide you through the setup process to get the project running on your local machine for development and testing purposes.
