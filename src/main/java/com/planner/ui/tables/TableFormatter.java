@@ -388,12 +388,197 @@ public class TableFormatter {
         return sb.toString();
     }
 
-    public static String formatDottedEventSetTables() {
-        return "";
+    /**
+     * Creates an event table consisting of both recurring and individual {@link Event} utilizing the dotted format
+     *
+     * @param recurringEvents list of recurring events
+     * @param indivEvents list of individual events
+     * @return dotted event table
+     */
+    public static String formatDottedEventSetTables(List<List<Event>> recurringEvents, List<Event> indivEvents) {
+        StringBuilder sb = new StringBuilder();
+
+        boolean recurringEventsExist = false;
+        for (List<Event> events : recurringEvents) {
+            if (!events.isEmpty()) {
+                recurringEventsExist = true;
+                break;
+            }
+        }
+
+        if (recurringEventsExist) {
+            sb.append("RECURRING:").append("\n");
+            sb.append("ID").append(" ".repeat(5)).append("|");
+            sb.append("NAME").append(" ".repeat(16)).append("|");
+            sb.append("COLOR").append(" ".repeat(10)).append("|");
+            sb.append("TIME").append(" ".repeat(16)).append("|");
+            sb.append("DAYS").append(" ".repeat(29)).append("|");
+
+            sb.append("\n");
+            sb.append("-".repeat(100));
+            sb.append("\n");
+        }
+
+        HashSet<Event> uniqueRecurringEvents = new HashSet<>();
+        for (List<Event> events : recurringEvents) {
+            uniqueRecurringEvents.addAll(events);
+        }
+
+        for (Event e : uniqueRecurringEvents) {
+            sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
+
+            if (e.getName().length() > 20)
+                sb.append(e.getName(), 0, 20).append("|");
+            else
+                sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
+
+            sb.append(e.getColor()).append(" ".repeat(15 - String.valueOf(e.getColor()).length())).append("|");
+
+            sb.append(e.getTimeStamp().toString()).append(" ".repeat(
+                    20 - e.getTimeStamp().toString().length())
+            ).append("|");
+
+            sb.append(Arrays.toString(
+                            e.getDays()),
+                    1,
+                    Arrays.toString(e.getDays()).length() - 1
+            ).append(" ".repeat(33 - Arrays.toString(e.getDays()).length() + 2)).append("|");
+
+            sb.append("\n");
+        }
+
+        sb.append("\n");
+
+        if (!indivEvents.isEmpty()) {
+            sb.append("INDIVIDUAL:").append("\n");
+            sb.append("ID").append(" ".repeat(5)).append("|");
+            sb.append("NAME").append(" ".repeat(16)).append("|");
+            sb.append("COLOR").append(" ".repeat(10)).append("|");
+            sb.append("TIME").append(" ".repeat(16)).append("|");
+            sb.append("DATE").append(" ".repeat(8)).append("|");
+
+            sb.append("\n");
+            sb.append("-".repeat(79));
+            sb.append("\n");
+        }
+
+        for (Event e : indivEvents) {
+            sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
+
+            if (e.getName().length() > 20)
+                sb.append(e.getName(), 0, 20).append("|");
+            else
+                sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
+
+            sb.append(e.getColor()).append(" ".repeat(15 - String.valueOf(e.getColor()).length())).append("|");
+            sb.append(e.getTimeStamp().toString()).append(" ".repeat(20 - e.getTimeStamp().toString().length())).append("|");
+            sb.append(e.getDateStamp()).append(" ".repeat(12 - e.getDateStamp().length())).append("|");
+
+            sb.append("\n");
+        }
+
+        return sb.toString();
     }
 
-    public static String formatPrettyEventSetTables() {
-        return "";
+    /**
+     * Creates an event table consisting of both recurring and individual {@link Event} utilizing the pretty format
+     *
+     * @param recurringEvents list of recurring events
+     * @param indivEvents list of individual events
+     * @return pretty event table
+     */
+    public static String formatPrettyEventSetTables(List<List<Event>> recurringEvents, List<Event> indivEvents) {
+        StringBuilder sb = new StringBuilder();
+
+        boolean recurringEventsExist = false;
+        for (List<Event> events : recurringEvents) {
+            if (!events.isEmpty()) {
+                recurringEventsExist = true;
+                break;
+            }
+        }
+
+        if (recurringEventsExist) {
+            sb.append("                                          Recurring Events\n")
+                    .append("            _____________________________________________________________________________________________________\n");
+
+            sb.append("            |");
+            sb.append("ID").append(" ".repeat(5)).append("|");
+            sb.append("NAME").append(" ".repeat(16)).append("|");
+            sb.append("COLOR").append(" ".repeat(10)).append("|");
+            sb.append("TIME").append(" ".repeat(16)).append("|");
+            sb.append("DAYS").append(" ".repeat(29)).append("|\n");
+            sb.append("            |_______|____________________|_______________|____________________|_________________________________|\n");
+        }
+
+        HashSet<Event> uniqueRecurringEvents = new HashSet<>();
+        for (List<Event> events : recurringEvents) {
+            uniqueRecurringEvents.addAll(events);
+        }
+
+        for (Event e : uniqueRecurringEvents) {
+            sb.append("            |");
+            sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
+
+            if (e.getName().length() > 20)
+                sb.append(e.getName(), 0, 20).append("|");
+            else
+                sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
+
+            sb.append(e.getColor()).append(" ".repeat(15 - String.valueOf(e.getColor()).length())).append("|");
+
+            sb.append(e.getTimeStamp().toString()).append(" ".repeat(
+                    20 - e.getTimeStamp().toString().length())
+            ).append("|");
+
+            sb.append(Arrays.toString(
+                            e.getDays()),
+                    1,
+                    Arrays.toString(e.getDays()).length() - 1
+            ).append(" ".repeat(33 - Arrays.toString(e.getDays()).length() + 2)).append("|");
+
+            sb.append("\n");
+        }
+
+        if (recurringEventsExist) {
+            sb.append("            |_______|____________________|_______________|____________________|_________________________________|\n\n");
+        }
+
+        if (!indivEvents.isEmpty()) {
+
+            sb.append("                                          Individual Events\n")
+                    .append("            ________________________________________________________________________________\n")
+                    .append("            |")
+                    .append("ID").append(" ".repeat(5)).append("|")
+                    .append("NAME").append(" ".repeat(16)).append("|")
+                    .append("COLOR").append(" ".repeat(10)).append("|")
+                    .append("TIME").append(" ".repeat(16)).append("|")
+                    .append("DATE").append(" ".repeat(8)).append("|\n");
+
+            sb.append("            |_______|____________________|_______________|____________________|____________|\n");
+        }
+
+        for (Event e : indivEvents) {
+            sb.append("            |");
+            sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
+
+            if (e.getName().length() > 20)
+                sb.append(e.getName(), 0, 20).append("|");
+            else
+                sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
+
+            sb.append(e.getColor()).append(" ".repeat(15 - String.valueOf(e.getColor()).length())).append("|");
+            sb.append(e.getTimeStamp().toString()).append(" ".repeat(20 - e.getTimeStamp().toString().length())).append("|");
+            sb.append(e.getDateStamp()).append(" ".repeat(12 - e.getDateStamp().length())).append("|");
+
+            sb.append("\n");
+        }
+
+        if (!indivEvents.isEmpty()) {
+            sb.append("            |_______|____________________|_______________|____________________|____________|\n");
+        }
+
+        return sb.toString();
     }
 
     public static String formatDottedTasksTable() {
@@ -402,19 +587,6 @@ public class TableFormatter {
 
     public static String formatPrettyTasksTable() {
         return "";
-    }
-
-    public static String formatCardsTable() {
-        return "";
-    }
-
-    public static void main(String[] args) {
-        File file = new File("data/scripts");
-        File[] list = file.listFiles();
-        assert list != null;
-        List<File> files = Arrays.asList(list);
-
-        System.out.println(formatPrettyScriptOptionsTable(files));
     }
 
     private static String getColorANSICode(Card.Colors color) {
