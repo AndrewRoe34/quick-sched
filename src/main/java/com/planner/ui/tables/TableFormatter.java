@@ -581,11 +581,11 @@ public class TableFormatter {
         return sb.toString();
     }
 
-    public static String formatDottedTasksTable() {
+    public static String formatDottedTasksTable(List<Day> schedule) {
         return "";
     }
 
-    public static String formatPrettyTasksTable() {
+    public static String formatPrettyTasksTable(List<Day> schedule) {
         return "";
     }
 
