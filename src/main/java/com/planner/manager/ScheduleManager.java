@@ -544,6 +544,7 @@ public class ScheduleManager {
     }
 
     public String buildBoardString() {
+        if (userConfig.isFormatPrettyTable()) return TableFormatter.formatPrettyBoardTable(cards, userConfig, archivedTasks);
         return TableFormatter.formatDottedBoardTable(cards, userConfig, archivedTasks);
     }
 

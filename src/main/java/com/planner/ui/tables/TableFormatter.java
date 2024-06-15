@@ -99,15 +99,15 @@ public class TableFormatter {
         StringBuilder sb = new StringBuilder();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Calendar date = Time.getFormattedCalendarInstance(0);
-        sb.append("                                                                            Weekly Schedule\n"); // todo need to make dependent upon num of days
-        sb.append("                        ");
+        sb.append("             Upcoming Schedule:\n");
+        sb.append("            ");
         for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
             sb.append("_________________________________________");
         }
         sb.append("_\n");
         int maxItems = 0;
         int[][] task_eventPair = new int[schedule.size()][2];
-        sb.append("                        |");
+        sb.append("            |");
         for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
             sb.append(sdf.format(date.getTime()));
             sb.append("                              |");
@@ -117,14 +117,14 @@ public class TableFormatter {
             date = Time.getFormattedCalendarInstance(date, 1);
         }
 
-        sb.append("\n                        |");
+        sb.append("\n            |");
         for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
             sb.append("________________________________________|");
         }
 
         for (int i = 0; i < maxItems; i++) {
             sb.append("\n");
-            sb.append("                        |");
+            sb.append("            |");
             for (int d = 0; d < Math.min(schedule.size(), 6); d++) {
                 Day day = schedule.get(d);
 
@@ -185,7 +185,7 @@ public class TableFormatter {
             }
         }
         sb.append("\n");
-        sb.append("                        |");
+        sb.append("            |");
         for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
             sb.append("________________________________________|");
         }
@@ -297,7 +297,105 @@ public class TableFormatter {
      * @return dotted board table
      */
     public static String formatPrettyBoardTable(List<Card> cards, UserConfig userConfig, PriorityQueue<Task> archivedTasks) {
-        return "";
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("             Data Board:\n");
+        sb.append("            ");
+        boolean firstCard = true;
+        for (Card c1 : cards) {
+            if (firstCard && c1.getTask().isEmpty()) {
+                // we do nothing, happens only once at most
+            } else {
+                sb.append("_________________________________________");
+            }
+            firstCard = false;
+        }
+        sb.append("\n");
+
+
+        // use foreach loop to determine max number of tasks while printing out the first line of Cards
+        int maxTasks = 0;
+        boolean defaultCardIsEmpty = false;
+        int cardIdx = 0;
+        sb.append("            |");
+        for (Card c1 : cards) {
+            if (cardIdx == 0 && c1.getTask().isEmpty()) {
+                cardIdx++;
+                defaultCardIsEmpty = true;
+                continue;
+            }
+            if (userConfig.isLocalScheduleColors()) {
+                String colorANSICode = getColorANSICode((c1.getColorId()));
+                sb.append(colorANSICode);
+            }
+
+            maxTasks = Math.max(c1.getTask().size(), maxTasks);
+            if (c1.toString().length() > 40)
+                sb.append(c1.toString(), 0, 40);
+            else {
+                sb.append(c1);
+
+                for (int i = c1.toString().length(); i < 40; i++) {
+                    sb.append(" ");
+                }
+            }
+
+            if (userConfig.isLocalScheduleColors())
+                sb.append("\u001B[0m");
+
+            sb.append("|");
+        }
+
+        sb.append("\n");
+        int cardCount = defaultCardIsEmpty ? 1 : 0;
+        sb.append("            |");
+        for (; cardCount < cards.size(); cardCount++) {
+            sb.append("________________________________________|");
+        }
+
+        // use foreach loop inside a for loop to output the tasks
+        for (int i = 0; i < maxTasks; i++) {
+            sb.append("\n");
+            sb.append("            |");
+            cardIdx = 0;
+            for(Card c1 : cards) {
+                if (cardIdx++ == 0 && c1.getTask().isEmpty()) continue;
+                if (i < c1.getTask().size()) {
+                    // print out the task (up to 18 characters)
+                    Task t1 = c1.getTask().get(i);
+                    String outputTask = "";
+//                    if (Time.differenceOfDays(t1.getDueDate(), currDate) < 0) {
+//                        outputTask = "*";
+//                    }
+
+                    if (archivedTasks.contains(t1))
+                        outputTask = "*";
+
+                    outputTask += t1.toString();
+
+                    if (outputTask.length() > 40)
+                        sb.append(outputTask, 0, 40);
+                    else {
+                        sb.append(outputTask);
+                        sb.append(" ".repeat(40 - outputTask.length()));
+                    }
+
+                    sb.append("|");
+                }
+                else
+                    sb.append("                                        |");
+            }
+        }
+        sb.append("\n");
+
+        sb.append("            |");
+        cardCount = defaultCardIsEmpty ? 1 : 0;
+        for (; cardCount < cards.size(); cardCount++) {
+            sb.append("________________________________________|");
+        }
+        sb.append("\n");
+
+        return sb.toString();
     }
 
     /**
@@ -499,7 +597,7 @@ public class TableFormatter {
         }
 
         if (recurringEventsExist) {
-            sb.append("                                          Recurring Events\n")
+            sb.append("             Recurring Events:\n")
                     .append("            _____________________________________________________________________________________________________\n");
 
             sb.append("            |");
@@ -546,7 +644,7 @@ public class TableFormatter {
 
         if (!indivEvents.isEmpty()) {
 
-            sb.append("                                          Individual Events\n")
+            sb.append("             Individual Events:\n")
                     .append("            ________________________________________________________________________________\n")
                     .append("            |")
                     .append("ID").append(" ".repeat(5)).append("|")
