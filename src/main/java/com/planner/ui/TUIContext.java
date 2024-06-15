@@ -49,6 +49,7 @@ public class TUIContext {
 
     public static void main(String... args) throws IOException, InterruptedException {
         TUIContext tuiContext = new TUIContext();
+        TUIState.clearScreen();
 
         Scanner scanner = new Scanner(System.in);
         while (true) {

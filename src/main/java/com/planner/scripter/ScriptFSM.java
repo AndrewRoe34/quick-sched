@@ -606,6 +606,10 @@ public class ScriptFSM {
                 if(args.length != 0) throw new InvalidFunctionException();
                 funcDisplayBoard();
                 return null;
+            case "display_subtasks":
+                if (args.length != 0) throw new InvalidFunctionException();
+                funcDisplaySubTasks();
+                return null;
             case "inject_code":
                 if(localStack != null || args.length != 0) throw new InvalidFunctionException();
                 funcInjectCode();
@@ -1182,6 +1186,10 @@ public class ScriptFSM {
 
     protected void funcDisplayEvents() {
         System.out.println(scheduleManager.buildEventStr());
+    }
+
+    protected void funcDisplaySubTasks() {
+        System.out.println(scheduleManager.buildSubTaskStr());
     }
 
     /**

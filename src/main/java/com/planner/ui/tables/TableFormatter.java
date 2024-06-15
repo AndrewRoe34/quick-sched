@@ -90,122 +90,30 @@ public class TableFormatter {
     }
 
     /**
-     * Creates a schedule table consisting of {@link Day} utilizing the pretty format
+     * Creates a schedule table consisting of {@link Day}, providing options for both dotted and pretty formats
      *
      * @param schedule list of scheduled days
-     * @return pretty schedule table
-     */
-    public static String formatPrettyScheduleTable(List<Day> schedule) {
-        StringBuilder sb = new StringBuilder();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        Calendar date = Time.getFormattedCalendarInstance(0);
-        sb.append("             Upcoming Schedule:\n");
-        sb.append("            ");
-        for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
-            sb.append("_________________________________________");
-        }
-        sb.append("_\n");
-        int maxItems = 0;
-        int[][] task_eventPair = new int[schedule.size()][2];
-        sb.append("            |");
-        for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
-            sb.append(sdf.format(date.getTime()));
-            sb.append("                              |");
-            maxItems = Math.max(maxItems, schedule.get(i).getNumSubTasks() + schedule.get(i).getEventList().size());
-            task_eventPair[i][0] = 0;
-            task_eventPair[i][1] = 0;
-            date = Time.getFormattedCalendarInstance(date, 1);
-        }
-
-        sb.append("\n            |");
-        for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
-            sb.append("________________________________________|");
-        }
-
-        for (int i = 0; i < maxItems; i++) {
-            sb.append("\n");
-            sb.append("            |");
-            for (int d = 0; d < Math.min(schedule.size(), 6); d++) {
-                Day day = schedule.get(d);
-
-                if (i < (day.getNumSubTasks() + day.getNumEvents())) {
-                    Time.TimeStamp ts = null;
-                    String name = null;
-                    Card.Colors color = null;
-                    if (task_eventPair[d][0] >= day.getNumSubTasks()) {
-                        Event e1 = day.getEvent(task_eventPair[d][1]);
-                        ts = e1.getTimeStamp();
-                        name = e1.getName();
-                        color = e1.getColor();
-                        task_eventPair[d][1]++;
-                    } else if (task_eventPair[d][1] >= day.getNumEvents()) {
-                        Task.SubTask st1 = day.getSubTask(task_eventPair[d][0]);
-                        ts = st1.getTimeStamp();
-                        name = st1.getParentTask().getName();
-                        color = st1.getParentTask().getColor();
-                        task_eventPair[d][0]++;
-                    } else {
-                        Event e1 = day.getEvent(task_eventPair[d][1]);
-                        Task.SubTask st1 = day.getSubTask(task_eventPair[d][0]);
-                        if (Time.isBeforeEvent(e1.getTimeStamp().getStart(), st1.getTimeStamp().getStart())) {
-                            ts = e1.getTimeStamp();
-                            name = e1.getName();
-                            color = e1.getColor();
-                            task_eventPair[d][1]++;
-                        } else {
-                            ts = st1.getTimeStamp();
-                            name = st1.getParentTask().getName();
-                            color = st1.getParentTask().getColor();
-                            task_eventPair[d][0]++;
-                        }
-                    }
-
-//                    if (userConfig.isLocalScheduleColors()) {
-//                        String colorANSICode = getColorANSICode((color));
-//                        sb.append(colorANSICode);
-//                    }
-
-                    sb.append(ts).append(" - "); // 18 char
-
-                    if (name.length() > 21) {
-                        sb.append(name, 0, 22);
-                    } else {
-                        sb.append(name);
-                        sb.append(" ".repeat(22 - name.length()));
-                    }
-
-//                    if (userConfig.isLocalScheduleColors())
-//                        sb.append("\u001B[0m");
-
-                    sb.append("|");
-
-                } else {
-                    sb.append("                                        |");
-                }
-            }
-        }
-        sb.append("\n");
-        sb.append("            |");
-        for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
-            sb.append("________________________________________|");
-        }
-        sb.append("\n");
-
-        return sb.toString();
-    }
-
-    /**
-     * Creates a schedule table consisting of {@link Day} utilizing the dotted format
-     *
-     * @param schedule list of scheduled days
+     * @param isPretty whether to display table with pretty format
      * @return dotted schedule table
      */
-    public static String formatDottedScheduleTable(List<Day> schedule, UserConfig userConfig) {
+    public static String formatScheduleTable(List<Day> schedule, UserConfig userConfig, boolean isPretty) {
         StringBuilder sb = new StringBuilder();
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         Calendar date = Time.getFormattedCalendarInstance(0);
 
+        if (isPretty) {
+            sb.append("             SCHEDULE:\n");
+            sb.append("            ");
+            sb.append("_________________________________________".repeat(schedule.size()));
+            sb.append("_\n");
+        } else {
+            sb.append("SCHEDULE:\n");
+        }
+
         int maxItems = 0;
+        if (isPretty) {
+            sb.append("            |");
+        }
         int[][] task_eventPair = new int[schedule.size()][2];
         for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
             sb.append(sdf.format(date.getTime()));
@@ -217,13 +125,20 @@ public class TableFormatter {
         }
 
         sb.append("\n");
-        for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
-            sb.append("-----------------------------------------");
+        if (isPretty) {
+            sb.append("            |");
+            sb.append("________________________________________|".repeat(schedule.size()));
+        } else {
+            sb.append("-----------------------------------------".repeat(schedule.size()));
         }
+
+
 
         for (int i = 0; i < maxItems; i++) {
             sb.append("\n");
-
+            if (isPretty) {
+                sb.append("            |");
+            }
             for (int d = 0; d < Math.min(schedule.size(), 6); d++) {
                 Day day = schedule.get(d);
 
@@ -285,328 +200,179 @@ public class TableFormatter {
         }
         sb.append("\n");
 
+        if (isPretty) {
+            sb.append("            |");
+            sb.append("________________________________________|".repeat(Math.min(schedule.size(), 6)));
+            sb.append("\n");
+        }
+
         return sb.toString();
     }
 
     /**
-     * Creates a board table consisting of {@link Card} and {@link Task} utilizing the dotted format
+     * Creates a board table consisting of {@link Card} and {@link Task}, providing options for both dotted and pretty formats
      *
      * @param cards list of scheduled cards
      * @param userConfig provided user options
      * @param archivedTasks previously archived tasks
+     * @param isPretty whether to display table with pretty format
      * @return dotted board table
      */
-    public static String formatPrettyBoardTable(List<Card> cards, UserConfig userConfig, PriorityQueue<Task> archivedTasks) {
+    public static String formatBoardTable(List<Card> cards, UserConfig userConfig, PriorityQueue<Task> archivedTasks, boolean isPretty) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("             Data Board:\n");
-        sb.append("            ");
-        boolean firstCard = true;
+        if (isPretty) {
+            sb.append("             CARDS:\n");
+            sb.append("            ");
+            boolean firstCard = true;
+            for (Card c1 : cards) {
+                if (firstCard && c1.getTask().isEmpty()) {
+                    // we do nothing, happens only once at most
+                } else {
+                    sb.append("_________________________________________");
+                }
+                firstCard = false;
+            }
+            sb.append("\n");
+        } else {
+            sb.append("CARDS:\n");
+        }
+
+        // use foreach loop to determine max number of tasks while printing out the first line of Cards
+        int maxTasks = 0;
+        boolean defaultCardIsEmpty = false;
+        if (isPretty) {
+            sb.append("            |");
+        }
+        int cardIdx = 0;
         for (Card c1 : cards) {
-            if (firstCard && c1.getTask().isEmpty()) {
-                // we do nothing, happens only once at most
+            if (cardIdx == 0 && c1.getTask().isEmpty()) {
+                cardIdx++;
+                defaultCardIsEmpty = true;
+                continue;
+            }
+            if (userConfig.isLocalScheduleColors()) {
+                String colorANSICode = getColorANSICode((c1.getColorId()));
+                sb.append(colorANSICode);
+            }
+
+            maxTasks = Math.max(c1.getTask().size(), maxTasks);
+            if (c1.toString().length() > 40)
+                sb.append(c1.toString(), 0, 40);
+            else {
+                sb.append(c1);
+
+                sb.append(" ".repeat(Math.max(0, 40 - c1.toString().length())));
+            }
+
+            if (userConfig.isLocalScheduleColors())
+                sb.append("\u001B[0m");
+
+            sb.append("|");
+        }
+
+        sb.append("\n");
+        int cardCount = defaultCardIsEmpty ? 1 : 0;
+        if (isPretty) {
+            sb.append("            |");
+            for (; cardCount < cards.size(); cardCount++) {
+                sb.append("________________________________________|");
+            }
+        } else {
+            for (; cardCount < cards.size(); cardCount++) {
+                sb.append("-----------------------------------------");
+            }
+        }
+
+
+        // use foreach loop inside a for loop to output the tasks
+        for (int i = 0; i < maxTasks; i++) {
+            sb.append("\n");
+            if (isPretty) {
+                sb.append("            |");
+            }
+            cardIdx = 0;
+            for(Card c1 : cards) {
+                if (cardIdx++ == 0 && c1.getTask().isEmpty()) continue;
+
+                if (i < c1.getTask().size()) {
+                    // print out the task (up to 18 characters)
+                    Task t1 = c1.getTask().get(i);
+                    String outputTask = "";
+//                    if (Time.differenceOfDays(t1.getDueDate(), currDate) < 0) {
+//                        outputTask = "*";
+//                    }
+
+                    if (archivedTasks.contains(t1))
+                        outputTask = "*";
+
+                    outputTask += t1.toString();
+
+                    if (outputTask.length() > 40)
+                        sb.append(outputTask, 0, 40);
+                    else {
+                        sb.append(outputTask);
+                        sb.append(" ".repeat(40 - outputTask.length()));
+                    }
+
+                    sb.append("|");
+                }
+                else
+                    sb.append("                                        |");
+            }
+        }
+        sb.append("\n");
+
+        if (isPretty) {
+            sb.append("            |");
+            cardCount = defaultCardIsEmpty ? 1 : 0;
+            for (; cardCount < cards.size(); cardCount++) {
+                sb.append("________________________________________|");
+            }
+            sb.append("\n");
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Creates an event table consisting of both recurring and individual {@link Event}, providing options for both dotted and pretty formats
+     *
+     * @param recurringEvents list of recurring events
+     * @param indivEvents list of individual events
+     * @param isPretty whether to display table with pretty format
+     * @return event table
+     */
+    public static String formatEventSetTables(List<List<Event>> recurringEvents, List<Event> indivEvents, boolean isPretty) {
+        StringBuilder sb = new StringBuilder();
+
+        boolean recurringEventsExist = false;
+        for (List<Event> events : recurringEvents) {
+            if (!events.isEmpty()) {
+                recurringEventsExist = true;
+                break;
+            }
+        }
+
+        if (recurringEventsExist) {
+            if (isPretty) {
+                sb.append("             Recurring Events:\n");
+                sb.append("            _____________________________________________________________________________________________________\n");
+                sb.append("            |");
             } else {
-                sb.append("_________________________________________");
+                sb.append("RECURRING EVENTS:\n");
             }
-            firstCard = false;
-        }
-        sb.append("\n");
-
-
-        // use foreach loop to determine max number of tasks while printing out the first line of Cards
-        int maxTasks = 0;
-        boolean defaultCardIsEmpty = false;
-        int cardIdx = 0;
-        sb.append("            |");
-        for (Card c1 : cards) {
-            if (cardIdx == 0 && c1.getTask().isEmpty()) {
-                cardIdx++;
-                defaultCardIsEmpty = true;
-                continue;
-            }
-            if (userConfig.isLocalScheduleColors()) {
-                String colorANSICode = getColorANSICode((c1.getColorId()));
-                sb.append(colorANSICode);
-            }
-
-            maxTasks = Math.max(c1.getTask().size(), maxTasks);
-            if (c1.toString().length() > 40)
-                sb.append(c1.toString(), 0, 40);
-            else {
-                sb.append(c1);
-
-                for (int i = c1.toString().length(); i < 40; i++) {
-                    sb.append(" ");
-                }
-            }
-
-            if (userConfig.isLocalScheduleColors())
-                sb.append("\u001B[0m");
-
-            sb.append("|");
-        }
-
-        sb.append("\n");
-        int cardCount = defaultCardIsEmpty ? 1 : 0;
-        sb.append("            |");
-        for (; cardCount < cards.size(); cardCount++) {
-            sb.append("________________________________________|");
-        }
-
-        // use foreach loop inside a for loop to output the tasks
-        for (int i = 0; i < maxTasks; i++) {
-            sb.append("\n");
-            sb.append("            |");
-            cardIdx = 0;
-            for(Card c1 : cards) {
-                if (cardIdx++ == 0 && c1.getTask().isEmpty()) continue;
-                if (i < c1.getTask().size()) {
-                    // print out the task (up to 18 characters)
-                    Task t1 = c1.getTask().get(i);
-                    String outputTask = "";
-//                    if (Time.differenceOfDays(t1.getDueDate(), currDate) < 0) {
-//                        outputTask = "*";
-//                    }
-
-                    if (archivedTasks.contains(t1))
-                        outputTask = "*";
-
-                    outputTask += t1.toString();
-
-                    if (outputTask.length() > 40)
-                        sb.append(outputTask, 0, 40);
-                    else {
-                        sb.append(outputTask);
-                        sb.append(" ".repeat(40 - outputTask.length()));
-                    }
-
-                    sb.append("|");
-                }
-                else
-                    sb.append("                                        |");
-            }
-        }
-        sb.append("\n");
-
-        sb.append("            |");
-        cardCount = defaultCardIsEmpty ? 1 : 0;
-        for (; cardCount < cards.size(); cardCount++) {
-            sb.append("________________________________________|");
-        }
-        sb.append("\n");
-
-        return sb.toString();
-    }
-
-    /**
-     * Creates a board table consisting of {@link Card} and {@link Task} utilizing the pretty format
-     *
-     * @param cards list of scheduled cards
-     * @param userConfig provided user options
-     * @param archivedTasks previously archived tasks
-     * @return dotted board table
-     */
-    public static String formatDottedBoardTable(List<Card> cards, UserConfig userConfig, PriorityQueue<Task> archivedTasks) {
-        StringBuilder sb = new StringBuilder();
-
-        // use foreach loop to determine max number of tasks while printing out the first line of Cards
-        int maxTasks = 0;
-        boolean defaultCardIsEmpty = false;
-        int cardIdx = 0;
-        for (Card c1 : cards) {
-            if (cardIdx == 0 && c1.getTask().isEmpty()) {
-                cardIdx++;
-                defaultCardIsEmpty = true;
-                continue;
-            }
-            if (userConfig.isLocalScheduleColors()) {
-                String colorANSICode = getColorANSICode((c1.getColorId()));
-                sb.append(colorANSICode);
-            }
-
-            maxTasks = Math.max(c1.getTask().size(), maxTasks);
-            if (c1.toString().length() > 40)
-                sb.append(c1.toString(), 0, 40);
-            else {
-                sb.append(c1);
-
-                for (int i = c1.toString().length(); i < 40; i++) {
-                    sb.append(" ");
-                }
-            }
-
-            if (userConfig.isLocalScheduleColors())
-                sb.append("\u001B[0m");
-
-            sb.append("|");
-        }
-
-        sb.append("\n");
-        int cardCount = defaultCardIsEmpty ? 1 : 0;
-        for (; cardCount < cards.size(); cardCount++) {
-            sb.append("-----------------------------------------");
-        }
-
-        // use foreach loop inside a for loop to output the tasks
-        for (int i = 0; i < maxTasks; i++) {
-            sb.append("\n");
-
-            cardIdx = 0;
-            for(Card c1 : cards) {
-                if (cardIdx++ == 0 && c1.getTask().isEmpty()) continue;
-
-                if (i < c1.getTask().size()) {
-                    // print out the task (up to 18 characters)
-                    Task t1 = c1.getTask().get(i);
-                    String outputTask = "";
-//                    if (Time.differenceOfDays(t1.getDueDate(), currDate) < 0) {
-//                        outputTask = "*";
-//                    }
-
-                    if (archivedTasks.contains(t1))
-                        outputTask = "*";
-
-                    outputTask += t1.toString();
-
-                    if (outputTask.length() > 40)
-                        sb.append(outputTask, 0, 40);
-                    else {
-                        sb.append(outputTask);
-                        sb.append(" ".repeat(40 - outputTask.length()));
-                    }
-
-                    sb.append("|");
-                }
-                else
-                    sb.append("                                        |");
-            }
-        }
-        sb.append("\n");
-
-        return sb.toString();
-    }
-
-    /**
-     * Creates an event table consisting of both recurring and individual {@link Event} utilizing the dotted format
-     *
-     * @param recurringEvents list of recurring events
-     * @param indivEvents list of individual events
-     * @return dotted event table
-     */
-    public static String formatDottedEventSetTables(List<List<Event>> recurringEvents, List<Event> indivEvents) {
-        StringBuilder sb = new StringBuilder();
-
-        boolean recurringEventsExist = false;
-        for (List<Event> events : recurringEvents) {
-            if (!events.isEmpty()) {
-                recurringEventsExist = true;
-                break;
-            }
-        }
-
-        if (recurringEventsExist) {
-            sb.append("RECURRING:").append("\n");
-            sb.append("ID").append(" ".repeat(5)).append("|");
-            sb.append("NAME").append(" ".repeat(16)).append("|");
-            sb.append("COLOR").append(" ".repeat(10)).append("|");
-            sb.append("TIME").append(" ".repeat(16)).append("|");
-            sb.append("DAYS").append(" ".repeat(29)).append("|");
-
-            sb.append("\n");
-            sb.append("-".repeat(100));
-            sb.append("\n");
-        }
-
-        HashSet<Event> uniqueRecurringEvents = new HashSet<>();
-        for (List<Event> events : recurringEvents) {
-            uniqueRecurringEvents.addAll(events);
-        }
-
-        for (Event e : uniqueRecurringEvents) {
-            sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
-
-            if (e.getName().length() > 20)
-                sb.append(e.getName(), 0, 20).append("|");
-            else
-                sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
-
-            sb.append(e.getColor()).append(" ".repeat(15 - String.valueOf(e.getColor()).length())).append("|");
-
-            sb.append(e.getTimeStamp().toString()).append(" ".repeat(
-                    20 - e.getTimeStamp().toString().length())
-            ).append("|");
-
-            sb.append(Arrays.toString(
-                            e.getDays()),
-                    1,
-                    Arrays.toString(e.getDays()).length() - 1
-            ).append(" ".repeat(33 - Arrays.toString(e.getDays()).length() + 2)).append("|");
-
-            sb.append("\n");
-        }
-
-        sb.append("\n");
-
-        if (!indivEvents.isEmpty()) {
-            sb.append("INDIVIDUAL:").append("\n");
-            sb.append("ID").append(" ".repeat(5)).append("|");
-            sb.append("NAME").append(" ".repeat(16)).append("|");
-            sb.append("COLOR").append(" ".repeat(10)).append("|");
-            sb.append("TIME").append(" ".repeat(16)).append("|");
-            sb.append("DATE").append(" ".repeat(8)).append("|");
-
-            sb.append("\n");
-            sb.append("-".repeat(79));
-            sb.append("\n");
-        }
-
-        for (Event e : indivEvents) {
-            sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
-
-            if (e.getName().length() > 20)
-                sb.append(e.getName(), 0, 20).append("|");
-            else
-                sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
-
-            sb.append(e.getColor()).append(" ".repeat(15 - String.valueOf(e.getColor()).length())).append("|");
-            sb.append(e.getTimeStamp().toString()).append(" ".repeat(20 - e.getTimeStamp().toString().length())).append("|");
-            sb.append(e.getDateStamp()).append(" ".repeat(12 - e.getDateStamp().length())).append("|");
-
-            sb.append("\n");
-        }
-
-        return sb.toString();
-    }
-
-    /**
-     * Creates an event table consisting of both recurring and individual {@link Event} utilizing the pretty format
-     *
-     * @param recurringEvents list of recurring events
-     * @param indivEvents list of individual events
-     * @return pretty event table
-     */
-    public static String formatPrettyEventSetTables(List<List<Event>> recurringEvents, List<Event> indivEvents) {
-        StringBuilder sb = new StringBuilder();
-
-        boolean recurringEventsExist = false;
-        for (List<Event> events : recurringEvents) {
-            if (!events.isEmpty()) {
-                recurringEventsExist = true;
-                break;
-            }
-        }
-
-        if (recurringEventsExist) {
-            sb.append("             Recurring Events:\n")
-                    .append("            _____________________________________________________________________________________________________\n");
-
-            sb.append("            |");
             sb.append("ID").append(" ".repeat(5)).append("|");
             sb.append("NAME").append(" ".repeat(16)).append("|");
             sb.append("COLOR").append(" ".repeat(10)).append("|");
             sb.append("TIME").append(" ".repeat(16)).append("|");
             sb.append("DAYS").append(" ".repeat(29)).append("|\n");
-            sb.append("            |_______|____________________|_______________|____________________|_________________________________|\n");
+            if (isPretty) {
+                sb.append("            |_______|____________________|_______________|____________________|_________________________________|\n");
+            } else {
+                sb.append("----------------------------------------------------------------------------------------------------");
+                sb.append("\n");
+            }
         }
 
         HashSet<Event> uniqueRecurringEvents = new HashSet<>();
@@ -615,7 +381,10 @@ public class TableFormatter {
         }
 
         for (Event e : uniqueRecurringEvents) {
-            sb.append("            |");
+            if (isPretty) {
+                sb.append("            |");
+            }
+
             sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
 
             if (e.getName().length() > 20)
@@ -639,25 +408,40 @@ public class TableFormatter {
         }
 
         if (recurringEventsExist) {
-            sb.append("            |_______|____________________|_______________|____________________|_________________________________|\n\n");
+            if (isPretty) {
+                sb.append("            |_______|____________________|_______________|____________________|_________________________________|\n\n");
+            } else {
+                sb.append("\n");
+            }
         }
 
         if (!indivEvents.isEmpty()) {
-
-            sb.append("             Individual Events:\n")
-                    .append("            ________________________________________________________________________________\n")
-                    .append("            |")
-                    .append("ID").append(" ".repeat(5)).append("|")
+            if (isPretty) {
+                sb.append("             Individual Events:\n");
+                sb.append("            ________________________________________________________________________________\n");
+                sb.append("            |");
+            } else {
+                sb.append("INDIVIDUAL EVENTS:\n");
+            }
+            sb.append("ID").append(" ".repeat(5)).append("|")
                     .append("NAME").append(" ".repeat(16)).append("|")
                     .append("COLOR").append(" ".repeat(10)).append("|")
                     .append("TIME").append(" ".repeat(16)).append("|")
                     .append("DATE").append(" ".repeat(8)).append("|\n");
 
-            sb.append("            |_______|____________________|_______________|____________________|____________|\n");
+            if (isPretty) {
+                sb.append("            |_______|____________________|_______________|____________________|____________|\n");
+            } else {
+                sb.append("-".repeat(79));
+                sb.append("\n");
+            }
         }
 
         for (Event e : indivEvents) {
-            sb.append("            |");
+            if (isPretty) {
+                sb.append("            |");
+            }
+
             sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
 
             if (e.getName().length() > 20)
@@ -673,18 +457,68 @@ public class TableFormatter {
         }
 
         if (!indivEvents.isEmpty()) {
-            sb.append("            |_______|____________________|_______________|____________________|____________|\n");
+            if (isPretty) {
+                sb.append("            |_______|____________________|_______________|____________________|____________|\n");
+            } else {
+                sb.append("\n");
+            }
         }
 
         return sb.toString();
     }
 
-    public static String formatDottedTasksTable(List<Day> schedule) {
-        return "";
-    }
+    /**
+     * Creates a {@link com.planner.models.Task.SubTask} table, providing options for both dotted and pretty formats
+     *
+     * @param schedule list of days containing subtasks
+     * @param isPretty whether to display table with pretty format
+     * @return subtask table
+     */
+    public static String formatSubTaskTable(List<Day> schedule, boolean isPretty) {
+        StringBuilder sb = new StringBuilder();
+        if (isPretty) {
+            sb.append("             SUBTASKS:\n" +
+                    "            ___________________________________________________________________________________________\n" +
+                    "            |");
+        } else {
+            sb.append("SUBTASKS:\n");
+        }
+        sb.append("ID     |NAME                |COLOR          |HOURS     |TIME                |DATE        |\n");
 
-    public static String formatPrettyTasksTable(List<Day> schedule) {
-        return "";
+        if (isPretty) {
+            sb.append("            |_______|____________________|_______________|__________|____________________|____________|\n");
+        } else {
+            sb.append("------------------------------------------------------------------------------------------\n");
+        }
+
+        for (Day day : schedule) {
+            for (Task.SubTask subTask : day.getSubTasks()) {
+                if (isPretty) {
+                    sb.append("            |");
+                }
+                sb.append(subTask.getParentTask().getId()).append(" ".repeat(7 - String.valueOf(subTask.getParentTask().getId()).length())).append("|");
+
+                if (subTask.getParentTask().getName().length() > 20)
+                    sb.append(subTask.getParentTask().getName(), 0, 20).append("|");
+                else
+                    sb.append(subTask.getParentTask().getName()).append(" ".repeat(20 - subTask.getParentTask().getName().length())).append("|");
+
+                sb.append(subTask.getParentTask().getColor()).append(" ".repeat(15 - String.valueOf(subTask.getParentTask().getColor()).length())).append("|");
+                sb.append(subTask.getSubTaskHours()).append(" ".repeat(10 - String.valueOf(subTask.getSubTaskHours()).length())).append("|");
+                sb.append(subTask.getTimeStamp().toString()).append(" ".repeat(20 - subTask.getTimeStamp().toString().length())).append("|");
+                sb.append(subTask.getParentTask().getDateStamp()).append(" ".repeat(12 - subTask.getParentTask().getDateStamp().length())).append("|");
+
+                sb.append("\n");
+            }
+        }
+
+        if (isPretty) {
+            sb.append("            |_______|____________________|_______________|__________|____________________|____________|\n");
+        } else {
+            sb.append("\n");
+        }
+
+        return sb.toString();
     }
 
     private static String getColorANSICode(Card.Colors color) {

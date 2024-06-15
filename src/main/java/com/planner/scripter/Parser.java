@@ -262,44 +262,7 @@ public class Parser {
         }
         String funcName = line.substring(startIdx, endIdx);
         String[] arguments = verifyArgument(line, endIdx);
-        switch(funcName) {
-            case "print":
-            case "println":
-            case "import_schedule":
-            case "export_schedule":
-            case "serialize_data":
-            case "write_file":
-            case "read_file":
-            case "encrypt_data":
-            case "decrypt_data":
-            case "get_task_by_name":
-            case "get_task_by_id":
-            case "add_all_tasks":
-            case "add_all_cards":
-            case "input_tasks":
-            case "create_event":
-            case "display_events":
-            case "input_int":
-            case "input_word":
-            case "input_line":
-            case "input_bool":
-            case "pause":
-            case "display_board":
-            case "inject_code":
-            case "get_card":
-            case "avg":
-            case "display_stack":
-            case "display_schedule":
-            case "display_card":
-            case "set_schedule":
-            case "export_excel":
-            case "export_google":
-            case "import_google":
-            case "add_task_card":
-                return new StaticFunction(funcName, arguments, true);
-            default:
-                return new StaticFunction(funcName, arguments, false);
-        }
+        return new StaticFunction(funcName, arguments);
     }
 
     public CustomFunction parseCustomFunction(String line) {

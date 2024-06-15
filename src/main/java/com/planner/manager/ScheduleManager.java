@@ -544,18 +544,19 @@ public class ScheduleManager {
     }
 
     public String buildBoardString() {
-        if (userConfig.isFormatPrettyTable()) return TableFormatter.formatPrettyBoardTable(cards, userConfig, archivedTasks);
-        return TableFormatter.formatDottedBoardTable(cards, userConfig, archivedTasks);
+        return TableFormatter.formatBoardTable(cards, userConfig, archivedTasks, userConfig.isFormatPrettyTable());
     }
 
     public String buildScheduleStr() {
-        if (userConfig.isFormatPrettyTable()) return TableFormatter.formatPrettyScheduleTable(schedule);
-        else return TableFormatter.formatDottedScheduleTable(schedule, userConfig);
+        return TableFormatter.formatScheduleTable(schedule, userConfig, userConfig.isFormatPrettyTable());
     }
 
     public String buildEventStr() {
-        if (userConfig.isFormatPrettyTable()) return TableFormatter.formatPrettyEventSetTables(recurringEvents, indivEvents);
-        return TableFormatter.formatDottedEventSetTables(recurringEvents, indivEvents);
+        return TableFormatter.formatEventSetTables(recurringEvents, indivEvents, userConfig.isFormatPrettyTable());
+    }
+
+    public String buildSubTaskStr() {
+        return TableFormatter.formatSubTaskTable(schedule, userConfig.isFormatPrettyTable());
     }
 
     /**
