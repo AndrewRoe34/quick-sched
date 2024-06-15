@@ -10,7 +10,6 @@ public class TUIContext {
     private static final TUIState sessionState = new SessionState();
     private static final TUIState editorState = new EditorState();
     private static final TUIState configState = new ConfigState();
-    private static final TUIState dataAnalyticsState = new DataAnalyticsState();
 
     private static final String splashScreen = "\n" +
             "\n" +
@@ -33,7 +32,6 @@ public class TUIContext {
             "                                                                                Start Session                S\n" +
             "                                                                                Editor                       E\n" +
             "                                                                                Config                       C\n" +
-            "                                                                                Data Analytics               D\n" +
             "                                                                                Quit                         Q\n" +
             "\n" +
             "                                                                        user> ";
@@ -68,10 +66,6 @@ public class TUIContext {
                             break;
                         case 'C':
                             tuiContext.setTuiState(configState);
-                            tuiContext.configurePage();
-                            break;
-                        case 'D':
-                            tuiContext.setTuiState(dataAnalyticsState);
                             tuiContext.configurePage();
                             break;
                         case 'Q':
