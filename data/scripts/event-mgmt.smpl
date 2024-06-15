@@ -14,6 +14,7 @@ println("Now to display all the scheduling data...\n")
 display_board()
 build()
 display_schedule()
+display_subtasks()
 
 xslx_flag: input_bool("Generate Excel report(T/F)? ")
 if (xslx_flag)

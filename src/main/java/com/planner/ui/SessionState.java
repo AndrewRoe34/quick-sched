@@ -32,7 +32,7 @@ public class SessionState implements TUIState {
             }
         }
         System.out.println();
-        System.out.println(TableFormatter.formatScriptOptionsTable(scriptList));
+        System.out.println(TableFormatter.formatPrettyScriptOptionsTable(scriptList));
         System.out.print("\n                                                         Enter ID: ");
         if (scanner.hasNextLine()) {
             String input = scanner.nextLine();

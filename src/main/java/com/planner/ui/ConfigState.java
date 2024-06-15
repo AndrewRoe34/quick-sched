@@ -23,7 +23,7 @@ public class ConfigState implements TUIState {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        configTable = TableFormatter.formatUserConfigTable(userConfig);
+        configTable = TableFormatter.formatPrettyUserConfigTable(userConfig);
         scanner = new Scanner(System.in);
     }
 
@@ -47,7 +47,7 @@ public class ConfigState implements TUIState {
                 e.printStackTrace();
             }
             writeToFile = false;
-            configTable = TableFormatter.formatUserConfigTable(userConfig);
+            configTable = TableFormatter.formatPrettyUserConfigTable(userConfig);
         }
     }
 

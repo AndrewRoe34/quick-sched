@@ -8,7 +8,7 @@ public class CustomFunction extends StaticFunction {
     private List<String> lines;
     private final int numSpaces;
     public CustomFunction(String funcName, String[] args, int numSpaces) {
-        super(funcName, args, false);
+        super(funcName, args);
         this.lines = new ArrayList<>();
         this.numSpaces = numSpaces;
     }
