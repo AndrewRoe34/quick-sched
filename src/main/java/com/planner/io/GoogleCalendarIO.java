@@ -1,6 +1,5 @@
 package com.planner.io;
 
-import com.planner.models.Card;
 import com.planner.models.Task;
 import com.planner.models.UserConfig;
 import com.planner.schedule.day.Day;
