@@ -478,17 +478,17 @@ public class TableFormatter {
         StringBuilder sb = new StringBuilder();
         if (isPretty) {
             sb.append("             SUBTASKS:\n" +
-                    "            ___________________________________________________________________________________________\n" +
+                    "            ________________________________________________________________________________________________________\n" +
                     "            |");
         } else {
             sb.append("SUBTASKS:\n");
         }
-        sb.append("ID     |NAME                |COLOR          |HOURS     |TIME                |DATE        |\n");
+        sb.append("ID     |NAME                |COLOR          |HOURS     |TIME                |DATE        |DUE         |\n");
 
         if (isPretty) {
-            sb.append("            |_______|____________________|_______________|__________|____________________|____________|\n");
+            sb.append("            |_______|____________________|_______________|__________|____________________|____________|____________|\n");
         } else {
-            sb.append("------------------------------------------------------------------------------------------\n");
+            sb.append("-------------------------------------------------------------------------------------------------------\n");
         }
 
         for (Day day : schedule) {
@@ -506,6 +506,10 @@ public class TableFormatter {
                 sb.append(subTask.getParentTask().getColor()).append(" ".repeat(15 - String.valueOf(subTask.getParentTask().getColor()).length())).append("|");
                 sb.append(subTask.getSubTaskHours()).append(" ".repeat(10 - String.valueOf(subTask.getSubTaskHours()).length())).append("|");
                 sb.append(subTask.getTimeStamp().toString()).append(" ".repeat(20 - subTask.getTimeStamp().toString().length())).append("|");
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                String date = sdf.format(subTask.getTimeStamp().getStart().getTime());
+                sb.append(date).append(" ".repeat(12 - date.length())).append("|");
                 sb.append(subTask.getParentTask().getDateStamp()).append(" ".repeat(12 - subTask.getParentTask().getDateStamp().length())).append("|");
 
                 sb.append("\n");
@@ -513,7 +517,7 @@ public class TableFormatter {
         }
 
         if (isPretty) {
-            sb.append("            |_______|____________________|_______________|__________|____________________|____________|\n");
+            sb.append("            |_______|____________________|_______________|__________|____________________|____________|____________|\n");
         } else {
             sb.append("\n");
         }
