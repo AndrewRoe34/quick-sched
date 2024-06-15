@@ -1009,7 +1009,7 @@ public class ScriptFSM {
         // If dateString is null, then this event is recurring. So, use random numbers
         // we don't care about for the day, month and year.
         int day = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[0].trim());
-        int month = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[1].trim());
+        int month = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[1].trim()) - 1; // Calendar.MONTH is zero-indexed
         int year = dateString == null ? 1 : Integer.parseInt(dateString.split("-")[2].trim());
 
         calendar.set(
