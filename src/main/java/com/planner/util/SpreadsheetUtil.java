@@ -19,6 +19,7 @@ import java.util.PriorityQueue;
  * Class to handle utility functions for SpreadsheetIO.
  *
  * @author Abah Olotuche Gabriel
+ * @author Andrew Roe
  */
 public class SpreadsheetUtil {
     /**
@@ -164,22 +165,22 @@ public class SpreadsheetUtil {
 
         int eventCount = 0;
         for (Day day : schedule) {
-            for (; eventCount < day.getEventList().size(); eventCount++) {
-                Event event = day.getEventList().get(eventCount);
+            for (Event event : day.getEventList()) {
 
-                String id = String.valueOf(event.getId());
+                int id = event.getId();
                 String name = event.getName();
                 String color = event.getColor().toString();
                 String time = event.getTimeStamp().toString();
                 String date = event.isRecurring() ? "-" : event.getDateStamp();
                 String days = event.isRecurring() ? Arrays.toString(event.getDays()) : "-";
 
-                eventSheet.value(eventCount + 1, 0, id);
-                eventSheet.value(eventCount + 1, 1, name);
-                eventSheet.value(eventCount + 1, 2, color);
-                eventSheet.value(eventCount + 1, 3, time);
-                eventSheet.value(eventCount + 1, 4, date);
-                eventSheet.value(eventCount + 1, 5, days);
+                eventCount++;
+                eventSheet.value(eventCount, 0, id);
+                eventSheet.value(eventCount, 1, name);
+                eventSheet.value(eventCount, 2, color);
+                eventSheet.value(eventCount, 3, time);
+                eventSheet.value(eventCount, 4, date);
+                eventSheet.value(eventCount, 5, days);
             }
         }
     }
@@ -196,24 +197,24 @@ public class SpreadsheetUtil {
 
         int taskCount = 0;
         for (Day day : schedule) {
-            for (; taskCount < day.getNumSubTasks(); taskCount++) {
-                Task.SubTask subTask = day.getSubTask(taskCount);
+            for (Task.SubTask subTask : day.getSubTasks()) {
 
                 Task parentTask = subTask.getParentTask();
 
-                String id = String.valueOf(parentTask.getId());
+                int id = parentTask.getId();
                 String name = parentTask.getName();
                 String color = parentTask.getColor() == null ? "None" : parentTask.getColor().toString();
-                String hours = String.valueOf(subTask.getSubTaskHours());
-                String time = day.getTaskTimeStamps().get(taskCount).toString();
+                double hours = subTask.getSubTaskHours();
+                String time = subTask.getTimeStamp().toString();
                 String date = parentTask.getDateStamp();
 
-                taskSheet.value(taskCount + 1, 0, id);
-                taskSheet.value(taskCount + 1, 1, name);
-                taskSheet.value(taskCount + 1, 2, color);
-                taskSheet.value(taskCount + 1, 3, hours);
-                taskSheet.value(taskCount + 1, 4, time);
-                taskSheet.value(taskCount + 1, 5, date);
+                taskCount++;
+                taskSheet.value(taskCount, 0, id);
+                taskSheet.value(taskCount, 1, name);
+                taskSheet.value(taskCount, 2, color);
+                taskSheet.value(taskCount, 3, hours);
+                taskSheet.value(taskCount, 4, time);
+                taskSheet.value(taskCount, 5, date);
             }
         }
     }
