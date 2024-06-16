@@ -81,12 +81,13 @@ public class SpreadsheetUtil {
                 taskSheet.value(0, 3, "HOURS");
                 taskSheet.value(0, 4, "TIME");
                 taskSheet.value(0, 5, "DATE");
+                taskSheet.value(0, 6, "DUE");
 
                 taskSheet.range(
                         0,
                         0,
                         0,
-                        5
+                        6
                 ).style().bold().fillColor(Color.GRAY7).set();
 
                 break;
@@ -206,7 +207,10 @@ public class SpreadsheetUtil {
                 String color = parentTask.getColor() == null ? "None" : parentTask.getColor().toString();
                 double hours = subTask.getSubTaskHours();
                 String time = subTask.getTimeStamp().toString();
-                String date = parentTask.getDateStamp();
+
+                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                String date = sdf.format(subTask.getTimeStamp().getStart().getTime());
+                String due = parentTask.getDateStamp();
 
                 taskCount++;
                 taskSheet.value(taskCount, 0, id);
@@ -215,6 +219,7 @@ public class SpreadsheetUtil {
                 taskSheet.value(taskCount, 3, hours);
                 taskSheet.value(taskCount, 4, time);
                 taskSheet.value(taskCount, 5, date);
+                taskSheet.value(taskCount, 6, due);
             }
         }
     }
