@@ -1,5 +1,9 @@
 package com.planner.ui.editor;
 
+import com.planner.scripter.Tokenizer;
+import com.planner.scripter.Token;
+import com.planner.scripter.TokenColor;
+
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
@@ -14,12 +18,14 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.util.List;
 
 public class CodeEditor extends JFrame {
     private JTextPane textPane;
     private JLabel openLabel, saveLabel, quitLabel;
     private boolean hasSaved;
     private File currentFile;
+    private Tokenizer tokenizer;
 
     public CodeEditor() {
         createEditor();
@@ -31,6 +37,7 @@ public class CodeEditor extends JFrame {
         setLocationRelativeTo(null);
         ImageIcon imageIcon = new ImageIcon("images/icon.png");
         setIconImage(imageIcon.getImage());
+        tokenizer = new Tokenizer();
     }
 
     private void createEditor() {
@@ -91,7 +98,10 @@ public class CodeEditor extends JFrame {
                         try {
                             byte[] bytes = Files.readAllBytes(currentFile.toPath());
                             String content = new String(bytes, StandardCharsets.UTF_8);
-                            textPane.setText(content); // Set the text of the JTextPane to the file content
+
+                            List<Token> tokens = tokenizer.scanTokens(content);
+
+                            textPane.setDocument(colorizeTokens(tokens));
                         } catch (IOException ex) {
                             ex.printStackTrace();
                         }
@@ -107,8 +117,10 @@ public class CodeEditor extends JFrame {
         textPane.getActionMap().put("saveFile", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                String content = "";
+
                 if (!hasSaved) {
-                    String fileName = (String) JOptionPane.showInputDialog(null, "Enter script name:", "Save File",
+                    String fileName = JOptionPane.showInputDialog(null, "Enter script name:", "Save File",
                             JOptionPane.PLAIN_MESSAGE);
                     if (fileName != null && !fileName.isBlank()) {
                         if (fileName.length() > 5 && ".smpl".equals(fileName.substring(fileName.length() - 5))) {
@@ -116,8 +128,9 @@ public class CodeEditor extends JFrame {
                         } else {
                             fileName += ".smpl";
                         }
+
                         currentFile = new File("data/scripts/" + fileName);
-                        String content = textPane.getText();
+                        content = textPane.getText();
                         try {
                             Files.write(currentFile.toPath(), content.getBytes(StandardCharsets.UTF_8));
                         } catch (IOException ex) {
@@ -126,13 +139,22 @@ public class CodeEditor extends JFrame {
                         hasSaved = true;
                     }
                 } else {
-                    String content = textPane.getText();
+                    content = textPane.getText();
+
                     try {
-                        Files.write(currentFile.toPath(), content.getBytes(StandardCharsets.UTF_8));
+                        Files.write(
+                                currentFile.toPath(),
+                                content.getBytes(StandardCharsets.UTF_8)
+                        );
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
                 }
+
+                // Applies coloring to text of the saved file
+                List<Token> tokens = tokenizer.scanTokens(content);
+
+                textPane.setDocument(colorizeTokens(tokens));
             }
         });
 
@@ -145,33 +167,59 @@ public class CodeEditor extends JFrame {
         });
     }
 
-//    public void colorizeTokens(List<Token> tokens) {
-//        StyledDocument doc = textPane.getStyledDocument();
-//
-//        // Clear the document
-//        try {
-//            doc.remove(0, doc.getLength());
-//        } catch (BadLocationException e) {
-//            e.printStackTrace();
-//        }
-//
-//        // Add each token with its own style
-//        for (Token token : tokens) {
-//            Style style = textPane.addStyle("Token Style", null);
-//            StyleConstants.setForeground(style, token.getColor());
-//            StyleConstants.setBold(style, token.isBold());
-//
-//            try {
-//                doc.insertString(doc.getLength(), token.getText(), style);
-//            } catch (BadLocationException e) {
-//                e.printStackTrace();
-//            }
-//        }
-//    }
+    public StyledDocument colorizeTokens(List<Token> tokens) {
+        StyledDocument doc = textPane.getStyledDocument();
+
+        // Clear the document
+        try {
+            doc.remove(0, doc.getLength());
+        } catch (BadLocationException e) {
+            e.printStackTrace();
+        }
+
+        // Add each token with its own style
+        for (Token token : tokens) {
+            Style style = textPane.addStyle("Token Style", null);
+            StyleConstants.setForeground(style, convertColorStringToAWTColor(token.getColor()));
+
+            try {
+                doc.insertString(doc.getLength(), token.getValue(), style);
+            } catch (BadLocationException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return doc;
+    }
+
+    private Color convertColorStringToAWTColor(TokenColor color) {
+        switch (color) {
+            case GREEN:
+                return Color.GREEN;
+            case RED:
+                return Color.RED;
+            case PURPLE:
+                return Color.MAGENTA;
+            case LIGHT_GREEN:
+                return Color.DARK_GRAY;
+            case LIGHT_BLUE:
+                return Color.CYAN;
+            case BLUE:
+                return Color.BLUE;
+            case YELLOW:
+                return Color.YELLOW;
+            case ORANGE:
+                return Color.ORANGE;
+            case PINK:
+                return Color.PINK;
+            default:
+                return Color.WHITE;
+        }
+    }
 }
 
 class LineNumbering extends JComponent {
-    private JTextPane textPane;
+    private final JTextPane textPane;
 
     public LineNumbering(JTextPane textPane) {
         this.textPane = textPane;
