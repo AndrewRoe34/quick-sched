@@ -11,6 +11,8 @@ if (event_flag)
 
 println("Now to display all the scheduling data...\n")
 
+yay: "works"
+# Please show up
 display_board()
 build()
 display_schedule()
@@ -24,3 +26,14 @@ google_flag: input_bool("Export to Google(T/F)? ")
 if (google_flag)
   export_google()
   pause()
+
+testVar: card("Name", 12)
+anotherTest: task("Name", 12)
+yetAnother: label("Name", 23)
+x: 23
+y: x  testVar
+# Yeah ikr
+
+func customFunc()
+
+hello: "hi"

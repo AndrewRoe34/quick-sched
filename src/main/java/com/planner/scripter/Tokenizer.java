@@ -5,6 +5,11 @@ import com.planner.util.TokenizerUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class to handle the tokenization of {@code *.smpl} files.
+ *
+ * @author Abah Olotuche Gabriel
+ */
 public class Tokenizer {
     private List<Token> tokens;
     private String source;
@@ -12,6 +17,12 @@ public class Tokenizer {
     private int current;
     private int line;
 
+    /**
+     * Generates tokens from the contents of a {@code *.smpl} file.
+     *
+     * @param source The text to be tokenized.
+     * @return A list of {@code Token} objects.
+     */
     public List<Token> scanTokens(String source) {
         this.tokens = new ArrayList<>();
         this.source = source;
@@ -25,7 +36,7 @@ public class Tokenizer {
             scanToken();
         }
 
-        tokens.add(new Token(TokenType.EOF, "", null, line, TokenColor.DEFAULT));
+        tokens.add(new Token(Token.TokenType.EOF, "", null, line, Token.TokenColor.DEFAULT));
         return tokens;
     }
 
@@ -33,19 +44,19 @@ public class Tokenizer {
         char c = advance();
         switch (c) {
             case '(':
-                addToken(TokenType.LEFT_PAREN, TokenColor.DEFAULT);
+                addToken(Token.TokenType.LEFT_PAREN, Token.TokenColor.DEFAULT);
                 break;
             case ')':
-                addToken(TokenType.RIGHT_PAREN, TokenColor.DEFAULT);
+                addToken(Token.TokenType.RIGHT_PAREN, Token.TokenColor.DEFAULT);
                 break;
             case ',':
-                addToken(TokenType.COMMA, TokenColor.DEFAULT);
+                addToken(Token.TokenType.COMMA, Token.TokenColor.DEFAULT);
                 break;
             case '.':
-                addToken(TokenType.DOT, TokenColor.DEFAULT);
+                addToken(Token.TokenType.DOT, Token.TokenColor.DEFAULT);
                 break;
             case ':':
-                addToken(TokenType.COLON, TokenColor.DEFAULT);
+                addToken(Token.TokenType.COLON, Token.TokenColor.DEFAULT);
                 break;
 
             case '\r':
@@ -56,19 +67,19 @@ public class Tokenizer {
                 while (peek() == ' ' && !isAtEnd())
                     advance();
 
-                addToken(TokenType.SPACE, TokenColor.DEFAULT);
+                addToken(Token.TokenType.SPACE, Token.TokenColor.DEFAULT);
                 break;
             case '\n':
                 line++;
 
-                addToken(TokenType.NEW_LINE, TokenColor.DEFAULT);
+                addToken(Token.TokenType.NEW_LINE, Token.TokenColor.DEFAULT);
                 break;
 
             case '#':
                 while (peek() != '\n' && !isAtEnd())
                     advance();
 
-                addToken(TokenType.COMMENT, TokenColor.GREEN);
+                addToken(Token.TokenType.COMMENT, Token.TokenColor.GREEN);
                 break;
 
             case '"':
@@ -98,7 +109,7 @@ public class Tokenizer {
         advance();
 
         String value = source.substring(start + 1, current - 1);
-        addToken(TokenType.STRING_LITERAL, value, TokenColor.PINK);
+        addToken(Token.TokenType.STRING_LITERAL, value, Token.TokenColor.PINK);
     }
 
     private void number() {
@@ -106,32 +117,32 @@ public class Tokenizer {
             advance();
 
         int value = Integer.parseInt(source.substring(start, current));
-        addToken(TokenType.INTEGER_LITERAL, value, TokenColor.PINK);
+        addToken(Token.TokenType.INTEGER_LITERAL, value, Token.TokenColor.PINK);
     }
 
     private void identifier() {
         while (isAlphaNumeric(peek())) advance();
 
         String text = source.substring(start, current);
-        TokenType type = TokenizerUtil.keywords.get(text);
+        Token.TokenType type = TokenizerUtil.keywords.get(text);
 
         if (type == null)
-            type = TokenType.IDENTIFIER;
+            type = Token.TokenType.IDENTIFIER;
 
-        if (type == TokenType.INCLUDE)
-            addToken(type, TokenColor.YELLOW);
-        else if (type == TokenType.INCLUDE_FLAG)
-            addToken(type, TokenColor.GREEN);
-        else if (type == TokenType.BUILT_IN_OBJECT)
-            addToken(type, TokenColor.LIGHT_GREEN);
-        else if (type == TokenType.BUILT_IN_FUNC)
-            addToken(type, TokenColor.ORANGE);
-        else if (type == TokenType.IF || type == TokenType.ELIF || type == TokenType.ELSE)
-            addToken(type, TokenColor.PURPLE);
-        else if (type == TokenType.FUNC || type == TokenType.TRUE || type == TokenType.FALSE)
-            addToken(type, TokenColor.BLUE);
+        if (type == Token.TokenType.INCLUDE)
+            addToken(type, Token.TokenColor.YELLOW);
+        else if (type == Token.TokenType.INCLUDE_FLAG)
+            addToken(type, Token.TokenColor.GREEN);
+        else if (type == Token.TokenType.BUILT_IN_OBJECT)
+            addToken(type, Token.TokenColor.LIGHT_GRAY);
+        else if (type == Token.TokenType.BUILT_IN_FUNC)
+            addToken(type, Token.TokenColor.ORANGE);
+        else if (type == Token.TokenType.IF || type == Token.TokenType.ELIF || type == Token.TokenType.ELSE)
+            addToken(type, Token.TokenColor.PURPLE);
+        else if (type == Token.TokenType.FUNC || type == Token.TokenType.TRUE || type == Token.TokenType.FALSE)
+            addToken(type, Token.TokenColor.BLUE);
         else
-            addToken(type, TokenColor.LIGHT_BLUE);
+            addToken(type, Token.TokenColor.LIGHT_BLUE);
     }
 
     private boolean isAtEnd() {
@@ -161,11 +172,11 @@ public class Tokenizer {
         return source.charAt(current);
     }
 
-    private void addToken(TokenType type, TokenColor color) {
+    private void addToken(Token.TokenType type, Token.TokenColor color) {
         addToken(type, null, color);
     }
 
-    private void addToken(TokenType type, Object literal, TokenColor color) {
+    private void addToken(Token.TokenType type, Object literal, Token.TokenColor color) {
         String text = source.substring(start, current);
         tokens.add(new Token(type, text, literal, line, color));
     }

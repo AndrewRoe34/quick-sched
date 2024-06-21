@@ -2,7 +2,6 @@ package com.planner.ui.editor;
 
 import com.planner.scripter.Tokenizer;
 import com.planner.scripter.Token;
-import com.planner.scripter.TokenColor;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -25,7 +24,7 @@ public class CodeEditor extends JFrame {
     private JLabel openLabel, saveLabel, quitLabel;
     private boolean hasSaved;
     private File currentFile;
-    private Tokenizer tokenizer;
+    private final Tokenizer tokenizer;
 
     public CodeEditor() {
         createEditor();
@@ -100,7 +99,6 @@ public class CodeEditor extends JFrame {
                             String content = new String(bytes, StandardCharsets.UTF_8);
 
                             List<Token> tokens = tokenizer.scanTokens(content);
-
                             textPane.setDocument(colorizeTokens(tokens));
                         } catch (IOException ex) {
                             ex.printStackTrace();
@@ -153,7 +151,6 @@ public class CodeEditor extends JFrame {
 
                 // Applies coloring to text of the saved file
                 List<Token> tokens = tokenizer.scanTokens(content);
-
                 textPane.setDocument(colorizeTokens(tokens));
             }
         });
@@ -167,7 +164,7 @@ public class CodeEditor extends JFrame {
         });
     }
 
-    public StyledDocument colorizeTokens(List<Token> tokens) {
+    private StyledDocument colorizeTokens(List<Token> tokens) {
         StyledDocument doc = textPane.getStyledDocument();
 
         // Clear the document
@@ -192,7 +189,7 @@ public class CodeEditor extends JFrame {
         return doc;
     }
 
-    private Color convertColorStringToAWTColor(TokenColor color) {
+    private Color convertColorStringToAWTColor(Token.TokenColor color) {
         switch (color) {
             case GREEN:
                 return Color.GREEN;
@@ -200,8 +197,8 @@ public class CodeEditor extends JFrame {
                 return Color.RED;
             case PURPLE:
                 return Color.MAGENTA;
-            case LIGHT_GREEN:
-                return Color.DARK_GRAY;
+            case LIGHT_GRAY:
+                return Color.LIGHT_GRAY;
             case LIGHT_BLUE:
                 return Color.CYAN;
             case BLUE:
