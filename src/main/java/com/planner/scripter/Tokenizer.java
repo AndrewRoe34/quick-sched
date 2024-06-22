@@ -21,7 +21,7 @@ public class Tokenizer {
      * Generates tokens from the contents of a {@code *.smpl} file.
      *
      * @param source The text to be tokenized.
-     * @return A list of {@code Token} objects.
+     * @return A list of {@link Token} objects.
      */
     public List<Token> scanTokens(String source) {
         this.tokens = new ArrayList<>();

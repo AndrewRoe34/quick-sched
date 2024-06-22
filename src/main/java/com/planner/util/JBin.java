@@ -28,7 +28,7 @@ public class JBin {
      * @param cards all Cards in System
      * @return JBin String
      */
-    public static String createJBin(List<Card> cards) {
+    public static String createJBin(List<Card> cards, List<Day> schedule) {
 
         /* NOTES:
         1. Create Label section (with ID, not associated with system)
@@ -53,7 +53,7 @@ public class JBin {
           ...
         }
         EVENT {
-          <NAME>, <COLOR>, <DURATION_TIMESTAMPS>, <RECURRING_BOOLEAN>, <DAYS [Optional - Depends on 'recurring_boolean']>
+          <NAME>, <COLOR>, <RECURRING_BOOLEAN>, <DURATION_TIMESTAMPS>, <DAYS/DATE - Depends on 'recurring_boolean'>
           ...
         }
         CARD {
@@ -81,9 +81,11 @@ public class JBin {
             calendarSB.append(calendar.get(Calendar.MONTH));
         }
         calendarSB.append("-").append(calendar.get(Calendar.YEAR)).append("\n\n");
+
         StringBuilder cardSB = new StringBuilder();
         List<Task> taskList = new ArrayList<>();
         List<CheckList> checkListList = new ArrayList<>();
+
         if(!cards.isEmpty()) {
             cardSB.append("CARD {\n");
             for(Card c : cards) {
@@ -102,6 +104,7 @@ public class JBin {
             }
             cardSB.append("}\n");
         }
+
         StringBuilder taskSB = new StringBuilder();
         if(!taskList.isEmpty()) {
             taskSB.append("TASK {\n");
@@ -124,6 +127,7 @@ public class JBin {
             }
             taskSB.append("}\n");
         }
+
         StringBuilder clSB = new StringBuilder();
         if(!checkListList.isEmpty()) {
             clSB.append("CHECKLIST {\n");
@@ -136,11 +140,11 @@ public class JBin {
             }
             clSB.append("}\n\n");
         }
+
         StringBuilder daySB = new StringBuilder();
-        ScheduleManager sm = ScheduleManager.getScheduleManager();
-        if(!sm.scheduleIsEmpty()) {
+        if(!schedule.isEmpty()) {
             daySB.append("DAY {\n");
-            for(Day d : sm.getSchedule()) {
+            for(Day d : schedule) {
                 boolean flag = false;
                 daySB.append("  ");
                 if (d.getNumSubTasks() == 0) {
@@ -169,19 +173,54 @@ public class JBin {
             }
             daySB.append("}\n");
         }
+
         StringBuilder eventSB = new StringBuilder();
-        if (!sm.getIndivEvents().isEmpty()) {
+        boolean eventsExist = false;
 
+        for (Day d : schedule) {
+            if (d.getNumEvents() != 0) {
+                eventsExist = true;
+                break;
+            }
         }
-        if (!sm.getRecurringEvents().isEmpty()) {
 
+        if (eventsExist) {
+            eventSB.append("EVENT {\n");
+
+            HashSet<Event> events = new HashSet<>();
+
+            for (Day d : schedule) {
+                for (Event e : d.getEventList()) {
+                    if (events.contains(e))
+                        continue;
+
+                    eventSB.append("  ")
+                            .append(e.getName())
+                            .append(", ")
+                            .append(e.getColor().toString())
+                            .append(", ")
+                            .append(e.isRecurring() ? "true" : "false")
+                            .append(", ")
+                            .append(e.getTimeStamp().toString())
+                            .append(", ")
+                            .append(e.isRecurring() ? e.getDaysString() : e.getDateStamp())
+                            .append("\n");
+
+                    events.add(e);
+                }
+            }
+
+            eventSB.append("}\n");
         }
+
         //now go from top to bottom with all the data you now have
         return calendarSB
                 .append(clSB)
                 .append(taskSB)
                 .append("\n")
                 .append(cardSB)
+                .append("\n")
+                .append(eventSB)
                 .append("\n")
                 .append(daySB)
                 .toString();

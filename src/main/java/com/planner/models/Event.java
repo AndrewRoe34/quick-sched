@@ -2,6 +2,7 @@ package com.planner.models;
 
 import com.planner.util.Time.TimeStamp;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 /**
@@ -112,6 +113,12 @@ public class Event implements Comparable<Event> {
 
     public DayOfWeek[] getDays() {
         return days;
+    }
+
+    public String getDaysString() {
+        String daysString = Arrays.toString(days);
+
+        return daysString.substring(1, daysString.length() - 1);
     }
 
     public void setDays(DayOfWeek[] days) {
