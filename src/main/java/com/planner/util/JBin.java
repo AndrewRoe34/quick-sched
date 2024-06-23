@@ -203,7 +203,7 @@ public class JBin {
                         .append(", ")
                         .append("false")
                         .append(", ")
-                        .append(e.getTimeStamp().toString())
+                        .append(e.get24HourTimeStampString())
                         .append(", ")
                         .append(e.getDateStamp())
                         .append("\n");
@@ -223,7 +223,7 @@ public class JBin {
                             .append(", ")
                             .append("true")
                             .append(", ")
-                            .append(e.getTimeStamp().toString())
+                            .append(e.get24HourTimeStampString())
                             .append(", ")
                             .append(e.getDaysString())
                             .append("\n");

@@ -75,6 +75,25 @@ public class Event implements Comparable<Event> {
         return timeStamp;
     }
 
+    public String get24HourTimeStampString() {
+        StringBuilder output = new StringBuilder();
+
+        Calendar start = timeStamp.getStart();
+        Calendar end = timeStamp.getEnd();
+
+        output.append(start.get(Calendar.HOUR_OF_DAY) == 0 ? "00" : start.get(Calendar.HOUR_OF_DAY));
+        output.append(":");
+        output.append(start.get(Calendar.MINUTE) == 0 ? "00" : start.get(Calendar.MINUTE));
+
+        output.append("-");
+
+        output.append(end.get(Calendar.HOUR_OF_DAY) == 0 ? "00" : end.get(Calendar.HOUR_OF_DAY));
+        output.append(":");
+        output.append(end.get(Calendar.MINUTE) == 0 ? "00" : end.get(Calendar.MINUTE));
+
+        return output.toString();
+    }
+
     public void setTimeStamp(TimeStamp timeStamp) {
         Calendar start = timeStamp.getStart();
         Calendar end = timeStamp.getEnd();
