@@ -80,16 +80,32 @@ public class Event implements Comparable<Event> {
 
         Calendar start = timeStamp.getStart();
         Calendar end = timeStamp.getEnd();
+        int startHour = start.get(Calendar.HOUR_OF_DAY);
+        int startMinute = start.get(Calendar.MINUTE);
+        int endHour = end.get(Calendar.HOUR_OF_DAY);
+        int endMinute = end.get(Calendar.MINUTE);
 
-        output.append(start.get(Calendar.HOUR_OF_DAY) == 0 ? "00" : start.get(Calendar.HOUR_OF_DAY));
+        if (startHour < 10)
+            output.append("0");
+        output.append(startHour);
+
         output.append(":");
-        output.append(start.get(Calendar.MINUTE) == 0 ? "00" : start.get(Calendar.MINUTE));
+
+        if (startMinute < 10)
+            output.append("0");
+        output.append(startMinute);
 
         output.append("-");
 
-        output.append(end.get(Calendar.HOUR_OF_DAY) == 0 ? "00" : end.get(Calendar.HOUR_OF_DAY));
+        if (endHour < 10)
+            output.append("0");
+        output.append(endHour);
+
         output.append(":");
-        output.append(end.get(Calendar.MINUTE) == 0 ? "00" : end.get(Calendar.MINUTE));
+
+        if (endMinute < 10)
+            output.append("0");
+        output.append(endMinute);
 
         return output.toString();
     }
