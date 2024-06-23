@@ -67,7 +67,7 @@ public class CompactScheduler implements Scheduler {
             Task task = taskManager.remove();
             double maxHours = getNonEventMaxHours(day, task, date);
             // status of task creation
-            boolean validTaskStatus = day.addSubTaskManually(task, maxHours, userConfig, date, isToday);
+            boolean validTaskStatus = day.addPlainSubTask(task, maxHours, userConfig, date, isToday);
             // adds task to relevant completion heap
             if (task.getDueDate().equals(day.getDate()) || task.getSubTotalHoursRemaining() == 0) complete.add(task);
             else incomplete.add(task);

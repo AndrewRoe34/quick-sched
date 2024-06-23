@@ -35,11 +35,8 @@ public class Day {
     /** ID for the specific Day */
     private int id;
 
-    // used purely for testing
-    static SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-
     /**
-     * Primary constructor for Day
+     * Constructor for Day that utilizes an incrementation value
      *
      * @param id ID specifier for Day
      * @param capacity total capacity for the day
@@ -55,6 +52,13 @@ public class Day {
         eventTimeStamps = new ArrayList<>();
     }
 
+    /**
+     * Constructor for Day that utilizes a specified Calendar date
+     *
+     * @param id ID specifier for Day
+     * @param capacity total capacity for Day
+     * @param date date on which this Day occurs
+     */
     public Day(int id, double capacity, Calendar date) {
         setId(id);
         setCapacity(capacity);
@@ -63,6 +67,19 @@ public class Day {
         taskTimeStamps = new ArrayList<>();
         eventList = new ArrayList<>();
         eventTimeStamps = new ArrayList<>();
+    }
+
+    private void setId(int id) {
+        this.id = id;
+    }
+
+    /**
+     * Gets ID for Day
+     *
+     * @return ID for Day
+     */
+    public int getId() {
+        return id;
     }
 
     /**
@@ -90,10 +107,6 @@ public class Day {
         this.date = Time.getFormattedCalendarInstance(incrementation);
     }
 
-    public double getSize() {
-        return size;
-    }
-
     /**
      * Gets the Date from the Day
      *
@@ -103,21 +116,26 @@ public class Day {
         return date;
     }
 
-    public void addSubTask(Task task, double hours, boolean overflow) {
-        Task.SubTask subtask = task.addSubTask(hours, overflow, null);
-        subTaskList.add(subtask);
-        this.size += hours;
+    /**
+     * Number of hours filled for a given Day
+     *
+     * @return number of hours filled for Day
+     */
+    public double getSize() {
+        return size;
     }
 
     /**
-     * Gets the parent task based on the specified subtask index value
+     * Adds a pre-formatted SubTask to the Day
      *
-     * @param subtaskIndex index of the subtask
-     * @return parent of subtask
+     * @param task  Task to be added
+     * @param hours number of hours for the SubTask
+     * @param overflow boolean status for success of adding SubTask
      */
-    public Task getParentTask(int subtaskIndex) {
-        SubTask subtask = subTaskList.get(subtaskIndex);
-        return subtask.getParentTask();
+    public void addFormattedSubTask(Task task, double hours, boolean overflow) {
+        Task.SubTask subtask = task.addSubTask(hours, overflow, null);
+        subTaskList.add(subtask);
+        this.size += hours;
     }
 
     /**
@@ -127,7 +145,7 @@ public class Day {
      * @param hours number of hours for the SubTask
      * @return boolean status for success of adding SubTask manually
      */
-    public boolean addSubTaskManually(Task task, double hours, UserConfig userConfig, Calendar time, boolean isToday) {
+    public boolean addPlainSubTask(Task task, double hours, UserConfig userConfig, Calendar time, boolean isToday) {
         if (hours <= 0) return false;
         boolean overflow = this.size + hours > this.capacity;
 //        SubTask subtask = task.addSubTask(hours, overflow); // todo need to rearrange this here
@@ -135,7 +153,6 @@ public class Day {
 //        subtaskManager.add(subtask);
 //        this.size += hours;
 
-        // todo will end up using the while loop code below since we'll be merging the two methods together
         // nothing changes here (thank God)
         if (eventList.isEmpty()) {
             createNonEventTimeStamps(hours, userConfig, time, isToday);
@@ -193,7 +210,6 @@ public class Day {
             temp = this.date;
         }
         Calendar startTime = Time.getFirstAvailableTimeInDay(taskTimeStamps, eventTimeStamps, userConfig, temp, isToday);
-        String s = sdf.format(startTime.getTime());
         TimeStamp eventTimeStamp = null;
         for (TimeStamp eTS : eventTimeStamps) { // this list needs to be sorted (given assumption below)
             if (Time.isBeforeEvent(startTime, eTS.getStart())) {
@@ -217,6 +233,31 @@ public class Day {
         return hours;
     }
 
+    /**
+     * Gets a particular SubTask from the Day's list
+     *
+     * @param subtaskIndex index for SubTask
+     * @return specified SubTask
+     */
+    public SubTask getSubTask(int subtaskIndex) {
+        return subTaskList.get(subtaskIndex);
+    }
+
+    /**
+     * Gets the number of SubTasks possessed by the Day
+     *
+     * @return number of SubTasks possessed by the Day
+     */
+    public int getNumSubTasks() {
+        return subTaskList.size();
+    }
+
+    /**
+     * Adds an Event to the Day
+     *
+     * @param event Event being added
+     * @return boolean status for success of adding Event
+     */
     public boolean addEvent(Event event) {
         if (event.isRecurring()) { // this fixes issue for recurring events since they can happen on any day
             Calendar start = (Calendar) date.clone();
@@ -255,38 +296,32 @@ public class Day {
         return true;
     }
 
-    public SubTask getSubTask(int subtaskIndex) {
-        return subTaskList.get(subtaskIndex);
-    }
-
+    /**
+     * Gets a particular Event from the Day's list
+     *
+     * @param eventIdx index for Event
+     * @return specified Event
+     */
     public Event getEvent(int eventIdx) {
         return eventList.get(eventIdx);
     }
 
     /**
-     * Gets the number of SubTasks possessed by the Day
+     * Gets the number of Events for the given Day
      *
-     * @return number of SubTasks possessed by the Day
+     * @return number of Events
      */
-    public int getNumSubTasks() {
-        return subTaskList.size();
-    }
-
     public int getNumEvents() {
         return eventList.size();
     }
 
-    private void setId(int id) {
-        this.id = id;
-    }
-
     /**
-     * Gets ID for Day
+     * Determines whether there are spare hours in the Day
      *
-     * @return ID for Day
+     * @return boolean value for opening in Day
      */
-    public int getId() {
-        return id;
+    public boolean hasSpareHours() {
+        return getSpareHours() > 0;
     }
 
     /**
@@ -308,54 +343,44 @@ public class Day {
     }
 
     /**
-     * Determines whether there are spare hours in the Day
+     * Gets the SubTask list from Day
      *
-     * @return boolean value for opening in Day
+     * @return SubTask list
      */
-    public boolean hasSpareHours() {
-        return getSpareHours() > 0;
+    public List<SubTask> getSubTaskList() { // todo need to delete for refactoring purposes
+        return subTaskList;
     }
 
+    /**
+     * Gets the Event list from Day
+     *
+     * @return Event list
+     */
+    public List<Event> getEventList() {
+        return eventList;
+    }
+
+    /**
+     * Gets the SubTask timestamps
+     *
+     * @return SubTask timestamps
+     */
     public List<TimeStamp> getTaskTimeStamps() {
         return taskTimeStamps;
+    }
+
+    /**
+     * Gets the Event timestamps
+     *
+     * @return Event timestamps
+     */
+    public List<TimeStamp> getEventTimeStamps() {
+        return eventTimeStamps;
     }
 
     @Override
     public String toString() {
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
         return "Day [" + sdf.format(this.date.getTime()) + "]";
-    }
-
-    /**
-     * Provides a formatted string for output purposes
-     *
-     * @return formatted String
-     */
-    public String formattedString() {
-        SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
-        StringBuilder sb = new StringBuilder(sdf.format(this.date.getTime()) + "\n");
-        for(SubTask st : subTaskList) {
-            sb.append("-");
-            sb.append(st.getParentTask().getName()).append(", ");
-            sb.append(st.getSubTaskHours()).append("hr, Due ");
-            sb.append(sdf.format(st.getParentTask().getDueDate().getTime()));
-            if(st.isOverflow()) {
-                sb.append(" OVERFLOW");
-            }
-            sb.append("\n");
-        }
-        return sb.toString();
-    }
-
-    public List<SubTask> getSubTaskList() { // todo need to delete for refactoring purposes
-        return subTaskList;
-    }
-
-    public List<Event> getEventList() {
-        return eventList;
-    }
-
-    public List<TimeStamp> getEventTimeStamps() {
-        return eventTimeStamps;
     }
 }

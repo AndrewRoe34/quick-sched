@@ -568,47 +568,6 @@ public class ScheduleManager {
     }
 
     /**
-     * Outputs the current day's schedule to console
-     */
-    public void outputCurrentDayToConsole() {
-        if(schedule.isEmpty()) {
-            System.out.println("Schedule is empty");
-        } else {
-            IOProcessing.outputDay(schedule.get(0), errorCount, null);
-            eventLog.reportDisplayDaySchedule(schedule.get(0));
-        }
-    }
-
-    /**
-     * Outputs the total schedule to console
-     */
-    public void outputScheduleToConsole() {
-        if(schedule.isEmpty()) {
-            System.out.println("Schedule is empty");
-        } else {
-            IOProcessing.outputSchedule(schedule, errorCount, null);
-            eventLog.reportDisplaySchedule(schedule.size(), taskManager.size(), true);
-        }
-    }
-
-    /**
-     * Outputs the schedule to the specified file
-     *
-     * @param filename file to be outputted to
-     */
-    public void outputScheduleToFile(String filename) {
-        try {
-            PrintStream output = new PrintStream(filename);
-            IOProcessing.outputSchedule(schedule, errorCount, output);
-            output.close();
-            eventLog.reportDisplaySchedule(schedule.size(), taskManager.size(), false);
-        } catch (FileNotFoundException e) {
-            eventLog.reportException(e);
-            System.out.println("Error with processing file");
-        }
-    }
-
-    /**
      * Determines whether the schedule is empty
      *
      * @return boolean value for whether schedule is empty
