@@ -25,7 +25,7 @@ public class Day {
     /** Number of hours filled for a given Day */
     private double size;
     /** TreeSet of all SubTasks */
-    private final List<SubTask> subtaskManager;
+    private final List<SubTask> subTaskList;
     /** List of time stamps for all subtasks */
     private final List<TimeStamp> taskTimeStamps;
     /** Map by starting hour and the associated event */
@@ -49,7 +49,7 @@ public class Day {
         setId(id);
         setCapacity(capacity);
         setDate(incrementation);
-        subtaskManager = new ArrayList<>();
+        subTaskList = new ArrayList<>();
         taskTimeStamps = new ArrayList<>();
         eventList = new ArrayList<>();
         eventTimeStamps = new ArrayList<>();
@@ -59,7 +59,7 @@ public class Day {
         setId(id);
         setCapacity(capacity);
         this.date = date;
-        subtaskManager = new ArrayList<>();
+        subTaskList = new ArrayList<>();
         taskTimeStamps = new ArrayList<>();
         eventList = new ArrayList<>();
         eventTimeStamps = new ArrayList<>();
@@ -105,7 +105,7 @@ public class Day {
 
     public void addSubTask(Task task, double hours, boolean overflow) {
         Task.SubTask subtask = task.addSubTask(hours, overflow, null);
-        subtaskManager.add(subtask);
+        subTaskList.add(subtask);
         this.size += hours;
     }
 
@@ -116,7 +116,7 @@ public class Day {
      * @return parent of subtask
      */
     public Task getParentTask(int subtaskIndex) {
-        SubTask subtask = subtaskManager.get(subtaskIndex);
+        SubTask subtask = subTaskList.get(subtaskIndex);
         return subtask.getParentTask();
     }
 
@@ -140,7 +140,7 @@ public class Day {
         if (eventList.isEmpty()) {
             createNonEventTimeStamps(hours, userConfig, time, isToday);
             SubTask subTask = task.addSubTask(hours, overflow, taskTimeStamps.get(taskTimeStamps.size() - 1));
-            subtaskManager.add(subTask);
+            subTaskList.add(subTask);
             this.size += hours;
         } else {
             while (hours > 0) {
@@ -148,7 +148,7 @@ public class Day {
                 hours -= createEventTimeStamps(hours, userConfig, time, isToday);
                 // add subtask to subtaskManager
                 SubTask subTask = task.addSubTask(prevHours - hours, overflow, taskTimeStamps.get(taskTimeStamps.size() - 1));
-                subtaskManager.add(subTask);
+                subTaskList.add(subTask);
                 this.size += (prevHours - hours);
             }
         }
@@ -256,7 +256,7 @@ public class Day {
     }
 
     public SubTask getSubTask(int subtaskIndex) {
-        return subtaskManager.get(subtaskIndex);
+        return subTaskList.get(subtaskIndex);
     }
 
     public Event getEvent(int eventIdx) {
@@ -269,7 +269,7 @@ public class Day {
      * @return number of SubTasks possessed by the Day
      */
     public int getNumSubTasks() {
-        return subtaskManager.size();
+        return subTaskList.size();
     }
 
     public int getNumEvents() {
@@ -334,7 +334,7 @@ public class Day {
     public String formattedString() {
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
         StringBuilder sb = new StringBuilder(sdf.format(this.date.getTime()) + "\n");
-        for(SubTask st : subtaskManager) {
+        for(SubTask st : subTaskList) {
             sb.append("-");
             sb.append(st.getParentTask().getName()).append(", ");
             sb.append(st.getSubTaskHours()).append("hr, Due ");
@@ -347,17 +347,8 @@ public class Day {
         return sb.toString();
     }
 
-    /**
-     * Gets the List of SubTasks for the given Day
-     *
-     * @return List of SubTasks
-     */
-    public Iterable<? extends SubTask> getSubTasks() { // todo need to replace with getSubTasks() --> List<SubTask>
-        return subtaskManager;
-    }
-
-    public List<SubTask> getSubtaskManager() { // todo need to delete for refactoring purposes
-        return subtaskManager;
+    public List<SubTask> getSubTaskList() { // todo need to delete for refactoring purposes
+        return subTaskList;
     }
 
     public List<Event> getEventList() {

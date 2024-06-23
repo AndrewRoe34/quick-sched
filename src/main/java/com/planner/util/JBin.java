@@ -146,7 +146,7 @@ public class JBin {
                 if (d.getNumSubTasks() == 0) {
                     daySB.append("N/A");
                 } else {
-                    for(Task.SubTask st : d.getSubTasks()) {
+                    for(Task.SubTask st : d.getSubTaskList()) {
                         if(flag) {
                             daySB.append(", ");
                         }
