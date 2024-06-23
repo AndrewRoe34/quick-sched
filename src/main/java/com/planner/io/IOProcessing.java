@@ -21,48 +21,6 @@ public class IOProcessing {
     private static final int BUFFER_SIZE = 4096;
 
     /**
-     * Outputs the current day in text format
-     *
-     * @param day current day from Schedule
-     * @param errorCount number of errors with the schedule
-     * @param output PrintStream for where output is directed
-     */
-    public static void outputDay(Day day, int errorCount, PrintStream output) {
-        PrintStream outputStream = output;
-        if(output == null) {
-            outputStream = System.out;
-        }
-        if(errorCount > 0) {
-            outputStream.println(errorCount + " overflows have occurred within schedule...");
-        }
-        outputStream.print("Day 1: ");
-        outputStream.print(day.toString());
-    }
-
-    /**
-     * Outputs the schedule in text format
-     *
-     * @param list a list of Days from the Schedule
-     * @param errorCount number of errors with the schedule
-     * @param output PrintStream for where output is directed
-     */
-    public static void outputSchedule(List<Day> list, int errorCount, PrintStream output) {
-        PrintStream outputStream = output;
-        if(output == null) {
-            outputStream = System.out;
-        }
-        if(errorCount > 0) {
-            outputStream.println(errorCount + " overflows have occurred within schedule...");
-        }
-        int i = 1;
-        for(Day day : list) {
-            outputStream.print("Day " + i + ": ");
-            outputStream.print(day.formattedString());
-            i++;
-        }
-    }
-
-    /**
      * Writes the JBin string to a binary file
      *
      * @param filename name of output file

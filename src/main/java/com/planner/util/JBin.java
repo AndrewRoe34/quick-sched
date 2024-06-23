@@ -479,7 +479,7 @@ public class JBin {
                                 } else {
                                     taskList.get(taskIdx).setTotalHours(hours + taskList.get(taskIdx).getTotalHours());
                                 }
-                                day.addSubTask(taskList.get(taskIdx), hours, totalHours > 8); // todo need to use UserConfig here
+                                day.addFormattedSubTask(taskList.get(taskIdx), hours, totalHours > 8); // todo need to use UserConfig here
                             } else throw new InputMismatchException();
                         }
                         schedule.add(day);
