@@ -2,6 +2,7 @@ package com.planner.models;
 
 import com.planner.util.Time.TimeStamp;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 /**
@@ -74,6 +75,41 @@ public class Event implements Comparable<Event> {
         return timeStamp;
     }
 
+    public String get24HourTimeStampString() {
+        StringBuilder output = new StringBuilder();
+
+        Calendar start = timeStamp.getStart();
+        Calendar end = timeStamp.getEnd();
+        int startHour = start.get(Calendar.HOUR_OF_DAY);
+        int startMinute = start.get(Calendar.MINUTE);
+        int endHour = end.get(Calendar.HOUR_OF_DAY);
+        int endMinute = end.get(Calendar.MINUTE);
+
+        if (startHour < 10)
+            output.append("0");
+        output.append(startHour);
+
+        output.append(":");
+
+        if (startMinute < 10)
+            output.append("0");
+        output.append(startMinute);
+
+        output.append("-");
+
+        if (endHour < 10)
+            output.append("0");
+        output.append(endHour);
+
+        output.append(":");
+
+        if (endMinute < 10)
+            output.append("0");
+        output.append(endMinute);
+
+        return output.toString();
+    }
+
     public void setTimeStamp(TimeStamp timeStamp) {
         Calendar start = timeStamp.getStart();
         Calendar end = timeStamp.getEnd();
@@ -112,6 +148,14 @@ public class Event implements Comparable<Event> {
 
     public DayOfWeek[] getDays() {
         return days;
+    }
+
+    public String getDaysString() {
+        String daysString = Arrays.toString(days);
+
+        return daysString
+                .substring(1, daysString.length() - 1)
+                .replace(", ", " ");
     }
 
     public void setDays(DayOfWeek[] days) {

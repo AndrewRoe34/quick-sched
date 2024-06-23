@@ -28,7 +28,12 @@ public class JBin {
      * @param cards all Cards in System
      * @return JBin String
      */
-    public static String createJBin(List<Card> cards) {
+    public static String createJBin(
+            List<Card> cards,
+            List<Day> schedule,
+            List<Event> indivEvents,
+            List<List<Event>> recurringEvents
+    ) {
 
         /* NOTES:
         1. Create Label section (with ID, not associated with system)
@@ -53,7 +58,7 @@ public class JBin {
           ...
         }
         EVENT {
-          <NAME>, <COLOR>, <DURATION_TIMESTAMPS>, <RECURRING_BOOLEAN>, <DAYS [Optional - Depends on 'recurring_boolean']>
+          <NAME>, <COLOR>, <RECURRING_BOOLEAN>, <DURATION_TIMESTAMPS>, <DAYS/DATE - Depends on 'recurring_boolean'>
           ...
         }
         CARD {
@@ -81,9 +86,11 @@ public class JBin {
             calendarSB.append(calendar.get(Calendar.MONTH));
         }
         calendarSB.append("-").append(calendar.get(Calendar.YEAR)).append("\n\n");
+
         StringBuilder cardSB = new StringBuilder();
         List<Task> taskList = new ArrayList<>();
         List<CheckList> checkListList = new ArrayList<>();
+
         if(!cards.isEmpty()) {
             cardSB.append("CARD {\n");
             for(Card c : cards) {
@@ -102,6 +109,7 @@ public class JBin {
             }
             cardSB.append("}\n");
         }
+
         StringBuilder taskSB = new StringBuilder();
         if(!taskList.isEmpty()) {
             taskSB.append("TASK {\n");
@@ -124,6 +132,7 @@ public class JBin {
             }
             taskSB.append("}\n");
         }
+
         StringBuilder clSB = new StringBuilder();
         if(!checkListList.isEmpty()) {
             clSB.append("CHECKLIST {\n");
@@ -136,11 +145,11 @@ public class JBin {
             }
             clSB.append("}\n\n");
         }
+
         StringBuilder daySB = new StringBuilder();
-        ScheduleManager sm = ScheduleManager.getScheduleManager();
-        if(!sm.scheduleIsEmpty()) {
+        if(!schedule.isEmpty()) {
             daySB.append("DAY {\n");
-            for(Day d : sm.getSchedule()) {
+            for(Day d : schedule) {
                 boolean flag = false;
                 daySB.append("  ");
                 if (d.getNumSubTasks() == 0) {
@@ -169,19 +178,71 @@ public class JBin {
             }
             daySB.append("}\n");
         }
+
         StringBuilder eventSB = new StringBuilder();
-        if (!sm.getIndivEvents().isEmpty()) {
+        boolean eventsExist = false;
 
-        }
-        if (!sm.getRecurringEvents().isEmpty()) {
+        if (!indivEvents.isEmpty())
+            eventsExist = true;
 
+        for (List<Event> event : recurringEvents) {
+            if (!event.isEmpty()) {
+                eventsExist = true;
+                break;
+            }
         }
+
+        if (eventsExist) {
+            eventSB.append("EVENT {\n");
+
+            for (Event e : indivEvents) {
+                eventSB.append("  ")
+                        .append(e.getName())
+                        .append(", ")
+                        .append(e.getColor().toString())
+                        .append(", ")
+                        .append("false")
+                        .append(", ")
+                        .append(e.get24HourTimeStampString())
+                        .append(", ")
+                        .append(e.getDateStamp())
+                        .append("\n");
+            }
+
+            HashSet<Event> eventsSet = new HashSet<>();
+
+            for (List<Event> events : recurringEvents) {
+                for (Event e : events) {
+                    if (eventsSet.contains(e))
+                        continue;
+
+                    eventSB.append("  ")
+                            .append(e.getName())
+                            .append(", ")
+                            .append(e.getColor().toString())
+                            .append(", ")
+                            .append("true")
+                            .append(", ")
+                            .append(e.get24HourTimeStampString())
+                            .append(", ")
+                            .append(e.getDaysString())
+                            .append("\n");
+
+                    eventsSet.add(e);
+                }
+            }
+
+            eventSB.append("}\n");
+        }
+
         //now go from top to bottom with all the data you now have
         return calendarSB
                 .append(clSB)
                 .append(taskSB)
                 .append("\n")
                 .append(cardSB)
+                .append("\n")
+                .append(eventSB)
                 .append("\n")
                 .append(daySB)
                 .toString();
@@ -196,8 +257,15 @@ public class JBin {
      * @param schedule set of Days for the given schedule being processed
      * @param maxArchiveDays maximum number of past Days to include
      */
-    public static void processJBin(String data, PriorityQueue<Task> tasks, List<Event> events, int eventId,
-                                   List<Card> cards, List<Day> schedule, int maxArchiveDays) {
+    public static void processJBin(
+            String data,
+            PriorityQueue<Task> tasks,
+            List<Event> events,
+            int eventId,
+            List<Card> cards,
+            List<Day> schedule,
+            int maxArchiveDays
+    ) {
         //NOTE: When processing, you should work from top to bottom (use ArrayLists to easily locate data by index value)
         Scanner jbinScanner = new Scanner(data);
         LocalDate ld = null;

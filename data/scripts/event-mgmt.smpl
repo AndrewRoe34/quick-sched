@@ -1,39 +1,10 @@
 include: __CURR_CONFIG__, __LOG__
 
-jbin_file: input_word("Import JBin -> ")
-import_schedule(jbin_file)
+input_tasks(2)
+create_event()
+create_event()
 
-display_events()
-event_flag: input_bool("Create an Event(T/F)? ")
-if (event_flag)
-  create_event()
-  display_events()
-
-println("Now to display all the scheduling data...\n")
-
-yay: "works"
-# Please show up
-display_board()
 build()
-display_schedule()
-display_subtasks()
 
-xslx_flag: input_bool("Generate Excel report(T/F)? ")
-if (xslx_flag)
-  export_excel()
-
-google_flag: input_bool("Export to Google(T/F)? ")
-if (google_flag)
-  export_google()
-  pause()
-
-testVar: card("Name", 12)
-anotherTest: task("Name", 12)
-yetAnother: label("Name", 23)
-x: 23
-y: x  testVar
-# Yeah ikr
-
-func customFunc()
-
-hello: "hi"
+out_jbin_file: input_word("Export JBin -> ")
+export_schedule(out_jbin_file)

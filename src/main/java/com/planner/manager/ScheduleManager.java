@@ -62,10 +62,10 @@ public class ScheduleManager {
     /** Last day Task is due */
     private int lastDueDate;
     private final GoogleCalendarIO googleCalendarIO;
-    private SpreadsheetIO spreadsheetIO;
+    private final SpreadsheetIO spreadsheetIO;
     private Calendar scheduleTime;
-    private List<Event> indivEvents;
-    private List<List<Event>> recurringEvents;
+    private final List<Event> indivEvents;
+    private final List<List<Event>> recurringEvents;
     private int eventId;
 
     /**
@@ -183,17 +183,25 @@ public class ScheduleManager {
         }
     }
 
-    public void exportJBinFile(String filename, List<Card> cards2) {
-        eventLog.reportCreateJBin();
-        List<Card> cardSet = new ArrayList<>(cards);
-        cardSet.addAll(cards2);
-        IOProcessing.writeJBinFile(filename, JBin.createJBin(cardSet));
-        eventLog.reportWriteJBinFile(filename);
-    }
+//    public void exportJBinFile(String filename, List<Card> cards2) {
+//        eventLog.reportCreateJBin();
+//        List<Card> cardSet = new ArrayList<>(cards);
+//        cardSet.addAll(cards2);
+//        IOProcessing.writeJBinFile(filename, JBin.createJBin(cardSet));
+//        eventLog.reportWriteJBinFile(filename);
+//    }
 
     public void exportJBinFile(String filename) {
         eventLog.reportCreateJBin();
-        IOProcessing.writeJBinFile(filename, JBin.createJBin(cards));
+        IOProcessing.writeJBinFile(
+                filename,
+                JBin.createJBin(
+                        cards,
+                        schedule,
+                        indivEvents,
+                        recurringEvents
+                )
+        );
         eventLog.reportWriteJBinFile(filename);
     }
 
@@ -394,12 +402,12 @@ public class ScheduleManager {
             currDay = new Day(dayId++, userConfig.getWeek()[idx++ % 7], dayCount++);
             schedule.add(currDay);
 
-            // todo add individual and recurring events here
             if (!recurringEvents.get(currDay.getDate().get(Calendar.DAY_OF_WEEK) - 1).isEmpty()) {
                 for (Event e1 : recurringEvents.get(currDay.getDate().get(Calendar.DAY_OF_WEEK) - 1)) {
                     currDay.addEvent(e1);
                 }
             }
+
             while (eventIdx < indivEvents.size()) {
                 Calendar eventDate = indivEvents.get(eventIdx).getTimeStamp().getStart();
                 Calendar dayDate = currDay.getDate();
