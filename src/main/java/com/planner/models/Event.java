@@ -153,7 +153,9 @@ public class Event implements Comparable<Event> {
     public String getDaysString() {
         String daysString = Arrays.toString(days);
 
-        return daysString.substring(1, daysString.length() - 1);
+        return daysString
+                .substring(1, daysString.length() - 1)
+                .replace(", ", " ");
     }
 
     public void setDays(DayOfWeek[] days) {
