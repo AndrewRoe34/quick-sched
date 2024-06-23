@@ -257,8 +257,15 @@ public class JBin {
      * @param schedule set of Days for the given schedule being processed
      * @param maxArchiveDays maximum number of past Days to include
      */
-    public static void processJBin(String data, PriorityQueue<Task> tasks, List<Event> events, int eventId,
-                                   List<Card> cards, List<Day> schedule, int maxArchiveDays) {
+    public static void processJBin(
+            String data,
+            PriorityQueue<Task> tasks,
+            List<Event> events,
+            int eventId,
+            List<Card> cards,
+            List<Day> schedule,
+            int maxArchiveDays
+    ) {
         //NOTE: When processing, you should work from top to bottom (use ArrayLists to easily locate data by index value)
         Scanner jbinScanner = new Scanner(data);
         LocalDate ld = null;
