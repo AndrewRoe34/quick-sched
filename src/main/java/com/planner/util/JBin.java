@@ -28,7 +28,12 @@ public class JBin {
      * @param cards all Cards in System
      * @return JBin String
      */
-    public static String createJBin(List<Card> cards, List<Day> schedule) {
+    public static String createJBin(
+            List<Card> cards,
+            List<Day> schedule,
+            List<Event> indivEvents,
+            List<List<Event>> recurringEvents
+    ) {
 
         /* NOTES:
         1. Create Label section (with ID, not associated with system)
@@ -177,8 +182,11 @@ public class JBin {
         StringBuilder eventSB = new StringBuilder();
         boolean eventsExist = false;
 
-        for (Day d : schedule) {
-            if (d.getNumEvents() != 0) {
+        if (!indivEvents.isEmpty())
+            eventsExist = true;
+
+        for (List<Event> event : recurringEvents) {
+            if (!event.isEmpty()) {
                 eventsExist = true;
                 break;
             }
@@ -187,11 +195,25 @@ public class JBin {
         if (eventsExist) {
             eventSB.append("EVENT {\n");
 
-            HashSet<Event> events = new HashSet<>();
+            for (Event e : indivEvents) {
+                eventSB.append("  ")
+                        .append(e.getName())
+                        .append(", ")
+                        .append(e.getColor().toString())
+                        .append(", ")
+                        .append("false")
+                        .append(", ")
+                        .append(e.getTimeStamp().toString())
+                        .append(", ")
+                        .append(e.getDateStamp())
+                        .append("\n");
+            }
 
-            for (Day d : schedule) {
-                for (Event e : d.getEventList()) {
-                    if (events.contains(e))
+            HashSet<Event> eventsSet = new HashSet<>();
+
+            for (List<Event> events : recurringEvents) {
+                for (Event e : events) {
+                    if (eventsSet.contains(e))
                         continue;
 
                     eventSB.append("  ")
@@ -199,14 +221,14 @@ public class JBin {
                             .append(", ")
                             .append(e.getColor().toString())
                             .append(", ")
-                            .append(e.isRecurring() ? "true" : "false")
+                            .append("true")
                             .append(", ")
                             .append(e.getTimeStamp().toString())
                             .append(", ")
-                            .append(e.isRecurring() ? e.getDaysString() : e.getDateStamp())
+                            .append(e.getDaysString())
                             .append("\n");
 
-                    events.add(e);
+                    eventsSet.add(e);
                 }
             }
 

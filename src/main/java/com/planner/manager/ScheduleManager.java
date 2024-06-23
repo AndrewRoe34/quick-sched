@@ -193,7 +193,15 @@ public class ScheduleManager {
 
     public void exportJBinFile(String filename) {
         eventLog.reportCreateJBin();
-        IOProcessing.writeJBinFile(filename, JBin.createJBin(cards, schedule));
+        IOProcessing.writeJBinFile(
+                filename,
+                JBin.createJBin(
+                        cards,
+                        schedule,
+                        indivEvents,
+                        recurringEvents
+                )
+        );
         eventLog.reportWriteJBinFile(filename);
     }
 
