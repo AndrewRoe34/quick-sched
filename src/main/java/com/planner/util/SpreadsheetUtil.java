@@ -198,7 +198,7 @@ public class SpreadsheetUtil {
 
         int taskCount = 0;
         for (Day day : schedule) {
-            for (Task.SubTask subTask : day.getSubTasks()) {
+            for (Task.SubTask subTask : day.getSubTaskList()) {
 
                 Task parentTask = subTask.getParentTask();
 

@@ -107,7 +107,7 @@ public class GoogleCalendarIO {
                 System.out.printf("Event created: %s\n", event.getHtmlLink());
             }
 
-            for(Task.SubTask subTask : day.getSubTasks()) {
+            for(Task.SubTask subTask : day.getSubTaskList()) {
                 Event event = GoogleCalendarUtil.formatTaskToGoogleEvent(subTask);
                 event = service.events().insert(calendarId, event).execute();
                 System.out.printf("Task created: %s\n", event.getHtmlLink());

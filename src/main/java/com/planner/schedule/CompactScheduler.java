@@ -140,7 +140,7 @@ public class CompactScheduler implements Scheduler {
     @Override
     public int optimizeDay(Day day) {
         List<Double> timeBlocks = Time.computeTimeBlocks(day);
-        List<Task.SubTask> subTasks = day.getSubtaskManager();
+        List<Task.SubTask> subTasks = day.getSubTaskList();
         // todo need to combine subTasks that were possibly broken up due to events
         //   also, if there are no events (and subTasks were not broken up), there is no further optimization
         //   while we could sort the subTasks, there is little need since the most we'll realistically have is 24 (tiny number, so bruteforce is acceptable)

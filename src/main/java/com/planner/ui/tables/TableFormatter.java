@@ -492,7 +492,7 @@ public class TableFormatter {
         }
 
         for (Day day : schedule) {
-            for (Task.SubTask subTask : day.getSubTasks()) {
+            for (Task.SubTask subTask : day.getSubTaskList()) {
                 if (isPretty) {
                     sb.append("            |");
                 }
