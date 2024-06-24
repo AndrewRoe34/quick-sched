@@ -560,11 +560,11 @@ public class ScheduleManager {
     }
 
     public String buildEventStr() {
-        return TableFormatter.formatEventSetTables(recurringEvents, indivEvents, userConfig.isFormatPrettyTable());
+        return TableFormatter.formatEventSetTables(recurringEvents, indivEvents, userConfig);
     }
 
     public String buildSubTaskStr() {
-        return TableFormatter.formatSubTaskTable(schedule, userConfig.isFormatPrettyTable());
+        return TableFormatter.formatSubTaskTable(schedule, userConfig);
     }
 
     /**
