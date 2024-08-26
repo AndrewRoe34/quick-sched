@@ -61,10 +61,6 @@ After building the project, you can open it in IntelliJ IDEA:
 
 Now, you’re ready to start developing with Agile Planner!
 
-## Usage with Agile Planner
-
-[Under construction]
-
 ## Learning the Simple Script Environment
 This section covers the Simple Script environment, including: syntax, variables, functions, control structures, and object methods. This part is more tutorial-oriented to help you get acquainted with scripting in Simple as quickly as possible.
 ```
@@ -102,7 +98,7 @@ x: 34
 str: “Hello World”
 flag: false
 ```
-Whenever a variable is attempting to hold an object instance, it must attach the ‘:’ to the end of its name. Thankfully, memory is dynamic here and allows for switching of types with storage like the following:
+Whenever a variable is attempting to hold an object instance, you must attach the ‘:’ to the end of its name. Thankfully, memory is dynamic here and allows for switching of types with storage like the following:
 ```
 c1: card(“Calc 3”)
 c1: “This is some string”
@@ -177,6 +173,46 @@ elif(x.==(1))
     print(“Watch latest Marvel movie”)
 else
     print(“Study for test”)
+```
+
+### Sample Script
+Here's a typical script that allows the user to create a new event, display relevant data, and export to Google Calendar as well as to an Excel file
+```
+# Author: Andrew Roe
+include: __CURR_CONFIG__, __LOG__
+
+# this is a comment
+jbin_file: input_word("Import JBin -> ")
+import_schedule(jbin_file)
+
+# display events
+display_events()
+event_flag: input_bool("Create an Event(T/F)? ")
+if (event_flag)
+  create_event()
+  display_events()
+
+# print out a log that we are scheduling data
+println("Now to display all the scheduling data...\n")
+
+# displays the board data
+display_board()
+build()
+display_schedule()
+display_subtasks()
+
+# writes to excel
+xslx_flg: input_bool("Generate Excel report(T/F)? ")
+if (xslx_flg)
+  export_excel()
+
+# writes to google
+google_flg: input_bool("Export to Google(T/F)? ")
+if (google_flg)
+  export_google()
+  pause()
+
+println("Session complete...")
 ```
 
 ## Configuration

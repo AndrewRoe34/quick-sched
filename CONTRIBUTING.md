@@ -57,7 +57,7 @@ Now, you’re ready to start developing with Agile Planner!
 
 1. **Check the Issue Tracker**: Look for open issues that match your skills or open a new issue to discuss proposed changes. Issues range from features, bugs, refactoring, testing, documenting, updates to CI/CD, etc.
 2. **Fork the Repository**: Fork the repository on GitHub to start making your changes.
-3. **Create a New Branch**: Create a new branch for your changes. [TODO]
+3. **Create a New Branch**: Create a new branch for your changes.
 4. **Make Your Changes**: Implement your changes in your branch.
 5. **Write or Update Tests**: Ensure you write new tests or update existing ones to reflect your changes. All new features should have corresponding tests that achieve code coverage of at least 80%.
 6. **Build and Test**: Make sure the project builds and all tests pass. See Building and Testing for detailed instructions.

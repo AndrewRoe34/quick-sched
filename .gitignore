@@ -49,7 +49,7 @@ bin/
 !data/scripts/
 
 ### Remaining are just result of session runs ###
-data/
+data/html
 logs/
 docs/
 spreadsheets/

@@ -1,0 +1,18 @@
+25-08-2024
+
+TASK {
+  search jobs, 5.0, 3
+  finish scheduler, 6.0, 4
+  study graph algo, 7.0, 5
+}
+
+CARD {
+  Default, LIGHT_BLUE
+  Jobs, YELLOW, T0
+  Project, GREEN, T1
+  LeetCode, RED, T2
+}
+
+EVENT {
+  Workout, ORANGE, true, 11:00-12:30, MON TUE WED THU FRI
+}
