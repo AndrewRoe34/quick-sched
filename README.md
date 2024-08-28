@@ -15,6 +15,10 @@
 Agile Planner is a robust, dynamic scheduling platform that provides unparalleled automation for students seeking to generate both daily and weekly planners. It is the only scheduling platform to date that provides its own Object Oriented scripting language fully integrated with a CLI interface for streamlining the pipeline even further. Futher, Agile Planner offers plenty of proprietary software such as logging, scheduling algorithms, serialization, and as stated before, a custom scripting language. The goal is to continue expanding upon the current CLI iteration and eventually offer a web-based component.
 
 ![Promo](images/preview.gif)
+
+**NOTE1: Scripting language and JBin are currently in the process of being overhauled. If you encounter any issues, please let us know so we can quickly hotfix it.**
+
+**NOTE2: In order to use the Google Calendar features, you need to have your email flagged as a beta test participant. To make this request, email me at aproe@ncsu.edu**
 ## Getting Started
 
 These instructions will guide you through the setup process to get the project running on your local machine for development and testing purposes.
@@ -59,7 +63,36 @@ After building the project, you can open it in IntelliJ IDEA:
 3. Choose ‘Open as Project’.
 4. IntelliJ IDEA will import the project and set everything up based on the Gradle configuration.
 
-Now, you’re ready to start developing with Agile Planner!
+Now, let's learn what Agile Planner has to offer!
+
+## Using Agile Planner
+Agile Planner makes it trivially simple to create a fully customizable schedule. Here we go over how to work with some of these core mechanics.
+
+### Booting up Agile Planner
+![Boot Up](images/ui.gif)
+
+When you first start up Agile Planner, you're greeted with a startup log of your current config settings, OS information, warnings or issues, etc. Afterwards, you work with platform just like a console. Load up a script and get started!
+
+### Personalized Scheduling
+![Personalized Scheduling](images/hours.gif)
+
+Agile Planner's scheduling and timetabling mechanics were carefully designed to be dynamically alterable with the extensive config options. Don't want to work on Mondays? Don't sweat it, Agile Planner will work out a new schedule so you can sleep in. Not a morning person? Well, you can switch up your general availability to afternoons and evenings only.
+
+With this powerful range of options, YOU control your scheduling!
+
+### Session Logs
+![Session Logs](images/session.gif)
+
+If there's one thing we can all agree on, it's this: No one likes to constantly reboot a system to get the same data over and over. Sure, you have Google Calendar, but what if the wifi is out? Introducing Session Logging, Agile Planner's latest feature! This mechanic allows you to fully generate an entire report on all your scheduling, timetabling, task, subtask, card, and event related data (what a mouthful). Data is cleanly formatted via tables so you can jump around, and the schedule is perfectly structured so you can cross each item off the list.
+
+Best part of this feature is, you don't even need much code! Here's literally all you need down below:
+```
+include: __CURR_CONFIG__, __LOG__
+
+import_schedule("event.jbin")
+build()
+```
+Agile Planner simply reads in your JBin, build() constructs your entire personalized schedule, and the session log is sent over to your logs folder! Give it a try!
 
 ## Learning the Simple Script Environment
 This section covers the Simple Script environment, including: syntax, variables, functions, control structures, and object methods. This part is more tutorial-oriented to help you get acquainted with scripting in Simple as quickly as possible.

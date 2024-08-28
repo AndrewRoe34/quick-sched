@@ -65,8 +65,6 @@ Now, you’re ready to start developing with Agile Planner!
 8. **Push Your Changes**: Push your changes to your fork on GitHub.
 9. **Submit a Pull Request**: Submit a pull request to the main repository. Our maintainers will review your changes and merge them if appropriate.
 
-Thank you for contributing!
-
 ## Issue and Pull Request Templates
 
 We use templates for issues and pull requests to ensure consistency and completeness. When creating issues or pull requests, please use one of the following templates:
