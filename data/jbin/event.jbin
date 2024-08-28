@@ -4,8 +4,8 @@ TASK {
   Something Something, 0.5, 2
   Documentation, 2.5, 0
   Write Essay, 1.0, 1
-  Study Usecases, 1.0, -3
-  Debate Prep, 4.0, -2
+  Study Usecases, 1.0, 4
+  Debate Prep, 4.0, 7
   Read Ch4, 4.0, 5
   Finish HW3, 8.0, 4
   Apply for jobs, 7.0, 5
@@ -21,8 +21,9 @@ CARD {
 }
 
 EVENT {
-  Class-PHI, GREEN, true, 9:23-10:51, TUE THU
-  Class-LAW, RED, true, 11:52-12:38, MON WED
+  Class-PHI, GREEN, true, 9:30-10:45, TUE THU
+  Class-LAW, RED, true, 11:15-12:30, MON WED
   Class-SC, YELLOW, true, 12:45-14:15, TUE THU
-  Just me testing the text cutoff, green, false, 17:00-18:50, 17-06-2024
+  Class-OS, LIGHT_BLUE, true, 13:30-14:45, MON WED
+  Class-FIT, LIGHT_CORAL, true, 10:00-12:00, FRI
 }

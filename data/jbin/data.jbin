@@ -10,9 +10,9 @@ CARD {
   Default, LIGHT_BLUE
   Jobs, YELLOW, T0
   Project, GREEN, T1
-  LeetCode, RED, T2
+  LeetCode, LIGHT_BLUE, T2
 }
 
 EVENT {
-  Workout, ORANGE, true, 11:00-12:30, MON TUE WED THU FRI
+  Workout, LIGHT_CORAL, true, 11:00-12:30, MON TUE WED THU FRI
 }
