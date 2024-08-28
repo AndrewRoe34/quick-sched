@@ -490,6 +490,9 @@ public class JBin {
                                     int numDays = Time.differenceOfDays(tempTask.getDueDate(), currDay);
                                     if (numDays >= -1 * maxArchiveDays) {
                                         card.addTask(tempTask);
+                                        if (tempTask.getTag() == null) {
+                                            tempTask.setTag(card.getTitle());
+                                        }
                                         if (tempTask.getColor() == null) {
                                             tempTask.setColor(card.getColorId());
                                         }

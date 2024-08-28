@@ -31,6 +31,7 @@ public class Task implements Comparable<Task>, Linker {
     /** CheckList of Items for Task */
     private CheckList checkList;
     private Card.Colors color;// todo we will use this in place of the label
+    private String tag;
 
     /**
      * Primary constructor for Task
@@ -78,6 +79,14 @@ public class Task implements Comparable<Task>, Linker {
      */
     private void setId(int id) { //TODO need exception for case where ID is negative
         this.id = id;
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 
     /**

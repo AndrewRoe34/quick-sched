@@ -3,6 +3,7 @@ package com.planner.util;
 import com.planner.models.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.planner.schedule.day.Day;
 
 public class JsonHandler {
     //todo will need to reformat individual instances to make sure they properly link
@@ -36,5 +37,10 @@ public class JsonHandler {
     public static Task readTaskJson(String jsonStr) {
         Gson gson = new Gson();
         return gson.fromJson(jsonStr, Task.class);
+    }
+
+    public static String createDayJson(Day day) {
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        return gson.toJson(day);
     }
 }

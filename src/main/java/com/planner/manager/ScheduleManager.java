@@ -221,6 +221,22 @@ public class ScheduleManager {
         return recurringEvents;
     }
 
+    public UserConfig getUserConfig() {
+        return userConfig;
+    }
+
+    public int getNumTasks() {
+        return archivedTasks.size() + taskManager.size();
+    }
+
+    public PriorityQueue<Task> getTaskManager() {
+        return taskManager;
+    }
+
+    public PriorityQueue<Task> getArchivedTasks() {
+        return archivedTasks;
+    }
+
     /**
      * Gets last ID for Task
      *
@@ -556,7 +572,7 @@ public class ScheduleManager {
     }
 
     public String buildScheduleStr() {
-        return TableFormatter.formatScheduleTable(schedule, userConfig, userConfig.isFormatPrettyTable());
+        return TableFormatter.formatScheduleTable(schedule, true);
     }
 
     public String buildEventStr() {

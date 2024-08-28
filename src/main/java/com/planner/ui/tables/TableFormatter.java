@@ -73,9 +73,9 @@ public class TableFormatter {
     public static String formatPrettyScriptOptionsTable(List<File> scriptList) {
         StringBuilder sb = new StringBuilder();
         sb.append("                                                      Script Options\n");
-        sb.append("                                         ____________________________________________\n");
+        sb.append("                                         +------------------------------------------+\n");
         sb.append("                                         |ID    |Name                 | DATE        |\n");
-        sb.append("                                         |______|_____________________|_____________|\n");
+        sb.append("                                         +------+---------------------+-------------+\n");
         int id = 0;
         for (File file : scriptList) {
             Date date = new Date(file.lastModified());
@@ -85,7 +85,7 @@ public class TableFormatter {
             String formattedOptionValue = String.format("|%-6d|%-19s  |%-13s|\n", id++, file.getName(), strDate);
             sb.append(formattedOptionValue);
         }
-        sb.append("                                         |______|_____________________|_____________|");
+        sb.append("                                         +------+---------------------+-------------+");
         return sb.toString();
     }
 
@@ -93,118 +93,189 @@ public class TableFormatter {
      * Creates a schedule table consisting of {@link Day}, providing options for both dotted and pretty formats
      *
      * @param schedule list of scheduled days
-     * @param isPretty whether to display table with pretty format
      * @return dotted schedule table
      */
-    public static String formatScheduleTable(List<Day> schedule, UserConfig userConfig, boolean isPretty) {
+    public static String formatScheduleTable(List<Day> schedule, boolean useColor) {
         StringBuilder sb = new StringBuilder();
+        sb.append("SCHEDULE:\n");
+        sb.append("ID     |NAME                |TAG            |HOURS     |TIME                |DUE         |\n");
+        sb.append("------------------------------------------------------------------------------------------\n");
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-        Calendar date = Time.getFormattedCalendarInstance(0);
+        boolean flag = false;
+        for (Day day : schedule) {
+            if (flag) {
+                sb.append("\n");
+            } else flag = true;
 
-        if (isPretty) {
-            sb.append("             SCHEDULE:\n");
-            sb.append("            ");
-            sb.append("_________________________________________".repeat(schedule.size()));
-            sb.append("_\n");
-        } else {
-            sb.append("SCHEDULE:\n");
-        }
+            String date = sdf.format(day.getDate().getTime());
+            // print out day here
+            sb.append(date).append("\n");
 
-        int maxItems = 0;
-        if (isPretty) {
-            sb.append("            |");
-        }
-        int[][] task_eventPair = new int[schedule.size()][2];
-        for (int i = 0; i < Math.min(schedule.size(), 6); i++) {
-            sb.append(sdf.format(date.getTime()));
-            sb.append("                              |");
-            maxItems = Math.max(maxItems, schedule.get(i).getNumSubTasks() + schedule.get(i).getEventList().size());
-            task_eventPair[i][0] = 0;
-            task_eventPair[i][1] = 0;
-            date = Time.getFormattedCalendarInstance(date, 1);
-        }
+            int taskIdx = 0;
+            int eventIdx = 0;
+            while (taskIdx < day.getNumSubTasks() || eventIdx < day.getNumEvents()) {
+                Card.Colors colors = null;
+                int id = 0;
+                String name = "";
+                String tag = "       -       ";
+                double hours = 0;
+                String timeStamp = "";
+                String due = "     -    ";
+                if (taskIdx >= day.getNumSubTasks() || eventIdx < day.getNumEvents() &&
+                        Time.isPastEvent(day.getSubTaskList().get(taskIdx).getTimeStamp().getStart(),
+                                day.getEventList().get(eventIdx).getTimeStamp().getStart())) {
+                    Event event = day.getEvent(eventIdx);
 
-        sb.append("\n");
-        if (isPretty) {
-            sb.append("            |");
-            sb.append("________________________________________|".repeat(schedule.size()));
-        } else {
-            sb.append("-----------------------------------------".repeat(schedule.size()));
-        }
-
-
-
-        for (int i = 0; i < maxItems; i++) {
-            sb.append("\n");
-            if (isPretty) {
-                sb.append("            |");
-            }
-            for (int d = 0; d < Math.min(schedule.size(), 6); d++) {
-                Day day = schedule.get(d);
-
-                if (i < (day.getNumSubTasks() + day.getNumEvents())) {
-                    Time.TimeStamp ts = null;
-                    String name = null;
-                    Card.Colors color = null;
-                    if (task_eventPair[d][0] >= day.getNumSubTasks()) {
-                        Event e1 = day.getEvent(task_eventPair[d][1]);
-                        ts = e1.getTimeStamp();
-                        name = e1.getName();
-                        color = e1.getColor();
-                        task_eventPair[d][1]++;
-                    } else if (task_eventPair[d][1] >= day.getNumEvents()) {
-                        Task.SubTask st1 = day.getSubTask(task_eventPair[d][0]);
-                        ts = st1.getTimeStamp();
-                        name = st1.getParentTask().getName();
-                        color = st1.getParentTask().getColor();
-                        task_eventPair[d][0]++;
-                    } else {
-                        Event e1 = day.getEvent(task_eventPair[d][1]);
-                        Task.SubTask st1 = day.getSubTask(task_eventPair[d][0]);
-                        if (Time.isBeforeEvent(e1.getTimeStamp().getStart(), st1.getTimeStamp().getStart())) {
-                            ts = e1.getTimeStamp();
-                            name = e1.getName();
-                            color = e1.getColor();
-                            task_eventPair[d][1]++;
-                        } else {
-                            ts = st1.getTimeStamp();
-                            name = st1.getParentTask().getName();
-                            color = st1.getParentTask().getColor();
-                            task_eventPair[d][0]++;
-                        }
-                    }
-
-                    if (userConfig.isLocalScheduleColors()) {
-                        String colorANSICode = getColorANSICode((color));
-                        sb.append(colorANSICode);
-                    }
-
-                    sb.append(ts).append(" - "); // 18 char
-
-                    if (name.length() > 21) {
-                        sb.append(name, 0, 21);
-                    } else {
-                        sb.append(name);
-                        sb.append(" ".repeat(22 - name.length()));
-                    }
-
-                    if (userConfig.isLocalScheduleColors())
-                        sb.append("\u001B[0m");
-
-                    sb.append("|");
-
+                    colors = event.getColor();
+                    id = event.getId();
+                    name = event.getName();
+                    hours = Time.getTimeInterval(event.getTimeStamp().getStart(), event.getTimeStamp().getEnd());
+                    timeStamp = event.getTimeStamp().toString();
+                    eventIdx++;
                 } else {
-                    sb.append("                                        |");
+                    // handle Task data
+                    Task.SubTask subTask = day.getSubTask(taskIdx);
+                    Task task = subTask.getParentTask();
+
+                    colors = task.getColor();
+                    id = task.getId();
+                    name = task.getName();
+                    tag = task.getTag() != null ? task.getTag() : tag;
+                    hours = subTask.getSubTaskHours();
+                    timeStamp = subTask.getTimeStamp().toString();
+                    due = task.getDateStamp();
+                    taskIdx++;
+                }
+
+                if (useColor && colors != null) {
+                    sb.append(getColorANSICode(colors));
+                }
+
+                sb.append(id)
+                        .append(" ".repeat(7 - String.valueOf(id).length()))
+                        .append("|");
+
+                if (name.length() > 20) {
+                    sb.append(name, 0, 20).append("|");
+                } else {
+                    sb.append(name)
+                            .append(" ".repeat(20 - name.length()))
+                            .append("|");
+                }
+                sb.append(tag)
+                        .append(" ".repeat(15 - tag.length()))
+                        .append("|");
+                sb.append(hours)
+                        .append(" ".repeat(10 - String.valueOf(hours).length()))
+                        .append("|");
+                sb.append(timeStamp)
+                        .append("     |");
+                sb.append(due)
+                        .append("  |\n");
+                if (useColor) {
+                    sb.append("\u001B[0m");
                 }
             }
         }
+
         sb.append("\n");
 
-        if (isPretty) {
-            sb.append("            |");
-            sb.append("________________________________________|".repeat(Math.min(schedule.size(), 6)));
-            sb.append("\n");
+        return sb.toString();
+    }
+
+    public static String formatTaskTable(PriorityQueue<Task> currTasks, PriorityQueue<Task> archiveTasks, boolean useColor) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("TASKS:\n");
+        sb.append("ID     |NAME                |TAG            |HOURS     |DUE         |ARCHIVED |\n");
+        sb.append("-------------------------------------------------------------------------------\n");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+
+        List<Task> list = new ArrayList<>(archiveTasks);
+        int numArchived = list.size();
+        list.addAll(currTasks);
+
+        int idx = 0;
+        for (Task task : list) {
+            Card.Colors colors = task.getColor();
+            int id = task.getId();
+            String name = task.getName();
+            String tag = task.getTag() != null ? task.getTag() : "       -       ";
+            double hours = task.getTotalHours();
+            String due = task.getDateStamp();
+
+            if (useColor && colors != null) {
+                sb.append(getColorANSICode(colors));
+            }
+
+            sb.append(id)
+                    .append(" ".repeat(7 - String.valueOf(id).length()))
+                    .append("|");
+
+            if (name.length() > 20) {
+                sb.append(name, 0, 20).append("|");
+            } else {
+                sb.append(name)
+                        .append(" ".repeat(20 - name.length()))
+                        .append("|");
+            }
+            sb.append(tag)
+                    .append(" ".repeat(15 - tag.length()))
+                    .append("|");
+            sb.append(hours)
+                    .append(" ".repeat(10 - String.valueOf(hours).length()))
+                    .append("|");
+            sb.append(due)
+                    .append("  |");
+            if (idx < numArchived) {
+                sb.append("TRUE     |\n");
+            } else {
+                sb.append("FALSE    |\n");
+            }
+            if (useColor) {
+                sb.append("\u001B[0m");
+            }
+            idx++;
         }
+
+        sb.append("\n");
+
+        return sb.toString();
+    }
+
+    public static String formatCardTable(List<Card> cards, boolean useColor) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("CARDS:\n");
+        sb.append("ID     |NAME                |COLOR          |\n");
+        sb.append("---------------------------------------------\n");
+
+        for (Card card : cards) {
+            String colors = card.getColorId() + "";
+            int id = card.getId();
+            String name = card.getTitle();
+
+            if (useColor && card.getColorId() != null) {
+                sb.append(getColorANSICode(card.getColorId()));
+            }
+
+            sb.append(id)
+                    .append(" ".repeat(7 - String.valueOf(id).length()))
+                    .append("|");
+
+            if (name.length() > 20) {
+                sb.append(name, 0, 20).append("|");
+            } else {
+                sb.append(name)
+                        .append(" ".repeat(20 - name.length()))
+                        .append("|");
+            }
+            sb.append(colors)
+                    .append(" ".repeat(15 - colors.length()))
+                    .append("|\n");
+        }
+
+        sb.append("\n");
 
         return sb.toString();
     }
@@ -495,7 +566,7 @@ public class TableFormatter {
         } else {
             sb.append("SUBTASKS:\n");
         }
-        sb.append("ID     |NAME                |COLOR          |HOURS     |TIME                |DATE        |DUE         |\n");
+        sb.append("ID     |NAME                |TAG            |HOURS     |TIME                |DATE        |DUE         |\n");
 
         if (userConfig.isFormatPrettyTable()) {
             sb.append("            |_______|____________________|_______________|__________|____________________|____________|____________|\n");
@@ -519,7 +590,10 @@ public class TableFormatter {
                 else
                     sb.append(subTask.getParentTask().getName()).append(" ".repeat(20 - subTask.getParentTask().getName().length())).append("|");
 
-                sb.append(subTask.getParentTask().getColor()).append(" ".repeat(15 - String.valueOf(subTask.getParentTask().getColor()).length())).append("|");
+                String tag = "       -       ";
+                tag = subTask.getParentTask().getTag() != null ? subTask.getParentTask().getTag() : tag;
+                sb.append(tag).append(" ".repeat(15 - tag.length())).append("|");
+
                 sb.append(subTask.getSubTaskHours()).append(" ".repeat(10 - String.valueOf(subTask.getSubTaskHours()).length())).append("|");
                 sb.append(subTask.getTimeStamp().toString()).append(" ".repeat(20 - subTask.getTimeStamp().toString().length())).append("|");
 

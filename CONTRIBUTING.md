@@ -114,36 +114,6 @@ Please select the appropriate template when creating your issue or pull request 
    - Regularly review the coverage report to identify areas of code that are not adequately covered by tests.
    - Write additional tests or enhance existing ones to improve overall test coverage to at least 80%.
 
-
-## Commit Message Guidelines
-
-Each commit message should start with a tag indicating the type of change, followed by a brief description. Optionally, you can list specific items or details related to the commit.
-
-### Tags and Examples
-
-- **[Feature]**: Implemented user authentication
-   - Added login form
-   - Implemented JWT token handling
-   - Added user registration endpoint
-
-- **[Batch]**: Updated dependencies and fixed UI bugs
-   - Updated packages to latest versions
-   - Fixed responsive design issues
-
-- **[Test]**: Added unit tests for user service
-   - Created test cases for login and registration
-
-- **[Refactor]**: Optimized database query performance
-   - Refactored SQL queries for efficiency
-
-- **[Doc]**: Updated API documentation
-   - Added detailed usage instructions
-
-- **[Fix/Hotfix]**: Fixed critical error when attempting to serialize schedule
-    - Resolved issue causing serialization failure due to incorrect data format handling
-
-By adhering to these guidelines, you help us maintain consistency and clarity in our project's commit history.
-
 ## Code Style
 Code is an expression of logical thought, and therefore, it must be properly formatted to ensure readability and clarity.
 
@@ -336,7 +306,7 @@ int optimizeDay(Day day);
 ```
 
 ## Review Process
-Thank you for contributing to our project! Here’s what happens after you submit a pull request:
+Here’s what happens after you submit a pull request:
 1. **Initial Review:**
     - Project maintainers will review your changes to ensure they align with our project's goals and guidelines.
 

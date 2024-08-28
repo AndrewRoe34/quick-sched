@@ -23,31 +23,6 @@ public class TUIContext {
     private static final TUIState editorState = new EditorState();
     private static final TUIState configState = new ConfigState();
 
-    private static final String splashScreen = "\n" +
-            "\n" +
-            "                                ________  ________  ___  ___       _______           ________  ___       ________  ________   ________   _______   ________     \n" +
-            "                                |\\   __  \\|\\   ____\\|\\  \\|\\  \\     |\\  ___ \\         |\\   __  \\|\\  \\     |\\   __  \\|\\   ___  \\|\\   ___  \\|\\  ___ \\ |\\   __  \\    \n" +
-            "                                \\ \\  \\|\\  \\ \\  \\___|\\ \\  \\ \\  \\    \\ \\   __/|        \\ \\  \\|\\  \\ \\  \\    \\ \\  \\|\\  \\ \\  \\\\ \\  \\ \\  \\\\ \\  \\ \\   __/|\\ \\  \\|\\  \\   \n" +
-            "                                 \\ \\   __  \\ \\  \\  __\\ \\  \\ \\  \\    \\ \\  \\_|/__       \\ \\   ____\\ \\  \\    \\ \\   __  \\ \\  \\\\ \\  \\ \\  \\\\ \\  \\ \\  \\_|/_\\ \\   _  _\\  \n" +
-            "                                  \\ \\  \\ \\  \\ \\  \\|\\  \\ \\  \\ \\  \\____\\ \\  \\_|\\ \\       \\ \\  \\___|\\ \\  \\____\\ \\  \\ \\  \\ \\  \\\\ \\  \\ \\  \\\\ \\  \\ \\  \\_|\\ \\ \\  \\\\  \\| \n" +
-            "                                   \\ \\__\\ \\__\\ \\_______\\ \\__\\ \\_______\\ \\_______\\       \\ \\__\\    \\ \\_______\\ \\__\\ \\__\\ \\__\\\\ \\__\\ \\__\\\\ \\__\\ \\_______\\ \\__\\\\ _\\ \n" +
-            "                                    \\|__|\\|__|\\|_______|\\|__|\\|_______|\\|_______|        \\|__|     \\|_______|\\|__|\\|__|\\|__| \\|__|\\|__| \\|__|\\|_______|\\|__|\\|__|\n" +
-            "\n" +
-            "\n" +
-            "                                                                                AGILE PLANNER v0.5.0 [RELEASE]\n" +
-            "\n" +
-            "\n" +
-            "\n" +
-            "\n" +
-            "\n" +
-            "\n" +
-            "                                                                                Start Session                S\n" +
-            "                                                                                Editor                       E\n" +
-            "                                                                                Config                       C\n" +
-            "                                                                                Quit                         Q\n" +
-            "\n" +
-            "                                                                        user> ";
-
     public void setTuiState(TUIState tuiState) {
         this.tuiState = tuiState;
     }
@@ -66,7 +41,7 @@ public class TUIContext {
         );
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println("Application Version: 0.5.0");
+        System.out.println("Application Version: 0.6.0");
         sleep(1000);
         System.out.println("Current Date and Time: " + sdf.format(Calendar.getInstance().getTime()));
 
@@ -187,18 +162,23 @@ public class TUIContext {
         TUIContext tuiContext = new TUIContext();
         TUIState.clearScreen();
         tuiContext.sessionStartUp();
-        TUIState.clearScreen();
+//        TUIState.clearScreen();
 
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter 'man' to see all available commands.");
         while (true) {
-            System.out.print(splashScreen);
+            System.out.print("> ");
             if (scanner.hasNextLine()) {
                 String userInput = scanner.nextLine();
                 if (!userInput.isBlank()) {
                     switch (Character.toUpperCase(userInput.charAt(0))) {
+                        case 'M':
+                            System.out.println("S - Session\nE - Editor\nC - Config\nQ - Quit");
+                            break;
                         case 'S':
                             tuiContext.setTuiState(sessionState);
                             tuiContext.configurePage();
+                            TUIState.clearScreen();
                             break;
                         case 'E':
                             tuiContext.setTuiState(editorState);
@@ -207,14 +187,15 @@ public class TUIContext {
                         case 'C':
                             tuiContext.setTuiState(configState);
                             tuiContext.configurePage();
+//                            TUIState.clearScreen();
                             break;
                         case 'Q':
                             System.exit(0);
                     }
                 }
             } else break;
-            // clear the screen here to refresh the page
-            TUIState.clearScreen();
+//            // clear the screen here to refresh the page
+//            TUIState.clearScreen();
         }
     }
 }

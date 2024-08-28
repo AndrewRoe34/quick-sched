@@ -10,6 +10,7 @@ import com.planner.schedule.day.Day;
 import com.planner.scripter.exception.*;
 import com.planner.scripter.tools.ScriptLog;
 import com.planner.models.CheckList;
+import com.planner.scripter.tools.SessionLog;
 import com.planner.util.EventLog;
 import com.planner.util.Time;
 
@@ -197,6 +198,7 @@ public class ScriptFSM {
 
         IOProcessing.writeScripterLogToFile(scriptLog.toString());
         IOProcessing.writeSysLogToFile(eventLog.toString());
+        IOProcessing.writeSesLogToFile(SessionLog.buildSessionLog(scheduleManager, filename));
         Path path = Paths.get(filename);
         if(preProcessor.isLog()) {
             try {

@@ -106,6 +106,22 @@ public class IOProcessing {
         }
     }
 
+    public static void writeSesLogToFile(String str) throws IOException {
+        // Define the path for the 'logs' directory
+        Path logsDirectory = Paths.get("logs");
+
+        // Create the 'logs' directory if it does not exist
+        if (!Files.exists(logsDirectory)) {
+            Files.createDirectories(logsDirectory);
+        }
+
+        // Create a PrintStream to write to a file in the 'logs' directory
+        Path logFile = logsDirectory.resolve("session.log");
+        try (PrintStream outputStream = new PrintStream(logFile.toFile())) {
+            outputStream.print(str);
+        }
+    }
+
     public static void writeScripterPage(String page, String scriptName) throws IOException {
         // Define the path for the 'logs' directory
         Path htmlDirectory = Paths.get("data/html");
