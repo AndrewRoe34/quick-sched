@@ -19,7 +19,7 @@ public class ConfigState implements TUIState {
 
     public ConfigState() {
         try {
-            userConfig = JsonHandler.readUserConfig(Files.readString(Paths.get("settings/profile.cfg")));
+            userConfig = JsonHandler.readUserConfig(Files.readString(Paths.get("settings/profile.json")));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

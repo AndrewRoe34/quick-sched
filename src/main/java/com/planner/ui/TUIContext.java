@@ -49,7 +49,7 @@ public class TUIContext {
             // Get Java version
             String javaVersionCommand = "java -version";
             String javaVersion = executeCommand(javaVersionCommand);
-            UserConfig userConfig = JsonHandler.readUserConfig(Files.readString(Paths.get("settings/profile.cfg")));
+            UserConfig userConfig = JsonHandler.readUserConfig(Files.readString(Paths.get("settings/profile.json")));
             String sysInfo = getSystemInfo();
 
             System.out.println(
