@@ -65,7 +65,7 @@ public class CompactScheduler implements Scheduler {
                 (!taskManager.isEmpty() && taskManager.peek().getDueDate().equals(day.getDate()))) {
             // gets first task from heap and finds max possible hours available
             Task task = taskManager.remove();
-            double maxHours = getNonEventMaxHours(day, task, date);
+            double maxHours = getMaxHours(day, task, date);
             // status of task creation
             boolean validTaskStatus = day.addPlainSubTask(task, maxHours, userConfig, date, isToday);
             // adds task to relevant completion heap
@@ -84,18 +84,9 @@ public class CompactScheduler implements Scheduler {
         return numErrors;
     }
 
-    private double getNonEventMaxHours(Day day, Task task, Calendar date) {
+    private double getMaxHours(Day day, Task task, Calendar date) {
         // sets up the starting hour for the day based on the given time from 'date'
-        int startingHour = date.get(Calendar.HOUR_OF_DAY);
-        isToday = false;
-        if (date.get(Calendar.DATE) == day.getDate().get(Calendar.DATE)
-                && date.get(Calendar.MONTH) == day.getDate().get(Calendar.MONTH)
-                && date.get(Calendar.YEAR) == day.getDate().get(Calendar.YEAR)) {
-            startingHour = Math.max(userConfig.getRange()[0], startingHour);
-            isToday = true;
-        } else {
-            startingHour = userConfig.getRange()[0];
-        }
+        int startingHour = getStartingHour(day, date);
 
         // resets startingHour to beginning of day
         if (userConfig.isDefaultAtStart()) startingHour = userConfig.getRange()[0];
@@ -109,9 +100,6 @@ public class CompactScheduler implements Scheduler {
                 if (remainingHours - maxHours == 0.0 && date.get(Calendar.MINUTE) >= 30) {
                     maxHours -= 0.5;
                 }
-//                if (startingHour + maxHours >= 24 && date.get(Calendar.MINUTE) >= 30) {
-//                    maxHours -= 0.5;
-//                }
             } else {
                 maxHours = task.getSubTotalHoursRemaining();
             }
@@ -123,7 +111,6 @@ public class CompactScheduler implements Scheduler {
             }
         } else {
             maxHours = Math.min(day.getSpareHours(), task.getSubTotalHoursRemaining());
-//            if (maxHours < userConfig.getMinHours() && task.getSubTotalHoursRemaining() > maxHours) maxHours = 0.0;
         }
         // this only works with compact scheduler since it clumps tasks together when assigning them
         // logic: if our 'maxHours' for the task is less than 'minHours' from config
@@ -132,9 +119,18 @@ public class CompactScheduler implements Scheduler {
         return maxHours;
     }
 
-    private double getEventMaxHours(Day day, Task task, Calendar date) {
-        // todo
-        return 0.0;
+    private int getStartingHour(Day day, Calendar date) {
+        int startingHour = date.get(Calendar.HOUR_OF_DAY);
+        isToday = false;
+        if (date.get(Calendar.DATE) == day.getDate().get(Calendar.DATE)
+                && date.get(Calendar.MONTH) == day.getDate().get(Calendar.MONTH)
+                && date.get(Calendar.YEAR) == day.getDate().get(Calendar.YEAR)) {
+            startingHour = Math.max(userConfig.getRange()[0], startingHour);
+            isToday = true;
+        } else {
+            startingHour = userConfig.getRange()[0];
+        }
+        return startingHour;
     }
 
     @Override

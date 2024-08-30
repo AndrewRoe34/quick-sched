@@ -3,7 +3,6 @@ package com.planner.scripter;
 import com.planner.models.Card;
 import com.planner.models.Linker;
 import com.planner.scripter.exception.InvalidGrammarException;
-import com.planner.models.CheckList;
 
 /**
  * Manages and stores data for the specified variable within the Simple scripting language. It handles all core
@@ -291,44 +290,6 @@ public class Type implements Comparable<Type> {
             case TASK:
                 if(args.length != 1) throw new InvalidGrammarException();
                 return new Type(addType(args[0]), null);
-            case CHECKLIST:
-                switch(attr) {
-                    case GET_ID:
-                        if(args.length != 0) throw new InvalidGrammarException();
-                        return new Type(((CheckList) datatype).getChecklistId(), null);
-                    case GET_TITLE:
-                        if(args.length != 0) throw new InvalidGrammarException();
-                        return new Type(((CheckList) datatype).getName(), null);
-                    case SET_TITLE:
-                        if(args.length != 1) throw new InvalidGrammarException();
-                        ((CheckList) datatype).setName(args[0].getStringConstant());
-                        return null;
-                    case GET_PERCENT:
-                        if(args.length != 0) throw new InvalidGrammarException();
-                        return new Type(((CheckList) datatype).getPercentage(), null);
-                    case ADD_ITEM:
-                        if(args.length != 1) throw new InvalidGrammarException();
-                        boolean status = ((CheckList) datatype).addItem(args[0].getStringConstant());
-                        return new Type(status, null);
-                    case REMOVE_ITEM_BY_ID:
-                        if(args.length != 1) throw new InvalidGrammarException();
-                        ((CheckList) datatype).removeItemById(args[0].getIntConstant());
-                        return null;
-                    case REMOVE_ITEM_BY_NAME:
-                        if(args.length != 1) throw new InvalidGrammarException();
-                        ((CheckList) datatype).removeItemByName(args[0].getStringConstant());
-                        return null;
-                    case MARK_ITEM_BY_ID:
-                        if(args.length != 2) throw new InvalidGrammarException();
-                        ((CheckList) datatype).markItemById(args[0].getIntConstant(), args[1].getBoolConstant());
-                        return null;
-                    case MARK_ITEM_BY_NAME:
-                        if(args.length != 2) throw new InvalidGrammarException();
-                        ((CheckList) datatype).markItemByName(args[0].getStringConstant(), args[1].getBoolConstant());
-                        return null;
-                    default:
-                        throw new InvalidGrammarException();
-                }
             case INTEGER:
                 switch(attr) {
                     case ADD_ONE: //todo need to integrate for /, *, %

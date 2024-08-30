@@ -9,7 +9,6 @@ import com.planner.models.web.ScriptPage;
 import com.planner.schedule.day.Day;
 import com.planner.scripter.exception.*;
 import com.planner.scripter.tools.ScriptLog;
-import com.planner.models.CheckList;
 import com.planner.scripter.tools.SessionLog;
 import com.planner.util.EventLog;
 import com.planner.util.Time;
@@ -440,15 +439,6 @@ public class ScriptFSM {
             }
             scheduleManager.addTask(createdTask);
 //            taskList.add(createdTask);
-        } else if(classInstance instanceof CheckListInstance) {
-            CheckListInstance cl = (CheckListInstance) classInstance;
-            t1 = lookupVariable(cl.getVarName());
-            if(t1 == null) {
-                t1 = new Type(new CheckList(scheduleManager.getLastCLId() + clList.size(), cl.getTitle()), cl.getVarName(), Type.TypeId.CHECKLIST);
-                globalStack.add(t1);
-            } else {
-                t1.setLinkerData(new CheckList(scheduleManager.getLastCLId() + clList.size(), cl.getTitle()), Type.TypeId.CHECKLIST);
-            }
         } else if (classInstance instanceof StringInstance) {
             StringInstance str = (StringInstance) classInstance;
             t1 = lookupVariable(str.getVarName());
@@ -1215,12 +1205,6 @@ public class ScriptFSM {
             System.out.println(task.getName());
             System.out.println("  Hrs: " + task.getTotalHours());
             System.out.println("  Due: " + sdf.format(task.getDueDate().getTime()));
-            if (task.getChecklist() != null) {
-                System.out.println("  CL: " + task.getChecklist().getName());
-                for (CheckList.Item item : task.getChecklist().getItems()) {
-                    System.out.println("    It: " + item.getDescription());
-                }
-            }
         }
     }
 

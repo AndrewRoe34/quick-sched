@@ -4,7 +4,6 @@ import com.planner.scripter.exception.DereferenceNullException;
 import com.planner.scripter.exception.InvalidGrammarException;
 import com.planner.models.Card;
 import com.planner.models.Task;
-import com.planner.models.CheckList;
 
 import java.util.*;
 
@@ -447,10 +446,6 @@ public class Parser {
             case "task":
                 inst = parseTask(args);
                 break;
-            case "checklist":
-            case "cl":
-                inst = parseCheckList(args);
-                break;
             default:
                 return null;
         }
@@ -482,17 +477,6 @@ public class Parser {
 //        return arguments.length == 3 ? new TaskInstance(arguments[0].trim(),
 //                Integer.parseInt(arguments[1].trim()), Integer.parseInt(arguments[2].trim())) : null;
         return args.length == 3 ? new TaskInstance(args[0].getStringConstant(), args[1].getIntConstant(), args[2].getIntConstant()) : null;
-    }
-
-    /**
-     * Parses an instance of {@link CheckList} and wraps it around {@link CheckListInstance}
-     *
-     * @param args arguments for the given class
-     * @return formatted {@link CheckListInstance}
-     */
-    private ClassInstance parseCheckList(Type[] args) {
-//        String[] arguments = args.split(FUNC_REGEX, -1);
-        return args.length == 1 ? new CheckListInstance(args[0].getStringConstant()) : null;
     }
 
     private int skipWhiteSpace(String line, int startIdx) {

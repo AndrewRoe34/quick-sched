@@ -193,6 +193,8 @@ public class Day {
 
     // [COMPLETE]
     private double createEventTimeStamps(double hours, UserConfig userConfig, Calendar time, boolean isToday) {
+        // todo we'll handle event edge case here (simply check whether it's within the bounds for the day)
+        //  avoid 'clever' solutions
         /*
         Steps:
         1. Call getFirstAvailableTime(...) to determine first available (and usable) timeslot (Note: usable means > 30 min)
@@ -210,6 +212,9 @@ public class Day {
             temp = this.date;
         }
         Calendar startTime = Time.getFirstAvailableTimeInDay(taskTimeStamps, eventTimeStamps, userConfig, temp, isToday);
+        // todo check whether startTime is within valid bounds (if it is, cap it at: Min(hours_remaining, hours_till_end_of_day) )
+        //  once this is done (as well as handling 'eventTimeStamp'), return '0' (note: make sure to check whether 'fit_day' is true )
+
         TimeStamp eventTimeStamp = null;
         for (TimeStamp eTS : eventTimeStamps) { // this list needs to be sorted (given assumption below)
             if (Time.isBeforeEvent(startTime, eTS.getStart())) {

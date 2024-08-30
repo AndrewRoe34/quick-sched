@@ -255,21 +255,6 @@ public class ScheduleManager {
         return dayId;
     }
 
-    public void addTaskList(List<Task> list) {
-        for(Task t : list) {
-            taskMap.put(taskId, t);
-            taskManager.add(t);
-            eventLog.reportTaskAction(t, 0);
-        }
-    }
-
-    public void addCardList(List<Card> list) {
-        for(Card c : list) {
-            cards.add(c);
-            eventLog.reportCardAction(c, 0);
-        }
-    }
-
     /**
      * Adds an event to the manager
      *
@@ -456,115 +441,6 @@ public class ScheduleManager {
         errorCount = 0;
         dayId = 0;
         Collections.sort(indivEvents);
-    }
-
-    /**
-     * Creates a CheckList for a particular Task
-     *
-     * @param t1 task being utilized
-     * @param title title for the Item
-     * @return newly created CheckList
-     */
-    public CheckList createTaskCheckList(Task t1, String title) {
-        CheckList cl = t1.addCheckList(0, title);
-        eventLog.reportCheckListCreation(cl);
-        return cl;
-    }
-
-    public CheckList removeTaskCheckList(Task t1) {
-        CheckList cl = t1.removeCheckList();
-        if(cl != null) {
-            eventLog.reportCheckListRemoval(cl);
-        }
-        return cl;
-    }
-
-    /**
-     * Adds a CheckList Item for a Task
-     *
-     * @param t1 task being utilized
-     * @param description description info for Item
-     * @return boolean status for successful add
-     */
-    public boolean addTaskCheckListItem(Task t1, String description) {
-        boolean status = t1.addItem(description);
-        if(status) {
-            eventLog.reportCheckListAction(t1.getCheckList(), t1.getCheckList().size() - 1, 1);
-        }
-        return status;
-    }
-
-    /**
-     * Removes a CheckList Item from a Task
-     *
-     * @param t1 task being utilized
-     * @param itemIdx index for Item
-     * @return Item removed from CheckList
-     */
-    public CheckList.Item removeTaskCheckListItem(Task t1, int itemIdx) {
-        eventLog.reportCheckListAction(t1.getCheckList(), itemIdx, 0);
-        return t1.removeItem(itemIdx);
-    }
-
-    /**
-     * Shifts an Item in the CheckList
-     *
-     * @param t1 task being utilized
-     * @param itemIdx index for Item
-     * @param shiftIdx index for updated position
-     * @return boolean status for successful shift
-     */
-    public boolean shiftTaskItem(Task t1, int itemIdx, int shiftIdx) {
-        eventLog.reportCheckListAction(t1.getCheckList(), itemIdx, 4);
-        return t1.shiftItem(itemIdx, shiftIdx);
-    }
-
-    /**
-     * Marks a Task item as complete or incomplete
-     *
-     * @param t1 task being utilized
-     * @param itemIdx index for Item
-     * @param flag boolean status for completion
-     */
-    public void markTaskItem(Task t1, int itemIdx, boolean flag) {
-        t1.markItem(itemIdx, flag);
-        if(flag) {
-            eventLog.reportCheckListAction(t1.getCheckList(), itemIdx, 2);
-        } else {
-            eventLog.reportCheckListAction(t1.getCheckList(), itemIdx, 2);
-        }
-    }
-
-    /**
-     * Gets a Task Item
-     *
-     * @param t1      task being utilized
-     * @param itemIdx index for Item
-     * @return Task Item
-     */
-    public CheckList.Item getTaskItem(Task t1, int itemIdx) {
-        return t1.getItem(itemIdx);
-    }
-
-    /**
-     * Gets Task CheckList in String format
-     *
-     * @param t1 task being utilized
-     * @return String formatted CheckList
-     */
-    public String getTaskStringCheckList(Task t1) {
-        return t1.getStringCheckList();
-    }
-
-    /**
-     * Resets Task CheckList
-     *
-     * @param t1 task being utilized
-     * @return boolean status for successful reset
-     */
-    public boolean resetTaskCheckList(Task t1) {
-        eventLog.reportCheckListReset(t1.getCheckList());
-        return t1.resetCheckList();
     }
 
     public String buildBoardString() {

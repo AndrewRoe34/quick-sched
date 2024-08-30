@@ -1,10 +1,8 @@
 package com.planner.util;
 
 import com.planner.models.Card;
-import com.planner.models.CheckList;
 import com.planner.models.Event;
 import com.planner.models.Task;
-import com.planner.manager.ScheduleManager;
 import com.planner.schedule.day.Day;
 import com.planner.scripter.exception.InvalidGrammarException;
 
@@ -89,7 +87,6 @@ public class JBin {
 
         StringBuilder cardSB = new StringBuilder();
         List<Task> taskList = new ArrayList<>();
-        List<CheckList> checkListList = new ArrayList<>();
 
         if(!cards.isEmpty()) {
             cardSB.append("CARD {\n");
@@ -123,27 +120,9 @@ public class JBin {
                         .append(totalHours)
                         .append(", ")
                         .append(Time.differenceOfDays(t.getDueDate(), calendar));
-                CheckList cl = t.getCheckList();
-                if(cl != null) {
-                    checkListList.add(cl);
-                    taskSB.append(", CL").append(checkListList.size() - 1);
-                }
                 taskSB.append("\n");
             }
             taskSB.append("}\n");
-        }
-
-        StringBuilder clSB = new StringBuilder();
-        if(!checkListList.isEmpty()) {
-            clSB.append("CHECKLIST {\n");
-            for(CheckList cl : checkListList) {
-                clSB.append("  ").append(cl.getName());
-                for(CheckList.Item i : cl.getItems()) {
-                    clSB.append(", ").append(i);
-                }
-                clSB.append("\n");
-            }
-            clSB.append("}\n\n");
         }
 
         StringBuilder daySB = new StringBuilder();
@@ -237,7 +216,6 @@ public class JBin {
 
         //now go from top to bottom with all the data you now have
         return calendarSB
-                .append(clSB)
                 .append(taskSB)
                 .append("\n")
                 .append(cardSB)
@@ -291,44 +269,12 @@ public class JBin {
         boolean dayOpen = false;
         boolean dayClosed = false;
 
-        List<CheckList> checkLists = new ArrayList<>();
         List<Task> taskList = new ArrayList<>();
 
         while(jbinScanner.hasNextLine()) {
             String type = jbinScanner.nextLine();
             String[] tokens = type.split("\\s");
-            if(!checklistOpen && tokens.length == 2 && "CHECKLIST".equals(tokens[0]) && "{".equals(tokens[1])) {
-                checklistOpen = true;
-                while(jbinScanner.hasNextLine()) {
-                    type = jbinScanner.nextLine();
-                    tokens = type.split(",");
-                    if(tokens.length == 0) {
-                        throw new InputMismatchException();
-                    } else if("}".equals(tokens[0].trim()) && tokens.length == 1) {
-                        checklistClosed = true;
-                        break;
-                    } else if(tokens.length == 1) {
-                        checkLists.add(new CheckList(checkLists.size(), tokens[0].trim()));
-                    } else {
-                        checkLists.add(new CheckList(checkLists.size(), tokens[0].trim()));
-                        int itemId = 0;
-                        for(int i = 1; i < tokens.length; i++) {
-                            String item = tokens[i];
-                            boolean complete = false;
-                            if(item.charAt(item.length() - 1) == '+') {
-                                complete = true;
-                                item = item.substring(0, item.length() - 1);
-                            }
-                            checkLists.get(checkLists.size() - 1).addItem(item.trim());
-                            checkLists.get(checkLists.size() - 1).markItemById(itemId++, complete);
-                        }
-                    }
-                }
-
-                if(!checklistClosed) {
-                    throw new IllegalArgumentException();
-                }
-            } else if(!taskOpen && tokens.length == 2 && "TASK".equals(tokens[0]) && "{".equals(tokens[1])) {
+            if(!taskOpen && tokens.length == 2 && "TASK".equals(tokens[0]) && "{".equals(tokens[1])) {
                 taskOpen = true;
                 while(jbinScanner.hasNextLine()) {
                     type = jbinScanner.nextLine();
@@ -341,17 +287,6 @@ public class JBin {
                     } else if(tokens.length == 3) {
                         taskList.add(new Task(taskList.size(), tokens[0].trim(), Double.parseDouble(tokens[1].trim()),
                                 Time.getFormattedCalendarInstance(calendar, Integer.parseInt(tokens[2].trim()))));
-                    } else if(tokens.length > 3) {
-                        taskList.add(new Task(taskList.size(), tokens[0].trim(), Double.parseDouble(tokens[1].trim()),
-                                Time.getFormattedCalendarInstance(calendar, Integer.parseInt(tokens[2].trim()))));
-                        for(int i = 3; i < tokens.length; i++) {
-                            String item = tokens[i].trim();
-                            if(item.length() > 2 && item.charAt(0) == 'C' && item.charAt(1) == 'L') {
-                                taskList.get(taskList.size() - 1).addCheckList(checkLists.get(Integer.parseInt(item.substring(2))));
-                            } else {
-                                throw new InputMismatchException();
-                            }
-                        }
                     } else {
                         throw new InputMismatchException();
                     }
@@ -360,9 +295,7 @@ public class JBin {
                 if(!taskClosed) {
                     throw new IllegalArgumentException();
                 }
-            }
-
-            else if(!eventOpen && tokens.length == 2 && "EVENT".equals(tokens[0]) && "{".equals(tokens[1])) {
+            } else if(!eventOpen && tokens.length == 2 && "EVENT".equals(tokens[0]) && "{".equals(tokens[1])) {
                 eventOpen = true;
 
                 while(jbinScanner.hasNextLine()) {
@@ -450,9 +383,7 @@ public class JBin {
 
                 if(!eventClosed)
                     throw new IllegalArgumentException();
-            }
-
-            else if(!cardOpen && tokens.length == 2 && "CARD".equals(tokens[0]) && "{".equals(tokens[1])) {
+            } else if(!cardOpen && tokens.length == 2 && "CARD".equals(tokens[0]) && "{".equals(tokens[1])) {
                 cardOpen = true;
                 Calendar currDay = Time.getFormattedCalendarInstance(0);
                 boolean firstCard = true;

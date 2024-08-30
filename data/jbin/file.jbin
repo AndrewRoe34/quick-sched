@@ -1,38 +1,19 @@
-27-08-2024
+29-08-2024
 
 TASK {
-  Something Something, 0.5, 2
-  Painting, 4.0, 6
-  Documentation, 2.5, 0
-  Study Usecases, 1.0, -3
-  Write Essay, 1.0, 1
-  Debate Prep, 4.0, -2
-  Read Ch4, 4.0, 5
-  Finish HW3, 8.0, 4
-  Apply for jobs, 7.0, 5
+  leetcode array, 10, 7
+  leetcode tree, 10, 7
+  leetcode sort, 10, 7
+  doc classes, 8, 4
+  refactor models, 10, 7
 }
 
 CARD {
-  Default, LIGHT_BLUE, T0, T1
-  Supply Chain, YELLOW, T2, T3
-  Business Law, RED, T4, T5
-  Philosophy, GREEN, T6, T7
-  Job Hunting, INDIGO, T8
+  Default, LIGHT_BLUE
+  LeetCode, LIGHT_BLUE, T0, T1, T2
+  Project, LIGHT_GREEN, T3, T4
 }
 
 EVENT {
-  Just me testing the text cutoff, GREEN, false, 17:00-18:50, 17-06-2024
-  Class-LAW, RED, true, 11:52-12:38, MON WED
-  Class-PHI, GREEN, true, 09:23-10:51, TUE THU
-  Class-SC, YELLOW, true, 12:45-14:15, TUE THU
-}
-
-DAY {
-  T2 1.0, T2 1.5, T4 1.0, T0 0.5, T7 4.0
-  T7 3.5, T7 0.5
-  N/A
-  T8 2.0
-  T8 3.0
-  T6 4.0, T8 2.0
-  T1 3.5, T1 0.5
+  Job, INDIGO, true, 14:00-23:00, MON TUE WED THU FRI
 }

@@ -28,8 +28,6 @@ public class Task implements Comparable<Task>, Linker {
     private double subTotalHours;
     /** # of hours / (DueDate - StartingDay) */
     private double averageNumHours;
-    /** CheckList of Items for Task */
-    private CheckList checkList;
     private Card.Colors color;// todo we will use this in place of the label
     private String tag;
 
@@ -239,136 +237,6 @@ public class Task implements Comparable<Task>, Linker {
         this.color = color;
     }
 
-    public boolean addCheckList(CheckList checkList) {
-        if(this.checkList == null) {
-            this.checkList = checkList;
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Adds a CheckList for the Task
-     *
-     * @param id ID for CheckList
-     * @param title Title for the CheckList
-     * @return CheckList instance
-     */
-    public CheckList addCheckList(int id, String title) {
-        if(checkList == null) {
-            this.checkList = new CheckList(id, title);
-        }
-        return checkList;
-    }
-
-    public CheckList removeCheckList() {
-        CheckList cl = checkList;
-        checkList = null;
-        return cl;
-    }
-
-    /**
-     * Adds an Item to the CheckList
-     *
-     * @param description Description info for the Item
-     * @return boolean status for whether successful or not
-     */
-    public boolean addItem(String description) {
-        return addItem(null, description);
-    }
-
-    /**
-     * Adds an Item to the CheckList
-     *
-     * @param subTask subtask being linked to Item
-     * @param description Description info for the Item
-     * @return boolean status for whether successful or not
-     */
-    public boolean addItem(SubTask subTask, String description) {
-        return checkList != null && checkList.addItem(description);
-    }
-
-    /**
-     * Removes an Item from the CheckList
-     *
-     * @param idx index for removal
-     * @return Item removed from the CheckList
-     */
-    public CheckList.Item removeItem(int idx) {
-        return checkList != null ? checkList.removeItemById(idx) : null;
-    }
-
-    /**
-     * Shifts an Item in the CheckList
-     *
-     * @param idx index of Item
-     * @param shiftIdx new index for Item
-     * @return boolean status for whether successful or not
-     */
-    public boolean shiftItem(int idx, int shiftIdx) {
-        if(checkList != null) {
-            checkList.shiftItem(idx, shiftIdx);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Marks an Item as complete or incomplete
-     *
-     * @param idx index for Item
-     * @param flag completion status flag
-     * @return boolean value for successful operation
-     */
-    public boolean markItem(int idx, boolean flag) {
-        if(checkList != null) {
-            checkList.markItemById(idx, flag);
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     * Gets Item from CheckList
-     *
-     * @param idx index of Item
-     * @return return Item
-     */
-    public CheckList.Item getItem(int idx) {
-        return checkList != null ? checkList.getItem(idx) : null;
-    }
-
-    /**
-     * Edits an Item in the CheckList
-     *
-     * @param description newly updated description
-     */
-    public void editItem(String description) {
-        //TODO
-    }
-
-    /**
-     * Gets String format for CheckList
-     *
-     * @return String formatted CheckList
-     */
-    public String getStringCheckList() {
-        return checkList != null ? checkList.toString() : null;
-    }
-
-    /**
-     * Resets the CheckList and removes all of its Items
-     *
-     * @return boolean status for whether successful or not
-     */
-    public boolean resetCheckList() {
-        if(checkList != null) {
-            checkList.resetCheckList();
-            return true;
-        }
-        return false;
-    }
-
     @Override
     public String toString() {
         return "Task [name=" + name + ", total=" + totalHours + "]";
@@ -380,36 +248,21 @@ public class Task implements Comparable<Task>, Linker {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
         return id == task.id && totalHours == task.totalHours && subTotalHours == task.subTotalHours &&
-                averageNumHours == task.averageNumHours && name.equals(task.name) && dueDate.equals(task.dueDate) &&
-                Objects.equals(checkList, task.checkList);
+                averageNumHours == task.averageNumHours && name.equals(task.name) && dueDate.equals(task.dueDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, dueDate, totalHours, subTotalHours, averageNumHours, checkList);
-    }
-
-    public CheckList getCheckList() {
-        return checkList;
-    }
-
-    public CheckList getChecklist() {
-        return checkList;
+        return Objects.hash(id, name, dueDate, totalHours, subTotalHours, averageNumHours);
     }
 
     @Override
     public boolean add(Linker o) {
-        if(o instanceof CheckList) {
-            return addCheckList((CheckList) o);
-        }
         return false;
     }
 
     @Override
     public boolean remove(Linker o) {
-        if(o instanceof CheckList) {
-            //todo need to update this part
-        }
         return false;
     }
 

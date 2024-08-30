@@ -2,7 +2,6 @@ package com.planner.scripter.tools;
 
 import com.planner.models.Card;
 import com.planner.models.Task;
-import com.planner.models.CheckList;
 import com.planner.scripter.*;
 
 import java.text.SimpleDateFormat;
@@ -52,9 +51,6 @@ public class ScriptLog {
             case TASK:
                 reportTaskCreation(t);
                 break;
-            case CHECKLIST:
-                reportCheckListCreation(t);
-                break;
             case CARD:
                 reportCardCreation(t);
                 break;
@@ -74,17 +70,6 @@ public class ScriptLog {
         sb.append(", NAME=").append(task.getName());
         sb.append(", HOURS=").append(task.getTotalHours()).append("\n");
 //        sb.append(", DUE=").append(task.).append("\n");
-    }
-
-    /**
-     * Reports the creation of a {@link CheckList} via its attributes for the {@code Simple} language
-     *
-     * @param t variable reference being reported
-     */
-    private void reportCheckListCreation(Type t) {
-        sb.append("CHECKLIST_CREATED: VAR=").append(t.getVariableName());
-        CheckList cl = (CheckList) t.getLinkerData();
-        sb.append(", NAME=").append(cl.getName()).append("\n");
     }
 
     /**

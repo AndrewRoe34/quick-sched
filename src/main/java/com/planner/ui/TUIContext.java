@@ -20,7 +20,6 @@ public class TUIContext {
     private TUIState tuiState;
 
     private static final TUIState sessionState = new SessionState();
-    private static final TUIState editorState = new EditorState();
     private static final TUIState configState = new ConfigState();
 
     public void setTuiState(TUIState tuiState) {
@@ -179,10 +178,6 @@ public class TUIContext {
                             tuiContext.setTuiState(sessionState);
                             tuiContext.configurePage();
                             TUIState.clearScreen();
-                            break;
-                        case 'E':
-                            tuiContext.setTuiState(editorState);
-                            tuiContext.configurePage();
                             break;
                         case 'C':
                             tuiContext.setTuiState(configState);
