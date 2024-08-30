@@ -131,8 +131,8 @@ public class ScheduleManager {
      */
     private void processUserConfigFile() {
         try {
-            eventLog.reportProcessConfig("profile.cfg");
-            String configStr = Files.readString(Paths.get("settings/profile.cfg"));
+            eventLog.reportProcessConfig("profile.json");
+            String configStr = Files.readString(Paths.get("settings/profile.json"));
             userConfig = JsonHandler.readUserConfig(configStr);
             eventLog.reportUserConfigAttr(userConfig);
         } catch (FileNotFoundException e) {
