@@ -5,6 +5,7 @@ import com.planner.models.Event;
 import com.planner.models.Task;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class Parser {
@@ -49,7 +50,7 @@ public class Parser {
         return tokens.toArray(new String[0]);
     }
 
-    public static void parseTask(String[] args, List<Card> cards) {
+    public static void parseTask(String[] args) {
 
     }
 
@@ -80,14 +81,14 @@ public class Parser {
     }
 
     public static void parseEvent(String[] args) {
-        
-    }
-
-    public static void parseDay(String[] args, List<Task> tasks, List<Event> events) {
 
     }
 
-    public static void parseModTask(String[] args, List<Card> cards) {
+    public static void parseDay(String[] args) {
+
+    }
+
+    public static void parseModTask(String[] args) {
 
     }
 
@@ -130,5 +131,53 @@ public class Parser {
             default:
                 return null;
         }
+    }
+
+    private static Calendar parseDate(String s) {
+        Calendar curr = Time.getFormattedCalendarInstance(0);
+        int day =  curr.get(Calendar.DAY_OF_WEEK) - 1;
+        int numDays = 0;
+        switch (s.toUpperCase()) {
+            case "EOD":
+                return curr;
+            case "TMRW":
+                return Time.getFormattedCalendarInstance(curr, 1);
+            case "EOW":
+            case "SAT":
+            case "SATURDAY":
+                numDays = (Calendar.SATURDAY - day + 7) % 7;
+                return Time.getFormattedCalendarInstance(curr, numDays);
+            case "SUN":
+            case "SUNDAY":
+                numDays = (Calendar.SUNDAY - day + 7) % 7;
+                return Time.getFormattedCalendarInstance(curr, numDays);
+            case "MON":
+            case "MONDAY":
+                numDays = (Calendar.MONDAY - day + 7) % 7;
+                return Time.getFormattedCalendarInstance(curr, numDays);
+            case "TUE":
+            case "TUESDAY":
+                numDays = (Calendar.TUESDAY - day + 7) % 7;
+                return Time.getFormattedCalendarInstance(curr, numDays);
+            case "WED":
+            case "WEDNESDAY":
+                numDays = (Calendar.WEDNESDAY - day + 7) % 7;
+                return Time.getFormattedCalendarInstance(curr, numDays);
+            case "THU":
+            case "THURSDAY":
+                numDays = (Calendar.THURSDAY - day + 7) % 7;
+                return Time.getFormattedCalendarInstance(curr, numDays);
+            case "FRI":
+            case "FRIDAY":
+                numDays = (Calendar.FRIDAY - day + 7) % 7;
+                return Time.getFormattedCalendarInstance(curr, numDays);
+            default:
+                // parse specific date (e.g. dd-MM-yyyy OR yyyy-MM-dd)
+        }
+        return null;
+    }
+
+    private static Calendar[] parseTimeStamp(String s) {
+        return null;
     }
 }
