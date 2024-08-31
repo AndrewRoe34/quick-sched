@@ -80,7 +80,7 @@ public class Parser {
     }
 
     public static void parseEvent(String[] args) {
-
+        
     }
 
     public static void parseDay(String[] args, List<Task> tasks, List<Event> events) {
