@@ -12,6 +12,7 @@ StoredCredential
 .idea/jarRepositories.xml
 .idea/compiler.xml
 .idea/libraries/
+.idea/gradle.xml
 *.iws
 *.iml
 *.ipr
