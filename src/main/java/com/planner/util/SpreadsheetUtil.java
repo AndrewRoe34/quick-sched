@@ -5,7 +5,6 @@ import com.planner.models.Event;
 import com.planner.models.Task;
 import com.planner.models.UserConfig;
 import com.planner.schedule.day.Day;
-import org.dhatim.fastexcel.Color;
 import org.dhatim.fastexcel.Workbook;
 import org.dhatim.fastexcel.Worksheet;
 
@@ -50,7 +49,7 @@ public class SpreadsheetUtil {
                         0,
                         0,
                         5
-                ).style().bold().fillColor(Color.GRAY7).set();
+                ).style().bold().fillColor(org.dhatim.fastexcel.Color.GRAY7).set();
 
                 break;
             }
@@ -88,7 +87,7 @@ public class SpreadsheetUtil {
                         0,
                         0,
                         6
-                ).style().bold().fillColor(Color.GRAY7).set();
+                ).style().bold().fillColor(org.dhatim.fastexcel.Color.GRAY7).set();
 
                 break;
             }
@@ -120,7 +119,7 @@ public class SpreadsheetUtil {
             boardSheet.value(0, i, card.getTitle());
             boardSheet.style(0, i).fontColor(
                     convertColorsEnumToFastExcelColorEnum(card.getColorId())
-            ).bold().fillColor(Color.GRAY7).set();
+            ).bold().fillColor(org.dhatim.fastexcel.Color.GRAY7).set();
         }
 
         return boardSheet;
@@ -149,7 +148,7 @@ public class SpreadsheetUtil {
                 0,
                 0,
                 schedule.size() - 1
-        ).style().bold().fillColor(Color.GRAY7).set();
+        ).style().bold().fillColor(org.dhatim.fastexcel.Color.GRAY7).set();
 
         return scheduleSheet;
     }
@@ -267,7 +266,7 @@ public class SpreadsheetUtil {
 
                 Time.TimeStamp ts = null;
                 String name = "";
-                Card.Colors color = null;
+                Card.Color color = null;
 
                 StringBuilder output = new StringBuilder();
 
@@ -300,30 +299,30 @@ public class SpreadsheetUtil {
         }
     }
 
-    private static String convertColorsEnumToFastExcelColorEnum(Card.Colors colorID) {
+    private static String convertColorsEnumToFastExcelColorEnum(Card.Color colorID) {
         switch (colorID) {
             case RED:
-                return Color.RED;
+                return org.dhatim.fastexcel.Color.RED;
             case LIGHT_GREEN:
-                return Color.LIGHT_GREEN;
+                return org.dhatim.fastexcel.Color.LIGHT_GREEN;
             case BLUE:
-                return Color.DARK_SKY_BLUE;
+                return org.dhatim.fastexcel.Color.DARK_SKY_BLUE;
             case GREEN:
-                return Color.GREEN;
+                return org.dhatim.fastexcel.Color.GREEN;
             case INDIGO:
-                return Color.INDIGO;
+                return org.dhatim.fastexcel.Color.INDIGO;
             case ORANGE:
-                return Color.ORANGE;
+                return org.dhatim.fastexcel.Color.ORANGE;
             case VIOLET:
-                return Color.VIOLET;
+                return org.dhatim.fastexcel.Color.VIOLET;
             case YELLOW:
-                return Color.YELLOW;
+                return org.dhatim.fastexcel.Color.YELLOW;
             case LIGHT_BLUE:
-                return Color.BABY_BLUE;
+                return org.dhatim.fastexcel.Color.BABY_BLUE;
             case LIGHT_CORAL:
-                return Color.CORAL;
+                return org.dhatim.fastexcel.Color.CORAL;
             default:
-                return Color.BLACK;
+                return org.dhatim.fastexcel.Color.BLACK;
         }
     }
 

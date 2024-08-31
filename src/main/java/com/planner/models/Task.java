@@ -1,8 +1,6 @@
 package com.planner.models;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Objects;
 
 import com.planner.util.Time;
@@ -28,7 +26,7 @@ public class Task implements Comparable<Task>, Linker {
     private double subTotalHours;
     /** # of hours / (DueDate - StartingDay) */
     private double averageNumHours;
-    private Card.Colors color;// todo we will use this in place of the label
+    private Card.Color color;// todo we will use this in place of the label
     private String tag;
 
     /**
@@ -229,11 +227,11 @@ public class Task implements Comparable<Task>, Linker {
         return averageNumHours;
     }
 
-    public Card.Colors getColor() {
+    public Card.Color getColor() {
         return color;
     }
 
-    public void setColor(Card.Colors color) {
+    public void setColor(Card.Color color) {
         this.color = color;
     }
 

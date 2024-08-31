@@ -22,8 +22,8 @@ class ParserTest {
     @Test
     void parseCard() {
         String s = "card \"some stuff\" blue";
-        Card c = Parser.parseCard(Parser.tokenize(s), 1);
-        System.out.println(c);
+        Parser.CardInfo ci = Parser.parseCard(Parser.tokenize(s));
+        System.out.println(ci.getName() + ", " + ci.getColor());
     }
 
     @Test

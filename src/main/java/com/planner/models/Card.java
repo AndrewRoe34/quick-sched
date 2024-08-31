@@ -19,14 +19,14 @@ public class Card implements Linker{
     /** List of Tasks for Card */
     private List<Task> cardTasks;
     /** Color for Card */
-    private Colors colorId;
+    private Color colorId;
 
     /**
      * Primary constructor for Card
      *
      * @param title title for Card
      */
-    public Card(int id, String title, Colors colorId) {
+    public Card(int id, String title, Color colorId) {
         this.id = id;
         setTitle(title);
         setColorId(colorId);
@@ -38,7 +38,7 @@ public class Card implements Linker{
      *
      * @author Andrew Roe
      */
-    public enum Colors {
+    public enum Color {
         RED,
         ORANGE,
         YELLOW,
@@ -80,7 +80,7 @@ public class Card implements Linker{
      * @param colorId color id for Card
      * @throws IllegalArgumentException if color id is null
      */
-    public void setColorId(Colors colorId) {
+    public void setColorId(Color colorId) {
         if (colorId == null) throw new IllegalArgumentException("Card color cannot be null");
         this.colorId = colorId;
     }
@@ -117,7 +117,7 @@ public class Card implements Linker{
      *
      * @return color id for Card
      */
-    public Colors getColorId() {
+    public Color getColorId() {
         return colorId;
     }
 

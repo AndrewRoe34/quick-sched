@@ -1,20 +1,11 @@
 package com.planner.ui;
 
-import com.planner.models.UserConfig;
 import com.planner.scripter.ScriptFSM;
 import com.planner.ui.tables.TableFormatter;
-import com.planner.util.JsonHandler;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static java.lang.Thread.sleep;
 
 public class SessionState implements TUIState {
 

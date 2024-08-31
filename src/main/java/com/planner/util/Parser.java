@@ -1,8 +1,6 @@
 package com.planner.util;
 
 import com.planner.models.Card;
-import com.planner.models.Event;
-import com.planner.models.Task;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,9 +26,9 @@ public class Parser {
                     end++;
                 }
                 if (!closed) {
-                    throw new IllegalArgumentException("Strings must be closed by quotes");
+                    throw new IllegalArgumentException("Error: Strings must be closed by quotes.");
                 } else if (start + 1 == end) {
-                    throw new IllegalArgumentException("Strings cannot be empty");
+                    throw new IllegalArgumentException("Error: Strings cannot be empty.");
                 }
                 end++;
                 tokens.add(line.substring(start, end));
@@ -54,30 +52,30 @@ public class Parser {
 
     }
 
-    public static Card parseCard(String[] args, int id) {
+    public static CardInfo parseCard(String[] args) {
         if (args.length != 3) {
-            throw new IllegalArgumentException("Invalid operation, cannot create Card");
+            throw new IllegalArgumentException("Error: Invalid number of arguments provided for Card.");
         }
 
-        Card.Colors colors = null;
+        Card.Color color = null;
         String name = null;
         for (int i = 1; i < args.length; i++) {
             if (args[i].charAt(0) == '"') {
                 if (name != null) {
-                    throw new IllegalArgumentException("Cannot have multiple names for Card");
+                    throw new IllegalArgumentException("Error: Cannot have multiple names for Card.");
                 }
                 name = args[i];
             } else {
-                if (colors != null) {
-                    throw new IllegalArgumentException("Cannot have multiple colors for Card");
+                if (color != null) {
+                    throw new IllegalArgumentException("Error: Cannot have multiple colors for Card.");
                 }
-                colors = parseColor(args[i]);
-                if (colors == null) {
-                    throw new IllegalArgumentException("Invalid color provided for Card");
+                color = parseColor(args[i]);
+                if (color == null) {
+                    throw new IllegalArgumentException("Error: Invalid color provided for Card.");
                 }
             }
         }
-        return new Card(id, name, colors);
+        return new CardInfo(name, color);
     }
 
     public static void parseEvent(String[] args) {
@@ -104,30 +102,30 @@ public class Parser {
 
     }
 
-    private static Card.Colors parseColor(String s) {
+    private static Card.Color parseColor(String s) {
         switch (s.toUpperCase()) {
             case "RED":
-                return Card.Colors.RED;
+                return Card.Color.RED;
             case "ORANGE":
-                return Card.Colors.ORANGE;
+                return Card.Color.ORANGE;
             case "YELLOW":
-                return Card.Colors.YELLOW;
+                return Card.Color.YELLOW;
             case "GREEN":
-                return Card.Colors.GREEN;
+                return Card.Color.GREEN;
             case "BLUE":
-                return Card.Colors.BLUE;
+                return Card.Color.BLUE;
             case "INDIGO":
-                return Card.Colors.INDIGO;
+                return Card.Color.INDIGO;
             case "VIOLET":
-                return Card.Colors.VIOLET;
+                return Card.Color.VIOLET;
             case "BLACK":
-                return Card.Colors.BLACK;
+                return Card.Color.BLACK;
             case "LIGHT_CORAL":
-                return Card.Colors.LIGHT_CORAL;
+                return Card.Color.LIGHT_CORAL;
             case "LIGHT_GREEN":
-                return Card.Colors.LIGHT_GREEN;
+                return Card.Color.LIGHT_GREEN;
             case "LIGHT_BLUE":
-                return Card.Colors.LIGHT_BLUE;
+                return Card.Color.LIGHT_BLUE;
             default:
                 return null;
         }
@@ -172,12 +170,101 @@ public class Parser {
                 numDays = (Calendar.FRIDAY - day + 7) % 7;
                 return Time.getFormattedCalendarInstance(curr, numDays);
             default:
-                // parse specific date (e.g. dd-MM-yyyy OR yyyy-MM-dd)
+                // todo parse specific date (e.g. dd-MM-yyyy OR yyyy-MM-dd) using sdf
         }
         return null;
     }
 
     private static Calendar[] parseTimeStamp(String s) {
+        boolean hour = false;
+        boolean colon = false;
+        boolean minute = false;
+        boolean am = false;
+        boolean dash = false;
+        int startHr = -1;
+        int endHr = -1;
+        int startMin = -1;
+        int endMin = -1;
+        String startFmt = "";
+        String endFmt = "";
+
+        for (int i = 0; i < s.length(); i++) {
+            switch (s.charAt(i)) {
+                case ':':
+                    if (!hour || !minute) {
+                        throw new IllegalArgumentException("Error: Colon is expected after hour, not minute.");
+                    } else if (am) {
+                        throw new IllegalArgumentException("Error: Colon can never occur after 'am' or 'pm'.");
+                    } else if (colon) {
+                        throw new IllegalArgumentException("Error: Colons cannot be duplicated for same hour, minute combination");
+                    }
+                    colon = true;
+                    break;
+                case '-':
+                    if (!hour || dash) {
+                        throw new IllegalArgumentException("Error: Dashes require an hour and cannot be duplicated");
+                    }
+                    dash = true;
+                    hour = false;
+                    colon = false;
+                    minute = false;
+                    am = false;
+                    break;
+                case 'a':
+                case 'A':
+                case 'p':
+                case 'P':
+                    if (!hour || am) {
+                        throw new IllegalArgumentException("Error: 'am'/'pm' cannot occur without an hour nor can there be duplicates");
+                    }
+                    if (i + 1 < s.length() && (s.charAt(i+1) == 'm' || s.charAt(i+1) == 'M')) {
+                        String temp = s.substring(i, i + 2);
+                        if (!dash) {
+                            startFmt = temp;
+                        } else {
+                            endFmt = temp;
+                        }
+                    } else {
+                        throw new IllegalArgumentException("Error: Provided time format besides valid 'am'/'pm'");
+                    }
+                    am = true;
+                    i++;
+                    break;
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    // todo need to finish
+                    break;
+                default:
+                    throw new IllegalArgumentException("Error: Invalid time format provided");
+            }
+        }
+        // todo need to finish
         return null;
+    }
+
+    public static class CardInfo {
+        private final String name;
+        private final Card.Color color;
+
+        public CardInfo(String name, Card.Color color) {
+            this.name = name;
+            this.color = color;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Card.Color getColor() {
+            return color;
+        }
     }
 }

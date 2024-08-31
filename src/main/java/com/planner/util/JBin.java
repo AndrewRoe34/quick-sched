@@ -311,7 +311,7 @@ public class JBin {
 
                     else if(tokens.length == 5 || tokens.length == 4) {
                         String name = tokens[0].trim();
-                        Card.Colors color = parseColor(tokens[1].trim().toUpperCase());
+                        Card.Color color = parseColor(tokens[1].trim().toUpperCase());
                         boolean recurring = Boolean.parseBoolean(tokens[2].trim());
 
                         String startString = tokens[3].split("-")[0];
@@ -522,30 +522,30 @@ public class JBin {
         return calendar;
     }
 
-    private static Card.Colors parseColor(String s) {
+    private static Card.Color parseColor(String s) {
         switch (s) {
             case "RED":
-                return Card.Colors.RED;
+                return Card.Color.RED;
             case "ORANGE":
-                return Card.Colors.ORANGE;
+                return Card.Color.ORANGE;
             case "YELLOW":
-                return Card.Colors.YELLOW;
+                return Card.Color.YELLOW;
             case "GREEN":
-                return Card.Colors.GREEN;
+                return Card.Color.GREEN;
             case "BLUE":
-                return Card.Colors.BLUE;
+                return Card.Color.BLUE;
             case "INDIGO":
-                return Card.Colors.INDIGO;
+                return Card.Color.INDIGO;
             case "VIOLET":
-                return Card.Colors.VIOLET;
+                return Card.Color.VIOLET;
             case "BLACK":
-                return Card.Colors.BLACK;
+                return Card.Color.BLACK;
             case "LIGHT_CORAL":
-                return Card.Colors.LIGHT_CORAL;
+                return Card.Color.LIGHT_CORAL;
             case "LIGHT_GREEN":
-                return Card.Colors.LIGHT_GREEN;
+                return Card.Color.LIGHT_GREEN;
             default:
-                return Card.Colors.LIGHT_BLUE;
+                return Card.Color.LIGHT_BLUE;
         }
     }
 }

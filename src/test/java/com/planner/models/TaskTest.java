@@ -183,8 +183,8 @@ class TaskTest {
 
     @Test
     void setColor() {
-        task.setColor(Card.Colors.YELLOW);
-        assertEquals(Card.Colors.YELLOW, task.getColor());
+        task.setColor(Card.Color.YELLOW);
+        assertEquals(Card.Color.YELLOW, task.getColor());
     }
 
     @Test

@@ -2,7 +2,6 @@ package com.planner.manager;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
@@ -98,7 +97,7 @@ public class ScheduleManager {
         customHours = new HashMap<>();
         taskMap = new HashMap<>();
         cards = new ArrayList<>();
-        cards.add(new Card(0, "Default", Card.Colors.LIGHT_BLUE));
+        cards.add(new Card(0, "Default", Card.Color.LIGHT_BLUE));
         archivedTasks = new PriorityQueue<>();
         indivEvents = new ArrayList<>();
 
@@ -265,7 +264,7 @@ public class ScheduleManager {
      * @param days days of event occurrence, if recurring
      * @return newly generated Event
      */
-    public Event addEvent(String name, Card.Colors color, Time.TimeStamp timeStamp,
+    public Event addEvent(String name, Card.Color color, Time.TimeStamp timeStamp,
                           boolean recurring, Event.DayOfWeek[] days) {
 
         Event e;

@@ -391,31 +391,31 @@ public class ScriptFSM {
         if (classInstance instanceof CardInstance) {
             CardInstance card = (CardInstance) classInstance;
             t1 = lookupVariable(card.getVarName());
-            Card.Colors colorId = null;
+            Card.Color colorId = null;
             switch (card.getColor()) {
                 case "RED":
-                    colorId = Card.Colors.RED;
+                    colorId = Card.Color.RED;
                     break;
                 case "ORANGE":
-                    colorId = Card.Colors.ORANGE;
+                    colorId = Card.Color.ORANGE;
                     break;
                 case "YELLOW":
-                    colorId = Card.Colors.YELLOW;
+                    colorId = Card.Color.YELLOW;
                     break;
                 case "GREEN":
-                    colorId = Card.Colors.GREEN;
+                    colorId = Card.Color.GREEN;
                     break;
                 case "LIGHT_BLUE":
-                    colorId = Card.Colors.LIGHT_BLUE;
+                    colorId = Card.Color.LIGHT_BLUE;
                     break;
                 case "BLUE":
-                    colorId = Card.Colors.BLUE;
+                    colorId = Card.Color.BLUE;
                     break;
                 case "INDIGO":
-                    colorId = Card.Colors.INDIGO;
+                    colorId = Card.Color.INDIGO;
                     break;
                 case "VIOLET":
-                    colorId = Card.Colors.VIOLET;
+                    colorId = Card.Color.VIOLET;
                     break;
                 default:
                     throw new InvalidFunctionException("Invalid color type was provided");
@@ -966,32 +966,32 @@ public class ScriptFSM {
         scheduleManager.addTaskToCard(task, card);
     }
 
-    private static Card.Colors parseColor(String s) {
+    private static Card.Color parseColor(String s) {
         switch (s) {
             case "RED":
-                return Card.Colors.RED;
+                return Card.Color.RED;
             case "ORANGE":
-                return Card.Colors.ORANGE;
+                return Card.Color.ORANGE;
             case "YELLOW":
-                return Card.Colors.YELLOW;
+                return Card.Color.YELLOW;
             case "GREEN":
-                return Card.Colors.GREEN;
+                return Card.Color.GREEN;
             case "LIGHT_BLUE":
-                return Card.Colors.LIGHT_BLUE;
+                return Card.Color.LIGHT_BLUE;
             case "BLUE":
-                return Card.Colors.BLUE;
+                return Card.Color.BLUE;
             case "INDIGO":
-                return Card.Colors.INDIGO;
+                return Card.Color.INDIGO;
             case "VIOLET":
-                return Card.Colors.VIOLET;
+                return Card.Color.VIOLET;
             case "BLACK":
-                return Card.Colors.BLACK;
+                return Card.Color.BLACK;
             case "LIGHT_CORAL":
-                return Card.Colors.LIGHT_CORAL;
+                return Card.Color.LIGHT_CORAL;
             case "LIGHT_GREEN":
-                return Card.Colors.LIGHT_GREEN;
+                return Card.Color.LIGHT_GREEN;
             default:
-                return Card.Colors.LIGHT_BLUE;
+                return Card.Color.LIGHT_BLUE;
         }
     }
 
@@ -1022,7 +1022,7 @@ public class ScriptFSM {
         String name = inputScanner.nextLine();
 
         System.out.print("Color: ");
-        Card.Colors color = parseColor(inputScanner.nextLine().toUpperCase());
+        Card.Color color = parseColor(inputScanner.nextLine().toUpperCase());
 
         System.out.print("Recurring: ");
         boolean recurring = inputScanner.nextBoolean();

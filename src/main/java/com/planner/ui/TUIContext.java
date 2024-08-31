@@ -161,36 +161,8 @@ public class TUIContext {
         TUIContext tuiContext = new TUIContext();
         TUIState.clearScreen();
         tuiContext.sessionStartUp();
-//        TUIState.clearScreen();
 
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter 'man' to see all available commands.");
-        while (true) {
-            System.out.print("> ");
-            if (scanner.hasNextLine()) {
-                String userInput = scanner.nextLine();
-                if (!userInput.isBlank()) {
-                    switch (Character.toUpperCase(userInput.charAt(0))) {
-                        case 'M':
-                            System.out.println("S - Session\nE - Editor\nC - Config\nQ - Quit");
-                            break;
-                        case 'S':
-                            tuiContext.setTuiState(sessionState);
-                            tuiContext.configurePage();
-                            TUIState.clearScreen();
-                            break;
-                        case 'C':
-                            tuiContext.setTuiState(configState);
-                            tuiContext.configurePage();
-//                            TUIState.clearScreen();
-                            break;
-                        case 'Q':
-                            System.exit(0);
-                    }
-                }
-            } else break;
-//            // clear the screen here to refresh the page
-//            TUIState.clearScreen();
-        }
+        CLI cli = new CLI();
+        cli.loop();
     }
 }

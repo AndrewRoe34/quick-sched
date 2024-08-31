@@ -115,7 +115,7 @@ public class TableFormatter {
             int taskIdx = 0;
             int eventIdx = 0;
             while (taskIdx < day.getNumSubTasks() || eventIdx < day.getNumEvents()) {
-                Card.Colors colors = null;
+                Card.Color color = null;
                 int id = 0;
                 String name = "";
                 String tag = "       -       ";
@@ -127,7 +127,7 @@ public class TableFormatter {
                                 day.getEventList().get(eventIdx).getTimeStamp().getStart())) {
                     Event event = day.getEvent(eventIdx);
 
-                    colors = event.getColor();
+                    color = event.getColor();
                     id = event.getId();
                     name = event.getName();
                     hours = Time.getTimeInterval(event.getTimeStamp().getStart(), event.getTimeStamp().getEnd());
@@ -138,7 +138,7 @@ public class TableFormatter {
                     Task.SubTask subTask = day.getSubTask(taskIdx);
                     Task task = subTask.getParentTask();
 
-                    colors = task.getColor();
+                    color = task.getColor();
                     id = task.getId();
                     name = task.getName();
                     tag = task.getTag() != null ? task.getTag() : tag;
@@ -148,8 +148,8 @@ public class TableFormatter {
                     taskIdx++;
                 }
 
-                if (useColor && colors != null) {
-                    sb.append(getColorANSICode(colors));
+                if (useColor && color != null) {
+                    sb.append(getColorANSICode(color));
                 }
 
                 sb.append(id)
@@ -198,15 +198,15 @@ public class TableFormatter {
 
         int idx = 0;
         for (Task task : list) {
-            Card.Colors colors = task.getColor();
+            Card.Color color = task.getColor();
             int id = task.getId();
             String name = task.getName();
             String tag = task.getTag() != null ? task.getTag() : "       -       ";
             double hours = task.getTotalHours();
             String due = task.getDateStamp();
 
-            if (useColor && colors != null) {
-                sb.append(getColorANSICode(colors));
+            if (useColor && color != null) {
+                sb.append(getColorANSICode(color));
             }
 
             sb.append(id)
@@ -616,7 +616,7 @@ public class TableFormatter {
         return sb.toString();
     }
 
-    private static String getColorANSICode(Card.Colors color) {
+    private static String getColorANSICode(Card.Color color) {
         if (color == null) return "\u001B[38;2;3;155;229m";
         // Color Code - \001B[38;2;<r>;<g>;<b>m
         switch (color) {

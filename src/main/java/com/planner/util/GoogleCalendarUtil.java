@@ -88,7 +88,7 @@ public class GoogleCalendarUtil {
         return event;
     }
 
-    private static String convertAnsiToGoogleColor(Card.Colors color) {
+    private static String convertAnsiToGoogleColor(Card.Color color) {
         switch (color) {
             case RED:
                 return "11";

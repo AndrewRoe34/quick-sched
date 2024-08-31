@@ -15,19 +15,19 @@ public class Event implements Comparable<Event> {
     private int id;
     private String name;
     private TimeStamp timeStamp;
-    private Card.Colors color;
+    private Card.Color color;
     private boolean recurring;
     private DayOfWeek[] days;
 
     // this constructor is for individual events (second one is for recurring)
-    public Event(int id, String name, Card.Colors color, TimeStamp timeStamp) {
+    public Event(int id, String name, Card.Color color, TimeStamp timeStamp) {
         setId(id);
         setName(name);
         setColor(color);
         setTimeStamp(timeStamp);
     }
 
-    public Event(int id, String name, Card.Colors color, TimeStamp timeStamp, DayOfWeek[] days) {
+    public Event(int id, String name, Card.Color color, TimeStamp timeStamp, DayOfWeek[] days) {
         setId(id);
         setName(name);
         setColor(color);
@@ -63,11 +63,11 @@ public class Event implements Comparable<Event> {
         this.name = name;
     }
 
-    public Card.Colors getColor() {
+    public Card.Color getColor() {
         return color;
     }
 
-    public void setColor(Card.Colors color) {
+    public void setColor(Card.Color color) {
         this.color = color;
     }
 

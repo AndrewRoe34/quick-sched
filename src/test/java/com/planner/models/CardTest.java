@@ -19,7 +19,7 @@ class CardTest {
 
     @BeforeEach
     void setUp() {
-        c1 = new Card(0, "Math", Card.Colors.LIGHT_BLUE);
+        c1 = new Card(0, "Math", Card.Color.LIGHT_BLUE);
     }
 
     @Test
@@ -97,12 +97,12 @@ class CardTest {
 
     @Test
     void getColorId() {
-        assertEquals(Card.Colors.LIGHT_BLUE, c1.getColorId());
+        assertEquals(Card.Color.LIGHT_BLUE, c1.getColorId());
     }
 
     @Test
     void setColorId() {
-        c1.setColorId(Card.Colors.INDIGO);
-        assertEquals(Card.Colors.INDIGO, c1.getColorId());
+        c1.setColorId(Card.Color.INDIGO);
+        assertEquals(Card.Color.INDIGO, c1.getColorId());
     }
 }
