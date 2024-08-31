@@ -183,22 +183,22 @@ public class Parser {
         boolean dash = false;
         int startHr = -1;
         int endHr = -1;
-        int startMin = -1;
-        int endMin = -1;
+        int startMin = 0;
+        int endMin = 0;
         String startFmt = "";
         String endFmt = "";
 
         for (int i = 0; i < s.length(); i++) {
             switch (s.charAt(i)) {
                 case ':':
-                    if (!hour || !minute) {
+                    if (!hour) {
                         throw new IllegalArgumentException("Error: Colon is expected after hour, not minute.");
                     } else if (am) {
                         throw new IllegalArgumentException("Error: Colon can never occur after 'am' or 'pm'.");
-                    } else if (colon) {
+                    }
+                    else if (colon) {
                         throw new IllegalArgumentException("Error: Colons cannot be duplicated for same hour, minute combination");
                     }
-                    colon = true;
                     break;
                 case '-':
                     if (!hour || dash) {
@@ -240,14 +240,119 @@ public class Parser {
                 case '7':
                 case '8':
                 case '9':
-                    // todo need to finish
+                    if (am)
+                    {
+                        throw  new IllegalArgumentException("Error: 'am'/'pm' can't be followed by hours, only dashes");
+                    }
+                    else if (!hour)
+                    {
+                        String hrString = "";
+                        for (int j = i; j < s.length(); j++)
+                        {
+                            char c = s.charAt(j);
+                            if (!(c >= '0' && c <= '9')) {
+                                break;
+                            }
+                            hrString += c;
+                            if (hrString.length() > 2) {
+                                throw new IllegalArgumentException("Error: Invalid format, hours can only be 1 or 2 characters");
+                            }
+                            i++;
+                        }
+                        int hr = Integer.parseInt(hrString);
+                        if (hr > 12)
+                        {
+                            throw new IllegalArgumentException("Error: Invalid number of hours, can't exceed 12");
+                        }
+                        if (dash) {
+                            endHr = hr;
+                        }
+                        else {
+                            startHr = hr;
+                        }
+                        hour = true;
+                        if (i < s.length() && s.charAt(i) != ':') i--;
+                        colon = true;
+                    }
+                    else if (colon && !minute) {
+                        String minString = "";
+                        for (int j = i; j < i + 2 && j < s.length(); j++)
+                        {
+                            char c = s.charAt(j);
+                            if (!(c >= '0' && c <= '9')) {
+                                break;
+                            }
+                            minString += c;
+                            if (minString.length() > 2) {
+                                throw new IllegalArgumentException("Error: Invalid format, minutes can only be 1 or 2 characters");
+                            }
+                            if (j == i + 1) i++;
+                        }
+                        int min = Integer.parseInt(minString);
+                        if (min > 60)
+                        {
+                            throw new IllegalArgumentException("Error: Invalid number of minutes, can't exceed 60");
+                        }
+                        if (dash) endMin = min;
+                        else startMin = min;
+                        minute = true;
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException("Error: Invalid time format provided");
             }
         }
-        // todo need to finish
-        return null;
+        System.out.println(startHr + ":" + startMin + endFmt + "-" + endHr + ":" + endMin + endFmt);
+        if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr != 12)
+        {
+            startHr += 12;
+        }
+        else if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr == 12)
+        {
+            startHr = 0;
+        }
+
+        Calendar[] calendars = new Calendar[2];
+
+        if (endHr == -1)
+        {
+            Calendar start = Calendar.getInstance();
+            start.set(Calendar.HOUR, startHr);
+            start.set(Calendar.MINUTE, startMin);
+
+            calendars[0] = start;
+
+            return calendars;
+        }
+
+        if ((endFmt.equals("pm") || endFmt.equals("PM")) && endHr != 12)
+        {
+            endHr += 12;
+        }
+        else if ((endFmt.equals("am") || endFmt.equals("AM")) && endHr == 12)
+        {
+            endHr = 0;
+        }
+        else if (endFmt.isEmpty() && endHr < startHr)
+        {
+            endHr += 12;
+        }
+        if (startHr > endHr || (startHr == endHr && startMin >= endMin)) {
+            return calendars;
+        }
+
+        Calendar start = Calendar.getInstance();
+        start.set(Calendar.HOUR, startHr);
+        start.set(Calendar.MINUTE, startMin);
+
+        Calendar end = Calendar.getInstance();
+        end.set(Calendar.HOUR, endHr);
+        end.set(Calendar.MINUTE, endMin);
+
+        calendars[0] = start;
+        calendars[1] = end;
+
+        return calendars;
     }
 
     public static class CardInfo {
