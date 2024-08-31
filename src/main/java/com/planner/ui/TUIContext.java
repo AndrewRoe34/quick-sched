@@ -54,7 +54,7 @@ public class TUIContext {
 
             System.out.println(
                     "Configuration Details:\n" +
-                            "    - Config File: profile.cfg\n" +
+                            "    - Config File: profile.json\n" +
                             "    - Mode: Production\n" +
                             "    - Range: " + Arrays.toString(userConfig.getRange()) + "\n" +
                             "    - Week Hours: " + Arrays.toString(userConfig.getWeek()) + "\n" +
