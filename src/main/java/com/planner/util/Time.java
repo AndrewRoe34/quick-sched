@@ -156,7 +156,7 @@ public class Time {
         for (TimeStamp eTS : eventTimeStamps) {
             if (isInsideEventBlock(startTime, eTS)) startTime = eTS.getEnd();
             else {
-                if (isPastEvent(startTime, eTS.getEnd())) {
+                if (isAfter(startTime, eTS.getEnd())) {
                     // do nothing here
                 } else {
                     double hours = getTimeInterval(startTime, eTS.getStart());
@@ -174,18 +174,18 @@ public class Time {
 
     // [COMPLETE]
     public static boolean isInsideEventBlock(Calendar startTime, TimeStamp eventTimeStamp) {
-        return !isPastEvent(startTime, eventTimeStamp.getEnd()) && !isBeforeEvent(startTime, eventTimeStamp.getStart());
+        return !isAfter(startTime, eventTimeStamp.getEnd()) && !isBefore(startTime, eventTimeStamp.getStart());
     }
 
     // [COMPLETE]
-    public static boolean isPastEvent(Calendar startTime, Calendar eventEnd) {
+    public static boolean isAfter(Calendar startTime, Calendar eventEnd) {
         Calendar startTemp = cloneAndResetSecMillis(startTime);
         Calendar eventTemp = cloneAndResetSecMillis(eventEnd);
         return startTemp.compareTo(eventTemp) >= 0;
     }
 
     // [COMPLETE]
-    public static boolean isBeforeEvent(Calendar startTime, Calendar eventStart) {
+    public static boolean isBefore(Calendar startTime, Calendar eventStart) {
         Calendar startTemp = cloneAndResetSecMillis(startTime);
         Calendar eventTemp = cloneAndResetSecMillis(eventStart);
         return startTemp.compareTo(eventTemp) < 0;
@@ -229,13 +229,13 @@ public class Time {
     public static class TimeStamp implements Comparable<TimeStamp> {
         private final Calendar start;
         private final Calendar end;
-        private String strStamp;
+        private final String strStamp;
 
         public TimeStamp(Calendar start, Calendar end) {
             if (start.compareTo(end) >= 0) throw new IllegalArgumentException("Start time is greater than or equal to end time");
             this.start = start;
             this.end = end;
-            buildStamp();
+            strStamp = buildStamp();
         }
 
         public Calendar getStart() {
@@ -262,7 +262,7 @@ public class Time {
             return end.get(Calendar.MINUTE);
         }
 
-        private void buildStamp() {
+        private String buildStamp() {
             StringBuilder sb = new StringBuilder();
 
             if (getStartHour() == 0) {
@@ -295,7 +295,7 @@ public class Time {
             if (getEndHour() < 12) sb.append("am");
             else sb.append("pm");
 
-            strStamp = sb.toString();
+            return sb.toString();
         }
 
         @Override

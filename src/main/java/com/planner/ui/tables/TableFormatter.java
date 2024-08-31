@@ -123,7 +123,7 @@ public class TableFormatter {
                 String timeStamp = "";
                 String due = "     -    ";
                 if (taskIdx >= day.getNumSubTasks() || eventIdx < day.getNumEvents() &&
-                        Time.isPastEvent(day.getSubTaskList().get(taskIdx).getTimeStamp().getStart(),
+                        Time.isAfter(day.getSubTaskList().get(taskIdx).getTimeStamp().getStart(),
                                 day.getEventList().get(eventIdx).getTimeStamp().getStart())) {
                     Event event = day.getEvent(eventIdx);
 

@@ -357,7 +357,7 @@ public class SpreadsheetUtil {
                 Event e1 = day.getEvent(taskEventPair[1]);
                 Task.SubTask st1 = day.getSubTask(taskEventPair[0]);
 
-                if (Time.isBeforeEvent(e1.getTimeStamp().getStart(), st1.getTimeStamp().getStart())) {
+                if (Time.isBefore(e1.getTimeStamp().getStart(), st1.getTimeStamp().getStart())) {
                     arrangedIDs.add("e" + taskEventPair[1]);
                     taskEventPair[1]++;
                 }

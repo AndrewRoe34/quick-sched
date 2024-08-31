@@ -217,7 +217,7 @@ public class Day {
 
         TimeStamp eventTimeStamp = null;
         for (TimeStamp eTS : eventTimeStamps) { // this list needs to be sorted (given assumption below)
-            if (Time.isBeforeEvent(startTime, eTS.getStart())) {
+            if (Time.isBefore(startTime, eTS.getStart())) {
                 eventTimeStamp = eTS;
                 break;
             }
@@ -279,7 +279,7 @@ public class Day {
             if (Time.isConflictingEvent(event, e1))
                 return false;
             else {
-                if (Time.isBeforeEvent(event.getTimeStamp().getStart(), e1.getTimeStamp().getStart())) {
+                if (Time.isBefore(event.getTimeStamp().getStart(), e1.getTimeStamp().getStart())) {
                     idxFound = true;
                     break; // this prevents the search from incrementing idx past its correct spot
                 } else {
