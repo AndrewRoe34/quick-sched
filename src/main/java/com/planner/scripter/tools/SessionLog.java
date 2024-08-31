@@ -12,7 +12,7 @@ public class SessionLog {
         StringBuilder sb = new StringBuilder();
         sb.append("Script: ").append(script).append("\n");
         UserConfig userConfig = scheduleManager.getUserConfig();
-        sb.append("Configuration Details:\n" + "    - Config File: profile.cfg\n" + "    - Mode: Production\n" + "    - Range: ")
+        sb.append("Configuration Details:\n" + "    - Config File: profile.json\n" + "    - Mode: Production\n" + "    - Range: ")
                 .append(Arrays.toString(userConfig.getRange())).append("\n")
                 .append("    - Week Hours: ").append(Arrays.toString(userConfig.getWeek()))
                 .append("\n").append("    - Max Days: ").append(userConfig.getMaxDays()).append("\n")
