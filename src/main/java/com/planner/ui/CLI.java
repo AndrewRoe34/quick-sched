@@ -1,6 +1,7 @@
 package com.planner.ui;
 
 import com.planner.manager.ScheduleManager;
+import com.planner.models.Card;
 import com.planner.ui.tables.TableFormatter;
 import com.planner.util.Parser;
 
@@ -55,49 +56,51 @@ public class CLI {
     }
 
     private void exeCmd(String[] tokens) {
-        if (tokens.length == 1) {
-            switch (tokens[0]) {
-                case "clear":
-                    TUIState.clearScreen();
-                    break;
-                case "task":
-                    break;
-                case "subtask":
-                    break;
-                case "event":
-                    break;
-                case "card":
-                    break;
-                case "jbin":
-                    break;
-                case "update":
-                    break;
-                case "config":
-                    break;
-                case "log":
-                    System.out.println(sm.getEventLog().toString());
-                    break;
-                case "build":
-                    sm.buildSchedule();
-                    System.out.println("Schedule built...");
-                    break;
-                case "sched":
-                    if (sm.scheduleIsEmpty()) {
-                        System.out.println("Schedule is empty...");
-                    } else {
-                        System.out.println(sm.buildScheduleStr());
-                    }
-                    break;
-                case "report":
-                    break;
-                case "google":
-                    break;
-                default:
-                    System.out.println("Error: Unknown command entered.");
-                    break;
-            }
-        } else {
-
+        switch (tokens[0]) {
+            case "clear":
+                TUIState.clearScreen();
+                break;
+            case "task":
+                break;
+            case "subtask":
+                break;
+            case "event":
+                break;
+            case "card":
+                if (tokens.length > 1) {
+                    // need to add card
+                    Parser.CardInfo ci = Parser.parseCard(tokens);
+                    Card c = sm.addCard(ci.getName(), ci.getColor());
+                    System.out.println("Added Card " + c.getId() + ".");
+                }
+                break;
+            case "jbin":
+                break;
+            case "update":
+                break;
+            case "config":
+                break;
+            case "log":
+                System.out.println(sm.getEventLog().toString());
+                break;
+            case "build":
+                sm.buildSchedule();
+                System.out.println("Schedule built...");
+                break;
+            case "sched":
+                if (sm.scheduleIsEmpty()) {
+                    System.out.println("Schedule is empty...");
+                } else {
+                    System.out.println(sm.buildScheduleStr());
+                }
+                break;
+            case "report":
+                break;
+            case "google":
+                break;
+            default:
+                System.out.println("Error: Unknown command entered.");
+                break;
         }
     }
 }

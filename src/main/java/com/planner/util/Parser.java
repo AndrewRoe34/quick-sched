@@ -243,60 +243,53 @@ public class Parser {
                 case '9':
                     if (hour && !colon) {
                         throw new IllegalArgumentException("Error: Minutes must be separated by colon from hours");
-                    }
-                    else if (minute) {
+                    } else if (minute) {
                         throw new IllegalArgumentException("Error: Minutes cannot be duplicated");
-                    }
-                    else if (am) {
+                    } else if (am) {
                         throw new IllegalArgumentException("Error: Hours and minutes cannot come after 'am'/'pm' signature");
-                    }
-                    else if (hour) {
+                    } else if (hour) {
                         minute = true;
                         if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
                             int x = Integer.parseInt(s.substring(i, i + 2));
                             if (x > 59) {
                                 throw new IllegalArgumentException("Error: Minutes cannot be greater than 59");
                             }
+
                             if (!dash) {
                                 startMin = x;
-                            }
-                            else {
+                            } else {
                                 endMin = x;
                             }
                             i++;
-                        }
-                        else {
+                        } else {
                             throw new IllegalArgumentException("Error: Minutes require 2 digits");
                         }
-                    }
-                    else {
+                    } else {
                         hour = true;
                         if (i+1 >= s.length() || s.charAt(i + 1) < '0' || s.charAt(i + 1) > '9') {
                             int x = Integer.parseInt(s.substring(i, i + 1));
                             if (x > 12) {
                                 throw new IllegalArgumentException("Error: Hours cannot be greater than 12");
                             }
+
                             if (!dash) {
                                 startHr = x;
-                            }
-                            else {
+                            } else {
                                 endHr = x;
                             }
-                        }
-                        else if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
+                        } else if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
                             int x = Integer.parseInt(s.substring(i, i + 2));
                             if (x > 12) {
                                 throw new IllegalArgumentException("Error: Hours cannot be greater than 12");
                             }
+
                             if (!dash) {
                                 startHr = x;
-                            }
-                            else {
+                            } else {
                                 endHr = x;
                             }
                             i++;
-                        }
-                        else {
+                        } else {
                             throw new IllegalArgumentException("Error: Minutes require 2 digits");
                         }
                     }
@@ -305,10 +298,10 @@ public class Parser {
                     throw new IllegalArgumentException("Error: Invalid time format provided");
             }
         }
+
         if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr != 12) {
             startHr += 12;
-        }
-        else if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr == 12) {
+        } else if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr == 12) {
             startHr = 0;
         }
 
@@ -326,13 +319,12 @@ public class Parser {
 
         if ((endFmt.equals("pm") || endFmt.equals("PM")) && endHr != 12) {
             endHr += 12;
-        }
-        else if ((endFmt.equals("am") || endFmt.equals("AM")) && endHr == 12) {
+        } else if ((endFmt.equals("am") || endFmt.equals("AM")) && endHr == 12) {
             endHr = 0;
-        }
-        else if (endFmt.isEmpty() && endHr < startHr) {
+        } else if (endFmt.isEmpty() && endHr < startHr) {
             endHr += 12;
         }
+
         if (startHr > endHr || (startHr == endHr && startMin >= endMin)) {
             return calendars;
         }

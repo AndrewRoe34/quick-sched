@@ -182,14 +182,6 @@ public class ScheduleManager {
         }
     }
 
-//    public void exportJBinFile(String filename, List<Card> cards2) {
-//        eventLog.reportCreateJBin();
-//        List<Card> cardSet = new ArrayList<>(cards);
-//        cardSet.addAll(cards2);
-//        IOProcessing.writeJBinFile(filename, JBin.createJBin(cardSet));
-//        eventLog.reportWriteJBinFile(filename);
-//    }
-
     public void exportJBinFile(String filename) {
         eventLog.reportCreateJBin();
         IOProcessing.writeJBinFile(
@@ -216,7 +208,7 @@ public class ScheduleManager {
         return indivEvents;
     }
 
-    public List<List<Event>> getRecurringEvents() {
+    public List<List<Event>> getRecurEvents() {
         return recurringEvents;
     }
 
@@ -243,15 +235,6 @@ public class ScheduleManager {
      */
     public int getLastTaskId() {
         return taskId;
-    }
-
-    /**
-     * Gets last ID for Day
-     *
-     * @return last Day ID
-     */
-    public int getLastDayId() {
-        return dayId;
     }
 
     /**
@@ -289,6 +272,14 @@ public class ScheduleManager {
 
         eventLog.reportEventAction(e, 0);
         return e;
+    }
+
+    public Card addCard(String title, Card.Color color) {
+        Card card = new Card(cardId++, title, color);
+
+        cards.add(card);
+        eventLog.reportCardAction(card, 0);
+        return card;
     }
 
     /**
@@ -340,24 +331,6 @@ public class ScheduleManager {
         }
 
         return false;
-    }
-
-    /**
-     * Edits a task from the schedule given the day and task indices
-     *
-     * @param t1 task being edited
-     * @param hours number of hours to be assigned
-     * @param incrementation number of days till due date
-     * @return newly edited Task
-     */
-    public Task editTask(Task t1, int hours, int incrementation) {
-        if(!taskManager.contains(t1) || hours <= 0 || incrementation < 0) {
-            return null;
-        }
-        removeTask(t1);
-        Task t2 = addTask(t1.getName(), hours, incrementation);
-        eventLog.reportTaskAction(t2, 2);
-        return t2;
     }
 
     /**
@@ -426,6 +399,15 @@ public class ScheduleManager {
     }
 
     /**
+     * Determines whether the schedule is empty
+     *
+     * @return boolean value for whether schedule is empty
+     */
+    public boolean scheduleIsEmpty() {
+        return schedule.isEmpty();
+    }
+
+    /**
      * Resets all the tasks as well as the entire schedule for it to be regenerated
      */
     private void resetSchedule() {
@@ -454,17 +436,16 @@ public class ScheduleManager {
         return TableFormatter.formatEventSetTables(recurringEvents, indivEvents, userConfig);
     }
 
-    public String buildSubTaskStr() {
-        return TableFormatter.formatSubTaskTable(schedule, userConfig);
+    public String buildCardStr() {
+        return TableFormatter.formatCardTable(cards, true);
     }
 
-    /**
-     * Determines whether the schedule is empty
-     *
-     * @return boolean value for whether schedule is empty
-     */
-    public boolean scheduleIsEmpty() {
-        return schedule.isEmpty();
+    public String buildTaskStr() {
+        return TableFormatter.formatTaskTable(taskManager, archivedTasks, true);
+    }
+
+    public String buildSubTaskStr() {
+        return TableFormatter.formatSubTaskTable(schedule, userConfig);
     }
 
     /**
@@ -473,23 +454,6 @@ public class ScheduleManager {
     public void quit() {
         eventLog.reportExitSession();
         System.exit(0);
-    }
-
-    public boolean createCard(String title) {
-        eventLog.reportCardAction(null, 0);
-        return false;
-    }
-
-    public int getLastLabelId() {
-        return labelId;
-    }
-
-    public int getLastCLId() {
-        return checklistId;
-    }
-
-    public int getLastCardId() {
-        return cardId;
     }
 
     public List<Day> getSchedule() {

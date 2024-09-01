@@ -24,8 +24,8 @@ public class SessionLog {
                 .append("    - Minimum Task Duration: ").append(userConfig.getMinHours()).append("\n")
                 .append("    - Local Schedule Colors: ").append(userConfig.isLocalScheduleColors()).append("\n\n");
         userConfig.setLocalScheduleColors(false);
-        if (!scheduleManager.getRecurringEvents().isEmpty() || !scheduleManager.getIndivEvents().isEmpty()) {
-            sb.append(TableFormatter.formatEventSetTables(scheduleManager.getRecurringEvents(), scheduleManager.getIndivEvents(), userConfig));
+        if (!scheduleManager.getRecurEvents().isEmpty() || !scheduleManager.getIndivEvents().isEmpty()) {
+            sb.append(TableFormatter.formatEventSetTables(scheduleManager.getRecurEvents(), scheduleManager.getIndivEvents(), userConfig));
             sb.append("\n\n");
         }
 
