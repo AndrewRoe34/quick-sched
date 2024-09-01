@@ -1,6 +1,7 @@
 package com.planner.util;
 
 import com.planner.models.Card;
+import com.planner.models.Task;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -183,8 +184,8 @@ public class Parser {
         boolean dash = false;
         int startHr = -1;
         int endHr = -1;
-        int startMin = -1;
-        int endMin = -1;
+        int startMin = 0;
+        int endMin = 0;
         String startFmt = "";
         String endFmt = "";
 
@@ -195,10 +196,10 @@ public class Parser {
                         throw new IllegalArgumentException("Error: Colon is expected after hour, not minute.");
                     } else if (am) {
                         throw new IllegalArgumentException("Error: Colon can never occur after 'am' or 'pm'.");
-                    } else if (colon) {
+                    }
+                    else if (colon) {
                         throw new IllegalArgumentException("Error: Colons cannot be duplicated for same hour, minute combination");
                     }
-                    colon = true;
                     break;
                 case '-':
                     if (!hour || dash) {
@@ -240,14 +241,114 @@ public class Parser {
                 case '7':
                 case '8':
                 case '9':
-                    // todo need to finish
+                    if (hour && !colon) {
+                        throw new IllegalArgumentException("Error: Minutes must be separated by colon from hours");
+                    }
+                    else if (minute) {
+                        throw new IllegalArgumentException("Error: Minutes cannot be duplicated");
+                    }
+                    else if (am) {
+                        throw new IllegalArgumentException("Error: Hours and minutes cannot come after 'am'/'pm' signature");
+                    }
+                    else if (hour) {
+                        minute = true;
+                        if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
+                            int x = Integer.parseInt(s.substring(i, i + 2));
+                            if (x > 59) {
+                                throw new IllegalArgumentException("Error: Minutes cannot be greater than 59");
+                            }
+                            if (!dash) {
+                                startMin = x;
+                            }
+                            else {
+                                endMin = x;
+                            }
+                            i++;
+                        }
+                        else {
+                            throw new IllegalArgumentException("Error: Minutes require 2 digits");
+                        }
+                    }
+                    else {
+                        hour = true;
+                        if (i+1 >= s.length() || s.charAt(i + 1) < '0' || s.charAt(i + 1) > '9') {
+                            int x = Integer.parseInt(s.substring(i, i + 1));
+                            if (x > 12) {
+                                throw new IllegalArgumentException("Error: Hours cannot be greater than 12");
+                            }
+                            if (!dash) {
+                                startHr = x;
+                            }
+                            else {
+                                endHr = x;
+                            }
+                        }
+                        else if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
+                            int x = Integer.parseInt(s.substring(i, i + 2));
+                            if (x > 12) {
+                                throw new IllegalArgumentException("Error: Hours cannot be greater than 12");
+                            }
+                            if (!dash) {
+                                startHr = x;
+                            }
+                            else {
+                                endHr = x;
+                            }
+                            i++;
+                        }
+                        else {
+                            throw new IllegalArgumentException("Error: Minutes require 2 digits");
+                        }
+                    }
                     break;
                 default:
                     throw new IllegalArgumentException("Error: Invalid time format provided");
             }
         }
-        // todo need to finish
-        return null;
+        if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr != 12) {
+            startHr += 12;
+        }
+        else if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr == 12) {
+            startHr = 0;
+        }
+
+        Calendar[] calendars = new Calendar[2];
+
+        if (endHr == -1) {
+            Calendar start = Calendar.getInstance();
+            start.set(Calendar.HOUR, startHr);
+            start.set(Calendar.MINUTE, startMin);
+
+            calendars[0] = start;
+
+            return calendars;
+        }
+
+        if ((endFmt.equals("pm") || endFmt.equals("PM")) && endHr != 12) {
+            endHr += 12;
+        }
+        else if ((endFmt.equals("am") || endFmt.equals("AM")) && endHr == 12) {
+            endHr = 0;
+        }
+        else if (endFmt.isEmpty() && endHr < startHr) {
+            endHr += 12;
+        }
+        if (startHr > endHr || (startHr == endHr && startMin >= endMin)) {
+            return calendars;
+        }
+
+        Calendar start = Calendar.getInstance();
+        start.set(Calendar.HOUR, startHr);
+        start.set(Calendar.MINUTE, startMin);
+
+        Calendar end = Calendar.getInstance();
+        end.set(Calendar.HOUR, endHr);
+        end.set(Calendar.MINUTE, endMin);
+
+        calendars[0] = start;
+        calendars[1] = end;
+
+        return calendars;
     }
 
     public static class CardInfo {
@@ -266,5 +367,31 @@ public class Parser {
         public Card.Color getColor() {
             return color;
         }
+    }
+
+    public static class TaskInfo {
+        private final int id;
+        private final String desc;
+        private final Calendar start;
+        private final Calendar end;
+        private final int priority;
+
+        public TaskInfo(int id, String desc, Calendar start, Calendar end, int priority) {
+            this.id = id;
+            this.desc = desc;
+            this.start = start;
+            this.end = end;
+            this.priority = priority;
+        }
+
+        public int getId() { return id; }
+
+        public String getDesc() { return desc; }
+
+        public Calendar getStart() { return start; }
+
+        public Calendar getEnd() { return end; }
+
+        public int getPriority() { return priority; }
     }
 }
