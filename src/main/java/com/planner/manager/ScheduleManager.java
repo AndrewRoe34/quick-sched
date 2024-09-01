@@ -13,6 +13,7 @@ import com.planner.io.GoogleCalendarIO;
 import com.planner.io.IOProcessing;
 import com.planner.schedule.Scheduler;
 import com.planner.schedule.day.Day;
+import com.planner.scripter.tools.SessionLog;
 import com.planner.ui.tables.TableFormatter;
 import com.planner.util.EventLog;
 import com.planner.util.JBin;
@@ -446,6 +447,10 @@ public class ScheduleManager {
 
     public String buildSubTaskStr() {
         return TableFormatter.formatSubTaskTable(schedule, userConfig);
+    }
+
+    public String buildReportStr() {
+        return SessionLog.buildSessionLog(this, "abc123");
     }
 
     /**

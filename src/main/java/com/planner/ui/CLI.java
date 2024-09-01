@@ -72,6 +72,8 @@ public class CLI {
                     Parser.CardInfo ci = Parser.parseCard(tokens);
                     Card c = sm.addCard(ci.getName(), ci.getColor());
                     System.out.println("Added Card " + c.getId() + ".");
+                } else {
+                    System.out.println(sm.buildCardStr());
                 }
                 break;
             case "jbin":
@@ -95,6 +97,11 @@ public class CLI {
                 }
                 break;
             case "report":
+                if (tokens.length == 1) {
+                    System.out.println(sm.buildReportStr());
+                } else {
+                    System.out.println("Error: 'report' has no args.");
+                }
                 break;
             case "google":
                 break;
