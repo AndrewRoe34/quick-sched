@@ -241,28 +241,23 @@ public class Parser {
                 case '7':
                 case '8':
                 case '9':
-                    if (hour && !colon)
-                    {
+                    if (hour && !colon) {
                         throw new IllegalArgumentException("Error: Minutes must be separated by colon from hours");
                     }
-                    else if (minute)
-                    {
+                    else if (minute) {
                         throw new IllegalArgumentException("Error: Minutes cannot be duplicated");
                     }
-                    else if (am)
-                    {
+                    else if (am) {
                         throw new IllegalArgumentException("Error: Hours and minutes cannot come after 'am'/'pm' signature");
                     }
-                    else if (hour)
-                    {
+                    else if (hour) {
                         minute = true;
                         if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
                             int x = Integer.parseInt(s.substring(i, i + 2));
                             if (x > 59) {
                                 throw new IllegalArgumentException("Error: Minutes cannot be greater than 59");
                             }
-                            if (!dash)
-                            {
+                            if (!dash) {
                                 startMin = x;
                             }
                             else {
@@ -270,48 +265,38 @@ public class Parser {
                             }
                             i++;
                         }
-                        else
-                        {
+                        else {
                             throw new IllegalArgumentException("Error: Minutes require 2 digits");
                         }
                     }
                     else {
                         hour = true;
-                        if (i+1 >= s.length() || s.charAt(i + 1) < '0' || s.charAt(i + 1) > '9')
-                        {
+                        if (i+1 >= s.length() || s.charAt(i + 1) < '0' || s.charAt(i + 1) > '9') {
                             int x = Integer.parseInt(s.substring(i, i + 1));
-                            if (x > 12)
-                            {
+                            if (x > 12) {
                                 throw new IllegalArgumentException("Error: Hours cannot be greater than 12");
                             }
-                            if (!dash)
-                            {
+                            if (!dash) {
                                 startHr = x;
                             }
-                            else
-                            {
+                            else {
                                 endHr = x;
                             }
                         }
-                        else if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9')
-                        {
+                        else if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
                             int x = Integer.parseInt(s.substring(i, i + 2));
-                            if (x > 12)
-                            {
+                            if (x > 12) {
                                 throw new IllegalArgumentException("Error: Hours cannot be greater than 12");
                             }
-                            if (!dash)
-                            {
+                            if (!dash) {
                                 startHr = x;
                             }
-                            else
-                            {
+                            else {
                                 endHr = x;
                             }
                             i++;
                         }
-                        else
-                        {
+                        else {
                             throw new IllegalArgumentException("Error: Minutes require 2 digits");
                         }
                     }
@@ -320,19 +305,16 @@ public class Parser {
                     throw new IllegalArgumentException("Error: Invalid time format provided");
             }
         }
-        if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr != 12)
-        {
+        if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr != 12) {
             startHr += 12;
         }
-        else if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr == 12)
-        {
+        else if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr == 12) {
             startHr = 0;
         }
 
         Calendar[] calendars = new Calendar[2];
 
-        if (endHr == -1)
-        {
+        if (endHr == -1) {
             Calendar start = Calendar.getInstance();
             start.set(Calendar.HOUR, startHr);
             start.set(Calendar.MINUTE, startMin);
@@ -342,16 +324,13 @@ public class Parser {
             return calendars;
         }
 
-        if ((endFmt.equals("pm") || endFmt.equals("PM")) && endHr != 12)
-        {
+        if ((endFmt.equals("pm") || endFmt.equals("PM")) && endHr != 12) {
             endHr += 12;
         }
-        else if ((endFmt.equals("am") || endFmt.equals("AM")) && endHr == 12)
-        {
+        else if ((endFmt.equals("am") || endFmt.equals("AM")) && endHr == 12) {
             endHr = 0;
         }
-        else if (endFmt.isEmpty() && endHr < startHr)
-        {
+        else if (endFmt.isEmpty() && endHr < startHr) {
             endHr += 12;
         }
         if (startHr > endHr || (startHr == endHr && startMin >= endMin)) {
@@ -397,8 +376,7 @@ public class Parser {
         private final Calendar end;
         private final int priority;
 
-        public TaskInfo(int id, String desc, Calendar start, Calendar end, int priority)
-        {
+        public TaskInfo(int id, String desc, Calendar start, Calendar end, int priority) {
             this.id = id;
             this.desc = desc;
             this.start = start;
