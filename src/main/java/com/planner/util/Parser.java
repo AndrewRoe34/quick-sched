@@ -1,6 +1,7 @@
 package com.planner.util;
 
 import com.planner.models.Card;
+import com.planner.models.Task;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -302,7 +303,6 @@ public class Parser {
                     throw new IllegalArgumentException("Error: Invalid time format provided");
             }
         }
-        System.out.println(startHr + ":" + startMin + endFmt + "-" + endHr + ":" + endMin + endFmt);
         if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr != 12)
         {
             startHr += 12;
@@ -371,5 +371,32 @@ public class Parser {
         public Card.Color getColor() {
             return color;
         }
+    }
+
+    public static class TaskInfo {
+        private final int id;
+        private final String desc;
+        private final Calendar start;
+        private final Calendar end;
+        private final int priority;
+
+        public TaskInfo(int id, String desc, Calendar start, Calendar end, int priority)
+        {
+            this.id = id;
+            this.desc = desc;
+            this.start = start;
+            this.end = end;
+            this.priority = priority;
+        }
+
+        public int getId() { return id; }
+
+        public String getDesc() { return desc; }
+
+        public Calendar getStart() { return start; }
+
+        public Calendar getEnd() { return end; }
+
+        public int getPriority() { return priority; }
     }
 }
