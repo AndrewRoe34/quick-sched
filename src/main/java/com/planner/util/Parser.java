@@ -192,7 +192,7 @@ public class Parser {
         for (int i = 0; i < s.length(); i++) {
             switch (s.charAt(i)) {
                 case ':':
-                    if (!hour) {
+                    if (!hour || !minute) {
                         throw new IllegalArgumentException("Error: Colon is expected after hour, not minute.");
                     } else if (am) {
                         throw new IllegalArgumentException("Error: Colon can never occur after 'am' or 'pm'.");
@@ -241,62 +241,79 @@ public class Parser {
                 case '7':
                 case '8':
                 case '9':
-                    if (am)
+                    if (hour && !colon)
                     {
-                        throw  new IllegalArgumentException("Error: 'am'/'pm' can't be followed by hours, only dashes");
+                        throw new IllegalArgumentException("Error: Minutes must be separated by colon from hours");
                     }
-                    else if (!hour)
+                    else if (minute)
                     {
-                        String hrString = "";
-                        for (int j = i; j < s.length(); j++)
-                        {
-                            char c = s.charAt(j);
-                            if (!(c >= '0' && c <= '9')) {
-                                break;
+                        throw new IllegalArgumentException("Error: Minutes cannot be duplicated");
+                    }
+                    else if (am)
+                    {
+                        throw new IllegalArgumentException("Error: Hours and minutes cannot come after 'am'/'pm' signature");
+                    }
+                    else if (hour)
+                    {
+                        minute = true;
+                        if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
+                            int x = Integer.parseInt(s.substring(i, i + 2));
+                            if (x > 59) {
+                                throw new IllegalArgumentException("Error: Minutes cannot be greater than 59");
                             }
-                            hrString += c;
-                            if (hrString.length() > 2) {
-                                throw new IllegalArgumentException("Error: Invalid format, hours can only be 1 or 2 characters");
+                            if (!dash)
+                            {
+                                startMin = x;
+                            }
+                            else {
+                                endMin = x;
                             }
                             i++;
                         }
-                        int hr = Integer.parseInt(hrString);
-                        if (hr > 12)
+                        else
                         {
-                            throw new IllegalArgumentException("Error: Invalid number of hours, can't exceed 12");
+                            throw new IllegalArgumentException("Error: Minutes require 2 digits");
                         }
-                        if (dash) {
-                            endHr = hr;
-                        }
-                        else {
-                            startHr = hr;
-                        }
-                        hour = true;
-                        if (i < s.length() && s.charAt(i) != ':') i--;
-                        colon = true;
                     }
-                    else if (colon && !minute) {
-                        String minString = "";
-                        for (int j = i; j < i + 2 && j < s.length(); j++)
+                    else {
+                        hour = true;
+                        if (i+1 >= s.length() || s.charAt(i + 1) < '0' || s.charAt(i + 1) > '9')
                         {
-                            char c = s.charAt(j);
-                            if (!(c >= '0' && c <= '9')) {
-                                break;
+                            int x = Integer.parseInt(s.substring(i, i + 1));
+                            if (x > 12)
+                            {
+                                throw new IllegalArgumentException("Error: Hours cannot be greater than 12");
                             }
-                            minString += c;
-                            if (minString.length() > 2) {
-                                throw new IllegalArgumentException("Error: Invalid format, minutes can only be 1 or 2 characters");
+                            if (!dash)
+                            {
+                                startHr = x;
                             }
-                            if (j == i + 1) i++;
+                            else
+                            {
+                                endHr = x;
+                            }
                         }
-                        int min = Integer.parseInt(minString);
-                        if (min > 60)
+                        else if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9')
                         {
-                            throw new IllegalArgumentException("Error: Invalid number of minutes, can't exceed 60");
+                            int x = Integer.parseInt(s.substring(i, i + 2));
+                            if (x > 12)
+                            {
+                                throw new IllegalArgumentException("Error: Hours cannot be greater than 12");
+                            }
+                            if (!dash)
+                            {
+                                startHr = x;
+                            }
+                            else
+                            {
+                                endHr = x;
+                            }
+                            i++;
                         }
-                        if (dash) endMin = min;
-                        else startMin = min;
-                        minute = true;
+                        else
+                        {
+                            throw new IllegalArgumentException("Error: Minutes require 2 digits");
+                        }
                     }
                     break;
                 default:
