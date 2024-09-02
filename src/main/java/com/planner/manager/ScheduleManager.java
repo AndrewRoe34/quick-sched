@@ -61,8 +61,8 @@ public class ScheduleManager {
     private int cardId;
     /** Last day Task is due */
     private int lastDueDate;
-    private final GoogleCalendarIO googleCalendarIO;
-    private final SpreadsheetIO spreadsheetIO;
+    private GoogleCalendarIO googleCalendarIO;
+    private SpreadsheetIO spreadsheetIO;
     private Calendar scheduleTime;
     private final List<Event> indivEvents;
     private final List<List<Event>> recurringEvents;
@@ -82,13 +82,13 @@ public class ScheduleManager {
         processUserConfigFile();
 
         taskManager = new PriorityQueue<>();
-        try {
-            googleCalendarIO = new GoogleCalendarIO(eventLog);
-            spreadsheetIO = new SpreadsheetIO(eventLog);
-        }
-        catch (GeneralSecurityException | IOException e) {
-            throw new IllegalArgumentException();
-        }
+//        try {
+//            googleCalendarIO = new GoogleCalendarIO(eventLog);
+//            spreadsheetIO = new SpreadsheetIO(eventLog);
+//        }
+//        catch (GeneralSecurityException | IOException e) {
+//            throw new IllegalArgumentException();
+//        }
 
         scheduler = Scheduler.getInstance(userConfig, eventLog, userConfig.getSchedulingAlgorithm());
         // in situations where ScheduleManager is run multiple times after updates to config, this ensures options are set up properly
