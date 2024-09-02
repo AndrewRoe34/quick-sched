@@ -192,7 +192,7 @@ public class Parser {
         for (int i = 0; i < s.length(); i++) {
             switch (s.charAt(i)) {
                 case ':':
-                    if (!hour || !minute) {
+                    if (!hour || minute) {
                         throw new IllegalArgumentException("Error: Colon is expected after hour, not minute.");
                     } else if (am) {
                         throw new IllegalArgumentException("Error: Colon can never occur after 'am' or 'pm'.");
@@ -200,6 +200,7 @@ public class Parser {
                     else if (colon) {
                         throw new IllegalArgumentException("Error: Colons cannot be duplicated for same hour, minute combination");
                     }
+                    colon = true;
                     break;
                 case '-':
                     if (!hour || dash) {
@@ -385,5 +386,9 @@ public class Parser {
         public Calendar getEnd() { return end; }
 
         public int getPriority() { return priority; }
+    }
+
+    public static void main(String[] args) {
+        parseTimeStamp("9:-2:60pm");
     }
 }
