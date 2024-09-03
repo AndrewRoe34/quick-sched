@@ -149,22 +149,13 @@ public class ConfigState {
                 }
                 break;
             case 4:
-                HashMap<String, Boolean> priorityMap = promptBooleanInput("Enable priority for tasks");
-                if (priorityMap.get("valid")) {
-                    userConfig.setPriority(priorityMap.get("input"));
-                }
+                userConfig.setPriority(promptBool("Enable priority for tasks"));
                 break;
             case 5:
-                HashMap<String, Boolean> overflowMap = promptBooleanInput("Display overflow");
-                if (overflowMap.get("valid")) {
-                    userConfig.setOverflow(overflowMap.get("input"));
-                }
+                userConfig.setOverflow(promptBool("Display overflow"));
                 break;
             case 6:
-                HashMap<String, Boolean> scheduleMap = promptBooleanInput("Fit schedule");
-                if (scheduleMap.get("valid")) {
-                    userConfig.setFitDay(scheduleMap.get("input"));
-                }
+                userConfig.setFitDay(promptBool("Fit schedule"));
                 break;
             case 7:
                 System.out.print("\n                                                 Scheduling algorithm (0-1)");
@@ -197,16 +188,10 @@ public class ConfigState {
                 }
                 break;
             case 9:
-                HashMap<String, Boolean> optimizeMap = promptBooleanInput("Optimize day");
-                if (optimizeMap.get("valid")) {
-                    userConfig.setOptimizeDay(optimizeMap.get("input"));
-                }
+                userConfig.setOptimizeDay(promptBool("Optimize day"));
                 break;
             case 10:
-                HashMap<String, Boolean> defaultStartMap = promptBooleanInput("Optimize day");
-                if (defaultStartMap.get("valid")) {
-                    userConfig.setDefaultAtStart(defaultStartMap.get("input"));
-                }
+                userConfig.setDefaultAtStart(promptBool("Default at start"));
                 break;
         }
     }
@@ -220,24 +205,20 @@ public class ConfigState {
         return true;
     }
 
-    private HashMap<String, Boolean> promptBooleanInput(String prompt)
-    {
+    boolean promptBool(String prompt) {
         System.out.print("\n                                                " + prompt + " (true/false)");
         System.out.print("\n                                                        Input [T/F]: ");
 
-        HashMap<String, Boolean> hashMap = new HashMap<String, Boolean>();
-
+        boolean userInput = false;
         if (scanner.hasNextLine()) {
             String input = scanner.nextLine();
             if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
-                hashMap.put("valid", true);
-                hashMap.put("input", Boolean.parseBoolean(input));
+                userInput = Boolean.parseBoolean(input);
             } else {
                 // Do nothing or provide feedback to the user regarding invalid input
-                System.out.println("Error: Invalid input, must be true or false");
-                hashMap.put("valid", false);
+                throw new IllegalArgumentException("Error: Invalid input, must be true or false");
             }
         }
-        return hashMap;
+        return userInput;
     }
 }

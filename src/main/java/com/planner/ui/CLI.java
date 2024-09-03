@@ -69,10 +69,7 @@ public class CLI {
                 break;
             case "task":
                 if (tokens.length > 1) {
-                    Parser.TaskInfo taskInfo = Parser.parseTask(tokens);
-                    Task task = new Task(taskInfo.getTaskId(), taskInfo.getDesc(), taskInfo.getHours(), taskInfo.getDue());
-                    sm.addTask(task);
-                    System.out.println("Added task " + task.getId() + ".");
+                    // TODO
                 } else {
                     System.out.println(sm.buildTaskStr());
                 }
