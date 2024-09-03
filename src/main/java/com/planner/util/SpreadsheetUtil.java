@@ -238,11 +238,9 @@ public class SpreadsheetUtil {
 
                 scheduleSheet.value(j + 1, i, output.toString());
 
-                if (userConfig.isLocalScheduleColors()) {
-                    scheduleSheet.style(j + 1, i).fontColor(
-                            convertColorsEnumToFastExcelColorEnum(color)
-                    ).set();
-                }
+                scheduleSheet.style(j + 1, i).fontColor(
+                        convertColorsEnumToFastExcelColorEnum(color)
+                ).set();
             }
         }
     }

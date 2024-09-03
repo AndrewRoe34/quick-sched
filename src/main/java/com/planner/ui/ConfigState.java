@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ConfigState {
@@ -68,7 +70,7 @@ public class ConfigState {
                 String input = scanner.nextLine();
                 if (!input.isBlank() && hasInteger(input)) {
                     int id = Integer.parseInt(input);
-                    if (id < 0 || id > 11) break;
+                    if (id < 0 || id > 10) break;
                     formatConfigPrompt(id);
                     break;
                 }
@@ -147,43 +149,13 @@ public class ConfigState {
                 }
                 break;
             case 4:
-                System.out.print("\n                                                 Enable priority for tasks (true/false)");
-                System.out.print("\n                                                        Input [T/F]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
-                        boolean priority = Boolean.parseBoolean(input);
-                        userConfig.setPriority(priority);
-                    } else {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
-                }
+                userConfig.setPriority(promptBool("Enable priority for tasks"));
                 break;
             case 5:
-                System.out.print("\n                                                 Display overflow (true/false)");
-                System.out.print("\n                                                        Input [T/F]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
-                        boolean overflow = Boolean.parseBoolean(input);
-                        userConfig.setOverflow(overflow);
-                    } else {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
-                }
+                userConfig.setOverflow(promptBool("Display overflow"));
                 break;
             case 6:
-                System.out.print("\n                                                 Fit schedule (true/false)");
-                System.out.print("\n                                                        Input [T/F]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
-                        boolean fitDay = Boolean.parseBoolean(input);
-                        userConfig.setFitDay(fitDay);
-                    } else {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
-                }
+                userConfig.setFitDay(promptBool("Fit schedule"));
                 break;
             case 7:
                 System.out.print("\n                                                 Scheduling algorithm (0-1)");
@@ -216,43 +188,10 @@ public class ConfigState {
                 }
                 break;
             case 9:
-                System.out.print("\n                                                 Optimize day (true/false)");
-                System.out.print("\n                                                       Input [T/F]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
-                        boolean optimizeDay = Boolean.parseBoolean(input);
-                        userConfig.setOptimizeDay(optimizeDay);
-                    } else {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
-                }
+                userConfig.setOptimizeDay(promptBool("Optimize day"));
                 break;
             case 10:
-                System.out.print("\n                                                 Default at start (true/false)");
-                System.out.print("\n                                                       Input [T/F]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
-                        boolean defaultAtStart = Boolean.parseBoolean(input);
-                        userConfig.setDefaultAtStart(defaultAtStart);
-                    } else {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
-                }
-                break;
-            case 11:
-                System.out.print("\n                                                 Local schedule colors (true/false)");
-                System.out.print("\n                                                       Input [T/F]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
-                        boolean localScheduleColors = Boolean.parseBoolean(input);
-                        userConfig.setLocalScheduleColors(localScheduleColors);
-                    } else {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
-                }
+                userConfig.setDefaultAtStart(promptBool("Default at start"));
                 break;
         }
     }
@@ -266,4 +205,20 @@ public class ConfigState {
         return true;
     }
 
+    boolean promptBool(String prompt) {
+        System.out.print("\n                                                " + prompt + " (true/false)");
+        System.out.print("\n                                                        Input [T/F]: ");
+
+        boolean userInput = false;
+        if (scanner.hasNextLine()) {
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
+                userInput = Boolean.parseBoolean(input);
+            } else {
+                // Do nothing or provide feedback to the user regarding invalid input
+                throw new IllegalArgumentException("Error: Invalid input, must be true or false");
+            }
+        }
+        return userInput;
+    }
 }

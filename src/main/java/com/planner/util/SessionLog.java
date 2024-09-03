@@ -20,9 +20,7 @@ public class SessionLog {
                 .append("    - Overflow Handling: ").append(userConfig.isOverflow()).append("\n")
                 .append("    - Fit Day Schedule: ").append(userConfig.isFitDay()).append("\n")
                 .append("    - Scheduling Algorithm: ").append(userConfig.getSchedulingAlgorithm()).append("\n")
-                .append("    - Minimum Task Duration: ").append(userConfig.getMinHours()).append("\n")
-                .append("    - Local Schedule Colors: ").append(userConfig.isLocalScheduleColors()).append("\n\n");
-        userConfig.setLocalScheduleColors(false);
+                .append("    - Minimum Task Duration: ").append(userConfig.getMinHours()).append("\n");
         if (!scheduleManager.getRecurEvents().isEmpty() || !scheduleManager.getIndivEvents().isEmpty()) {
             sb.append(TableFormatter.formatEventSetTables(scheduleManager.getRecurEvents(), scheduleManager.getIndivEvents(), userConfig));
             sb.append("\n\n");
@@ -44,7 +42,6 @@ public class SessionLog {
             sb.append(TableFormatter.formatScheduleTable(scheduleManager.getSchedule(), false));
             sb.append("\n");
         }
-        userConfig.setLocalScheduleColors(true);
         return sb.toString();
     }
 }
