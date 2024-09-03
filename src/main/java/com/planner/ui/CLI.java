@@ -58,7 +58,7 @@ public class CLI {
         }
     }
 
-    private void exeCmd(String[] tokens) throws IOException {
+    private void exeCmd(String[] tokens) throws IOException { // todo will need to catch IllegalArgsException and print to console error
         switch (tokens[0]) {
             case "clear":
                 if (tokens.length == 1) {
@@ -69,6 +69,8 @@ public class CLI {
                 break;
             case "task":
                 if (tokens.length > 1) {
+                    Parser.TaskInfo ti = Parser.parseTask(tokens);
+                    sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), null);
                     // TODO
                 } else {
                     System.out.println(sm.buildTaskStr());
