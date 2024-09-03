@@ -426,7 +426,7 @@ public class ScheduleManager {
     }
 
     public String buildBoardString() {
-        return TableFormatter.formatBoardTable(cards, userConfig, archivedTasks, userConfig.isFormatPrettyTable());
+        return TableFormatter.formatBoardTable(cards, userConfig, archivedTasks, true);
     }
 
     public String buildScheduleStr() {

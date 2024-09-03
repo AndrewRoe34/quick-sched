@@ -2,6 +2,7 @@ package com.planner.ui;
 
 import com.planner.manager.ScheduleManager;
 import com.planner.models.Card;
+import com.planner.models.Task;
 import com.planner.models.UserConfig;
 import com.planner.ui.tables.TableFormatter;
 import com.planner.util.Parser;
@@ -69,7 +70,10 @@ public class CLI {
                 break;
             case "task":
                 if (tokens.length > 1) {
-                    // TODO
+                    Parser.TaskInfo taskInfo = Parser.parseTask(tokens);
+                    Task task = new Task(taskInfo.getTaskId(), taskInfo.getDesc(), taskInfo.getHours(), taskInfo.getDue());
+                    sm.addTask(task);
+                    System.out.println("Added task " + task.getId() + ".");
                 } else {
                     System.out.println(sm.buildTaskStr());
                 }
@@ -120,22 +124,8 @@ public class CLI {
                 break;
             case "config":
                 if (tokens.length == 1) {
-                    UserConfig userConfig = sm.getUserConfig();
-                    System.out.println(
-                            "Configuration Details:\n" +
-                                    "    - Config File: profile.json\n" +
-                                    "    - Mode: Production\n" +
-                                    "    - Range: " + Arrays.toString(userConfig.getRange()) + "\n" +
-                                    "    - Week Hours: " + Arrays.toString(userConfig.getWeek()) + "\n" +
-                                    "    - Max Days: " + userConfig.getMaxDays() + "\n" +
-                                    "    - Archive Days: " + userConfig.getArchiveDays() + "\n" +
-                                    "    - Priority Scheduling: " + userConfig.isPriority() + "\n" +
-                                    "    - Overflow Handling: " + userConfig.isOverflow() + "\n" +
-                                    "    - Fit Day Schedule: " + userConfig.isFitDay() + "\n" +
-                                    "    - Scheduling Algorithm: " + userConfig.getSchedulingAlgorithm() + "\n" +
-                                    "    - Minimum Task Duration: " + userConfig.getMinHours() + "\n" +
-                                    "    - Local Schedule Colors: "  + userConfig.isLocalScheduleColors() + "\n"
-                    );
+                    ConfigState configState = new ConfigState();
+                    configState.setupAndDisplayPage();
                 } else {
                     System.out.println("Error: 'config' has no args.");
                 }

@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 public class ConfigState implements TUIState {
@@ -69,7 +71,7 @@ public class ConfigState implements TUIState {
                 String input = scanner.nextLine();
                 if (!input.isBlank() && hasInteger(input)) {
                     int id = Integer.parseInt(input);
-                    if (id < 0 || id > 11) break;
+                    if (id < 0 || id > 10) break;
                     formatConfigPrompt(id);
                     break;
                 }
@@ -148,42 +150,21 @@ public class ConfigState implements TUIState {
                 }
                 break;
             case 4:
-                System.out.print("\n                                                 Enable priority for tasks (true/false)");
-                System.out.print("\n                                                        Input [T/F]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
-                        boolean priority = Boolean.parseBoolean(input);
-                        userConfig.setPriority(priority);
-                    } else {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
+                HashMap<String, Boolean> priorityMap = promptBooleanInput("Enable priority for tasks");
+                if (priorityMap.get("valid")) {
+                    userConfig.setPriority(priorityMap.get("input"));
                 }
                 break;
             case 5:
-                System.out.print("\n                                                 Display overflow (true/false)");
-                System.out.print("\n                                                        Input [T/F]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
-                        boolean overflow = Boolean.parseBoolean(input);
-                        userConfig.setOverflow(overflow);
-                    } else {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
+                HashMap<String, Boolean> overflowMap = promptBooleanInput("Display overflow");
+                if (overflowMap.get("valid")) {
+                    userConfig.setOverflow(overflowMap.get("input"));
                 }
                 break;
             case 6:
-                System.out.print("\n                                                 Fit schedule (true/false)");
-                System.out.print("\n                                                        Input [T/F]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
-                        boolean fitDay = Boolean.parseBoolean(input);
-                        userConfig.setFitDay(fitDay);
-                    } else {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
+                HashMap<String, Boolean> scheduleMap = promptBooleanInput("Fit schedule");
+                if (scheduleMap.get("valid")) {
+                    userConfig.setFitDay(scheduleMap.get("input"));
                 }
                 break;
             case 7:
@@ -217,42 +198,15 @@ public class ConfigState implements TUIState {
                 }
                 break;
             case 9:
-                System.out.print("\n                                                 Optimize day (true/false)");
-                System.out.print("\n                                                       Input [T/F]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
-                        boolean optimizeDay = Boolean.parseBoolean(input);
-                        userConfig.setOptimizeDay(optimizeDay);
-                    } else {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
+                HashMap<String, Boolean> optimizeMap = promptBooleanInput("Optimize day");
+                if (optimizeMap.get("valid")) {
+                    userConfig.setOptimizeDay(optimizeMap.get("input"));
                 }
                 break;
             case 10:
-                System.out.print("\n                                                 Default at start (true/false)");
-                System.out.print("\n                                                       Input [T/F]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
-                        boolean defaultAtStart = Boolean.parseBoolean(input);
-                        userConfig.setDefaultAtStart(defaultAtStart);
-                    } else {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
-                }
-                break;
-            case 11:
-                System.out.print("\n                                                 Local schedule colors (true/false)");
-                System.out.print("\n                                                       Input [T/F]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
-                        boolean localScheduleColors = Boolean.parseBoolean(input);
-                        userConfig.setLocalScheduleColors(localScheduleColors);
-                    } else {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
+                HashMap<String, Boolean> defaultStartMap = promptBooleanInput("Optimize day");
+                if (defaultStartMap.get("valid")) {
+                    userConfig.setDefaultAtStart(defaultStartMap.get("input"));
                 }
                 break;
         }
@@ -267,4 +221,24 @@ public class ConfigState implements TUIState {
         return true;
     }
 
+    private HashMap<String, Boolean> promptBooleanInput(String prompt)
+    {
+        System.out.print("\n                                                " + prompt + " (true/false)");
+        System.out.print("\n                                                        Input [T/F]: ");
+
+        HashMap<String, Boolean> hashMap = new HashMap<String, Boolean>();
+
+        if (scanner.hasNextLine()) {
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("true") || input.equalsIgnoreCase("false")) {
+                hashMap.put("valid", true);
+                hashMap.put("input", Boolean.parseBoolean(input));
+            } else {
+                // Do nothing or provide feedback to the user regarding invalid input
+                System.out.println("Error: Invalid input, must be true or false");
+                hashMap.put("valid", false);
+            }
+        }
+        return hashMap;
+    }
 }
