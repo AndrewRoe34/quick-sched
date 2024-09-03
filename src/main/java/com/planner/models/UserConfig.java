@@ -28,9 +28,7 @@ public class UserConfig {
     private double minHours;
     private boolean optimizeDay;
     private boolean defaultAtStart;
-    private boolean localScheduleColors;
     private boolean formatPrettyTime;
-
 
     /**
      * Primary constructor for UserConfig
@@ -46,12 +44,10 @@ public class UserConfig {
      * @param minHours            Minimum number of hours for a given day
      * @param optimizeDay         Whether to maximize the positioning of tasks in relation to each other
      * @param defaultAtStart      Whether the scheduling begins at the start of day
-     * @param localScheduleColors Whether the local schedule shares the colors of its Google counterpart
      */
     public UserConfig(int[] range, int[] globalHr, int maxDays, int archiveDays, boolean priority,
                       boolean overflow, boolean fitDay, int schedulingAlgorithm, double minHours,
-                      boolean optimizeDay, boolean defaultAtStart, boolean localScheduleColors,
-                      boolean formatPrettyTime) {
+                      boolean optimizeDay, boolean defaultAtStart, boolean formatPrettyTime) {
         this.range = range;
         this.week = globalHr;
         this.maxDays = maxDays;
@@ -63,7 +59,6 @@ public class UserConfig {
         this.minHours = minHours;
         this.optimizeDay = optimizeDay;
         this.defaultAtStart = defaultAtStart;
-        this.localScheduleColors = localScheduleColors;
         this.formatPrettyTime = formatPrettyTime;
     }
 
@@ -82,7 +77,6 @@ public class UserConfig {
         this.minHours = 1.0;
         this.optimizeDay = true;
         this.defaultAtStart = true;
-        this.localScheduleColors = true;
         this.formatPrettyTime = true;
     }
 
@@ -266,12 +260,6 @@ public class UserConfig {
 
     public void setDefaultAtStart(boolean defaultAtStart) {
         this.defaultAtStart = defaultAtStart;
-    }
-
-    public boolean isLocalScheduleColors() { return localScheduleColors; }
-
-    public void setLocalScheduleColors(boolean localScheduleColors) {
-        this.localScheduleColors = localScheduleColors;
     }
 
     public boolean isFormatPrettyTime() {

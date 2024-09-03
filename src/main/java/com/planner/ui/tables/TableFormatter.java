@@ -325,10 +325,8 @@ public class TableFormatter {
                 defaultCardIsEmpty = true;
                 continue;
             }
-            if (userConfig.isLocalScheduleColors()) {
-                String colorANSICode = getColorANSICode((c1.getColorId()));
-                sb.append(colorANSICode);
-            }
+            String colorANSICode = getColorANSICode((c1.getColorId()));
+            sb.append(colorANSICode);
 
             maxTasks = Math.max(c1.getTask().size(), maxTasks);
             if (c1.toString().length() > 40)
@@ -339,8 +337,7 @@ public class TableFormatter {
                 sb.append(" ".repeat(Math.max(0, 40 - c1.toString().length())));
             }
 
-            if (userConfig.isLocalScheduleColors())
-                sb.append("\u001B[0m");
+            sb.append("\u001B[0m");
 
             sb.append("|");
         }
@@ -446,10 +443,8 @@ public class TableFormatter {
         }
 
         for (Event e : uniqueRecurringEvents) {
-            if (userConfig.isLocalScheduleColors()) {
-                String colorANSICode = getColorANSICode((e.getColor()));
-                sb.append(colorANSICode);
-            }
+            String colorANSICode = getColorANSICode((e.getColor()));
+            sb.append(colorANSICode);
 
             sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
 
@@ -470,7 +465,7 @@ public class TableFormatter {
                     Arrays.toString(e.getDays()).length() - 1
             ).append(" ".repeat(33 - Arrays.toString(e.getDays()).length() + 2)).append("|");
 
-            if (userConfig.isLocalScheduleColors()) sb.append("\u001B[0m");
+            sb.append("\u001B[0m");
 
             sb.append("\n");
         }
@@ -491,10 +486,8 @@ public class TableFormatter {
         }
 
         for (Event e : indivEvents) {
-            if (userConfig.isLocalScheduleColors()) {
-                String colorANSICode = getColorANSICode((e.getColor()));
-                sb.append(colorANSICode);
-            }
+            String colorANSICode = getColorANSICode((e.getColor()));
+            sb.append(colorANSICode);
 
             sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
 
@@ -507,7 +500,7 @@ public class TableFormatter {
             sb.append(e.getTimeStamp().toString()).append(" ".repeat(20 - e.getTimeStamp().toString().length())).append("|");
             sb.append(e.getDateStamp()).append(" ".repeat(12 - e.getDateStamp().length())).append("|");
 
-            if (userConfig.isLocalScheduleColors()) sb.append("\u001B[0m");
+            sb.append("\u001B[0m");
 
             sb.append("\n");
         }
@@ -534,10 +527,9 @@ public class TableFormatter {
 
         for (Day day : schedule) {
             for (Task.SubTask subTask : day.getSubTaskList()) {
-                if (userConfig.isLocalScheduleColors()) {
-                    String colorANSICode = getColorANSICode((subTask.getParentTask().getColor()));
-                    sb.append(colorANSICode);
-                }
+                String colorANSICode = getColorANSICode((subTask.getParentTask().getColor()));
+                sb.append(colorANSICode);
+
                 sb.append(subTask.getParentTask().getId()).append(" ".repeat(7 - String.valueOf(subTask.getParentTask().getId()).length())).append("|");
 
                 if (subTask.getParentTask().getName().length() > 20)
@@ -557,7 +549,7 @@ public class TableFormatter {
                 sb.append(date).append(" ".repeat(12 - date.length())).append("|");
                 sb.append(subTask.getParentTask().getDateStamp()).append(" ".repeat(12 - subTask.getParentTask().getDateStamp().length())).append("|");
 
-                if (userConfig.isLocalScheduleColors()) sb.append("\u001B[0m");
+                sb.append("\u001B[0m");
                 sb.append("\n");
             }
         }

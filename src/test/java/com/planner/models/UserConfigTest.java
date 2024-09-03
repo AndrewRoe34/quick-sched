@@ -12,7 +12,7 @@ class UserConfigTest {
     @BeforeEach
     void setUp() {
         userConfig = new UserConfig(new int[]{8, 20}, new int[]{8, 8, 8, 8, 8, 8, 8}, 14, 5, false, true,
-                true, 0, 0.5, false, true, true, true);
+                true, 0, 0.5, false, true, true);
     }
 
     @Test
@@ -110,10 +110,4 @@ class UserConfigTest {
         assertFalse(userConfig.isDefaultAtStart());
     }
 
-    @Test
-    void setLocalScheduleColors() {
-        assertTrue(userConfig.isLocalScheduleColors());
-        userConfig.setLocalScheduleColors(false);
-        assertFalse(userConfig.isLocalScheduleColors());
-    }
 }
