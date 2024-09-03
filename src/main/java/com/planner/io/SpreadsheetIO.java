@@ -102,12 +102,10 @@ public class SpreadsheetIO {
                 Workbook wb = new Workbook(os, "AgilePlannerApplication", "1.0")
         ) {
             Worksheet scheduleSheet = SpreadsheetUtil.createScheduleSheet(wb, schedule);
-            Worksheet boardSheet = SpreadsheetUtil.createBoardSheet(wb, cards);
             Worksheet eventSheet = SpreadsheetUtil.createEventSheet(wb, schedule);
             Worksheet taskSheet = SpreadsheetUtil.createTaskSheet(wb, schedule);
 
             SpreadsheetUtil.populateScheduleSheet(scheduleSheet, schedule, userConfig);
-            SpreadsheetUtil.populateBoardSheet(boardSheet, cards, archivedTasks);
             SpreadsheetUtil.populateEventSheet(eventSheet, schedule);
             SpreadsheetUtil.populateTaskSheet(taskSheet, schedule);
 

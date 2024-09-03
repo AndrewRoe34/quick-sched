@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
-public class ConfigState implements Screen {
+public class ConfigState {
 
     private boolean writeToFile;
     private UserConfig userConfig;
@@ -27,7 +27,6 @@ public class ConfigState implements Screen {
         scanner = new Scanner(System.in);
     }
 
-    @Override
     public void setupAndDisplayPage() {
         formatTablePrompt();
         if (scanner.hasNextLine()) {
