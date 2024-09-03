@@ -429,24 +429,15 @@ public class TableFormatter {
         }
 
         if (recurringEventsExist) {
-            if (userConfig.isFormatPrettyTable()) {
-                sb.append("             Recurring Events:\n");
-                sb.append("            _____________________________________________________________________________________________________\n");
-                sb.append("            |");
-            } else {
-                sb.append("RECURRING EVENTS:\n");
-            }
+            sb.append("RECURRING EVENTS:\n");
+
             sb.append("ID").append(" ".repeat(5)).append("|");
             sb.append("NAME").append(" ".repeat(16)).append("|");
             sb.append("COLOR").append(" ".repeat(10)).append("|");
             sb.append("TIME").append(" ".repeat(16)).append("|");
             sb.append("DAYS").append(" ".repeat(29)).append("|\n");
-            if (userConfig.isFormatPrettyTable()) {
-                sb.append("            |_______|____________________|_______________|____________________|_________________________________|\n");
-            } else {
-                sb.append("----------------------------------------------------------------------------------------------------");
-                sb.append("\n");
-            }
+            sb.append("----------------------------------------------------------------------------------------------------");
+            sb.append("\n");
         }
 
         HashSet<Event> uniqueRecurringEvents = new HashSet<>();
@@ -458,9 +449,6 @@ public class TableFormatter {
             if (userConfig.isLocalScheduleColors()) {
                 String colorANSICode = getColorANSICode((e.getColor()));
                 sb.append(colorANSICode);
-            }
-            if (userConfig.isFormatPrettyTable()) {
-                sb.append("            |");
             }
 
             sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
@@ -488,42 +476,24 @@ public class TableFormatter {
         }
 
         if (recurringEventsExist) {
-            if (userConfig.isFormatPrettyTable()) {
-                sb.append("            |_______|____________________|_______________|____________________|_________________________________|\n\n");
-            } else {
-                sb.append("\n");
-            }
+            sb.append("\n");
         }
 
         if (!indivEvents.isEmpty()) {
-            if (userConfig.isFormatPrettyTable()) {
-                sb.append("             Individual Events:\n");
-                sb.append("            ________________________________________________________________________________\n");
-                sb.append("            |");
-            } else {
-                sb.append("INDIVIDUAL EVENTS:\n");
-            }
+            sb.append("INDIVIDUAL EVENTS:\n");
             sb.append("ID").append(" ".repeat(5)).append("|")
                     .append("NAME").append(" ".repeat(16)).append("|")
                     .append("COLOR").append(" ".repeat(10)).append("|")
                     .append("TIME").append(" ".repeat(16)).append("|")
                     .append("DATE").append(" ".repeat(8)).append("|\n");
-
-            if (userConfig.isFormatPrettyTable()) {
-                sb.append("            |_______|____________________|_______________|____________________|____________|\n");
-            } else {
-                sb.append("-".repeat(79));
-                sb.append("\n");
-            }
+            sb.append("-".repeat(79));
+            sb.append("\n");
         }
 
         for (Event e : indivEvents) {
             if (userConfig.isLocalScheduleColors()) {
                 String colorANSICode = getColorANSICode((e.getColor()));
                 sb.append(colorANSICode);
-            }
-            if (userConfig.isFormatPrettyTable()) {
-                sb.append("            |");
             }
 
             sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
@@ -543,11 +513,7 @@ public class TableFormatter {
         }
 
         if (!indivEvents.isEmpty()) {
-            if (userConfig.isFormatPrettyTable()) {
-                sb.append("            |_______|____________________|_______________|____________________|____________|\n");
-            } else {
-                sb.append("\n");
-            }
+            sb.append("\n");
         }
 
         return sb.toString();
@@ -562,29 +528,15 @@ public class TableFormatter {
      */
     public static String formatSubTaskTable(List<Day> schedule, UserConfig userConfig) {
         StringBuilder sb = new StringBuilder();
-        if (userConfig.isFormatPrettyTable()) {
-            sb.append("             SUBTASKS:\n" +
-                    "            ________________________________________________________________________________________________________\n" +
-                    "            |");
-        } else {
-            sb.append("SUBTASKS:\n");
-        }
+        sb.append("SUBTASKS:\n");
         sb.append("ID     |NAME                |TAG            |HOURS     |TIME                |DATE        |DUE         |\n");
-
-        if (userConfig.isFormatPrettyTable()) {
-            sb.append("            |_______|____________________|_______________|__________|____________________|____________|____________|\n");
-        } else {
-            sb.append("-------------------------------------------------------------------------------------------------------\n");
-        }
+        sb.append("-------------------------------------------------------------------------------------------------------\n");
 
         for (Day day : schedule) {
             for (Task.SubTask subTask : day.getSubTaskList()) {
                 if (userConfig.isLocalScheduleColors()) {
                     String colorANSICode = getColorANSICode((subTask.getParentTask().getColor()));
                     sb.append(colorANSICode);
-                }
-                if (userConfig.isFormatPrettyTable()) {
-                    sb.append("            |");
                 }
                 sb.append(subTask.getParentTask().getId()).append(" ".repeat(7 - String.valueOf(subTask.getParentTask().getId()).length())).append("|");
 
@@ -610,11 +562,7 @@ public class TableFormatter {
             }
         }
 
-        if (userConfig.isFormatPrettyTable()) {
-            sb.append("            |_______|____________________|_______________|__________|____________________|____________|____________|\n");
-        } else {
-            sb.append("\n");
-        }
+        sb.append("\n");
 
         return sb.toString();
     }

@@ -64,8 +64,7 @@ public class TUIContext {
                             "    - Overflow Handling: " + userConfig.isOverflow() + "\n" +
                             "    - Fit Day Schedule: " + userConfig.isFitDay() + "\n" +
                             "    - Scheduling Algorithm: " + userConfig.getSchedulingAlgorithm() + "\n" +
-                            "    - Minimum Task Duration: " + userConfig.getMinHours() + "\n" +
-                            "    - Local Schedule Colors: "  + userConfig.isLocalScheduleColors() + "\n"
+                            "    - Minimum Task Duration: " + userConfig.getMinHours() + "\n"
             );
             sleep(1000);
             System.out.print(sysInfo);
