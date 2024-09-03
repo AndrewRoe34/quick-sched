@@ -29,8 +29,8 @@ class CardTest {
 
     @Test
     void setTitle() {
-        c1.setTitle("Chemistry");
-        assertEquals("Chemistry", c1.getTitle());
+        c1.setName("Chemistry");
+        assertEquals("Chemistry", c1.getName());
     }
 
     @Test
@@ -92,7 +92,7 @@ class CardTest {
 
     @Test
     void getTitle() {
-        assertEquals("Math", c1.getTitle());
+        assertEquals("Math", c1.getName());
     }
 
     @Test

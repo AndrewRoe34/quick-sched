@@ -12,7 +12,7 @@ import com.planner.util.Time;
  *
  * @author Andrew Roe
  */
-public class Task implements Comparable<Task>, Linker {
+public class Task implements Comparable<Task> {
 
     /** ID of the Task */
     private int id;
@@ -24,25 +24,7 @@ public class Task implements Comparable<Task>, Linker {
     private double totalHours;
     /** Number of SubTask hours */
     private double subTotalHours;
-    /** # of hours / (DueDate - StartingDay) */
-    private double averageNumHours;
-    private Card.Color color;// todo we will use this in place of the label
-    private String tag;
-
-    /**
-     * Primary constructor for Task
-     *
-     * @param id ID of Task
-     * @param name name of Task
-     * @param hours number of hours for Task
-     * @param incrementation number of days till due date for Task
-     */
-    public Task(int id, String name, double hours, int incrementation) {
-        setId(id);
-        setName(name);
-        setTotalHours(hours);
-        setDueDate(incrementation);
-    }
+    private Card card;
 
     /**
      * Primary constructor for Task
@@ -51,7 +33,16 @@ public class Task implements Comparable<Task>, Linker {
      * @param name name of Task
      * @param hours number of hours for Task
      * @param date number of days till due date for Task
+     * @param card reference to Card for tag and color
      */
+    public Task(int id, String name, double hours, Calendar date, Card card) {
+        setId(id);
+        setName(name);
+        setTotalHours(hours);
+        setDueDate(date);
+        setCard(card);
+    }
+
     public Task(int id, String name, double hours, Calendar date) {
         setId(id);
         setName(name);
@@ -77,12 +68,70 @@ public class Task implements Comparable<Task>, Linker {
         this.id = id;
     }
 
-    public String getTag() {
-        return tag;
+    /**
+     * Gets the name of the Task
+     *
+     * @return name of Task
+     */
+    public String getName() {
+        return name;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    /**
+     * Sets the name of the Task
+     *
+     * @param name name of Task
+     */
+    public void setName(String name) {	//TODO will need to include exceptions for the setters
+        this.name = name;
+    }
+
+    /**
+     * Gets the due date of the Task
+     *
+     * @return due date of Task
+     */
+    public Calendar getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(Calendar dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public String getDateStamp() {
+        int day = dueDate.get(Calendar.DAY_OF_MONTH);
+        int year = dueDate.get(Calendar.YEAR);
+
+        // Calendar.MONTH is zero-indexed.
+        int month = dueDate.get(Calendar.MONTH) + 1;
+
+        StringBuilder dateStamp = new StringBuilder();
+        if (day < 10) dateStamp.append("0");
+        dateStamp.append(day);
+        dateStamp.append("-");
+        if (month < 10) dateStamp.append("0");
+        dateStamp.append(month);
+        dateStamp.append("-");
+        dateStamp.append(year);
+
+        return dateStamp.toString();
+    }
+
+    public Card getCard() {
+        return card;
+    }
+
+    public void setCard(Card card) {
+        this.card = card;
+    }
+
+    public String getTag() {
+        return card != null ? card.getName() : null;
+    }
+
+    public Card.Color getColor() {
+        return card != null ? card.getColorId() : null;
     }
 
     /**
@@ -106,7 +155,6 @@ public class Task implements Comparable<Task>, Linker {
      */
     public void reset() {
         subTotalHours = 0;
-        this.averageNumHours = 0;
     }
 
     /**
@@ -131,61 +179,6 @@ public class Task implements Comparable<Task>, Linker {
     }
 
     /**
-     * Gets the name of the Task
-     *
-     * @return name of Task
-     */
-    public String getName() {
-        return name;
-    }
-
-    /**
-     * Sets the name of the Task
-     *
-     * @param name name of Task
-     */
-    private void setName(String name) {	//TODO will need to include exceptions for the setters
-        this.name = name;
-    }
-
-    /**
-     * Gets the due date of the Task
-     *
-     * @return due date of Task
-     */
-    public Calendar getDueDate() {
-        return dueDate;
-    }
-
-    /**
-     * Sets the due date of the Task
-     *
-     * @param incrementation number of days till due date for Task
-     */
-    private void setDueDate(int incrementation) { //TODO will need to include exceptions for the setters
-        this.dueDate = Time.getFormattedCalendarInstance(incrementation);
-    }
-
-    public String getDateStamp() {
-        int day = dueDate.get(Calendar.DAY_OF_MONTH);
-        int year = dueDate.get(Calendar.YEAR);
-
-        // Calendar.MONTH is zero-indexed.
-        int month = dueDate.get(Calendar.MONTH) + 1;
-
-        StringBuilder dateStamp = new StringBuilder();
-        if (day < 10) dateStamp.append("0");
-        dateStamp.append(day);
-        dateStamp.append("-");
-        if (month < 10) dateStamp.append("0");
-        dateStamp.append(month);
-        dateStamp.append("-");
-        dateStamp.append(year);
-
-        return dateStamp.toString();
-    }
-
-    /**
      * Gets the total number of hours for the Task
      *
      * @return number of hours for the Task
@@ -206,35 +199,6 @@ public class Task implements Comparable<Task>, Linker {
         this.totalHours = total;
     }
 
-    /**
-     * Computes and sets the average number of hours based on (number of hours / days)
-     *
-     * @param date starting date that the task is available
-     */
-    public void setAverageNumHours(Calendar date) {
-        int days = Time.determineRangeOfDays(date, this.dueDate) + 1;
-        double avgHours = this.totalHours / days;
-        avgHours += this.totalHours % days == 0 ? 0 : 1;
-        this.averageNumHours = avgHours;
-    }
-
-    /**
-     * Gets the average number of hours for the Task
-     *
-     * @return average number of hours for the Task
-     */
-    public double getAverageNumHours() {
-        return averageNumHours;
-    }
-
-    public Card.Color getColor() {
-        return color;
-    }
-
-    public void setColor(Card.Color color) {
-        this.color = color;
-    }
-
     @Override
     public String toString() {
         return "Task [name=" + name + ", total=" + totalHours + "]";
@@ -246,22 +210,12 @@ public class Task implements Comparable<Task>, Linker {
         if (o == null || getClass() != o.getClass()) return false;
         Task task = (Task) o;
         return id == task.id && totalHours == task.totalHours && subTotalHours == task.subTotalHours &&
-                averageNumHours == task.averageNumHours && name.equals(task.name) && dueDate.equals(task.dueDate);
+                name.equals(task.name) && dueDate.equals(task.dueDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, dueDate, totalHours, subTotalHours, averageNumHours);
-    }
-
-    @Override
-    public boolean add(Linker o) {
-        return false;
-    }
-
-    @Override
-    public boolean remove(Linker o) {
-        return false;
+        return Objects.hash(id, name, dueDate, totalHours, subTotalHours);
     }
 
     /**

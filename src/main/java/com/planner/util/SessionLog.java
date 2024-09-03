@@ -1,4 +1,4 @@
-package com.planner.scripter.tools;
+package com.planner.util;
 
 import com.planner.manager.ScheduleManager;
 import com.planner.models.UserConfig;
@@ -8,9 +8,8 @@ import java.util.Arrays;
 
 public class SessionLog {
 
-    public static String buildSessionLog(ScheduleManager scheduleManager, String script) {
+    public static String buildSessionLog(ScheduleManager scheduleManager) {
         StringBuilder sb = new StringBuilder();
-        sb.append("Script: ").append(script).append("\n");
         UserConfig userConfig = scheduleManager.getUserConfig();
         sb.append("Configuration Details:\n" + "    - Config File: profile.json\n" + "    - Mode: Production\n" + "    - Range: ")
                 .append(Arrays.toString(userConfig.getRange())).append("\n")

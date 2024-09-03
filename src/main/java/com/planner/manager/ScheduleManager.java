@@ -4,19 +4,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.security.GeneralSecurityException;
 import java.util.*;
 
 import com.planner.io.SpreadsheetIO;
 import com.planner.models.*;
 import com.planner.io.GoogleCalendarIO;
-import com.planner.io.IOProcessing;
 import com.planner.schedule.Scheduler;
 import com.planner.schedule.day.Day;
-import com.planner.scripter.tools.SessionLog;
+import com.planner.util.SessionLog;
 import com.planner.ui.tables.TableFormatter;
 import com.planner.util.EventLog;
-import com.planner.util.JBin;
 import com.planner.util.JsonHandler;
 import com.planner.util.Time;
 
@@ -54,10 +51,6 @@ public class ScheduleManager {
     private int taskId;
     /** ID specifier for each Day */
     private int dayId;
-    /** ID specifier for each Label */
-    private int labelId;
-    /** ID specifier ro each CheckList */
-    private int checklistId;
     private int cardId;
     /** Last day Task is due */
     private int lastDueDate;
@@ -98,7 +91,6 @@ public class ScheduleManager {
         customHours = new HashMap<>();
         taskMap = new HashMap<>();
         cards = new ArrayList<>();
-        cards.add(new Card(0, "Default", Card.Color.LIGHT_BLUE));
         archivedTasks = new PriorityQueue<>();
         indivEvents = new ArrayList<>();
 
@@ -150,56 +142,56 @@ public class ScheduleManager {
      * @param filename jbin filename
      */
     public void importJBinFile(String filename) {
-        String binStr = IOProcessing.readJBinFile(filename);
-        if(binStr != null) {
-            eventLog.reportReadJBinFile(filename);
-            List<Event> eventList = new ArrayList<>();
-            JBin.processJBin(binStr, taskManager, eventList, eventId, cards, schedule, userConfig.getArchiveDays());
-            eventLog.reportProcessJBin();
-
-            Calendar currDate = Time.getFormattedCalendarInstance(0);
-            while (!taskManager.isEmpty()) {
-                Task task = taskManager.remove();
-                if (task.getDueDate().compareTo(currDate) < 0) {
-                    archivedTasks.add(task);
-                    // eventlog needs to report the archiving of a task
-                    eventLog.reportTaskAction(task, 3);
-                }
-                else {
-                    taskManager.add(task);
-                    break;
-                }
-            }
-            taskId = taskManager.size();
-
-            for (Event e : eventList) {
-                if (e.isRecurring()) {
-                    for (Event.DayOfWeek dayOfWeek : e.getDays()) {
-                        recurringEvents.get(dayOfWeek.ordinal()).add(e);
-                    }
-                } else indivEvents.add(e);
-            }
-            eventId = eventList.get(eventList.size() - 1).getId() + 1;
-        }
+//        String binStr = IOProcessing.readJBinFile(filename);
+//        if(binStr != null) {
+//            eventLog.reportReadJBinFile(filename);
+//            List<Event> eventList = new ArrayList<>();
+//            JBin.processJBin(binStr, taskManager, eventList, eventId, cards, schedule, userConfig.getArchiveDays());
+//            eventLog.reportProcessJBin();
+//
+//            Calendar currDate = Time.getFormattedCalendarInstance(0);
+//            while (!taskManager.isEmpty()) {
+//                Task task = taskManager.remove();
+//                if (task.getDueDate().compareTo(currDate) < 0) {
+//                    archivedTasks.add(task);
+//                    // eventlog needs to report the archiving of a task
+//                    eventLog.reportTaskAction(task, 3);
+//                }
+//                else {
+//                    taskManager.add(task);
+//                    break;
+//                }
+//            }
+//            taskId = taskManager.size();
+//
+//            for (Event e : eventList) {
+//                if (e.isRecurring()) {
+//                    for (Event.DayOfWeek dayOfWeek : e.getDays()) {
+//                        recurringEvents.get(dayOfWeek.ordinal()).add(e);
+//                    }
+//                } else indivEvents.add(e);
+//            }
+//            eventId = eventList.get(eventList.size() - 1).getId() + 1;
+//        }
     }
 
     public void exportJBinFile(String filename) {
-        eventLog.reportCreateJBin();
-        IOProcessing.writeJBinFile(
-                filename,
-                JBin.createJBin(
-                        cards,
-                        schedule,
-                        indivEvents,
-                        recurringEvents
-                )
-        );
-        eventLog.reportWriteJBinFile(filename);
+//        eventLog.reportCreateJBin();
+//        IOProcessing.writeJBinFile(
+//                filename,
+//                JBin.createJBin(
+//                        cards,
+//                        schedule,
+//                        indivEvents,
+//                        recurringEvents
+//                )
+//        );
+//        eventLog.reportWriteJBinFile(filename);
     }
 
-    public void setScheduleOption(int idx) {
-        scheduler = Scheduler.getInstance(userConfig, eventLog, idx);
-    }
+//    public void setScheduleOption(int idx) {
+//        scheduler = Scheduler.getInstance(userConfig, eventLog, idx);
+//    }
 
     public List<Card> getCards() {
         return cards;
@@ -276,62 +268,37 @@ public class ScheduleManager {
     }
 
     public Card addCard(String title, Card.Color color) {
-        Card card = new Card(cardId++, title, color);
+        Card card = new Card(cards.size(), title, color);
 
         cards.add(card);
         eventLog.reportCardAction(card, 0);
         return card;
     }
 
-    /**
-     * Adds a task to the schedule
-     *
-     * @param name name of Task
-     * @param hours number of hours for Task
-     * @param incrementation number of days till due date for Task
-     * @return newly generated Task
-     */
-    public Task addTask(String name, int hours, int incrementation) {
-        Task task = new Task(taskId++, name, hours, incrementation);
-
+    public Task addTask(String name, double hours, Calendar due, Card card) {
+        Task task = new Task(taskManager.size() + 1, name, hours, due, card);
+        // todo check whether task is past due (if so, add to archive list)
+        //  will need to add to taskMap
         taskManager.add(task);
-        taskMap.put(taskId - 1, task);
-
-        eventLog.reportTaskAction(task, 0);
-        cards.get(0).addTask(task);
         return task;
     }
 
-    public void addTask(Task createdTask) {
-        taskManager.add(createdTask);
-        taskMap.put(taskId - 1, createdTask);
-        cards.get(0).addTask(createdTask);
-    }
-
-    public boolean addTaskToCard(Task task, Card card) {
-        if (card.getTask().contains(task)) return false;
-        card.addTask(task);
-        if (cards.get(0).getTask().contains(task)) {
-            cards.get(0).removeTask(task);
+    public Task modTask(int id, String name, double hours, Calendar due, Card card) {
+        // todo will need error handling here
+        Task task = taskMap.get(id);
+        if (name != null) {
+            task.setName(name);
         }
-        return true;
-    }
-
-    /**
-     * Removes a task from the schedule given the day and task indices
-     *
-     * @param t1 task being removed
-     * @return boolean status for successful removal
-     */
-    public boolean removeTask(Task t1) {
-        if(taskManager.contains(t1)) {
-            taskManager.remove(t1);
-            taskMap.remove(t1.getId(), t1);
-            eventLog.reportTaskAction(t1, 1);
-            return true;
+        if (hours != -1) {
+            task.setTotalHours(hours);
         }
-
-        return false;
+        if (due != null) {
+            task.setDueDate(due);
+        }
+        if (card != null) {
+            task.setCard(card);
+        }
+        return task;
     }
 
     /**
@@ -425,10 +392,6 @@ public class ScheduleManager {
         Collections.sort(indivEvents);
     }
 
-    public String buildBoardString() {
-        return TableFormatter.formatBoardTable(cards, userConfig, archivedTasks, userConfig.isFormatPrettyTable());
-    }
-
     public String buildScheduleStr() {
         return TableFormatter.formatScheduleTable(schedule, true);
     }
@@ -450,7 +413,7 @@ public class ScheduleManager {
     }
 
     public String buildReportStr() {
-        return SessionLog.buildSessionLog(this, "abc123");
+        return SessionLog.buildSessionLog(this);
     }
 
     /**
@@ -484,9 +447,5 @@ public class ScheduleManager {
 
     public void importScheduleFromGoogle() throws IOException {
         googleCalendarIO.importScheduleFromGoogle();
-    }
-
-    public void resetData() {
-        singleton = new ScheduleManager();
     }
 }

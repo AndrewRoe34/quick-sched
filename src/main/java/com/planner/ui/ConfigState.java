@@ -10,7 +10,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
-public class ConfigState implements TUIState {
+public class ConfigState implements Screen {
 
     private boolean writeToFile;
     private UserConfig userConfig;

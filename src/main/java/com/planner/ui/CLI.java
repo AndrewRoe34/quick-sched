@@ -3,7 +3,6 @@ package com.planner.ui;
 import com.planner.manager.ScheduleManager;
 import com.planner.models.Card;
 import com.planner.models.UserConfig;
-import com.planner.ui.tables.TableFormatter;
 import com.planner.util.Parser;
 
 import java.io.IOException;
@@ -62,7 +61,7 @@ public class CLI {
         switch (tokens[0]) {
             case "clear":
                 if (tokens.length == 1) {
-                    TUIState.clearScreen();
+                    Screen.clearScreen();
                 } else {
                     System.out.println("Error: 'clear' has no args.");
                 }
@@ -100,15 +99,14 @@ public class CLI {
                 break;
             case "jbin":
                 if (tokens.length == 2) {
-                    if (tokens[1].contains(".jbin"))
-                    {
+                    if (tokens[1].contains(".jbin")) {
                         sm.importJBinFile("data/jbin/" + tokens[1]);
                         System.out.println("Imported " + tokens[1] + ".");
                     } else {
                         System.out.println("Error: Argument must be a jbin file");
                     }
                 } else if (tokens.length == 1) {
-                    System.out.println(sm.buildBoardString());
+//                    System.out.println(sm.buildBoardString());
                 }
                 break;
             case "update":
@@ -156,7 +154,9 @@ public class CLI {
                 }
                 break;
             case "sched":
-                if (sm.scheduleIsEmpty()) {
+                if (tokens.length != 1) {
+                    System.out.println("Error: 'sched' has no args.");
+                } else if (sm.scheduleIsEmpty()) {
                     System.out.println("Schedule is empty...");
                 } else {
                     System.out.println(sm.buildScheduleStr());
@@ -169,15 +169,16 @@ public class CLI {
                     System.out.println("Error: 'report' has no args.");
                 }
                 break;
-            case "google":
-                if (tokens.length == 1) {
-                    sm.exportScheduleToGoogle();
-                    System.out.println("Exported schedule to Google Calendar.");
-                } else {
-                    System.out.println("Error: 'google' has no args.");
-                }
-                break;
+//            case "google":
+//                if (tokens.length == 1) {
+//                    sm.exportScheduleToGoogle();
+//                    System.out.println("Exported schedule to Google Calendar.");
+//                } else {
+//                    System.out.println("Error: 'google' has no args.");
+//                }
+//                break;
             case "quit":
+                // todo need to keep track of any changes (and if so, prompt user to update)
                 sm.quit();
             default:
                 System.out.println("Error: Unknown command entered.");

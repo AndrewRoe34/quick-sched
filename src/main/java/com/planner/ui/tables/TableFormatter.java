@@ -253,7 +253,7 @@ public class TableFormatter {
         for (Card card : cards) {
             String colors = card.getColorId() + "";
             int id = card.getId();
-            String name = card.getTitle();
+            String name = card.getName();
 
             if (useColor && card.getColorId() != null) {
                 sb.append(getColorANSICode(card.getColorId()));
@@ -280,132 +280,6 @@ public class TableFormatter {
         }
 
         sb.append("\n");
-
-        return sb.toString();
-    }
-
-    /**
-     * Creates a board table consisting of {@link Card} and {@link Task}, providing options for both dotted and pretty formats
-     *
-     * @param cards list of scheduled cards
-     * @param userConfig provided user options
-     * @param archivedTasks previously archived tasks
-     * @param isPretty whether to display table with pretty format
-     * @return dotted board table
-     */
-    public static String formatBoardTable(List<Card> cards, UserConfig userConfig, PriorityQueue<Task> archivedTasks, boolean isPretty) {
-        StringBuilder sb = new StringBuilder();
-
-        if (isPretty) {
-            sb.append("             CARDS:\n");
-            sb.append("            ");
-            boolean firstCard = true;
-            for (Card c1 : cards) {
-                if (firstCard && c1.getTask().isEmpty()) {
-                    // we do nothing, happens only once at most
-                } else {
-                    sb.append("_________________________________________");
-                }
-                firstCard = false;
-            }
-            sb.append("\n");
-        } else {
-            sb.append("CARDS:\n");
-        }
-
-        // use foreach loop to determine max number of tasks while printing out the first line of Cards
-        int maxTasks = 0;
-        boolean defaultCardIsEmpty = false;
-        if (isPretty) {
-            sb.append("            |");
-        }
-        int cardIdx = 0;
-        for (Card c1 : cards) {
-            if (cardIdx == 0 && c1.getTask().isEmpty()) {
-                cardIdx++;
-                defaultCardIsEmpty = true;
-                continue;
-            }
-            if (userConfig.isLocalScheduleColors()) {
-                String colorANSICode = getColorANSICode((c1.getColorId()));
-                sb.append(colorANSICode);
-            }
-
-            maxTasks = Math.max(c1.getTask().size(), maxTasks);
-            if (c1.toString().length() > 40)
-                sb.append(c1.toString(), 0, 40);
-            else {
-                sb.append(c1);
-
-                sb.append(" ".repeat(Math.max(0, 40 - c1.toString().length())));
-            }
-
-            if (userConfig.isLocalScheduleColors())
-                sb.append("\u001B[0m");
-
-            sb.append("|");
-        }
-
-        sb.append("\n");
-        int cardCount = defaultCardIsEmpty ? 1 : 0;
-        if (isPretty) {
-            sb.append("            |");
-            for (; cardCount < cards.size(); cardCount++) {
-                sb.append("________________________________________|");
-            }
-        } else {
-            for (; cardCount < cards.size(); cardCount++) {
-                sb.append("-----------------------------------------");
-            }
-        }
-
-
-        // use foreach loop inside a for loop to output the tasks
-        for (int i = 0; i < maxTasks; i++) {
-            sb.append("\n");
-            if (isPretty) {
-                sb.append("            |");
-            }
-            cardIdx = 0;
-            for(Card c1 : cards) {
-                if (cardIdx++ == 0 && c1.getTask().isEmpty()) continue;
-
-                if (i < c1.getTask().size()) {
-                    // print out the task (up to 18 characters)
-                    Task t1 = c1.getTask().get(i);
-                    String outputTask = "";
-//                    if (Time.differenceOfDays(t1.getDueDate(), currDate) < 0) {
-//                        outputTask = "*";
-//                    }
-
-                    if (archivedTasks.contains(t1))
-                        outputTask = "*";
-
-                    outputTask += t1.toString();
-
-                    if (outputTask.length() > 40)
-                        sb.append(outputTask, 0, 40);
-                    else {
-                        sb.append(outputTask);
-                        sb.append(" ".repeat(40 - outputTask.length()));
-                    }
-
-                    sb.append("|");
-                }
-                else
-                    sb.append("                                        |");
-            }
-        }
-        sb.append("\n");
-
-        if (isPretty) {
-            sb.append("            |");
-            cardCount = defaultCardIsEmpty ? 1 : 0;
-            for (; cardCount < cards.size(); cardCount++) {
-                sb.append("________________________________________|");
-            }
-            sb.append("\n");
-        }
 
         return sb.toString();
     }
