@@ -97,35 +97,6 @@ public class SpreadsheetUtil {
     }
 
     /**
-     * Creates a board Worksheet if there are any cards were created.
-     *
-     * @param wb Workbook that owns the created Worksheet.
-     * @param cards Cards that will be checked.
-     *
-     * @return A valid 'Boards' Worksheet if any cards are found,
-     * else {@code null}.
-     */
-    public static Worksheet createBoardSheet(Workbook wb, List<Card> cards) {
-        Worksheet boardSheet = null;
-
-        if (cards.isEmpty())
-            return boardSheet;
-
-        boardSheet = wb.newWorksheet("Board");
-
-        for (int i = 0; i < cards.size(); i++) {
-            Card card = cards.get(i);
-
-            boardSheet.value(0, i, card.getTitle());
-            boardSheet.style(0, i).fontColor(
-                    convertColorsEnumToFastExcelColorEnum(card.getColorId())
-            ).bold().fillColor(org.dhatim.fastexcel.Color.GRAY7).set();
-        }
-
-        return boardSheet;
-    }
-
-    /**
      * Creates a schedule Worksheet.
      *
      * @param wb Workbook that owns the created Worksheet.
@@ -224,29 +195,6 @@ public class SpreadsheetUtil {
     }
 
     /**
-     * Populates a board Worksheet if it exists.
-     *
-     * @param boardSheet The nullable {@code Boards} Worksheet.
-     * @param cards Cards that will be used to populate the Worksheet.
-     * @param archivedTasks Sequence of archived tasks that will be used to set
-     *                      a flag on each task in a card's column.
-     */
-    public static void populateBoardSheet(Worksheet boardSheet, List<Card> cards, PriorityQueue<Task> archivedTasks) {
-        if (boardSheet == null)
-            return;
-
-        for (int i = 0; i < cards.size(); i++) {
-            Card card = cards.get(i);
-
-            for (int j = 0; j < card.getTask().size(); j++) {
-                String taskString = getCardTaskString(card, j, archivedTasks);
-
-                boardSheet.value(j + 1, i, taskString);
-            }
-        }
-    }
-
-    /**
      * Populates a schedule Worksheet if it exists.
      *
      * @param scheduleSheet The nullable {@code Schedule} Worksheet.
@@ -322,18 +270,6 @@ public class SpreadsheetUtil {
             default:
                 return org.dhatim.fastexcel.Color.BLACK;
         }
-    }
-
-    private static String getCardTaskString(Card card, int index, PriorityQueue<Task> archivedTasks) {
-        Task task = card.getTask().get(index);
-
-        String taskString = "";
-        if (archivedTasks.contains(task))
-            taskString += "*";
-
-        taskString += task.toString();
-
-        return taskString;
     }
 
     private static List<String> arrangeTasksAndEventsInOrderOfOccurrence(Day day) {

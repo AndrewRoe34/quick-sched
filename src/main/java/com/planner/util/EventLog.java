@@ -126,7 +126,7 @@ public class EventLog {
         }
 
         sb.append(" ID=" + card.getId()); //TODO: need to finish getId()
-        sb.append(", TITLE=").append(card.getTitle());
+        sb.append(", TITLE=").append(card.getName());
         sb.append("\n");
     }
 

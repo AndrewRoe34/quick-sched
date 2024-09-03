@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
-public class ConfigState implements TUIState {
+public class ConfigState {
 
     private boolean writeToFile;
     private UserConfig userConfig;
@@ -29,7 +29,6 @@ public class ConfigState implements TUIState {
         scanner = new Scanner(System.in);
     }
 
-    @Override
     public void setupAndDisplayPage() {
         formatTablePrompt();
         if (scanner.hasNextLine()) {

@@ -14,17 +14,16 @@ class TaskTest {
     private int id;
     private int numOfDays;
     private int numOfHours;
-    private String tag;
+    private Calendar due = Time.getFormattedCalendarInstance(2);
+    private Card card = new Card(0, "Supply Chain", Card.Color.INDIGO);
 
     @BeforeEach
     void setUp() {
         id = 0;
         numOfDays = 2;
         numOfHours = 8;
-        tag = "School";
 
-        task = new Task(id, "Solve math homework", numOfHours, numOfDays);
-        task.setTag(tag);
+        task = new Task(id, "Solve math homework", numOfHours, due, card);
     }
 
     @Test
@@ -34,13 +33,7 @@ class TaskTest {
 
     @Test
     void getTag() {
-        assertEquals(tag, task.getTag());
-    }
-
-    @Test
-    void setTag() {
-        task.setTag("Homework");
-        assertEquals("Homework", task.getTag());
+        assertEquals("Supply Chain", task.getTag());
     }
 
     @Test
@@ -71,7 +64,6 @@ class TaskTest {
     void reset() {
         task.reset();
         assertEquals(0, task.getSubTotalHoursRemaining() - task.getTotalHours());
-        assertEquals(0, task.getAverageNumHours());
     }
 
     @Test
@@ -93,8 +85,8 @@ class TaskTest {
 
     @Test
     void compareTo() {
-        Task task1 = new Task(1, "Study", 5, 3);
-        Task task2 = new Task(1, "Study", 5, 3);
+        Task task1 = new Task(1, "Study", 5, due);
+        Task task2 = new Task(1, "Study", 5, due);
 
         assertEquals(0, task1.compareTo(task2));
 
@@ -117,7 +109,7 @@ class TaskTest {
 
     @Test
     void getDueDate() {
-        Calendar dueDate = Time.getFormattedCalendarInstance(numOfDays);
+        Calendar dueDate = Time.getFormattedCalendarInstance(2);
 
         assertEquals(dueDate, task.getDueDate());
     }
@@ -156,35 +148,8 @@ class TaskTest {
     }
 
     @Test
-    void setAverageNumHours() {
-        Calendar date = Calendar.getInstance();
-        Calendar dueDate = task.getDueDate();
-
-        int days = Time.determineRangeOfDays(date, dueDate) + 1;
-
-        double avgNumHours = (double) numOfHours / days;
-        avgNumHours += avgNumHours % days == 0 ? 0 : 1;
-
-        task.setAverageNumHours(date);
-
-        assertEquals(avgNumHours, task.getAverageNumHours());
-    }
-
-    @Test
-    void getAverageNumHours() {
-        task.reset();
-        assertEquals(0, task.getAverageNumHours());
-    }
-
-    @Test
     void getColor() {
-        assertNull(task.getColor());
-    }
-
-    @Test
-    void setColor() {
-        task.setColor(Card.Color.YELLOW);
-        assertEquals(Card.Color.YELLOW, task.getColor());
+        assertEquals(Card.Color.INDIGO, task.getColor());
     }
 
     @Test
@@ -197,9 +162,9 @@ class TaskTest {
     void testEquals() {
         assertNotEquals(null, task);
 
-        Task task1 = new Task(1, "Study", 5, 3);
-        Task task2 = new Task(1, "Study", 5, 3);
-        Task task3 = new Task(2, "Work", 5, 3);
+        Task task1 = new Task(1, "Study", 5, due);
+        Task task2 = new Task(1, "Study", 5, due);
+        Task task3 = new Task(2, "Work", 5, due);
 
         assertEquals(task1, task2);
         assertNotEquals(task1, task3);

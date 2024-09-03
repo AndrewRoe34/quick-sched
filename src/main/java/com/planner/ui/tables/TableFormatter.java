@@ -26,7 +26,7 @@ public class TableFormatter {
      */
     public static String formatPrettyUserConfigTable(UserConfig userConfig) {
         String[] optionNames = {"RANGE", "WEEK", "MAX_DAYS", "ARCHIVE_DAYS", "PRIORITY", "OVERFLOW", "FIT_DAY",
-                "SCHED_ALGORITHM", "MIN_HOURS", "OPTIMIZE_DAY", "DEFAULT_AT_START"};
+                "SCHED_ALGORITHM", "MIN_HOURS", "OPTIMIZE_DAY", "DEFAULT_AT_START", "LOCAL_SCHED_COLORS"};
 
         StringBuilder sb = new StringBuilder();
         sb.append("                                                            Settings Options\n");
@@ -48,6 +48,7 @@ public class TableFormatter {
                 case 8: optionValue = String.valueOf(userConfig.getMinHours()); break;
                 case 9: optionValue = String.valueOf(userConfig.isOptimizeDay()); break;
                 case 10: optionValue = String.valueOf(userConfig.isDefaultAtStart()); break;
+                case 11: optionValue = String.valueOf(userConfig.isLocalScheduleColors()); break;
             }
             String formattedOptionValue = String.format(" %-25s|", optionValue);
             sb.append(String.format("                                         |%-6d|%-19s|", i, optionNames[i]));
@@ -252,7 +253,7 @@ public class TableFormatter {
         for (Card card : cards) {
             String colors = card.getColorId() + "";
             int id = card.getId();
-            String name = card.getTitle();
+            String name = card.getName();
 
             if (useColor && card.getColorId() != null) {
                 sb.append(getColorANSICode(card.getColorId()));
@@ -284,129 +285,6 @@ public class TableFormatter {
     }
 
     /**
-     * Creates a board table consisting of {@link Card} and {@link Task}, providing options for both dotted and pretty formats
-     *
-     * @param cards list of scheduled cards
-     * @param userConfig provided user options
-     * @param archivedTasks previously archived tasks
-     * @param isPretty whether to display table with pretty format
-     * @return dotted board table
-     */
-    public static String formatBoardTable(List<Card> cards, UserConfig userConfig, PriorityQueue<Task> archivedTasks, boolean isPretty) {
-        StringBuilder sb = new StringBuilder();
-
-        if (isPretty) {
-            sb.append("             CARDS:\n");
-            sb.append("            ");
-            boolean firstCard = true;
-            for (Card c1 : cards) {
-                if (firstCard && c1.getTask().isEmpty()) {
-                    // we do nothing, happens only once at most
-                } else {
-                    sb.append("_________________________________________");
-                }
-                firstCard = false;
-            }
-            sb.append("\n");
-        } else {
-            sb.append("CARDS:\n");
-        }
-
-        // use foreach loop to determine max number of tasks while printing out the first line of Cards
-        int maxTasks = 0;
-        boolean defaultCardIsEmpty = false;
-        if (isPretty) {
-            sb.append("            |");
-        }
-        int cardIdx = 0;
-        for (Card c1 : cards) {
-            if (cardIdx == 0 && c1.getTask().isEmpty()) {
-                cardIdx++;
-                defaultCardIsEmpty = true;
-                continue;
-            }
-            String colorANSICode = getColorANSICode((c1.getColorId()));
-            sb.append(colorANSICode);
-
-            maxTasks = Math.max(c1.getTask().size(), maxTasks);
-            if (c1.toString().length() > 40)
-                sb.append(c1.toString(), 0, 40);
-            else {
-                sb.append(c1);
-
-                sb.append(" ".repeat(Math.max(0, 40 - c1.toString().length())));
-            }
-
-            sb.append("\u001B[0m");
-
-            sb.append("|");
-        }
-
-        sb.append("\n");
-        int cardCount = defaultCardIsEmpty ? 1 : 0;
-        if (isPretty) {
-            sb.append("            |");
-            for (; cardCount < cards.size(); cardCount++) {
-                sb.append("________________________________________|");
-            }
-        } else {
-            for (; cardCount < cards.size(); cardCount++) {
-                sb.append("-----------------------------------------");
-            }
-        }
-
-
-        // use foreach loop inside a for loop to output the tasks
-        for (int i = 0; i < maxTasks; i++) {
-            sb.append("\n");
-            if (isPretty) {
-                sb.append("            |");
-            }
-            cardIdx = 0;
-            for(Card c1 : cards) {
-                if (cardIdx++ == 0 && c1.getTask().isEmpty()) continue;
-
-                if (i < c1.getTask().size()) {
-                    // print out the task (up to 18 characters)
-                    Task t1 = c1.getTask().get(i);
-                    String outputTask = "";
-//                    if (Time.differenceOfDays(t1.getDueDate(), currDate) < 0) {
-//                        outputTask = "*";
-//                    }
-
-                    if (archivedTasks.contains(t1))
-                        outputTask = "*";
-
-                    outputTask += t1.toString();
-
-                    if (outputTask.length() > 40)
-                        sb.append(outputTask, 0, 40);
-                    else {
-                        sb.append(outputTask);
-                        sb.append(" ".repeat(40 - outputTask.length()));
-                    }
-
-                    sb.append("|");
-                }
-                else
-                    sb.append("                                        |");
-            }
-        }
-        sb.append("\n");
-
-        if (isPretty) {
-            sb.append("            |");
-            cardCount = defaultCardIsEmpty ? 1 : 0;
-            for (; cardCount < cards.size(); cardCount++) {
-                sb.append("________________________________________|");
-            }
-            sb.append("\n");
-        }
-
-        return sb.toString();
-    }
-
-    /**
      * Creates an event table consisting of both recurring and individual {@link Event}, providing options for both dotted and pretty formats
      *
      * @param recurringEvents list of recurring events
@@ -426,15 +304,24 @@ public class TableFormatter {
         }
 
         if (recurringEventsExist) {
-            sb.append("RECURRING EVENTS:\n");
-
+            if (userConfig.isFormatPrettyTable()) {
+                sb.append("             Recurring Events:\n");
+                sb.append("            _____________________________________________________________________________________________________\n");
+                sb.append("            |");
+            } else {
+                sb.append("RECURRING EVENTS:\n");
+            }
             sb.append("ID").append(" ".repeat(5)).append("|");
             sb.append("NAME").append(" ".repeat(16)).append("|");
             sb.append("COLOR").append(" ".repeat(10)).append("|");
             sb.append("TIME").append(" ".repeat(16)).append("|");
             sb.append("DAYS").append(" ".repeat(29)).append("|\n");
-            sb.append("----------------------------------------------------------------------------------------------------");
-            sb.append("\n");
+            if (userConfig.isFormatPrettyTable()) {
+                sb.append("            |_______|____________________|_______________|____________________|_________________________________|\n");
+            } else {
+                sb.append("----------------------------------------------------------------------------------------------------");
+                sb.append("\n");
+            }
         }
 
         HashSet<Event> uniqueRecurringEvents = new HashSet<>();
@@ -443,8 +330,13 @@ public class TableFormatter {
         }
 
         for (Event e : uniqueRecurringEvents) {
-            String colorANSICode = getColorANSICode((e.getColor()));
-            sb.append(colorANSICode);
+            if (userConfig.isLocalScheduleColors()) {
+                String colorANSICode = getColorANSICode((e.getColor()));
+                sb.append(colorANSICode);
+            }
+            if (userConfig.isFormatPrettyTable()) {
+                sb.append("            |");
+            }
 
             sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
 
@@ -465,29 +357,49 @@ public class TableFormatter {
                     Arrays.toString(e.getDays()).length() - 1
             ).append(" ".repeat(33 - Arrays.toString(e.getDays()).length() + 2)).append("|");
 
-            sb.append("\u001B[0m");
+            if (userConfig.isLocalScheduleColors()) sb.append("\u001B[0m");
 
             sb.append("\n");
         }
 
         if (recurringEventsExist) {
-            sb.append("\n");
+            if (userConfig.isFormatPrettyTable()) {
+                sb.append("            |_______|____________________|_______________|____________________|_________________________________|\n\n");
+            } else {
+                sb.append("\n");
+            }
         }
 
         if (!indivEvents.isEmpty()) {
-            sb.append("INDIVIDUAL EVENTS:\n");
+            if (userConfig.isFormatPrettyTable()) {
+                sb.append("             Individual Events:\n");
+                sb.append("            ________________________________________________________________________________\n");
+                sb.append("            |");
+            } else {
+                sb.append("INDIVIDUAL EVENTS:\n");
+            }
             sb.append("ID").append(" ".repeat(5)).append("|")
                     .append("NAME").append(" ".repeat(16)).append("|")
                     .append("COLOR").append(" ".repeat(10)).append("|")
                     .append("TIME").append(" ".repeat(16)).append("|")
                     .append("DATE").append(" ".repeat(8)).append("|\n");
-            sb.append("-".repeat(79));
-            sb.append("\n");
+
+            if (userConfig.isFormatPrettyTable()) {
+                sb.append("            |_______|____________________|_______________|____________________|____________|\n");
+            } else {
+                sb.append("-".repeat(79));
+                sb.append("\n");
+            }
         }
 
         for (Event e : indivEvents) {
-            String colorANSICode = getColorANSICode((e.getColor()));
-            sb.append(colorANSICode);
+            if (userConfig.isLocalScheduleColors()) {
+                String colorANSICode = getColorANSICode((e.getColor()));
+                sb.append(colorANSICode);
+            }
+            if (userConfig.isFormatPrettyTable()) {
+                sb.append("            |");
+            }
 
             sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
 
@@ -500,13 +412,17 @@ public class TableFormatter {
             sb.append(e.getTimeStamp().toString()).append(" ".repeat(20 - e.getTimeStamp().toString().length())).append("|");
             sb.append(e.getDateStamp()).append(" ".repeat(12 - e.getDateStamp().length())).append("|");
 
-            sb.append("\u001B[0m");
+            if (userConfig.isLocalScheduleColors()) sb.append("\u001B[0m");
 
             sb.append("\n");
         }
 
         if (!indivEvents.isEmpty()) {
-            sb.append("\n");
+            if (userConfig.isFormatPrettyTable()) {
+                sb.append("            |_______|____________________|_______________|____________________|____________|\n");
+            } else {
+                sb.append("\n");
+            }
         }
 
         return sb.toString();
@@ -521,15 +437,30 @@ public class TableFormatter {
      */
     public static String formatSubTaskTable(List<Day> schedule, UserConfig userConfig) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SUBTASKS:\n");
+        if (userConfig.isFormatPrettyTable()) {
+            sb.append("             SUBTASKS:\n" +
+                    "            ________________________________________________________________________________________________________\n" +
+                    "            |");
+        } else {
+            sb.append("SUBTASKS:\n");
+        }
         sb.append("ID     |NAME                |TAG            |HOURS     |TIME                |DATE        |DUE         |\n");
-        sb.append("-------------------------------------------------------------------------------------------------------\n");
+
+        if (userConfig.isFormatPrettyTable()) {
+            sb.append("            |_______|____________________|_______________|__________|____________________|____________|____________|\n");
+        } else {
+            sb.append("-------------------------------------------------------------------------------------------------------\n");
+        }
 
         for (Day day : schedule) {
             for (Task.SubTask subTask : day.getSubTaskList()) {
-                String colorANSICode = getColorANSICode((subTask.getParentTask().getColor()));
-                sb.append(colorANSICode);
-
+                if (userConfig.isLocalScheduleColors()) {
+                    String colorANSICode = getColorANSICode((subTask.getParentTask().getColor()));
+                    sb.append(colorANSICode);
+                }
+                if (userConfig.isFormatPrettyTable()) {
+                    sb.append("            |");
+                }
                 sb.append(subTask.getParentTask().getId()).append(" ".repeat(7 - String.valueOf(subTask.getParentTask().getId()).length())).append("|");
 
                 if (subTask.getParentTask().getName().length() > 20)
@@ -549,12 +480,16 @@ public class TableFormatter {
                 sb.append(date).append(" ".repeat(12 - date.length())).append("|");
                 sb.append(subTask.getParentTask().getDateStamp()).append(" ".repeat(12 - subTask.getParentTask().getDateStamp().length())).append("|");
 
-                sb.append("\u001B[0m");
+                if (userConfig.isLocalScheduleColors()) sb.append("\u001B[0m");
                 sb.append("\n");
             }
         }
 
-        sb.append("\n");
+        if (userConfig.isFormatPrettyTable()) {
+            sb.append("            |_______|____________________|_______________|__________|____________________|____________|____________|\n");
+        } else {
+            sb.append("\n");
+        }
 
         return sb.toString();
     }

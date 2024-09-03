@@ -29,49 +29,8 @@ class CardTest {
 
     @Test
     void setTitle() {
-        c1.setTitle("Chemistry");
-        assertEquals("Chemistry", c1.getTitle());
-    }
-
-    @Test
-    void setCardTasks() {
-        List<Task> taskList = new ArrayList<>();
-        taskList.add(new Task(0, "F", 4.0, 0));
-        c1.setCardTasks(taskList);
-        assertEquals(taskList, c1.getTask());
-    }
-
-    @Test
-    void addTask() {
-        Task t1 = new Task(0, "Read Ch4", 4, 1);
-        assertTrue(c1.getTask().isEmpty());
-        c1.addTask(t1);
-        assertEquals(1, c1.getTask().size());
-        assertEquals(t1, c1.getTask().get(0));
-    }
-
-    @Test
-    void removeTaskBool() {
-        Task t1 = new Task(0, "Read Ch4", 4, 1);
-        assertTrue(c1.getTask().isEmpty());
-        c1.addTask(t1);
-        assertEquals(1, c1.getTask().size());
-        assertEquals(t1, c1.getTask().get(0));
-
-        assertTrue(c1.removeTask(t1));
-        assertTrue(c1.getTask().isEmpty());
-    }
-
-    @Test
-    void removeTaskObject() {
-        Task t1 = new Task(0, "Read Ch4", 4, 1);
-        assertTrue(c1.getTask().isEmpty());
-        c1.addTask(t1);
-        assertEquals(1, c1.getTask().size());
-        assertEquals(t1, c1.getTask().get(0));
-
-        assertEquals(t1, c1.removeTask(0));
-        assertTrue(c1.getTask().isEmpty());
+        c1.setName("Chemistry");
+        assertEquals("Chemistry", c1.getName());
     }
 
     @Test
@@ -80,19 +39,8 @@ class CardTest {
     }
 
     @Test
-    void getTask() {
-        Task t1 = new Task(0, "Read Ch4", 4, 1);
-        assertTrue(c1.getTask().isEmpty());
-        c1.addTask(t1);
-        assertEquals(1, c1.getTask().size());
-        List<Task> taskList = c1.getTask();
-        assertEquals(1, taskList.size());
-        assertEquals(t1, taskList.get(0));
-    }
-
-    @Test
     void getTitle() {
-        assertEquals("Math", c1.getTitle());
+        assertEquals("Math", c1.getName());
     }
 
     @Test

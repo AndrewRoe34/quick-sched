@@ -11,24 +11,10 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Scanner;
 
 import static java.lang.Thread.sleep;
 
-public class TUIContext {
-
-    private TUIState tuiState;
-
-    private static final TUIState sessionState = new SessionState();
-    private static final TUIState configState = new ConfigState();
-
-    public void setTuiState(TUIState tuiState) {
-        this.tuiState = tuiState;
-    }
-
-    public void configurePage() {
-        tuiState.setupAndDisplayPage();
-    }
+public class TUI {
 
     private void sessionStartUp() throws InterruptedException {
         // Welcome and basic info
@@ -157,9 +143,9 @@ public class TUIContext {
 
 
     public static void main(String... args) throws IOException, InterruptedException {
-        TUIContext tuiContext = new TUIContext();
-        TUIState.clearScreen();
-        tuiContext.sessionStartUp();
+        TUI tui = new TUI();
+        Screen.clearScreen();
+        tui.sessionStartUp();
 
         CLI cli = new CLI();
         cli.loop();

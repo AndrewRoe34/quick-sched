@@ -1,10 +1,8 @@
 package com.planner.ui;
 
-public interface TUIState {
+public class Screen {
 
-    void setupAndDisplayPage();
-
-    static void clearScreen() {
+    public static void clearScreen() {
         String os = System.getProperty("os.name").toLowerCase();
         ProcessBuilder processBuilder;
 
