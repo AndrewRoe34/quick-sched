@@ -1,13 +1,18 @@
 package com.planner.util;
 
 import com.planner.models.Card;
-import com.planner.models.Task;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class Parser {
+
+    private static final SimpleDateFormat DAY_MONTH_YEAR = new SimpleDateFormat("dd-MM-yyyy");
+    private static final SimpleDateFormat YEAR_MONTH_DAY = new SimpleDateFormat("yyyy-MM-dd");
 
     public static String[] tokenize(String line) {
         int start = 0;
@@ -49,8 +54,41 @@ public class Parser {
         return tokens.toArray(new String[0]);
     }
 
-    public static void parseTask(String[] args) {
+    public static TaskInfo parseTask(String[] args) {
+        if (args.length < 3) {
+            throw new IllegalArgumentException("Error: Invalid number of arguments provided for Task.");
+        }
+        String name = null;
+        Calendar due = null;
+        double hours = -1;
+        int cardId = -1;
 
+        for (int i = 1; i < args.length; i++) {
+            if (args[i].charAt(0) == '"' && name == null) {
+                name = args[i];
+            } else if (args[i].charAt(0) == '+' && cardId == -1 && args[i].length() > 2
+                    && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
+                try {
+                    cardId = Integer.parseInt(args[i].substring(2));
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Error: Invalid card id provided.");
+                }
+            } else if ("@".equals(args[i]) && due == null) {
+                if (i + 1 >= args.length) {
+                    throw new IllegalArgumentException("Error: Due date not provided following '@'.");
+                }
+                i++;
+                due = parseDate(args[i]);
+            } else {
+                try {
+                    hours = Double.parseDouble(args[i]);
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Error: Invalid hours provided.");
+                }
+            }
+        }
+
+        return new TaskInfo(-1, name, due, hours, cardId);
     }
 
     public static CardInfo parseCard(String[] args) {
@@ -171,9 +209,19 @@ public class Parser {
                 numDays = (Calendar.FRIDAY - day + 7) % 7;
                 return Time.getFormattedCalendarInstance(curr, numDays);
             default:
-                // todo parse specific date (e.g. dd-MM-yyyy OR yyyy-MM-dd) using sdf
+                Date due = null;
+                try {
+                    due = DAY_MONTH_YEAR.parse(s);
+                } catch (ParseException e) {
+                    try {
+                        due = YEAR_MONTH_DAY.parse(s);
+                    } catch (ParseException ex) {
+                        throw new IllegalArgumentException("Error: Invalid date format provided.");
+                    }
+                }
+                curr.setTime(due);
         }
-        return null;
+        return curr;
     }
 
     private static Calendar[] parseTimeStamp(String s) {
@@ -363,32 +411,38 @@ public class Parser {
     }
 
     public static class TaskInfo {
-        private final int id;
+        private final int taskId;
         private final String desc;
-        private final Calendar start;
-        private final Calendar end;
-        private final int priority;
+        private final Calendar due;
+        private final double hours;
+        private final int cardId;
 
-        public TaskInfo(int id, String desc, Calendar start, Calendar end, int priority) {
-            this.id = id;
+        public TaskInfo(int taskId, String desc, Calendar due, double hours, int cardId) {
+            this.taskId = taskId;
             this.desc = desc;
-            this.start = start;
-            this.end = end;
-            this.priority = priority;
+            this.due = due;
+            this.hours = hours;
+            this.cardId = cardId;
         }
 
-        public int getId() { return id; }
+        public int getTaskId() { return taskId; }
 
         public String getDesc() { return desc; }
 
-        public Calendar getStart() { return start; }
+        public Calendar getDue() { return due; }
 
-        public Calendar getEnd() { return end; }
+        public double getHours() {
+            return hours;
+        }
 
-        public int getPriority() { return priority; }
+        public int getCardId() {
+            return cardId;
+        }
     }
 
     public static void main(String[] args) {
-        parseTimeStamp("9:-2:60pm");
+        String[] arr = {"task", "@", "03-09-2024", "+C0", "4.0", "\"finish ch12\""};
+        TaskInfo ti = parseTask(arr);
+        System.out.println(ti.getDue().getTime());
     }
 }

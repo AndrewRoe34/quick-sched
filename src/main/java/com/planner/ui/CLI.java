@@ -71,12 +71,12 @@ public class CLI {
                 if (tokens.length > 1) {
                     // TODO
                 } else {
-                    System.out.println(sm.buildTaskStr());;;;
+                    System.out.println(sm.buildTaskStr());
                 }
                 break;
             case "subtask":
                 if (tokens.length == 1) {
-                    System.out.println(sm.buildSubTaskStr());;;;
+                    System.out.println(sm.buildSubTaskStr());
                 } else {
                     System.out.println("Error: 'subtask' has no args.");
                 }
@@ -102,7 +102,7 @@ public class CLI {
                 if (tokens.length == 2) {
                     if (tokens[1].contains(".jbin"))
                     {
-                        sm.importJBinFile(tokens[1]);
+                        sm.importJBinFile("data/jbin/" + tokens[1]);
                         System.out.println("Imported " + tokens[1] + ".");
                     } else {
                         System.out.println("Error: Argument must be a jbin file");
@@ -177,6 +177,8 @@ public class CLI {
                     System.out.println("Error: 'google' has no args.");
                 }
                 break;
+            case "quit":
+                sm.quit();
             default:
                 System.out.println("Error: Unknown command entered.");
                 break;

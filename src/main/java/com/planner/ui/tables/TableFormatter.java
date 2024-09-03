@@ -273,6 +273,10 @@ public class TableFormatter {
             sb.append(colors)
                     .append(" ".repeat(15 - colors.length()))
                     .append("|\n");
+
+            if (useColor) {
+                sb.append("\u001B[0m");
+            }
         }
 
         sb.append("\n");
