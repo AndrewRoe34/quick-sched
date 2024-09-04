@@ -343,10 +343,15 @@ public class ScheduleManager {
         // todo will need error handling here
         Task task = taskMap.get(id);
 
-        task.setName(name);
-        task.setTotalHours(hours);
-        task.setDueDate(due);
-
+        if (name != null) {
+            task.setName(name);
+        }
+        if (hours != -1) {
+            task.setTotalHours(hours);
+        }
+        if (due != null) {
+            task.setDueDate(due);
+        }
         if (card != null) {
             task.setCard(card);
         }
