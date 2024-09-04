@@ -46,7 +46,7 @@ tasks.register('run') {
     dependsOn['jar']
     doLast {
         javaexec {
-            main = 'com.planner.ui.TUIContext'
+            main = 'com.planner.ui.TUI'
             classpath = sourceSets.main.runtimeClasspath
             standardInput = System.in
         }
