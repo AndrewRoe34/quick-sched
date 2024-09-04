@@ -343,6 +343,10 @@ public class ScheduleManager {
         // todo will need error handling here
         Task task = taskMap.get(id);
 
+        if (task == null) {
+            return null;
+        }
+
         if (name != null) {
             task.setName(name);
         }
@@ -357,6 +361,34 @@ public class ScheduleManager {
         }
 
         return task;
+    }
+
+    public Card modCard(int id, String name, Card.Color colorId)
+    {
+        Card card;
+
+        if (id >= 0 && id < cards.size()) {
+            card = cards.get(id);
+        } else {
+            return null;
+        }
+
+        if (name != null)
+        {
+            card.setName(name);
+        }
+        if (colorId != null)
+        {
+            card.setColorId(colorId);
+        }
+
+        return card;
+    }
+
+    public Event modEvent(String name, Card.Color color, Time.TimeStamp timeStamp,
+                          boolean recurring, Event.DayOfWeek[] days)
+    {
+        // TODO
     }
 
     /**
