@@ -89,7 +89,7 @@ public class CompactScheduler implements Scheduler {
         int startingHour = getStartingHour(day, date);
 
         // resets startingHour to beginning of day
-        if (userConfig.isDefaultAtStart()) startingHour = userConfig.getRange()[0];
+        if (userConfig.isDefaultAtStart()) startingHour = userConfig.getDailyHoursRange()[0];
 
         double maxHours = 0.0;
         if (task.getDueDate().equals(day.getDate())) {
@@ -104,7 +104,7 @@ public class CompactScheduler implements Scheduler {
                 maxHours = task.getSubTotalHoursRemaining();
             }
         } else if (isToday) { // we need to deal with UseCases C & D [DONE]
-            double remainingHours = userConfig.getRange()[1] - (startingHour + day.getHoursFilled());
+            double remainingHours = userConfig.getDailyHoursRange()[1] - (startingHour + day.getHoursFilled());
             if (remainingHours > 0 && day.getSpareHours() > 0) {
                 maxHours = Math.min(remainingHours, task.getSubTotalHoursRemaining());
                 maxHours = Math.min(day.getSpareHours(), maxHours);
@@ -125,10 +125,10 @@ public class CompactScheduler implements Scheduler {
         if (date.get(Calendar.DATE) == day.getDate().get(Calendar.DATE)
                 && date.get(Calendar.MONTH) == day.getDate().get(Calendar.MONTH)
                 && date.get(Calendar.YEAR) == day.getDate().get(Calendar.YEAR)) {
-            startingHour = Math.max(userConfig.getRange()[0], startingHour);
+            startingHour = Math.max(userConfig.getDailyHoursRange()[0], startingHour);
             isToday = true;
         } else {
-            startingHour = userConfig.getRange()[0];
+            startingHour = userConfig.getDailyHoursRange()[0];
         }
         return startingHour;
     }

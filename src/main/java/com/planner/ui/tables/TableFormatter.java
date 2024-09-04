@@ -37,8 +37,8 @@ public class TableFormatter {
         for (int i = 0; i < optionNames.length; i++) {
             String optionValue = "";
             switch (i) {
-                case 0: optionValue = Arrays.toString(userConfig.getRange()); break;
-                case 1: optionValue = Arrays.toString(userConfig.getWeek()); break;
+                case 0: optionValue = Arrays.toString(userConfig.getDailyHoursRange()); break;
+                case 1: optionValue = Arrays.toString(userConfig.getHoursPerDayOfWeek()); break;
                 case 2: optionValue = String.valueOf(userConfig.getMaxDays()); break;
                 case 3: optionValue = String.valueOf(userConfig.getArchiveDays()); break;
                 case 4: optionValue = String.valueOf(userConfig.isPriority()); break;

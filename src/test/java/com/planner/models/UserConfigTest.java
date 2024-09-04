@@ -17,22 +17,22 @@ class UserConfigTest {
 
     @Test
     void setRange() {
-        assertEquals(8, userConfig.getRange()[0]);
-        assertEquals(20, userConfig.getRange()[1]);
-        userConfig.setRange(new int[]{2, 10});
-        assertEquals(2, userConfig.getRange()[0]);
-        assertEquals(10, userConfig.getRange()[1]);
+        assertEquals(8, userConfig.getDailyHoursRange()[0]);
+        assertEquals(20, userConfig.getDailyHoursRange()[1]);
+        userConfig.setDailyHoursRange(new int[]{2, 10});
+        assertEquals(2, userConfig.getDailyHoursRange()[0]);
+        assertEquals(10, userConfig.getDailyHoursRange()[1]);
 
         // test for exception
     }
 
     @Test
     void setWeek() {
-        for (int day : userConfig.getWeek()) {
+        for (int day : userConfig.getHoursPerDayOfWeek()) {
             assertEquals(8, day);
         }
-        userConfig.setWeek(new int[]{2, 2, 2, 2, 2, 2, 2});
-        for (int day : userConfig.getWeek()) {
+        userConfig.setHoursPerDayOfWeek(new int[]{2, 2, 2, 2, 2, 2, 2});
+        for (int day : userConfig.getHoursPerDayOfWeek()) {
             assertEquals(2, day);
         }
 
