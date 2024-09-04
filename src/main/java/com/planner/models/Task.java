@@ -24,6 +24,7 @@ public class Task implements Comparable<Task> {
     private double totalHours;
     /** Number of SubTask hours */
     private double subTotalHours;
+    /** Card of the task */
     private Card card;
 
     /**
@@ -43,11 +44,8 @@ public class Task implements Comparable<Task> {
         setCard(card);
     }
 
-    public Task(int id, String name, double hours, Calendar date) {
-        setId(id);
-        setName(name);
-        setTotalHours(hours);
-        this.dueDate = date;
+    public Task(int id, String name, double hours, Calendar date)  {
+        this(id, name, hours, date, null);
     }
 
     /**
@@ -95,9 +93,15 @@ public class Task implements Comparable<Task> {
         return dueDate;
     }
 
+    /**
+     * Sets the due date of the Task
+     *
+     * @param dueDate due date of Task
+     */
     public void setDueDate(Calendar dueDate) {
         this.dueDate = dueDate;
     }
+
 
     public String getDateStamp() {
         int day = dueDate.get(Calendar.DAY_OF_MONTH);
