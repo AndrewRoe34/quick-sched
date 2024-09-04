@@ -64,7 +64,10 @@ public class Task implements Comparable<Task> {
      *
      * @param id ID for Task
      */
-    private void setId(int id) { //TODO need exception for case where ID is negative
+    private void setId(int id) {
+        if (id < 0) {
+            throw new IllegalArgumentException("Task ID cannot be less than 0.");
+        }
         this.id = id;
     }
 
@@ -82,7 +85,10 @@ public class Task implements Comparable<Task> {
      *
      * @param name name of Task
      */
-    public void setName(String name) {	//TODO will need to include exceptions for the setters
+    public void setName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("Task name cannot be null or empty.");
+        }
         this.name = name;
     }
 
@@ -96,6 +102,9 @@ public class Task implements Comparable<Task> {
     }
 
     public void setDueDate(Calendar dueDate) {
+        if (dueDate == null) {
+            throw new IllegalArgumentException("Task due date cannot be null.");
+        }
         this.dueDate = dueDate;
     }
 
@@ -220,8 +229,6 @@ public class Task implements Comparable<Task> {
 
     /**
      * The individual component of a parent Task in the form of a SubTask
-     * <p>
-     * TODO will need to include a markComplete() method
      *
      * @author Andrew Roe
      */

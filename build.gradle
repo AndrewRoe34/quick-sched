@@ -33,7 +33,7 @@ jar {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
     manifest {
-        attributes 'Main-Class' : 'com.planner.ui.TUIContext'
+        attributes 'Main-Class' : 'com.planner.ui.TUI'
     }
 
     from {
