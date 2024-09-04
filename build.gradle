@@ -33,7 +33,7 @@ jar {
     duplicatesStrategy(DuplicatesStrategy.EXCLUDE)
 
     manifest {
-        attributes 'Main-Class' : 'com.planner.ui.TUIContext'
+        attributes 'Main-Class' : 'com.planner.ui.TUI'
     }
 
     from {
@@ -46,7 +46,7 @@ tasks.register('run') {
     dependsOn['jar']
     doLast {
         javaexec {
-            main = 'com.planner.ui.TUIContext'
+            main = 'com.planner.ui.TUI'
             classpath = sourceSets.main.runtimeClasspath
             standardInput = System.in
         }

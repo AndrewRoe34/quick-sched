@@ -49,26 +49,32 @@ public class CLI {
         System.out.print("> ");
         while (scanner.hasNextLine()) {
             String s = scanner.nextLine();
-            String[] tokens = Parser.tokenize(s);
-            if (tokens.length > 0) {
-                // determine type of operation to compute
-                exeCmd(tokens);
+            try {
+                String[] tokens = Parser.tokenize(s);
+                if (tokens.length > 0) {
+                    // determine type of operation to compute
+                    exeCmd(tokens);
+                }
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
             }
             System.out.print("> ");
         }
     }
 
-    private void exeCmd(String[] tokens) throws IOException {
+    private void exeCmd(String[] tokens) throws IOException { // todo will need to catch IllegalArgsException and print to console error
         switch (tokens[0]) {
             case "clear":
                 if (tokens.length == 1) {
                     Screen.clearScreen();
                 } else {
-                    System.out.println("Error: 'clear' has no args.");
+                    System.out.println("'clear' has no args.");
                 }
                 break;
             case "task":
                 if (tokens.length > 1) {
+                    Parser.TaskInfo ti = Parser.parseTask(tokens);
+                    sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), null);
                     // TODO
                 } else {
                     System.out.println(sm.buildTaskStr());
@@ -78,7 +84,7 @@ public class CLI {
                 if (tokens.length == 1) {
                     System.out.println(sm.buildSubTaskStr());
                 } else {
-                    System.out.println("Error: 'subtask' has no args.");
+                    System.out.println("'subtask' has no args.");
                 }
                 break;
             case "event":
@@ -104,7 +110,7 @@ public class CLI {
                         sm.importJBinFile("data/jbin/" + tokens[1]);
                         System.out.println("Imported " + tokens[1] + ".");
                     } else {
-                        System.out.println("Error: Argument must be a jbin file");
+                        System.out.println("Argument must be a jbin file");
                     }
                 } else if (tokens.length == 1) {
 //                    System.out.println(sm.buildBoardString());
@@ -114,7 +120,7 @@ public class CLI {
                 if (tokens.length == 1) {
                     // TODO
                 } else {
-                    System.out.println("Error: 'update' has no args.");
+                    System.out.println("'update' has no args.");
                 }
                 break;
             case "config":
@@ -122,14 +128,14 @@ public class CLI {
                     ConfigState configState = new ConfigState();
                     configState.setupAndDisplayPage();
                 } else {
-                    System.out.println("Error: 'config' has no args.");
+                    System.out.println("'config' has no args.");
                 }
                 break;
             case "log":
                 if (tokens.length == 1) {
                     System.out.println(sm.getEventLog().toString());
                 } else {
-                    System.out.println("Error: 'log' has no args.");
+                    System.out.println("'log' has no args.");
                 }
                 break;
             case "build":
@@ -137,12 +143,12 @@ public class CLI {
                     sm.buildSchedule();
                     System.out.println("Schedule built...");
                 } else {
-                    System.out.println("Error: 'build' has no args.");
+                    System.out.println("'build' has no args.");
                 }
                 break;
             case "sched":
                 if (tokens.length != 1) {
-                    System.out.println("Error: 'sched' has no args.");
+                    System.out.println("'sched' has no args.");
                 } else if (sm.scheduleIsEmpty()) {
                     System.out.println("Schedule is empty...");
                 } else {
@@ -153,7 +159,7 @@ public class CLI {
                 if (tokens.length == 1) {
                     System.out.println(sm.buildReportStr());
                 } else {
-                    System.out.println("Error: 'report' has no args.");
+                    System.out.println("'report' has no args.");
                 }
                 break;
 //            case "google":
@@ -168,7 +174,7 @@ public class CLI {
                 // todo need to keep track of any changes (and if so, prompt user to update)
                 sm.quit();
             default:
-                System.out.println("Error: Unknown command entered.");
+                System.out.println("Unknown command entered.");
                 break;
         }
     }

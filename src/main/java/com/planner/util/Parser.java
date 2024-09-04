@@ -32,9 +32,9 @@ public class Parser {
                     end++;
                 }
                 if (!closed) {
-                    throw new IllegalArgumentException("Error: Strings must be closed by quotes.");
+                    throw new IllegalArgumentException("Strings must be closed by quotes.");
                 } else if (start + 1 == end) {
-                    throw new IllegalArgumentException("Error: Strings cannot be empty.");
+                    throw new IllegalArgumentException("Strings cannot be empty.");
                 }
                 end++;
                 tokens.add(line.substring(start, end));
@@ -56,7 +56,7 @@ public class Parser {
 
     public static TaskInfo parseTask(String[] args) {
         if (args.length < 3) {
-            throw new IllegalArgumentException("Error: Invalid number of arguments provided for Task.");
+            throw new IllegalArgumentException("Invalid number of arguments provided for Task.");
         }
         String name = null;
         Calendar due = null;
@@ -71,11 +71,11 @@ public class Parser {
                 try {
                     cardId = Integer.parseInt(args[i].substring(2));
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Error: Invalid card id provided.");
+                    throw new IllegalArgumentException("Invalid card id provided.");
                 }
             } else if ("@".equals(args[i]) && due == null) {
                 if (i + 1 >= args.length) {
-                    throw new IllegalArgumentException("Error: Due date not provided following '@'.");
+                    throw new IllegalArgumentException("Due date not provided following '@'.");
                 }
                 i++;
                 due = parseDate(args[i]);
@@ -83,7 +83,7 @@ public class Parser {
                 try {
                     hours = Double.parseDouble(args[i]);
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Error: Invalid hours provided.");
+                    throw new IllegalArgumentException("Invalid hours provided.");
                 }
             }
         }
@@ -93,7 +93,7 @@ public class Parser {
 
     public static CardInfo parseCard(String[] args) {
         if (args.length != 3) {
-            throw new IllegalArgumentException("Error: Invalid number of arguments provided for Card.");
+            throw new IllegalArgumentException("Invalid number of arguments provided for Card.");
         }
 
         Card.Color color = null;
@@ -101,16 +101,16 @@ public class Parser {
         for (int i = 1; i < args.length; i++) {
             if (args[i].charAt(0) == '"') {
                 if (name != null) {
-                    throw new IllegalArgumentException("Error: Cannot have multiple names for Card.");
+                    throw new IllegalArgumentException("Cannot have multiple names for Card.");
                 }
                 name = args[i];
             } else {
                 if (color != null) {
-                    throw new IllegalArgumentException("Error: Cannot have multiple colors for Card.");
+                    throw new IllegalArgumentException("Cannot have multiple colors for Card.");
                 }
                 color = parseColor(args[i]);
                 if (color == null) {
-                    throw new IllegalArgumentException("Error: Invalid color provided for Card.");
+                    throw new IllegalArgumentException("Invalid color provided for Card.");
                 }
             }
         }
@@ -216,7 +216,7 @@ public class Parser {
                     try {
                         due = YEAR_MONTH_DAY.parse(s);
                     } catch (ParseException ex) {
-                        throw new IllegalArgumentException("Error: Invalid date format provided.");
+                        throw new IllegalArgumentException("Invalid date format provided.");
                     }
                 }
                 curr.setTime(due);
@@ -241,18 +241,18 @@ public class Parser {
             switch (s.charAt(i)) {
                 case ':':
                     if (!hour || minute) {
-                        throw new IllegalArgumentException("Error: Colon is expected after hour, not minute.");
+                        throw new IllegalArgumentException("Colon is expected after hour, not minute.");
                     } else if (am) {
-                        throw new IllegalArgumentException("Error: Colon can never occur after 'am' or 'pm'.");
+                        throw new IllegalArgumentException("Colon can never occur after 'am' or 'pm'.");
                     }
                     else if (colon) {
-                        throw new IllegalArgumentException("Error: Colons cannot be duplicated for same hour, minute combination");
+                        throw new IllegalArgumentException("Colons cannot be duplicated for same hour, minute combination");
                     }
                     colon = true;
                     break;
                 case '-':
                     if (!hour || dash) {
-                        throw new IllegalArgumentException("Error: Dashes require an hour and cannot be duplicated");
+                        throw new IllegalArgumentException("Dashes require an hour and cannot be duplicated");
                     }
                     dash = true;
                     hour = false;
@@ -265,7 +265,7 @@ public class Parser {
                 case 'p':
                 case 'P':
                     if (!hour || am) {
-                        throw new IllegalArgumentException("Error: 'am'/'pm' cannot occur without an hour nor can there be duplicates");
+                        throw new IllegalArgumentException("'am'/'pm' cannot occur without an hour nor can there be duplicates");
                     }
                     if (i + 1 < s.length() && (s.charAt(i+1) == 'm' || s.charAt(i+1) == 'M')) {
                         String temp = s.substring(i, i + 2);
@@ -275,7 +275,7 @@ public class Parser {
                             endFmt = temp;
                         }
                     } else {
-                        throw new IllegalArgumentException("Error: Provided time format besides valid 'am'/'pm'");
+                        throw new IllegalArgumentException("Provided time format besides valid 'am'/'pm'");
                     }
                     am = true;
                     i++;
@@ -291,17 +291,17 @@ public class Parser {
                 case '8':
                 case '9':
                     if (hour && !colon) {
-                        throw new IllegalArgumentException("Error: Minutes must be separated by colon from hours");
+                        throw new IllegalArgumentException("Minutes must be separated by colon from hours");
                     } else if (minute) {
-                        throw new IllegalArgumentException("Error: Minutes cannot be duplicated");
+                        throw new IllegalArgumentException("Minutes cannot be duplicated");
                     } else if (am) {
-                        throw new IllegalArgumentException("Error: Hours and minutes cannot come after 'am'/'pm' signature");
+                        throw new IllegalArgumentException("Hours and minutes cannot come after 'am'/'pm' signature");
                     } else if (hour) {
                         minute = true;
                         if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
                             int x = Integer.parseInt(s.substring(i, i + 2));
                             if (x > 59) {
-                                throw new IllegalArgumentException("Error: Minutes cannot be greater than 59");
+                                throw new IllegalArgumentException("Minutes cannot be greater than 59");
                             }
 
                             if (!dash) {
@@ -311,14 +311,14 @@ public class Parser {
                             }
                             i++;
                         } else {
-                            throw new IllegalArgumentException("Error: Minutes require 2 digits");
+                            throw new IllegalArgumentException("Minutes require 2 digits");
                         }
                     } else {
                         hour = true;
                         if (i+1 >= s.length() || s.charAt(i + 1) < '0' || s.charAt(i + 1) > '9') {
                             int x = Integer.parseInt(s.substring(i, i + 1));
                             if (x > 12) {
-                                throw new IllegalArgumentException("Error: Hours cannot be greater than 12");
+                                throw new IllegalArgumentException("Hours cannot be greater than 12");
                             }
 
                             if (!dash) {
@@ -329,7 +329,7 @@ public class Parser {
                         } else if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
                             int x = Integer.parseInt(s.substring(i, i + 2));
                             if (x > 12) {
-                                throw new IllegalArgumentException("Error: Hours cannot be greater than 12");
+                                throw new IllegalArgumentException("Hours cannot be greater than 12");
                             }
 
                             if (!dash) {
@@ -339,12 +339,12 @@ public class Parser {
                             }
                             i++;
                         } else {
-                            throw new IllegalArgumentException("Error: Minutes require 2 digits");
+                            throw new IllegalArgumentException("Minutes require 2 digits");
                         }
                     }
                     break;
                 default:
-                    throw new IllegalArgumentException("Error: Invalid time format provided");
+                    throw new IllegalArgumentException("Invalid time format provided");
             }
         }
 

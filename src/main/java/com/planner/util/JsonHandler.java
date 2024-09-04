@@ -6,8 +6,6 @@ import com.google.gson.GsonBuilder;
 import com.planner.schedule.day.Day;
 
 public class JsonHandler {
-    //todo will need to reformat individual instances to make sure they properly link
-        //todo e.g. 2 task "instances" that should just be 2 "references" to 1 object
 
     public static String createUserConfig(UserConfig userConfig) {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
