@@ -166,7 +166,7 @@ public class Task implements Comparable<Task> {
     }
 
     /**
-     * <p>Gets the tag of the Task</p>
+     * Gets the tag of the Task
      *
      * @return the name of the Task's card if it exists
      */

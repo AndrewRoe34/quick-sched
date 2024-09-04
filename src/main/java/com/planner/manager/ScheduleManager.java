@@ -51,14 +51,18 @@ public class ScheduleManager {
     private int taskId;
     /** ID specifier for each Day */
     private int dayId;
+    /** ID for card */
     private int cardId;
     /** Last day Task is due */
     private int lastDueDate;
     private GoogleCalendarIO googleCalendarIO;
     private SpreadsheetIO spreadsheetIO;
     private Calendar scheduleTime;
+    /** List for storing individual events */
     private final List<Event> indivEvents;
+    /** List for storing recurring events */
     private final List<List<Event>> recurringEvents;
+    /** ID for event */
     private int eventId;
 
     /**
@@ -193,33 +197,66 @@ public class ScheduleManager {
 //        scheduler = Scheduler.getInstance(userConfig, eventLog, idx);
 //    }
 
+    /**
+     * Gets cards
+     *
+     * @return List of cards
+     */
     public List<Card> getCards() {
         return cards;
     }
 
+    /**
+     * Gets individual events
+     *
+     * @return List of individual events
+     */
     public List<Event> getIndivEvents() {
         return indivEvents;
     }
 
+    /**
+     * Gets recurring events
+     *
+     * @return List of recurring events
+     */
     public List<List<Event>> getRecurEvents() {
         return recurringEvents;
     }
 
+    /**
+     * Gets user configuration
+     *
+     * @return <code>UserConfig</code> object that holds all user settings
+     */
     public UserConfig getUserConfig() {
         return userConfig;
     }
 
+    /**
+     * Gets the number of tasks
+     *
+     * @return Number of all tasks, including archived ones
+     */
     public int getNumTasks() {
         return archivedTasks.size() + taskManager.size();
     }
 
+    /**
+     * Gets a priority queue off all non-archived tasks
+     *
+     * @return Priority queue storing all non-archived tasks in sorted order
+     */
     public PriorityQueue<Task> getTaskManager() {
         return taskManager;
     }
 
-    public PriorityQueue<Task> getArchivedTasks() {
-        return archivedTasks;
-    }
+    /**
+     * Gets a priority queue off all archived tasks
+     *
+     * @return Priority queue storing all archived tasks in sorted order
+     */
+    public PriorityQueue<Task> getArchivedTasks() { return archivedTasks; }
 
     /**
      * Gets last ID for Task
@@ -242,31 +279,31 @@ public class ScheduleManager {
      */
     public Event addEvent(String name, Card.Color color, Time.TimeStamp timeStamp,
                           boolean recurring, Event.DayOfWeek[] days) {
-
         Event e;
-        if (recurring) {
-            e = new Event(
-                    eventId,
-                    name,
-                    color,
-                    timeStamp,
-                    days
-            );
-        } else {
-            if (days != null) throw new IllegalArgumentException("Event is non-recurring but has recurrent days");
-            e = new Event(eventId, name, color, timeStamp);
-        }
 
         if (recurring) {
+            e = new Event(eventId, name, color, timeStamp, days);
+
             for (int i = 0; i < e.getDays().length; i++) {
                 recurringEvents.get(e.getDays()[i].ordinal()).add(e);
             }
-        } else indivEvents.add(e);
+        } else {
+            if (days != null) throw new IllegalArgumentException("Event is non-recurring but has recurrent days");
+            e = new Event(eventId, name, color, timeStamp);
+            indivEvents.add(e);
+        }
 
         eventLog.reportEventAction(e, 0);
         return e;
     }
 
+    /**
+     * Adds a card to the cards List
+     *
+     * @param title Title of the card
+     * @param color Color of the card
+     * @return The new card added
+     */
     public Card addCard(String title, Card.Color color) {
         Card card = new Card(cards.size(), title, color);
 
@@ -275,6 +312,15 @@ public class ScheduleManager {
         return card;
     }
 
+    /**
+     * Adds a task to the task manager List
+     *
+     * @param name Name of the task
+     * @param hours Number of hours of the task
+     * @param due Due date of the task
+     * @param card Card of the taks
+     * @return The new task added
+     */
     public Task addTask(String name, double hours, Calendar due, Card card) {
         Task task = new Task(taskManager.size() + 1, name, hours, due, card);
         // todo check whether task is past due (if so, add to archive list)
@@ -283,21 +329,28 @@ public class ScheduleManager {
         return task;
     }
 
+    /**
+     * Modifies a task
+     *
+     * @param id ID of the task to be modified
+     * @param name New name of the task
+     * @param hours New number of hours
+     * @param due New due date of the task
+     * @param card New Card of the task
+     * @return Task after it's modified
+     */
     public Task modTask(int id, String name, double hours, Calendar due, Card card) {
         // todo will need error handling here
         Task task = taskMap.get(id);
-        if (name != null) {
-            task.setName(name);
-        }
-        if (hours != -1) {
-            task.setTotalHours(hours);
-        }
-        if (due != null) {
-            task.setDueDate(due);
-        }
+
+        task.setName(name);
+        task.setTotalHours(hours);
+        task.setDueDate(due);
+
         if (card != null) {
             task.setCard(card);
         }
+
         return task;
     }
 
@@ -308,9 +361,6 @@ public class ScheduleManager {
      * @return Task from schedule
      */
     public Task getTask(int taskId) {
-        if(!taskMap.containsKey(taskId)) {
-            return null;
-        }
         return taskMap.get(taskId);
     }
 
@@ -392,26 +442,56 @@ public class ScheduleManager {
         Collections.sort(indivEvents);
     }
 
+    /**
+     * Builds a schedule in String format
+     *
+     * @return Schedule table as a String
+     */
     public String buildScheduleStr() {
         return TableFormatter.formatScheduleTable(schedule, true);
     }
 
+    /**
+     * Builds events in String format
+     *
+     * @return Events table as a String
+     */
     public String buildEventStr() {
         return TableFormatter.formatEventSetTables(recurringEvents, indivEvents, userConfig);
     }
 
+    /**
+     * Builds cards in String format
+     *
+     * @return Cards table as a String
+     */
     public String buildCardStr() {
         return TableFormatter.formatCardTable(cards, true);
     }
 
+    /**
+     * Builds tasks in String format
+     *
+     * @return Tasks table as a String
+     */
     public String buildTaskStr() {
         return TableFormatter.formatTaskTable(taskManager, archivedTasks, true);
     }
 
+    /**
+     * Builds subtasks in String format
+     *
+     * @return Subtasks table as a String
+     */
     public String buildSubTaskStr() {
         return TableFormatter.formatSubTaskTable(schedule, userConfig);
     }
 
+    /**
+     * Builds session log in String format
+     *
+     * @return Session log as a String
+     */
     public String buildReportStr() {
         return SessionLog.buildSessionLog(this);
     }
@@ -424,10 +504,20 @@ public class ScheduleManager {
         System.exit(0);
     }
 
+    /**
+     * Gets schedule
+     *
+     * @return List of days representing a schedule
+     */
     public List<Day> getSchedule() {
         return schedule;
     }
 
+    /**
+     * Gets event log
+     *
+     * @return EventLog object that log actions performed by user
+     */
     public EventLog getEventLog() {
         return eventLog;
     }
