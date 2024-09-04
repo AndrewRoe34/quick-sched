@@ -1,6 +1,6 @@
 {
   "range": [
-    8,
+    9,
     20
   ],
   "week": [
@@ -21,9 +21,5 @@
   "minHours": 0.5,
   "optimizeDay": false,
   "defaultAtStart": true,
-  "localScheduleColors": true,
-  "formatPrettyTime": true,
-  "formatPrettyTable": false,
-  "formatAMPM": true,
-  "resetLog": true
+  "formatPrettyTime": true
 }

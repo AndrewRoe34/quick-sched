@@ -8,18 +8,16 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
-public class ConfigState {
+public class ConfigUI {
 
     private boolean writeToFile;
     private UserConfig userConfig;
     private String configTable;
     private final Scanner scanner;
 
-    public ConfigState() {
+    public ConfigUI() {
         try {
             userConfig = JsonHandler.readUserConfig(Files.readString(Paths.get("settings/profile.json")));
         } catch (IOException e) {
@@ -41,7 +39,7 @@ public class ConfigState {
 
         if (writeToFile) {
             // need to update the data here
-            Path path = Paths.get("settings/profile.cfg");
+            Path path = Paths.get("settings/profile.json");
             try {
                 Files.write(path, JsonHandler.createUserConfig(userConfig).getBytes());
             } catch (IOException e) {

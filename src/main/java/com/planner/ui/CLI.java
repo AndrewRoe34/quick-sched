@@ -2,12 +2,9 @@ package com.planner.ui;
 
 import com.planner.manager.ScheduleManager;
 import com.planner.models.Card;
-import com.planner.models.Task;
-import com.planner.models.UserConfig;
 import com.planner.util.Parser;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Scanner;
 
 public class CLI {
@@ -68,7 +65,7 @@ public class CLI {
                 if (tokens.length == 1) {
                     Screen.clearScreen();
                 } else {
-                    System.out.println("'clear' has no args.");
+                    throw new IllegalArgumentException("'clear' has no args.");
                 }
                 break;
             case "task":
@@ -84,7 +81,7 @@ public class CLI {
                 if (tokens.length == 1) {
                     System.out.println(sm.buildSubTaskStr());
                 } else {
-                    System.out.println("'subtask' has no args.");
+                    throw new IllegalArgumentException("'subtask' has no args.");
                 }
                 break;
             case "event":
@@ -110,7 +107,7 @@ public class CLI {
                         sm.importJBinFile("data/jbin/" + tokens[1]);
                         System.out.println("Imported " + tokens[1] + ".");
                     } else {
-                        System.out.println("Argument must be a jbin file");
+                        throw new IllegalArgumentException("Argument must be a jbin file");
                     }
                 } else if (tokens.length == 1) {
 //                    System.out.println(sm.buildBoardString());
@@ -120,22 +117,22 @@ public class CLI {
                 if (tokens.length == 1) {
                     // TODO
                 } else {
-                    System.out.println("'update' has no args.");
+                    throw new IllegalArgumentException("'update' has no args.");
                 }
                 break;
             case "config":
                 if (tokens.length == 1) {
-                    ConfigState configState = new ConfigState();
-                    configState.setupAndDisplayPage();
+                    ConfigUI configUI = new ConfigUI();
+                    configUI.setupAndDisplayPage();
                 } else {
-                    System.out.println("'config' has no args.");
+                    throw new IllegalArgumentException("'config' has no args.");
                 }
                 break;
             case "log":
                 if (tokens.length == 1) {
                     System.out.println(sm.getEventLog().toString());
                 } else {
-                    System.out.println("'log' has no args.");
+                    throw new IllegalArgumentException("'log' has no args.");
                 }
                 break;
             case "build":
@@ -143,12 +140,12 @@ public class CLI {
                     sm.buildSchedule();
                     System.out.println("Schedule built...");
                 } else {
-                    System.out.println("'build' has no args.");
+                    throw new IllegalArgumentException("'build' has no args.");
                 }
                 break;
             case "sched":
                 if (tokens.length != 1) {
-                    System.out.println("'sched' has no args.");
+                    throw new IllegalArgumentException("'sched' has no args.");
                 } else if (sm.scheduleIsEmpty()) {
                     System.out.println("Schedule is empty...");
                 } else {
@@ -159,7 +156,7 @@ public class CLI {
                 if (tokens.length == 1) {
                     System.out.println(sm.buildReportStr());
                 } else {
-                    System.out.println("'report' has no args.");
+                    throw new IllegalArgumentException("'report' has no args.");
                 }
                 break;
 //            case "google":
@@ -170,12 +167,61 @@ public class CLI {
 //                    System.out.println("Error: 'google' has no args.");
 //                }
 //                break;
+            case "excel":
+            case "ls":
+                if (tokens.length == 1) {
+                    System.out.println("task\n" +
+                            "subtask\n" +
+                            "card\n" +
+                            "event\n" +
+                            "mod\n" +
+                            "delete\n" +
+                            "sched\n" +
+                            "config\n" +
+                            "jbin\n" +
+                            "update\n" +
+                            "log\n" +
+                            "report\n" +
+                            "google\n" +
+                            "excel\n" +
+                            "doc\n" +
+                            "tutorial\n" +
+                            "quit");
+                }
+                break;
+            case "doc":
+                if (tokens.length == 1) {
+                    System.out.println("Agile Planner is a dynamic scheduling platform that automates the process of creating a comprehensive schedule.\n" +
+                            "\n" +
+                            "Available Commands:\n" +
+                            "  task      Create a new Task or display all Task data\n" +
+                            "  subtask   Display all scheduled SubTasks\n" +
+                            "  card      Create a new Card or display all Card data\n" +
+                            "  event     Create a new Event or display all Event data\n" +
+                            "  mod       Modify schedule data\n" +
+                            "  delete    Delete schedule data\n" +
+                            "  sched     Display user schedule\n" +
+                            "  config    View or modify user config settings\n" +
+                            "  jbin      Display all JBin files or read in data\n" +
+                            "  update    Update the stored db with new scheduling data\n" +
+                            "  log       Display the system log to console\n" +
+                            "  report    Produce report of all schedule data\n" +
+                            "  google    Export schedule data to Google Calendar\n" +
+                            "  excel     Export schedule data to a .xlsx\n" +
+                            "  doc       Display documentation for a command\n" +
+                            "  tutorial  Generate a walkthrough to learn Agile Planner\n" +
+                            "  quit      Exit application\n" +
+                            "\n" +
+                            "Doc References:\n" +
+                            "  date      Display list of all valid date formats\n");
+                }
+                break;
+            case "tutorial":
             case "quit":
                 // todo need to keep track of any changes (and if so, prompt user to update)
                 sm.quit();
             default:
-                System.out.println("Unknown command entered.");
-                break;
+                throw new IllegalArgumentException("Unknown command entered.");
         }
     }
 }
