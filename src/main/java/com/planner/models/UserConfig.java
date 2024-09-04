@@ -9,9 +9,9 @@ package com.planner.models;
 public class UserConfig {
 
     /** Daily range of hours for day */
-    private int[] range;
-    /** Global data for week */
-    private int[] week;
+    private int[] dailyHoursRange;
+    /** Global data for hours per day of week */
+    private int[] hoursPerDayOfWeek;
     /** Maximum number of days to display */
     private int maxDays;
     /** Maximum number of past days to display */
@@ -26,14 +26,17 @@ public class UserConfig {
     private int schedulingAlgorithm;
     /** Minimum number of hours for a given day */
     private double minHours;
+    /** Whether to maximize the positioning of tasks in relation to each other */
     private boolean optimizeDay;
+    /** Whether the scheduling begins at the start of day */
     private boolean defaultAtStart;
+    /** Whether to format pretty time */
     private boolean formatPrettyTime;
 
     /**
      * Primary constructor for UserConfig
      *
-     * @param range               Daily range of hours for day
+     * @param dailyHoursRange     Daily range of hours for day
      * @param globalHr            Global data for week
      * @param maxDays             Maximum number of days to display
      * @param archiveDays         Maximum number of past days to display
@@ -44,12 +47,13 @@ public class UserConfig {
      * @param minHours            Minimum number of hours for a given day
      * @param optimizeDay         Whether to maximize the positioning of tasks in relation to each other
      * @param defaultAtStart      Whether the scheduling begins at the start of day
+     * @param formatPrettyTime    Whether to format pretty time
      */
-    public UserConfig(int[] range, int[] globalHr, int maxDays, int archiveDays, boolean priority,
+    public UserConfig(int[] dailyHoursRange, int[] globalHr, int maxDays, int archiveDays, boolean priority,
                       boolean overflow, boolean fitDay, int schedulingAlgorithm, double minHours,
                       boolean optimizeDay, boolean defaultAtStart, boolean formatPrettyTime) {
-        this.range = range;
-        this.week = globalHr;
+        this.dailyHoursRange = dailyHoursRange;
+        this.hoursPerDayOfWeek = globalHr;
         this.maxDays = maxDays;
         this.archiveDays = archiveDays;
         this.priority = priority;
@@ -66,28 +70,30 @@ public class UserConfig {
      * Constructor for UserConfig that utilizes default values
      */
     public UserConfig() {
-        this.range = new int[]{8, 20};
-        this.week = new int[]{8, 8, 8, 8, 8, 8, 8};
-        this.maxDays = 14;
-        this.archiveDays = 5;
-        this.priority = false;
-        this.overflow = true;
-        this.fitDay = true;
-        this.schedulingAlgorithm = 1;
-        this.minHours = 1.0;
-        this.optimizeDay = true;
-        this.defaultAtStart = true;
-        this.formatPrettyTime = true;
+        this(new int[]{8, 20}, new int[]{8, 8, 8, 8, 8, 8, 8},
+                14, 5, false, true,
+                true, 1, 1.0, true,
+                true, true);
     }
 
-    public int[] getRange() {
-        return range;
+    /**
+     * Gets daily hours range
+     *
+     * @return Array of daily hours range
+     */
+    public int[] getDailyHoursRange() {
+        return dailyHoursRange;
     }
 
-    public void setRange(int[] range) {
-        if (range == null || range.length != 2 || range[0] < 0 || range[0] > 23
-                || range[1] < 0 || range[1] > 23) throw new IllegalArgumentException("Range was null, empty, or outside of valid set for UserConfig");
-        this.range = range;
+    /**
+     * Sets daily hours range
+     *
+     * @param dailyHoursRange Array of daily hours range
+     */
+    public void setDailyHoursRange(int[] dailyHoursRange) {
+        if (isRangeValid(dailyHoursRange))
+            throw new IllegalArgumentException("Range was null, empty, or outside of valid set for UserConfig");
+        this.dailyHoursRange = dailyHoursRange;
     }
 
     /**
@@ -95,28 +101,28 @@ public class UserConfig {
      *
      * @return array of week hours
      */
-    public int[] getWeek() {
-        return week;
+    public int[] getHoursPerDayOfWeek() {
+        return hoursPerDayOfWeek;
     }
 
     /**
      * Sets global week hours
      *
-     * @param week array of week hours
+     * @param hoursPerDayOfWeek array of week hours
      */
-    public void setWeek(int[] week) {
-        if (week == null) throw new IllegalArgumentException("Global hours array cannot be null for UserConfig");
-        if (week.length == 7) {
-            for (int hour : week) {
-                if (hour < 0 || hour > 24) {
-                    throw new IllegalArgumentException("Hours for week cannot be below 0 or above 24");
-                }
+    public void setHoursPerDayOfWeek(int[] hoursPerDayOfWeek) {
+        if (hoursPerDayOfWeek == null)
+            throw new IllegalArgumentException("Global hours array cannot be null for UserConfig");
+
+        if (hoursPerDayOfWeek.length == 7) {
+            for (int hour : hoursPerDayOfWeek) {
+                validateRange(hour, 0, 24, "Hours for week cannot be below 0 or above 24");
             }
         } else {
             throw new IllegalArgumentException("Invalid number of inputs provided for config option Global hours for week. Expected 7 integers");
         }
 
-        this.week = week;
+        this.hoursPerDayOfWeek = hoursPerDayOfWeek;
     }
 
     /**
@@ -134,7 +140,7 @@ public class UserConfig {
      * @param maxDays max days to display
      */
     public void setMaxDays(int maxDays) {
-        if (maxDays <= 0 || maxDays > 30) throw new IllegalArgumentException("Max day is outside of valid set for UserConfig");
+        validateRange(maxDays, 1, 30, "Max day is outside of valid set for UserConfig");
         this.maxDays = maxDays;
     }
 
@@ -153,7 +159,7 @@ public class UserConfig {
      * @param archiveDays archive days to display
      */
     public void setArchiveDays(int archiveDays) {
-        if (archiveDays < 0 || archiveDays > 30) throw new IllegalArgumentException("Archive day is outside of valid set for UserConfig");
+        validateRange(archiveDays, 0, 30, "Archive day is outside of valid set for UserConfig");
         this.archiveDays = archiveDays;
     }
 
@@ -226,7 +232,7 @@ public class UserConfig {
      * @param schedulingAlgorithm algorithm option
      */
     public void setSchedulingAlgorithm(int schedulingAlgorithm) {
-        if (schedulingAlgorithm < 0 || schedulingAlgorithm > 1) throw new IllegalArgumentException("Scheduling algorithm option is out of index for UserConfig");
+        validateRange(schedulingAlgorithm, 0, 1, "Scheduling algorithm option is out of index for UserConfig");
         this.schedulingAlgorithm = schedulingAlgorithm;
     }
 
@@ -250,23 +256,67 @@ public class UserConfig {
         this.minHours = minHours;
     }
 
+    /**
+     * Checks if optimization for days is enabled
+     *
+     * @return <code>true</code> if days are being optimized; <code>false</code> otherwise
+     */
     public boolean isOptimizeDay() {
         return optimizeDay;
     }
 
+    /**
+     * Enables or disables optimization for days
+     *
+     * @param optimizeDay Option
+     */
     public void setOptimizeDay(boolean optimizeDay) { this.optimizeDay = optimizeDay; }
 
+    /**
+     * Checks if the scheduling begins at the start of day
+     *
+     * @return <code>true</code> if scheduling begins at the start of day; <code>false</code> otherwise
+     */
     public boolean isDefaultAtStart() { return defaultAtStart; }
 
+    /**
+     * Enables or disables scheduling at the start of day
+     *
+     * @param defaultAtStart Option
+     */
     public void setDefaultAtStart(boolean defaultAtStart) {
         this.defaultAtStart = defaultAtStart;
     }
 
+    /**
+     * Checks if formatPrettyTime option is enabled
+     *
+     * @return <code>true</code> if formatPrettyTime option is enabled; <code>false</code> otherwise
+     */
     public boolean isFormatPrettyTime() {
         return formatPrettyTime;
     }
 
+    /**
+     * Enables or disables formatPrettyTime option
+     *
+     * @param formatPrettyTime Option
+     */
     public void setFormatPrettyTime(boolean formatPrettyTime) {
         this.formatPrettyTime = formatPrettyTime;
+    }
+
+
+    private boolean isRangeValid(int[] range)
+    {
+        return range == null || range.length != 2
+                || range[0] < 0 || range[0] > 23
+                || range[1] < 0 || range[1] > 23;
+    }
+
+    private void validateRange(int n, int start, int end, String errorMessage)
+    {
+        if (n < start || n > end)
+            throw new IllegalArgumentException(errorMessage);
     }
 }

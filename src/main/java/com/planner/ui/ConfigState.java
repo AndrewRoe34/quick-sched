@@ -8,8 +8,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 public class ConfigState {
@@ -89,10 +87,10 @@ public class ConfigState {
                     if (tokens.length == 2 && hasInteger(tokens[0]) && hasInteger(tokens[1])) {
                         int start = Integer.parseInt(tokens[0]);
                         int end = Integer.parseInt(tokens[1]);
-                        int[] range = userConfig.getRange();
+                        int[] range = userConfig.getDailyHoursRange();
                         range[0] = start;
                         range[1] = end;
-                        userConfig.setRange(range);
+                        userConfig.setDailyHoursRange(range);
                     } else throw new IllegalArgumentException("Invalid inputs provided for config option Range");
                 }
                 break;
@@ -116,7 +114,7 @@ public class ConfigState {
                         week[i] = hour;
                     }
                     if (validInput) {
-                        userConfig.setWeek(week);
+                        userConfig.setHoursPerDayOfWeek(week);
                     } else {
                         throw new IllegalArgumentException("Invalid inputs provided for config option Global hours for week");
                     }

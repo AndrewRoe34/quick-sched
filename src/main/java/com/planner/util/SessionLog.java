@@ -12,8 +12,8 @@ public class SessionLog {
         StringBuilder sb = new StringBuilder();
         UserConfig userConfig = scheduleManager.getUserConfig();
         sb.append("Configuration Details:\n" + "    - Config File: profile.json\n" + "    - Mode: Production\n" + "    - Range: ")
-                .append(Arrays.toString(userConfig.getRange())).append("\n")
-                .append("    - Week Hours: ").append(Arrays.toString(userConfig.getWeek()))
+                .append(Arrays.toString(userConfig.getDailyHoursRange())).append("\n")
+                .append("    - Week Hours: ").append(Arrays.toString(userConfig.getHoursPerDayOfWeek()))
                 .append("\n").append("    - Max Days: ").append(userConfig.getMaxDays()).append("\n")
                 .append("    - Archive Days: ").append(userConfig.getArchiveDays()).append("\n")
                 .append("    - Priority Scheduling: ").append(userConfig.isPriority()).append("\n")

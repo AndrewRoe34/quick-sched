@@ -340,7 +340,7 @@ public class ScheduleManager {
 
         int eventIdx = 0;
         while(!taskManager.isEmpty() && dayId < userConfig.getMaxDays()) {
-            currDay = new Day(dayId++, userConfig.getWeek()[idx++ % 7], dayCount++);
+            currDay = new Day(dayId++, userConfig.getHoursPerDayOfWeek()[idx++ % 7], dayCount++);
             schedule.add(currDay);
 
             if (!recurringEvents.get(currDay.getDate().get(Calendar.DAY_OF_WEEK) - 1).isEmpty()) {

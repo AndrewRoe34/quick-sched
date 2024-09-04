@@ -42,8 +42,8 @@ public class TUI {
                     "Configuration Details:\n" +
                             "    - Config File: profile.json\n" +
                             "    - Mode: Production\n" +
-                            "    - Range: " + Arrays.toString(userConfig.getRange()) + "\n" +
-                            "    - Week Hours: " + Arrays.toString(userConfig.getWeek()) + "\n" +
+                            "    - Range: " + Arrays.toString(userConfig.getDailyHoursRange()) + "\n" +
+                            "    - Week Hours: " + Arrays.toString(userConfig.getHoursPerDayOfWeek()) + "\n" +
                             "    - Max Days: " + userConfig.getMaxDays() + "\n" +
                             "    - Archive Days: " + userConfig.getArchiveDays() + "\n" +
                             "    - Priority Scheduling: " + userConfig.isPriority() + "\n" +

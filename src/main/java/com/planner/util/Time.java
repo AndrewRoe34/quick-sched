@@ -126,11 +126,11 @@ public class Time {
     // [COMPLETE]
     public static Calendar getFirstAvailableTimeInDay(List<TimeStamp> taskTimeStamps, List<TimeStamp> eventTimeStamps, UserConfig userConfig, Calendar time, boolean isToday) {
         Calendar startTime;
-        if (isToday && time.get(Calendar.HOUR_OF_DAY) >= userConfig.getRange()[0] && taskTimeStamps.isEmpty() && !userConfig.isDefaultAtStart()) {
+        if (isToday && time.get(Calendar.HOUR_OF_DAY) >= userConfig.getDailyHoursRange()[0] && taskTimeStamps.isEmpty() && !userConfig.isDefaultAtStart()) {
             startTime = Time.getNearestQuarterOfHour(time, true);
         } else if (taskTimeStamps.isEmpty()) {
             startTime = Time.getFormattedCalendarInstance(time, 0);
-            startTime.set(Calendar.HOUR_OF_DAY, userConfig.getRange()[0]);
+            startTime.set(Calendar.HOUR_OF_DAY, userConfig.getDailyHoursRange()[0]);
             startTime.set(Calendar.MINUTE, 0);
         } else {
             TimeStamp ts = taskTimeStamps.get(taskTimeStamps.size() - 1);
