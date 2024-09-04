@@ -13,6 +13,7 @@ import java.util.List;
  */
 public class Card {
 
+    /** ID for Card */
     private int id;
     /** Label for Card */
     private String name;
@@ -98,6 +99,11 @@ public class Card {
         return colorId;
     }
 
+    /**
+     * Converts Card object to String format
+     *
+     * @return Card name
+     */
     @Override
     public String toString() {
         return name;

@@ -37,10 +37,7 @@ public class Task implements Comparable<Task> {
      * @param card reference to Card for tag and color
      */
     public Task(int id, String name, double hours, Calendar date, Card card) {
-        setId(id);
-        setName(name);
-        setTotalHours(hours);
-        setDueDate(date);
+        this(id, name, hours, date);
         setCard(card);
     }
 
@@ -54,7 +51,10 @@ public class Task implements Comparable<Task> {
      * @param date number of days till due date for Task
      */
     public Task(int id, String name, double hours, Calendar date)  {
-        this(id, name, hours, date, null);
+        setId(id);
+        setName(name);
+        setTotalHours(hours);
+        setDueDate(date);
     }
 
     /**
@@ -167,7 +167,6 @@ public class Task implements Comparable<Task> {
 
     /**
      * <p>Gets the tag of the Task</p>
-     * <p>Calls the <code>card.getName()</code> method to get the name of the card</p>
      *
      * @return the name of the Task's card if it exists
      */
