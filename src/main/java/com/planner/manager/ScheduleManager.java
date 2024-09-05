@@ -393,33 +393,13 @@ public class ScheduleManager {
     public Event modEvent(int id, String name, Card.Color color, Time.TimeStamp timeStamp,
                           boolean willBeRecurring, Event.DayOfWeek[] days)
     {
-        Event event = null;
-        boolean wasRecurring = false;
-
-        for (Event indivEvent : indivEvents) {
-            if (indivEvent.getId() == id) {
-                event = indivEvent;
-                break;
-            }
-        }
-
-        if (event == null) {
-            for (List<Event> events : recurringEvents)
-            {
-                for (Event recurringEvent : events) {
-                    if (recurringEvent.getId() == id) {
-                        event = recurringEvent;
-                        wasRecurring = true;
-                        break;
-                    }
-                }
-                if (event != null) break;
-            }
-        }
+        Event event = findEvent(id);
 
         if (event == null) {
             return null;
         }
+
+        boolean wasRecurring = event.isRecurring();
 
         if (name != null) {
             event.setName(name);
@@ -440,7 +420,7 @@ public class ScheduleManager {
             event.setDays(days);
             Event.DayOfWeek[] eventDays = event.getDays();
 
-            indivEvents.remove(id);
+            indivEvents.remove(event);
 
             for (Event.DayOfWeek eventDay : eventDays) {
                 recurringEvents.get(eventDay.ordinal()).add(event);
@@ -453,6 +433,28 @@ public class ScheduleManager {
 
             for (Event.DayOfWeek eventDay : eventDays) {
                 recurringEvents.get(eventDay.ordinal()).remove(event);
+            }
+        }
+
+        return null;
+    }
+
+    private Event findEvent(int id)
+    {
+        Event event = null;
+
+        for (Event indivEvent : indivEvents) {
+            if (indivEvent.getId() == id) {
+                return indivEvent;
+            }
+        }
+
+        for (List<Event> events : recurringEvents)
+        {
+            for (Event recurringEvent : events) {
+                if (recurringEvent.getId() == id) {
+                    return recurringEvent;
+                }
             }
         }
 
@@ -678,6 +680,7 @@ public class ScheduleManager {
         System.out.println("================================");
 
         sm.modEvent(1, null, null, null, false, null);
+        sm.modEvent(2, null, null, null, false, null);
         System.out.println(sm.getRecurEvents().get(0).size());
         System.out.println(sm.getIndivEvents().size());
     }
