@@ -10,7 +10,6 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -36,10 +35,10 @@ jobs:
         run: ./gradlew test
 
   dependency-submission:
-
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    if: github.event.pull_request.head.repo.full_name == github.repository || github.event_name == 'schedule'
 
     steps:
       - uses: actions/checkout@v4
