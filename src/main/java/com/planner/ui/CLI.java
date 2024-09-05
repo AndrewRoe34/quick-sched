@@ -213,7 +213,8 @@ public class CLI {
                             "  quit      Exit application\n" +
                             "\n" +
                             "Doc References:\n" +
-                            "  date      Display list of all valid date formats\n");
+                            "  date      Display list of all valid date formats\n" +
+                            "  ts        Display list of all valid timestamp formats\n");
                 }
                 break;
             case "tutorial":
