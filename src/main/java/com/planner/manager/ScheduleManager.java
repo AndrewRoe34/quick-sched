@@ -298,6 +298,9 @@ public class ScheduleManager {
         }
 
         eventLog.reportEventAction(e, 0);
+
+        eventId++;
+
         return e;
     }
 
@@ -377,21 +380,74 @@ public class ScheduleManager {
             return null;
         }
 
-        if (name != null)
-        {
+        if (name != null) {
             card.setName(name);
         }
-        if (colorId != null)
-        {
+        if (colorId != null) {
             card.setColorId(colorId);
         }
 
         return card;
     }
 
-    public Event modEvent(String name, Card.Color color, Time.TimeStamp timeStamp,
-                          boolean recurring, Event.DayOfWeek[] days)
+    public Event modEvent(int id, String name, Card.Color color, Time.TimeStamp timeStamp,
+                          boolean willBeRecurring, Event.DayOfWeek[] days)
     {
+        Event event = null;
+        boolean wasRecurring = false;
+
+        if (id >= 0 && id < indivEvents.size()) {
+            event = indivEvents.get(id);
+        } else {
+            for (List<Event> events : recurringEvents)
+            {
+                if (id >= 0 && id < events.size()) {
+                    event = events.get(id);
+                    wasRecurring = true;
+                    break;
+                }
+            }
+        }
+
+        if (event == null) {
+            return null;
+        }
+
+        if (name != null) {
+            event.setName(name);
+        }
+        if (color != null) {
+            event.setColor(color);
+        }
+        if (timeStamp != null) {
+            event.setTimeStamp(timeStamp);
+        }
+
+        if (wasRecurring == willBeRecurring && willBeRecurring) {
+            if (days != null) {
+                event.setDays(days);
+            }
+        } else if (wasRecurring != willBeRecurring && willBeRecurring) {
+            event.setRecurring(true);
+            event.setDays(days);
+            Event.DayOfWeek[] eventDays = event.getDays();
+
+            indivEvents.remove(id);
+
+            for (Event.DayOfWeek eventDay : eventDays) {
+                recurringEvents.get(eventDay.ordinal()).add(event);
+            }
+        } else if (wasRecurring != willBeRecurring && !willBeRecurring) {
+            Event.DayOfWeek[] eventDays = event.getDays();
+            event.setRecurring(false);
+
+            indivEvents.add(event);
+
+            for (Event.DayOfWeek eventDay : eventDays) {
+                recurringEvents.get(eventDay.ordinal()).remove(event);
+            }
+        }
+
         return null;
     }
 
@@ -578,5 +634,23 @@ public class ScheduleManager {
 
     public void importScheduleFromGoogle() throws IOException {
         googleCalendarIO.importScheduleFromGoogle();
+    }
+
+    public static void main(String[] args) {
+        ScheduleManager sm = getScheduleManager();
+        Calendar start = Calendar.getInstance();
+        Calendar end = Calendar.getInstance();
+        end.set(Calendar.HOUR, end.get(Calendar.HOUR) + 1);
+        Time.TimeStamp timeStamp = new Time.TimeStamp(start, end);
+        sm.addEvent("event1", Card.Color.BLUE, timeStamp, false, null);
+        sm.addEvent("event2", Card.Color.BLUE, timeStamp, false, null);
+        sm.addEvent("event3", Card.Color.BLUE, timeStamp, false, null);
+
+        List<Event> indivEvents = sm.getIndivEvents();
+        for (Event event : indivEvents)
+        {
+            System.out.println(event.getId());
+        }
+
     }
 }
