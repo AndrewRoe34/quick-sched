@@ -60,7 +60,10 @@ public class ScheduleManager {
     private Calendar scheduleTime;
     /** List for storing individual events */
     private final List<Event> indivEvents;
-    /** List for storing recurring events */
+    /** List of Lists for storing recurring events.
+     * The outer List is of size 7 representing each day of the week.
+     * Each element inside the outer List represents a list of events that occur on that day every week.
+     * For example, to access the List of events that reoccur on the first day of the week we can use <code>recurringEvents.get(0)</code>*/
     private final List<List<Event>> recurringEvents;
     /** ID for event */
     private int eventId;
@@ -283,9 +286,10 @@ public class ScheduleManager {
 
         if (recurring) {
             e = new Event(eventId, name, color, timeStamp, days);
+            Event.DayOfWeek[] eventDays = e.getDays();
 
-            for (int i = 0; i < e.getDays().length; i++) {
-                recurringEvents.get(e.getDays()[i].ordinal()).add(e);
+            for (int i = 0; i < eventDays.length; i++) {
+                recurringEvents.get(eventDays[i].ordinal()).add(e);
             }
         } else {
             if (days != null) throw new IllegalArgumentException("Event is non-recurring but has recurrent days");
@@ -388,7 +392,7 @@ public class ScheduleManager {
     public Event modEvent(String name, Card.Color color, Time.TimeStamp timeStamp,
                           boolean recurring, Event.DayOfWeek[] days)
     {
-        // TODO
+        return null;
     }
 
     /**

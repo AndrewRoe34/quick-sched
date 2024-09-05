@@ -1,7 +1,10 @@
 package com.planner.models;
 
+import com.planner.util.Time;
 import com.planner.util.Time.TimeStamp;
+import com.sun.tools.javac.Main;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Calendar;
 
@@ -278,42 +281,17 @@ public class Event implements Comparable<Event> {
         if (days == null || days.length == 0 || days.length > 7)
             throw new IllegalArgumentException("Invalid set of days provided to Event");
 
-        boolean[] week = new boolean[7];
+        boolean[] weekDayExists = new boolean[7];
 
+        // Ensures no week day is repeated
         for (DayOfWeek d : days) {
-            if (!week[d.ordinal()]) week[d.ordinal()] = true;
+            if (!weekDayExists[d.ordinal()]) weekDayExists[d.ordinal()] = true;
             else throw new IllegalArgumentException("Repeats of days cannot occur");
         }
 
-        // this code below ensures that days of week are in sorted order (which is helpful for eventlog and displays)
-        int count = 0;
-        for (int i = 0; i < week.length; i++) {
-            if (week[i]) {
-                switch (i) {
-                    case 0:
-                        days[count++] = DayOfWeek.SUN;
-                        break;
-                    case 1:
-                        days[count++] = DayOfWeek.MON;
-                        break;
-                    case 2:
-                        days[count++] = DayOfWeek.TUE;
-                        break;
-                    case 3:
-                        days[count++] = DayOfWeek.WED;
-                        break;
-                    case 4:
-                        days[count++] = DayOfWeek.THU;
-                        break;
-                    case 5:
-                        days[count++] = DayOfWeek.FRI;
-                        break;
-                    case 6:
-                        days[count++] = DayOfWeek.SAT;
-                        break;
-                }
-            }
-        }
+        // Sort days of the week (which is helpful for eventlog and displays)
+        // example: days before sorting = {FRI, SUN, SAT}, after sorting = {SUN, FRI, SAT}
+        Arrays.sort(days);
 
         this.days = days;
     }
