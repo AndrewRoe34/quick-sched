@@ -396,16 +396,24 @@ public class ScheduleManager {
         Event event = null;
         boolean wasRecurring = false;
 
-        if (id >= 0 && id < indivEvents.size()) {
-            event = indivEvents.get(id);
-        } else {
+        for (Event indivEvent : indivEvents) {
+            if (indivEvent.getId() == id) {
+                event = indivEvent;
+                break;
+            }
+        }
+
+        if (event == null) {
             for (List<Event> events : recurringEvents)
             {
-                if (id >= 0 && id < events.size()) {
-                    event = events.get(id);
-                    wasRecurring = true;
-                    break;
+                for (Event recurringEvent : events) {
+                    if (recurringEvent.getId() == id) {
+                        event = recurringEvent;
+                        wasRecurring = true;
+                        break;
+                    }
                 }
+                if (event != null) break;
             }
         }
 
@@ -642,15 +650,35 @@ public class ScheduleManager {
         Calendar end = Calendar.getInstance();
         end.set(Calendar.HOUR, end.get(Calendar.HOUR) + 1);
         Time.TimeStamp timeStamp = new Time.TimeStamp(start, end);
-        sm.addEvent("event1", Card.Color.BLUE, timeStamp, false, null);
-        sm.addEvent("event2", Card.Color.BLUE, timeStamp, false, null);
-        sm.addEvent("event3", Card.Color.BLUE, timeStamp, false, null);
 
-        List<Event> indivEvents = sm.getIndivEvents();
-        for (Event event : indivEvents)
-        {
-            System.out.println(event.getId());
-        }
+        Event.DayOfWeek[] eventDays = new Event.DayOfWeek[]{Event.DayOfWeek.FRI, Event.DayOfWeek.SUN};
 
+        sm.addEvent("holiday", Card.Color.BLUE, timeStamp, false, null);
+        sm.addEvent("concert", Card.Color.BLUE, timeStamp, false, null);
+        sm.addEvent("party", Card.Color.BLUE, timeStamp, true, eventDays);
+
+        sm.modEvent(0, "birthday", Card.Color.YELLOW, timeStamp, false, null);
+        System.out.println(sm.getIndivEvents().get(0).getName());
+        System.out.println(sm.getIndivEvents().get(0).getColor());
+
+        System.out.println("================================");
+
+        // Error, because recurring events can't have days as a null value
+        // sm.modEvent(1, null, null, null, true, null);
+        System.out.println(sm.getIndivEvents().size());
+
+        sm.modEvent(1, null, null, null, true, eventDays);
+        System.out.println(sm.getIndivEvents().size());
+        System.out.println(sm.getRecurEvents().get(5).get(0).getName());
+        System.out.println(sm.getRecurEvents().get(5).get(0).getColor());
+        System.out.println(sm.getRecurEvents().get(5).get(0).getTimeStamp());
+        System.out.println(sm.getRecurEvents().get(5).get(0).isRecurring());
+        System.out.println(Arrays.toString(sm.getRecurEvents().get(5).get(0).getDays()));
+
+        System.out.println("================================");
+
+        sm.modEvent(1, null, null, null, false, null);
+        System.out.println(sm.getRecurEvents().get(0).size());
+        System.out.println(sm.getIndivEvents().size());
     }
 }
