@@ -60,7 +60,7 @@ public class CLI {
     }
 
     private void exeCmd(String[] tokens) throws IOException { // todo will need to catch IllegalArgsException and print to console error
-        switch (tokens[0]) {
+        switch (tokens[0].toLowerCase()) {
             case "clear":
                 if (tokens.length == 1) {
                     Screen.clearScreen();
@@ -185,36 +185,68 @@ public class CLI {
                             "google\n" +
                             "excel\n" +
                             "doc\n" +
-                            "tutorial\n" +
                             "quit");
                 }
                 break;
             case "doc":
-                if (tokens.length == 1) {
-                    System.out.println("Agile Planner is a dynamic scheduling platform that automates the process of creating a comprehensive schedule.\n" +
-                            "\n" +
-                            "Available Commands:\n" +
-                            "  task      Create a new Task or display all Task data\n" +
-                            "  subtask   Display all scheduled SubTasks\n" +
-                            "  card      Create a new Card or display all Card data\n" +
-                            "  event     Create a new Event or display all Event data\n" +
-                            "  mod       Modify schedule data\n" +
-                            "  delete    Delete schedule data\n" +
-                            "  sched     Display user schedule\n" +
-                            "  config    View or modify user config settings\n" +
-                            "  jbin      Display all JBin files or read in data\n" +
-                            "  update    Update the stored db with new scheduling data\n" +
-                            "  log       Display the system log to console\n" +
-                            "  report    Produce report of all schedule data\n" +
-                            "  google    Export schedule data to Google Calendar\n" +
-                            "  excel     Export schedule data to a .xlsx\n" +
-                            "  doc       Display documentation for a command\n" +
-                            "  tutorial  Generate a walkthrough to learn Agile Planner\n" +
-                            "  quit      Exit application\n" +
-                            "\n" +
-                            "Doc References:\n" +
-                            "  date      Display list of all valid date formats\n" +
-                            "  ts        Display list of all valid timestamp formats\n");
+                if (tokens.length > 2) {
+                    throw new IllegalArgumentException("'report' can have only 1 or no args.");
+                } else if (tokens.length == 1) {
+                    System.out.println("\n" + Doc.getDoc() + "\n");
+                } else {
+                    switch (tokens[1].toLowerCase()) {
+                        case "task":
+                            System.out.println("\n" + Doc.getTaskDoc() + "\n");
+                            break;
+                        case "card":
+                            System.out.println("\n" + Doc.getCardDoc() + "\n");
+                            break;
+                        case "event":
+                            System.out.println("\n" + Doc.getEventDoc() + "\n");
+                            break;
+                        case "subtask":
+                            System.out.println("\n" + Doc.getSubtaskDoc() + "\n");
+                            break;
+                        case "build":
+                            System.out.println("\n" + Doc.getBuildDoc() + "\n");
+                            break;
+                        case "sched":
+                            System.out.println("\n" + Doc.getSchedDoc() + "\n");
+                            break;
+                        case "config":
+                            System.out.println("\n" + Doc.getConfigDoc() + "\n");
+                            break;
+                        case "log":
+                            System.out.println("\n" + Doc.getLogDoc() + "\n");
+                            break;
+                        case "quit":
+                            System.out.println("\n" + Doc.getQuitDoc() + "\n");
+                            break;
+                        case "date":
+                            System.out.println("\n" + Doc.getDateDoc() + "\n");
+                            break;
+                        case "color":
+                            System.out.println("\n" + Doc.getColorDoc() + "\n");
+                            break;
+                        case "ts":
+                            System.out.println("\n" + Doc.getTimestampDoc() + "\n");
+                            break;
+                        case "google":
+                            System.out.println("\n" + Doc.getGoogleDoc() + "\n");
+                            break;
+                        case "excel":
+                            System.out.println("\n" + Doc.getExcelDoc() + "\n");
+                            break;
+                        case "json":
+                            System.out.println("\n" + Doc.getJsonDoc() + "\n");
+                            break;
+                        case "ls":
+                            System.out.println("\n" + Doc.getLsDoc() + "\n");
+                            break;
+                        default:
+                            System.out.println("Unknown command. Use 'ls' to list all available commands.");
+                            break;
+                    }
                 }
                 break;
             case "tutorial":
