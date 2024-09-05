@@ -61,7 +61,10 @@ public class ScheduleManager {
     private Calendar scheduleTime;
     /** List for storing individual events */
     private final List<Event> indivEvents;
-    /** List for storing recurring events */
+    /** List of Lists for storing recurring events.
+     * The outer List is of size 7 representing each day of the week.
+     * Each element inside the outer List represents a list of events that occur on that day every week.
+     * For example, to access the List of events that reoccur on the first day of the week we can use <code>recurringEvents.get(0)</code>*/
     private final List<List<Event>> recurringEvents;
     /** ID for event */
     private int eventId;
@@ -284,9 +287,10 @@ public class ScheduleManager {
 
         if (recurring) {
             e = new Event(eventId, name, color, timeStamp, days);
+            Event.DayOfWeek[] eventDays = e.getDays();
 
-            for (int i = 0; i < e.getDays().length; i++) {
-                recurringEvents.get(e.getDays()[i].ordinal()).add(e);
+            for (int i = 0; i < eventDays.length; i++) {
+                recurringEvents.get(eventDays[i].ordinal()).add(e);
             }
         } else {
             if (days != null) throw new IllegalArgumentException("Event is non-recurring but has recurrent days");
@@ -295,6 +299,9 @@ public class ScheduleManager {
         }
 
         eventLog.reportEventAction(e, 0);
+
+        eventId++;
+
         return e;
     }
 
@@ -344,6 +351,10 @@ public class ScheduleManager {
         // todo will need error handling here
         Task task = taskMap.get(id);
 
+        if (task == null) {
+            return null;
+        }
+
         if (name != null) {
             task.setName(name);
         }
@@ -358,6 +369,97 @@ public class ScheduleManager {
         }
 
         return task;
+    }
+
+    public Card modCard(int id, String name, Card.Color colorId)
+    {
+        Card card;
+
+        if (id >= 0 && id < cards.size()) {
+            card = cards.get(id);
+        } else {
+            return null;
+        }
+
+        if (name != null) {
+            card.setName(name);
+        }
+        if (colorId != null) {
+            card.setColorId(colorId);
+        }
+
+        return card;
+    }
+
+    public Event modEvent(int id, String name, Card.Color color, Time.TimeStamp timeStamp,
+                          boolean willBeRecurring, Event.DayOfWeek[] days)
+    {
+        Event event = findEvent(id);
+
+        if (event == null) {
+            return null;
+        }
+
+        boolean wasRecurring = event.isRecurring();
+
+        if (name != null) {
+            event.setName(name);
+        }
+        if (color != null) {
+            event.setColor(color);
+        }
+        if (timeStamp != null) {
+            event.setTimeStamp(timeStamp);
+        }
+
+        if (wasRecurring == willBeRecurring && willBeRecurring) {
+            if (days != null) {
+                event.setDays(days);
+            }
+        } else if (wasRecurring != willBeRecurring && willBeRecurring) {
+            event.setRecurring(true);
+            event.setDays(days);
+            Event.DayOfWeek[] eventDays = event.getDays();
+
+            indivEvents.remove(event);
+
+            for (Event.DayOfWeek eventDay : eventDays) {
+                recurringEvents.get(eventDay.ordinal()).add(event);
+            }
+        } else if (wasRecurring != willBeRecurring && !willBeRecurring) {
+            Event.DayOfWeek[] eventDays = event.getDays();
+            event.setRecurring(false);
+
+            indivEvents.add(event);
+
+            for (Event.DayOfWeek eventDay : eventDays) {
+                recurringEvents.get(eventDay.ordinal()).remove(event);
+            }
+        }
+
+        return null;
+    }
+
+    private Event findEvent(int id)
+    {
+        Event event = null;
+
+        for (Event indivEvent : indivEvents) {
+            if (indivEvent.getId() == id) {
+                return indivEvent;
+            }
+        }
+
+        for (List<Event> events : recurringEvents)
+        {
+            for (Event recurringEvent : events) {
+                if (recurringEvent.getId() == id) {
+                    return recurringEvent;
+                }
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -544,5 +646,44 @@ public class ScheduleManager {
 
     public void importScheduleFromGoogle() throws IOException {
         googleCalendarIO.importScheduleFromGoogle();
+    }
+
+    public static void main(String[] args) {
+        ScheduleManager sm = getScheduleManager();
+        Calendar start = Calendar.getInstance();
+        Calendar end = Calendar.getInstance();
+        end.set(Calendar.HOUR, end.get(Calendar.HOUR) + 1);
+        Time.TimeStamp timeStamp = new Time.TimeStamp(start, end);
+
+        Event.DayOfWeek[] eventDays = new Event.DayOfWeek[]{Event.DayOfWeek.FRI, Event.DayOfWeek.SUN};
+
+        sm.addEvent("holiday", Card.Color.BLUE, timeStamp, false, null);
+        sm.addEvent("concert", Card.Color.BLUE, timeStamp, false, null);
+        sm.addEvent("party", Card.Color.BLUE, timeStamp, true, eventDays);
+
+        sm.modEvent(0, "birthday", Card.Color.YELLOW, timeStamp, false, null);
+        System.out.println(sm.getIndivEvents().get(0).getName());
+        System.out.println(sm.getIndivEvents().get(0).getColor());
+
+        System.out.println("================================");
+
+        // Error, because recurring events can't have days as a null value
+        // sm.modEvent(1, null, null, null, true, null);
+        System.out.println(sm.getIndivEvents().size());
+
+        sm.modEvent(1, null, null, null, true, eventDays);
+        System.out.println(sm.getIndivEvents().size());
+        System.out.println(sm.getRecurEvents().get(5).get(0).getName());
+        System.out.println(sm.getRecurEvents().get(5).get(0).getColor());
+        System.out.println(sm.getRecurEvents().get(5).get(0).getTimeStamp());
+        System.out.println(sm.getRecurEvents().get(5).get(0).isRecurring());
+        System.out.println(Arrays.toString(sm.getRecurEvents().get(5).get(0).getDays()));
+
+        System.out.println("================================");
+
+        sm.modEvent(1, null, null, null, false, null);
+        sm.modEvent(2, null, null, null, false, null);
+        System.out.println(sm.getRecurEvents().get(0).size());
+        System.out.println(sm.getIndivEvents().size());
     }
 }
