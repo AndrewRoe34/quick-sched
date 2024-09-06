@@ -249,15 +249,6 @@ public class Event implements Comparable<Event> {
         return recurring;
     }
 
-    public void setRecurring(boolean recurring) {
-        // Set event days to null if the event is being changed from a recurring to an individual event
-        if (this.recurring != recurring && this.recurring) {
-            this.days = null;
-        }
-
-        this.recurring = recurring;
-    }
-
     /**
      * Gets the days of the Event as an Array
      *
