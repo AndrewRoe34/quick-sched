@@ -243,6 +243,18 @@ public class CLI {
                         case "ls":
                             System.out.println("\n" + Doc.getLsDoc() + "\n");
                             break;
+                        case "read":
+                            System.out.println("\n" + Doc.getReadDoc() + "\n");
+                            break;
+                        case "save":
+                            System.out.println("\n" + Doc.getSaveDoc() + "\n");
+                            break;
+                        case "mod":
+                            System.out.println("\n" + Doc.getModDoc() + "\n");
+                            break;
+                        case "delete":
+                            System.out.println("\n" + Doc.getDeleteDoc() + "\n");
+                            break;
                         default:
                             System.out.println("Unknown command. Use 'ls' to list all available commands.");
                             break;

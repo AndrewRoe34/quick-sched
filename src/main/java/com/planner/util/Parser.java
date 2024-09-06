@@ -73,6 +73,9 @@ public class Parser {
                 } catch (NumberFormatException e) {
                     throw new IllegalArgumentException("Invalid card id provided.");
                 }
+                if (cardId < 0) {
+                    throw new IllegalArgumentException("Invalid card id provided, cannot be negative.");
+                }
             } else if ("@".equals(args[i]) && due == null) {
                 if (i + 1 >= args.length) {
                     throw new IllegalArgumentException("Due date not provided following '@'.");

@@ -223,4 +223,52 @@ public class Doc {
                 "Examples:\n" +
                 "  ls";
     }
+
+    public static String getReadDoc() {
+        return "Displays all serialization files from the sched folder or reads in a file to update the system. " +
+                "Reading in a new serialization file will result in fresh schedule data.\n\n" +
+                "Usage:\n" +
+                "  read\n" +
+                "  read [name]\n\n" +
+                "Required:\n" +
+                "  - name   Name of the serialization file being read\n\n" +
+                "Examples:\n" +
+                "  read my_data";
+    }
+
+    public static String getSaveDoc() {
+        return "Updates the serialization file with the current schedule data. If no file was read in, the user will be prompted for a filename.\n\n" +
+                "Usage:\n" +
+                "  save [name]\n\n" +
+                "Required:\n" +
+                "  - name   Name of the serialization file being saved\n\n" +
+                "Examples:\n" +
+                "  save my_data";
+    }
+
+    public static String getModDoc() {
+        return "Modifies an existing task, card, or event by index. The arguments are the same as the ones used for creating a task, card, or event.\n\n" +
+                "Usage:\n" +
+                "  mod [task] [idx] [args]\n" +
+                "  mod [card] [idx] [args]\n" +
+                "  mod [event] [idx] [args]\n\n" +
+                "Notes:\n" +
+                "  - For 'event', the user cannot modify whether it is recurring (no 'true' or 'false' allowed).\n\n" +
+                "Examples:\n" +
+                "  mod task 1 \"new name\" 5.0 @ 05-09-2024\n" +
+                "  mod card 2 \"Business\" BLUE\n" +
+                "  mod event 3 @ 9-11 \"Meeting\"";
+    }
+
+    public static String getDeleteDoc() {
+        return "Deletes one or more tasks, cards, or events by index.\n\n" +
+                "Usage:\n" +
+                "  delete [task] [idx] [idx] ...\n" +
+                "  delete [card] [idx] [idx] ...\n" +
+                "  delete [event] [idx] [idx] ...\n\n" +
+                "Examples:\n" +
+                "  delete task 1 2 3\n" +
+                "  delete card 4 5\n" +
+                "  delete event 6";
+    }
 }
