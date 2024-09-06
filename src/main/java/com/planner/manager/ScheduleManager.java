@@ -108,6 +108,8 @@ public class ScheduleManager {
             recurringEvents.add(new ArrayList<>());
 
         eventId = 0;
+        taskId = 0;
+        cardId = 0;
 
         //processSettingsCfg(filename);
         //processJBinFile("data/week.jbin");
@@ -320,10 +322,13 @@ public class ScheduleManager {
      * @return The new card added
      */
     public Card addCard(String title, Card.Color color) {
-        Card card = new Card(cards.size(), title, color);
+        Card card = new Card(cardId, title, color);
 
         cards.add(card);
         eventLog.reportCardAction(card, 0);
+
+        cardId++;
+
         return card;
     }
 
@@ -337,10 +342,12 @@ public class ScheduleManager {
      * @return The new task added
      */
     public Task addTask(String name, double hours, Calendar due, Card card) {
-        Task task = new Task(taskManager.size() + 1, name, hours, due, card);
+        Task task = new Task(taskId, name, hours, due, card);
         // todo check whether task is past due (if so, add to archive list)
         //  will need to add to taskMap
         taskManager.add(task);
+        taskId++;
+
         return task;
     }
 
@@ -432,6 +439,75 @@ public class ScheduleManager {
         }
 
         return event;
+    }
+
+    public boolean deleteTask(int id) {
+        Task task;
+
+        if (taskMap.containsKey(id)) {
+            task = taskMap.get(id);
+        } else {
+            return false;
+        }
+
+        boolean taskRemoved = taskManager.remove(task);
+
+        if (!taskRemoved) {
+            taskRemoved = archivedTasks.remove(task);
+        }
+
+        return taskRemoved;
+    }
+
+    public boolean deleteCard(int id) {
+        for (int i = 0; i < cards.size(); i++) {
+            if (cards.get(i).getId() == id) {
+                Card card = cards.get(i);
+
+                cards.remove(i);
+
+                removeTasksWithCard(card);
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean deleteEvent(int id) {
+        for (int i = 0; i < indivEvents.size(); i++) {
+            if (indivEvents.get(i).getId() == id) {
+                indivEvents.remove(i);
+                return true;
+            }
+        }
+
+        for (List<Event> events : recurringEvents)
+        {
+            for (int i = 0; i < events.size(); i++) {
+                if (events.get(i).getId() == id) {
+                    recurringEvents.remove(i);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private void removeTasksWithCard(Card card) {
+        taskManager.forEach(task -> {
+            if (task.getCard().getId() == card.getId()) {
+                task.setCard(null);
+            }
+        });
+
+        archivedTasks.forEach(task -> {
+            if (task.getCard().getId() == card.getId()) {
+                task.setCard(null);
+            }
+        });
     }
 
     private Event findEvent(int id)
