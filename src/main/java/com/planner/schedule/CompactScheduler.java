@@ -62,7 +62,7 @@ public class CompactScheduler implements Scheduler {
         PriorityQueue<Task> incomplete = new PriorityQueue<>();
         int numErrors = errorCount;
         while ((!taskManager.isEmpty() && day.hasSpareHours()) ||
-                (!taskManager.isEmpty() && taskManager.peek().getDueDate().equals(day.getDate()))) {
+                (!taskManager.isEmpty() && Time.doDatesMatch(taskManager.peek().getDueDate(), day.getDate()))) {
             // gets first task from heap and finds max possible hours available
             Task task = taskManager.remove();
             double maxHours = getMaxHours(day, task, date);

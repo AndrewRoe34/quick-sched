@@ -483,10 +483,8 @@ public class ScheduleManager {
 
         // need to archive tasks that are 'past due' (this is to handle edge case where we started at 11PM, and now it's 1AM)
         Task head = taskManager.peek();
-        // note: while incredibly unlikely, if the user let the program run for a month nonstop, it would result in some archived tasks being scheduled
-        // the scheduler assumes it is being given valid data to schedule (due today or later)
-        while (head != null && head.getDueDate().compareTo(scheduleTime) < 0
-                && head.getDueDate().get(Calendar.DAY_OF_MONTH) != scheduleTime.get(Calendar.DAY_OF_MONTH)) {
+        while (head != null && !Time.doDatesMatch(head.getDueDate(), scheduleTime)
+                && head.getDueDate().compareTo(scheduleTime) < 0) {
             archivedTasks.add(taskManager.remove());
         }
 
@@ -504,8 +502,7 @@ public class ScheduleManager {
             while (eventIdx < indivEvents.size()) {
                 Calendar eventDate = indivEvents.get(eventIdx).getTimeStamp().getStart();
                 Calendar dayDate = currDay.getDate();
-                if (eventDate.get(Calendar.YEAR) == dayDate.get(Calendar.YEAR) && eventDate.get(Calendar.MONTH) == dayDate.get(Calendar.MONTH)
-                        && eventDate.get(Calendar.DAY_OF_MONTH) == dayDate.get(Calendar.DAY_OF_MONTH)) {
+                if (Time.doDatesMatch(eventDate, dayDate)) {
                     currDay.addEvent(indivEvents.get(eventIdx));
                     eventIdx++;
                 } else break;

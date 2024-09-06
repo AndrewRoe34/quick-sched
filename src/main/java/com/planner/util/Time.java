@@ -69,6 +69,11 @@ public class Time {
         return curr;
     }
 
+    public static boolean doDatesMatch(Calendar date1, Calendar date2) {
+        return date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR) && date1.get(Calendar.MONTH) == date2.get(Calendar.MONTH)
+                && date1.get(Calendar.DAY_OF_MONTH) == date2.get(Calendar.DAY_OF_MONTH);
+    }
+
     /**
      * Determines the closest available Calendar instance within a quarter of an hour (above or below)
      *
