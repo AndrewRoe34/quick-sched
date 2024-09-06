@@ -278,14 +278,21 @@ public class ScheduleManager {
      * @param color color for event classification
      * @param timeStamp event duration
      * @param recurring whether the event occurs only once or not
-     * @param days days of event occurrence, if recurring
+     * @param dates days of event occurrence, if recurring
      * @return newly generated Event
      */
     public Event addEvent(String name, Card.Color color, Time.TimeStamp timeStamp,
-                          boolean recurring, Event.DayOfWeek[] days) {
+                          boolean recurring, List<Calendar> dates) {
         Event e;
 
         if (recurring) {
+            Event.DayOfWeek[] days = new Event.DayOfWeek[dates.size()];
+            Event.DayOfWeek[] dayOfWeekValues = Event.DayOfWeek.values();
+
+            for (int i = 0; i < dates.size(); i++) {
+                days[i] = dayOfWeekValues[dates.get(i).get(Calendar.DAY_OF_WEEK) - 1];
+            }
+
             e = new Event(eventId, name, color, timeStamp, days);
             Event.DayOfWeek[] eventDays = e.getDays();
 
@@ -293,7 +300,7 @@ public class ScheduleManager {
                 recurringEvents.get(eventDays[i].ordinal()).add(e);
             }
         } else {
-            if (days != null) throw new IllegalArgumentException("Event is non-recurring but has recurrent days");
+            if (dates != null) throw new IllegalArgumentException("Event is non-recurring but has recurrent days");
             e = new Event(eventId, name, color, timeStamp);
             indivEvents.add(e);
         }
@@ -392,7 +399,7 @@ public class ScheduleManager {
     }
 
     public Event modEvent(int id, String name, Card.Color color, Time.TimeStamp timeStamp,
-                          boolean willBeRecurring, Event.DayOfWeek[] days)
+                          List<Calendar> dates)
     {
         Event event = findEvent(id);
 
@@ -400,7 +407,9 @@ public class ScheduleManager {
             return null;
         }
 
-        boolean wasRecurring = event.isRecurring();
+        if (dates != null && !event.isRecurring()) {
+            throw new IllegalArgumentException("Error: Individual event can't be assigned to multiple days");
+        }
 
         if (name != null) {
             event.setName(name);
@@ -411,33 +420,18 @@ public class ScheduleManager {
         if (timeStamp != null) {
             event.setTimeStamp(timeStamp);
         }
+        if (dates != null) {
+            Event.DayOfWeek[] days = new Event.DayOfWeek[dates.size()];
+            Event.DayOfWeek[] dayOfWeekValues = Event.DayOfWeek.values();
 
-        if (wasRecurring == willBeRecurring && willBeRecurring) {
-            if (days != null) {
-                event.setDays(days);
+            for (int i = 0; i < dates.size(); i++) {
+                days[i] = dayOfWeekValues[dates.get(i).get(Calendar.DAY_OF_WEEK) - 1];
             }
-        } else if (wasRecurring != willBeRecurring && willBeRecurring) {
-            event.setRecurring(true);
+
             event.setDays(days);
-            Event.DayOfWeek[] eventDays = event.getDays();
-
-            indivEvents.remove(event);
-
-            for (Event.DayOfWeek eventDay : eventDays) {
-                recurringEvents.get(eventDay.ordinal()).add(event);
-            }
-        } else if (wasRecurring != willBeRecurring && !willBeRecurring) {
-            Event.DayOfWeek[] eventDays = event.getDays();
-            event.setRecurring(false);
-
-            indivEvents.add(event);
-
-            for (Event.DayOfWeek eventDay : eventDays) {
-                recurringEvents.get(eventDay.ordinal()).remove(event);
-            }
         }
 
-        return null;
+        return event;
     }
 
     private Event findEvent(int id)
@@ -655,35 +649,15 @@ public class ScheduleManager {
         end.set(Calendar.HOUR, end.get(Calendar.HOUR) + 1);
         Time.TimeStamp timeStamp = new Time.TimeStamp(start, end);
 
+        List<Calendar> dates = new ArrayList<Calendar>();
+        Calendar date1 = Calendar.getInstance();
+        Calendar date2 = Calendar.getInstance();
+        date2.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY);
+        dates.add(date1);
+        dates.add(date2);
         Event.DayOfWeek[] eventDays = new Event.DayOfWeek[]{Event.DayOfWeek.FRI, Event.DayOfWeek.SUN};
 
-        sm.addEvent("holiday", Card.Color.BLUE, timeStamp, false, null);
-        sm.addEvent("concert", Card.Color.BLUE, timeStamp, false, null);
-        sm.addEvent("party", Card.Color.BLUE, timeStamp, true, eventDays);
 
-        sm.modEvent(0, "birthday", Card.Color.YELLOW, timeStamp, false, null);
-        System.out.println(sm.getIndivEvents().get(0).getName());
-        System.out.println(sm.getIndivEvents().get(0).getColor());
-
-        System.out.println("================================");
-
-        // Error, because recurring events can't have days as a null value
-        // sm.modEvent(1, null, null, null, true, null);
-        System.out.println(sm.getIndivEvents().size());
-
-        sm.modEvent(1, null, null, null, true, eventDays);
-        System.out.println(sm.getIndivEvents().size());
-        System.out.println(sm.getRecurEvents().get(5).get(0).getName());
-        System.out.println(sm.getRecurEvents().get(5).get(0).getColor());
-        System.out.println(sm.getRecurEvents().get(5).get(0).getTimeStamp());
-        System.out.println(sm.getRecurEvents().get(5).get(0).isRecurring());
-        System.out.println(Arrays.toString(sm.getRecurEvents().get(5).get(0).getDays()));
-
-        System.out.println("================================");
-
-        sm.modEvent(1, null, null, null, false, null);
-        sm.modEvent(2, null, null, null, false, null);
-        System.out.println(sm.getRecurEvents().get(0).size());
-        System.out.println(sm.getIndivEvents().size());
+        sm.addEvent("holiday", Card.Color.BLUE, timeStamp, true, dates);
     }
 }
