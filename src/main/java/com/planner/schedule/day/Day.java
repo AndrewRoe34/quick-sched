@@ -183,7 +183,11 @@ public class Day {
         } else {
             temp = this.date;
         }
+
         Calendar startTime = Time.getFirstAvailableTimeInDay(taskTimeStamps, eventTimeStamps, userConfig, temp, isToday);
+        startTime.set(Calendar.SECOND, 0);
+        startTime.set(Calendar.MILLISECOND, 0);
+
         Calendar endTime = (Calendar) startTime.clone();
         endTime.add(Calendar.HOUR_OF_DAY, taskHours);
         endTime.add(Calendar.MINUTE, taskMin);
@@ -230,6 +234,9 @@ public class Day {
         int taskHours = (int) hours;
         int taskMin = hours % 1 == 0.5 ? 30 : 0;
 
+        startTime.set(Calendar.SECOND, 0);
+        startTime.set(Calendar.MILLISECOND, 0);
+
         Calendar endTime = (Calendar) startTime.clone();
         endTime.add(Calendar.HOUR_OF_DAY, taskHours);
         endTime.add(Calendar.MINUTE, taskMin);
@@ -268,9 +275,13 @@ public class Day {
             Calendar start = (Calendar) date.clone();
             start.set(Calendar.HOUR_OF_DAY, event.getTimeStamp().getStartHour());
             start.set(Calendar.MINUTE, event.getTimeStamp().getStartMin());
-            Calendar end = (Calendar) date.clone();
+            start.set(Calendar.SECOND, 0);
+            start.set(Calendar.MILLISECOND, 0);
+
+            Calendar end = (Calendar) start.clone();
             end.set(Calendar.HOUR_OF_DAY, event.getTimeStamp().getEndHour());
             end.set(Calendar.MINUTE, event.getTimeStamp().getEndMin());
+
             event = new Event(event.getId(), event.getName(), event.getColor(), new TimeStamp(start, end), event.getDays());
         }
         int idx = 0;
