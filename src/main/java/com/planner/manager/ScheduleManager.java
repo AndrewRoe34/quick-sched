@@ -446,6 +446,7 @@ public class ScheduleManager {
 
         if (taskMap.containsKey(id)) {
             task = taskMap.get(id);
+            taskMap.remove(id);
         } else {
             return false;
         }
@@ -483,17 +484,19 @@ public class ScheduleManager {
             }
         }
 
+        boolean eventRemoved = false;
+
         for (List<Event> events : recurringEvents)
         {
             for (int i = 0; i < events.size(); i++) {
                 if (events.get(i).getId() == id) {
                     recurringEvents.remove(i);
-                    return true;
+                    eventRemoved = true;
                 }
             }
         }
 
-        return false;
+        return eventRemoved;
     }
 
     private void removeTasksWithCard(Card card) {
