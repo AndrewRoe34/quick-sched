@@ -91,7 +91,7 @@ public class ScheduleManager {
 //            throw new IllegalArgumentException();
 //        }
 
-        scheduler = Scheduler.getInstance(userConfig, eventLog, userConfig.getSchedulingAlgorithm());
+        scheduler = Scheduler.getInstance(userConfig, eventLog, 1);
         // in situations where ScheduleManager is run multiple times after updates to config, this ensures options are set up properly
         scheduler.updateConfig(userConfig);
 

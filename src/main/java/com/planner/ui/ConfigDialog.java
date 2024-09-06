@@ -10,14 +10,14 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Scanner;
 
-public class ConfigUI {
+public class ConfigDialog {
 
     private boolean writeToFile;
     private UserConfig userConfig;
     private String configTable;
     private final Scanner scanner;
 
-    public ConfigUI() {
+    public ConfigDialog() {
         try {
             userConfig = JsonHandler.readUserConfig(Files.readString(Paths.get("settings/profile.json")));
         } catch (IOException e) {

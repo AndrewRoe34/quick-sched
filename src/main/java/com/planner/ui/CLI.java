@@ -122,8 +122,8 @@ public class CLI {
                 break;
             case "config":
                 if (tokens.length == 1) {
-                    ConfigUI configUI = new ConfigUI();
-                    configUI.setupAndDisplayPage();
+                    ConfigDialog configDialog = new ConfigDialog();
+                    configDialog.setupAndDisplayPage();
                 } else {
                     throw new IllegalArgumentException("'config' has no args.");
                 }
