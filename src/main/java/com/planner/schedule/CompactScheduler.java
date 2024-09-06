@@ -125,9 +125,7 @@ public class CompactScheduler implements Scheduler {
     private int getStartingHour(Day day, Calendar date) {
         int startingHour = date.get(Calendar.HOUR_OF_DAY);
         isToday = false;
-        if (date.get(Calendar.DATE) == day.getDate().get(Calendar.DATE)
-                && date.get(Calendar.MONTH) == day.getDate().get(Calendar.MONTH)
-                && date.get(Calendar.YEAR) == day.getDate().get(Calendar.YEAR)) {
+        if (Time.doDatesMatch(date, day.getDate())) {
             startingHour = Math.max(userConfig.getDailyHoursRange()[0], startingHour);
             isToday = true;
         } else {
