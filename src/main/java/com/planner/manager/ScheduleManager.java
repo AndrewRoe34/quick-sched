@@ -490,7 +490,7 @@ public class ScheduleManager {
         {
             for (int i = 0; i < events.size(); i++) {
                 if (events.get(i).getId() == id) {
-                    recurringEvents.remove(i);
+                    events.remove(i);
                     eventRemoved = true;
                 }
             }
