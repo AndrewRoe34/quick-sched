@@ -237,6 +237,10 @@ public class Time {
         private final String strStamp;
 
         public TimeStamp(Calendar start, Calendar end) {
+            start.set(Calendar.SECOND, 0);
+            start.set(Calendar.MILLISECOND, 0);
+            end.set(Calendar.SECOND, 0);
+            end.set(Calendar.MILLISECOND, 0);
             if (start.compareTo(end) >= 0) throw new IllegalArgumentException("Start time is greater than or equal to end time");
             this.start = start;
             this.end = end;
