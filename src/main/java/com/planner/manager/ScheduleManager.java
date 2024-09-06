@@ -6,12 +6,13 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 
+import com.planner.io.IOProcessing;
 import com.planner.io.SpreadsheetIO;
 import com.planner.models.*;
 import com.planner.io.GoogleCalendarIO;
 import com.planner.schedule.Scheduler;
 import com.planner.schedule.day.Day;
-import com.planner.util.SessionLog;
+import com.planner.util.ReportLog;
 import com.planner.ui.tables.TableFormatter;
 import com.planner.util.EventLog;
 import com.planner.util.JsonHandler;
@@ -594,14 +595,15 @@ public class ScheduleManager {
      * @return Session log as a String
      */
     public String buildReportStr() {
-        return SessionLog.buildSessionLog(this);
+        return ReportLog.buildReportLog(this);
     }
 
     /**
      * Shuts down the system
      */
-    public void quit() {
+    public void quit() throws IOException {
         eventLog.reportExitSession();
+        IOProcessing.writeSysLogToFile(eventLog.toString());
         System.exit(0);
     }
 

@@ -6,9 +6,9 @@ import com.planner.ui.tables.TableFormatter;
 
 import java.util.Arrays;
 
-public class SessionLog {
+public class ReportLog {
 
-    public static String buildSessionLog(ScheduleManager scheduleManager) {
+    public static String buildReportLog(ScheduleManager scheduleManager) {
         StringBuilder sb = new StringBuilder();
         UserConfig userConfig = scheduleManager.getUserConfig();
         sb.append("Configuration Details:\n" + "    - Config File: profile.json\n" + "    - Mode: Production\n" + "    - Range: ")

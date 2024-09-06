@@ -27,7 +27,6 @@ public class EventLog {
      * Primary private constructor for EventLog
      */
     private EventLog() {
-//        output = new PrintStream("logs/system.log");
         sb.append(new SimpleDateFormat("[dd-MM-yyyy]").format(Calendar.getInstance().getTime()))
                 .append(" Log of all activities from current session: \n\n");
     }
@@ -410,7 +409,7 @@ public class EventLog {
         sb.append(", SCHEDULE_ALGO=").append(userConfig.getSchedulingAlgorithm());
         sb.append(", MIN_HOURS=").append(userConfig.getMinHours());
         sb.append(", OPTIMIZE_DAY=").append(userConfig.isOptimizeDay());
-        sb.append(", DEFAULT_AT_START=").append(userConfig.isDefaultAtStart());
+        sb.append(", DEFAULT_AT_START=").append(userConfig.isDefaultAtStart()).append("\n");
     }
 
     /**
