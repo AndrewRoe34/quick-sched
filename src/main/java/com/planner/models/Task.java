@@ -120,6 +120,10 @@ public class Task implements Comparable<Task> {
         if (dueDate == null) {
             throw new IllegalArgumentException("Task due date cannot be null.");
         }
+        dueDate.set(Calendar.HOUR_OF_DAY, 0);
+        dueDate.set(Calendar.MINUTE, 0);
+        dueDate.set(Calendar.SECOND, 0);
+        dueDate.set(Calendar.MILLISECOND, 0);
         this.dueDate = dueDate;
     }
 

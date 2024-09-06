@@ -69,14 +69,17 @@ public class CompactScheduler implements Scheduler {
             // status of task creation
             boolean validTaskStatus = day.addPlainSubTask(task, maxHours, userConfig, date, isToday);
             // adds task to relevant completion heap
-            if (task.getDueDate().equals(day.getDate()) || task.getSubTotalHoursRemaining() == 0) complete.add(task);
+            if (Time.doDatesMatch(task.getDueDate(), day.getDate()) || task.getSubTotalHoursRemaining() == 0) complete.add(task);
             else incomplete.add(task);
             // reports scheduling action
             eventLog.reportDayAction(day, task, validTaskStatus);
             // updates number of errors
             numErrors += validTaskStatus ? 0 : 1;
 
-            if (!validTaskStatus && Time.differenceOfDays(task.getDueDate(), day.getDate()) > 0) break;
+            if (!validTaskStatus && !Time.doDatesMatch(task.getDueDate(), day.getDate())
+                    && Time.differenceOfDays(task.getDueDate(), day.getDate()) > 0) {
+                break;
+            }
         }
         while (!incomplete.isEmpty()) {
             taskManager.add(incomplete.remove());
@@ -92,7 +95,7 @@ public class CompactScheduler implements Scheduler {
         if (userConfig.isDefaultAtStart()) startingHour = userConfig.getDailyHoursRange()[0];
 
         double maxHours = 0.0;
-        if (task.getDueDate().equals(day.getDate())) {
+        if (Time.doDatesMatch(task.getDueDate(), day.getDate())) {
             if (userConfig.isFitDay()) {
                 double remainingHours = 24.0 - (startingHour + day.getHoursFilled());
                 maxHours = Math.min(remainingHours, task.getSubTotalHoursRemaining());
