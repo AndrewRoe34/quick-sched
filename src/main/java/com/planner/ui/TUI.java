@@ -24,7 +24,7 @@ public class TUI {
                 "#############################################################\n");
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println("Application Version: 0.6.0");
+        System.out.println("Application Version: 0.7.0");
         sleep(1000);
         System.out.println("Current Date and Time: " + sdf.format(Calendar.getInstance().getTime()));
 
