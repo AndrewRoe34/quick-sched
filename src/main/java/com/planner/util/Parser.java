@@ -128,24 +128,57 @@ public class Parser {
 
         String dateString = args[0];
         Calendar date = parseDayDate(dateString);
-
+        HashMap<Integer, Time.TimeStamp> taskTimeStampMap = new HashMap<>();
+        List<Integer> eventIds = new ArrayList<>();
 
         for (int i = 1; i < args.length; i++) {
+            if (args[i].charAt(0) == 'T') {
+                int id = -1;
+                try {
+                    id = Integer.parseInt(args[i].split("T")[1]);
+                }
+                catch (Exception e) {
+                    throw new IllegalArgumentException("Error: T most be followed by task ID number");
+                }
 
+                Calendar[] parsedTimestamp = parseTimeStamp(args[i + 1]);
+                Time.TimeStamp timestamp = new Time.TimeStamp(parsedTimestamp[0], parsedTimestamp[1]) ;
+
+                taskTimeStampMap.put(id, timestamp);
+                i++;
+            } else if (args[i].charAt(0) == 'E') {
+                if (i != args.length - 1 && !( args[i + 1].charAt(0) == 'T' || args[i + 1].charAt(0) == 'E' )) {
+                    throw new IllegalArgumentException("Error: Events most be followed by tasks or events");
+                }
+
+                int id = -1;
+                try {
+                    id = Integer.parseInt(args[i].split("E")[1]);
+                }
+                catch (Exception e) {
+                    throw new IllegalArgumentException("Error: E most be followed by event ID number");
+                }
+
+                eventIds.add(id);
+            } else {
+                throw new IllegalArgumentException("Error: Days can only include tasks and events");
+            }
         }
 
-        return null;
+        return new DayInfo(date, taskTimeStampMap, eventIds);
     }
 
     private static Calendar parseDayDate(String dateString) {
         // default: dd-mm-yyyy, non-default: yyyy-mm-dd
         // reverse string if it's a non default format
+        String[] dateSplitted = dateString.split("-");
+        if (dateSplitted.length != 3) {
+            throw new IllegalArgumentException("Error: Day date must be in this format dd-MM-yyyy or yyyy-MM-dd");
+        }
+
         boolean defaultFormat = dateString.substring(0, 3).contains("-");
+
         if (!defaultFormat) {
-            String[] dateSplitted = dateString.split("-");
-            if (dateSplitted.length != 3) {
-                throw new IllegalArgumentException("Error: Must be in this format dd-MM-yyyy or yyyy-MM-dd");
-            }
             dateString = dateSplitted[2] + "-" + dateSplitted[1] + "-" + dateSplitted[0];
         }
 
@@ -540,9 +573,9 @@ public class Parser {
     }
 
     public static class DayInfo {
-        private Calendar date;
-        private HashMap<Integer, Time.TimeStamp> taskTimeStampsMap;
-        private List<Integer> eventIds;
+        private final Calendar date;
+        private final HashMap<Integer, Time.TimeStamp> taskTimeStampsMap;
+        private final List<Integer> eventIds;
 
         public DayInfo(Calendar date, HashMap<Integer, Time.TimeStamp> taskTimeStampsMap, List<Integer> eventIds) {
             this.date = date;
@@ -573,5 +606,15 @@ public class Parser {
         // Calendar date5 = Parser.parseDayDate("01-09-200");
         // Calendar date4 = Parser.parseDayDate("01--09-20044");
         // Calendar date4 = Parser.parseDayDate("01-09--2004");
+
+        Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "T1", "1-2am", "E1"});
+        Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "E2", "T1", "1-2am", "E1"});
+
+        // Error
+        // Parser.parseDay(new String[]{"10-09-2004", "T0", "T1", "E0", "T2", "1-2am", "E1"});
+        // Parser.parseDay(new String[]{"10-09-2004", "T0", "12--2am", "E0", "T2", "1-2am", "E1"});
+        // Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "10-12pm", "T1", "1-2am", "E1"});
+        // Parser.parseDay(new String[]{"T0", "10-12pm", "E0", "10-12pm", "T1", "1-2am", "E1"});
+        // Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "10-11pm", "E0", "T1", "1-2am", "E1"});
     }
 }
