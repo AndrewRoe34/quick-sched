@@ -156,6 +156,15 @@ public class Parser {
                 }
 
                 Calendar[] parsedTimestamp = parseTimeStamp(args[i + 1]);
+
+                parsedTimestamp[0].set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+                parsedTimestamp[0].set(Calendar.MONTH, date.get(Calendar.MONTH));
+                parsedTimestamp[0].set(Calendar.YEAR, date.get(Calendar.YEAR));
+
+                parsedTimestamp[1].set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+                parsedTimestamp[1].set(Calendar.MONTH, date.get(Calendar.MONTH));
+                parsedTimestamp[1].set(Calendar.YEAR, date.get(Calendar.YEAR));
+
                 Time.TimeStamp timestamp = new Time.TimeStamp(parsedTimestamp[0], parsedTimestamp[1]) ;
 
                 taskTimeStampMap.put(id, timestamp);
