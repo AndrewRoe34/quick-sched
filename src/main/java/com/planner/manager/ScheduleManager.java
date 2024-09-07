@@ -36,14 +36,12 @@ public class ScheduleManager {
     private PriorityQueue<Task> taskManager;
     /** Mapping of all Tasks via their unique IDs */
     private Map<Integer, Task> taskMap;
-    /** Singleton for ScheduleManager */
-    private static ScheduleManager singleton;
     /** Performs all scheduling operations for each day */
     private Scheduler scheduler;
     /** Holds all user settings for scheduling purposes */
-    private static UserConfig userConfig;
+    private UserConfig userConfig;
     /** Logs all actions performed by user */
-    private static EventLog eventLog;
+    private EventLog eventLog;
     /** Stores custom hours for future days */
     private Map<Integer, Integer> customHours;
     /** Total count for the number of errors that occurred in schedule generation */
@@ -73,7 +71,7 @@ public class ScheduleManager {
      * Private constructor of ScheduleManager
      * Initially performs task processing as well as schedule generation
      */
-    private ScheduleManager() {
+    public ScheduleManager() {
         try {
             eventLog = EventLog.getEventLog();
         } catch (FileNotFoundException e) {
@@ -114,18 +112,6 @@ public class ScheduleManager {
         //processSettingsCfg(filename);
         //processJBinFile("data/week.jbin");
 
-    }
-
-    /**
-     * Gets a singleton of ScheduleManager
-     *
-     * @return singleton of ScheduleManager
-     */
-    public static ScheduleManager getScheduleManager() {
-        if(singleton == null) {
-            singleton = new ScheduleManager();
-        }
-        return singleton;
     }
 
     /**
@@ -346,6 +332,7 @@ public class ScheduleManager {
         // todo check whether task is past due (if so, add to archive list)
         //  will need to add to taskMap
         taskManager.add(task);
+        taskMap.put(taskId, task);
         taskId++;
 
         return task;
@@ -500,17 +487,17 @@ public class ScheduleManager {
     }
 
     private void removeTasksWithCard(Card card) {
-        taskManager.forEach(task -> {
-            if (task.getCard().getId() == card.getId()) {
+        for (Task task : taskManager) {
+            if (task.getCard() != null && task.getCard().getId() == card.getId()) {
                 task.setCard(null);
             }
-        });
+        }
 
-        archivedTasks.forEach(task -> {
-            if (task.getCard().getId() == card.getId()) {
+        for (Task task : archivedTasks) {
+            if (task.getCard() != null && task.getCard().getId() == card.getId()) {
                 task.setCard(null);
             }
-        });
+        }
     }
 
     private Event findEvent(int id)
@@ -719,7 +706,7 @@ public class ScheduleManager {
     }
 
     public static void main(String[] args) {
-        ScheduleManager sm = getScheduleManager();
+        ScheduleManager sm = new ScheduleManager();
         Calendar start = Calendar.getInstance();
         Calendar end = Calendar.getInstance();
         end.set(Calendar.HOUR, end.get(Calendar.HOUR) + 1);
