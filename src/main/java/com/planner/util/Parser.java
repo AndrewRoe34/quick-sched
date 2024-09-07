@@ -127,8 +127,22 @@ public class Parser {
         }
 
         String dateString = args[0];
-        Calendar date = parseDayDate(dateString);
+
+        Calendar date = Time.getFormattedCalendarInstance(0);
+        Date due = null;
+        try {
+            due = DAY_MONTH_YEAR.parse(dateString);
+        } catch (ParseException e) {
+            try {
+                due = YEAR_MONTH_DAY.parse(dateString);
+            } catch (ParseException ex) {
+                throw new IllegalArgumentException("Invalid date format provided.");
+            }
+        }
+        date.setTime(due);
+
         HashMap<Integer, Time.TimeStamp> taskTimeStampMap = new HashMap<>();
+
         List<Integer> eventIds = new ArrayList<>();
 
         for (int i = 1; i < args.length; i++) {
@@ -166,95 +180,6 @@ public class Parser {
         }
 
         return new DayInfo(date, taskTimeStampMap, eventIds);
-    }
-
-    private static Calendar parseDayDate(String dateString) {
-        // default: dd-mm-yyyy, non-default: yyyy-mm-dd
-        // reverse string if it's a non default format
-        String[] dateSplitted = dateString.split("-");
-        if (dateSplitted.length != 3) {
-            throw new IllegalArgumentException("Error: Day date must be in this format dd-MM-yyyy or yyyy-MM-dd");
-        }
-
-        boolean defaultFormat = dateString.substring(0, 3).contains("-");
-
-        if (!defaultFormat) {
-            dateString = dateSplitted[2] + "-" + dateSplitted[1] + "-" + dateSplitted[0];
-        }
-
-        boolean yearAdded = false;
-        boolean monthAdded = false;
-        boolean dayAdded = false;
-
-        int year = -1;
-        int month = -1;
-        int day = -1;
-
-        for (int i = 0; i < dateString.length(); i++) {
-            switch(dateString.charAt(i)) {
-                case '-':
-                    throw new IllegalArgumentException("Error: Can't duplicate '-'");
-                case '0':
-                case '1':
-                case '2':
-                case '3':
-                case '4':
-                case '5':
-                case '6':
-                case '7':
-                case '8':
-                case '9':
-                    if (!dayAdded) {
-                        if (dateString.charAt(i + 1) >= '0' && dateString.charAt(i + 1) <= '9') {
-                            day = Integer.parseInt(dateString.substring(i, i + 2));
-                            dayAdded = true;
-                        } else {
-                            throw new IllegalArgumentException("Error: Day must be 2 digits");
-                        }
-
-                        if (dateString.charAt(i + 2) == '-') {
-                            i += 2;
-                        } else {
-                            throw new IllegalArgumentException("Error: Day must be followed by '-'");
-                        }
-                    } else if (dayAdded && !monthAdded) {
-                        if (dateString.charAt(i + 1) >= '0' && dateString.charAt(i + 1) <= '9') {
-                            month = Integer.parseInt(dateString.substring(i, i + 2));
-                            monthAdded = true;
-                        } else {
-                            throw new IllegalArgumentException("Error: Month must be 2 digits");
-                        }
-
-                        if (dateString.charAt(i + 2) == '-') {
-                            i += 2;
-                        } else {
-                            throw new IllegalArgumentException("Error: Month must be followed by '-'");
-                        }
-                    } else if (dayAdded && monthAdded && !yearAdded) {
-                        try {
-                            year = Integer.parseInt(dateString.substring(i, i + 4));
-                            i += 3;
-                        }
-                        catch (Exception e) {
-                            throw new IllegalArgumentException("Error: Year must be 4 digits");
-                        }
-
-                        if (!(i == dateString.length() - 1)) {
-                            throw new IllegalArgumentException("Error: Year can't be followed by any character");
-                        }
-                    }
-                    break;
-                default:
-                    throw new IllegalArgumentException("Error: Date can only be composed of digits and '-'");
-            }
-        }
-
-        Calendar date = Calendar.getInstance();
-        date.set(Calendar.DAY_OF_MONTH, day);
-        date.set(Calendar.MONTH, month - 1);
-        date.set(Calendar.YEAR, year);
-
-        return date;
     }
 
     public static void parseModTask(String[] args) {
@@ -592,20 +517,6 @@ public class Parser {
         String[] arr = {"task", "@", "03-09-2024", "+C0", "4.0", "\"finish ch12\""};
         TaskInfo ti = parseTask(arr);
         System.out.println(ti.getDue().getTime());
-
-        Calendar date1 = Parser.parseDayDate("10-09-2004");
-        System.out.println(date1.getTime());
-
-        Calendar date2 = Parser.parseDayDate("2004-09-10");
-        System.out.println(date2.getTime());
-
-        // Error
-        // Calendar date3 = Parser.parseDayDate("1-09-2004");
-        // Calendar date4 = Parser.parseDayDate("10-9-2004");
-        // Calendar date4 = Parser.parseDayDate("01-09-20044");
-        // Calendar date5 = Parser.parseDayDate("01-09-200");
-        // Calendar date4 = Parser.parseDayDate("01--09-20044");
-        // Calendar date4 = Parser.parseDayDate("01-09--2004");
 
         Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "T1", "1-2am", "E1"});
         Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "E2", "T1", "1-2am", "E1"});
