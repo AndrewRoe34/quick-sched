@@ -53,7 +53,7 @@ public class TUI {
                             "    - Minimum Task Duration: " + userConfig.getMinHours() + "\n"
             );
         } catch (IOException | InterruptedException e) {
-            throw new IllegalArgumentException("Could not properly set up config and system info for session");
+            throw new IllegalArgumentException("Could not properly set up config for session");
         }
 //        sleep(500);
 
