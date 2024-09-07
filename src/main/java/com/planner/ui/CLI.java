@@ -12,7 +12,7 @@ public class CLI {
     private ScheduleManager sm;
 
     public CLI() {
-        sm = ScheduleManager.getScheduleManager();
+        sm = new ScheduleManager();
     }
     /*
     List of supported commands:
