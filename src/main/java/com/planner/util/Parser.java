@@ -191,8 +191,51 @@ public class Parser {
         return new DayInfo(date, taskTimeStampMap, eventIds);
     }
 
-    public static void parseModTask(String[] args) {
+    public static TaskInfo parseModTask(String[] args) {
+        if (args.length < 4) {
+            throw new IllegalArgumentException("Invalid number of arguments provided for Task.");
+        }
+        int id = -1;
+        String name = null;
+        Calendar due = null;
+        double hours = -1;
+        int cardId = -1;
 
+        try {
+            id = Integer.parseInt(args[2]);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error: Third argument must be a task ID");
+        }
+
+        for (int i = 3; i < args.length; i++) {
+            if (args[i].charAt(0) == '"' && name == null) {
+                name = args[i];
+            } else if (args[i].charAt(0) == '+' && cardId == -1 && args[i].length() > 2
+                    && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
+                try {
+                    cardId = Integer.parseInt(args[i].substring(2));
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid card id provided.");
+                }
+                if (cardId < 0) {
+                    throw new IllegalArgumentException("Invalid card id provided, cannot be negative.");
+                }
+            } else if ("@".equals(args[i]) && due == null) {
+                if (i + 1 >= args.length) {
+                    throw new IllegalArgumentException("Due date not provided following '@'.");
+                }
+                i++;
+                due = parseDate(args[i]);
+            } else {
+                try {
+                    hours = Double.parseDouble(args[i]);
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid hours provided.");
+                }
+            }
+        }
+
+        return new TaskInfo(id, name, due, hours, cardId);
     }
 
     public static void parseModEvent(String[] args) {
