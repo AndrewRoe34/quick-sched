@@ -59,7 +59,7 @@ public class CLI {
         }
     }
 
-    private void exeCmd(String[] tokens) throws IOException { // todo will need to catch IllegalArgsException and print to console error
+    private void exeCmd(String[] tokens) throws IOException {
         switch (tokens[0].toLowerCase()) {
             case "clear":
                 if (tokens.length == 1) {
@@ -71,8 +71,12 @@ public class CLI {
             case "task":
                 if (tokens.length > 1) {
                     Parser.TaskInfo ti = Parser.parseTask(tokens);
-                    sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), null);
-                    // TODO
+                    Card c = null;
+                    if (ti.getCardId() != -1) {
+                        c = sm.getCardById(ti.getCardId());
+                        // todo not sure if we should cancel the task creation since card id could not be found?
+                    }
+                    sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), c);
                 } else {
                     System.out.println(sm.buildTaskStr());
                 }
@@ -137,8 +141,13 @@ public class CLI {
                 break;
             case "build":
                 if (tokens.length == 1) {
-                    sm.buildSchedule();
-                    System.out.println("Schedule built...");
+                    // check the number of active tasks
+                    if (sm.getNumActiveTasks() > 0) {
+                        sm.buildSchedule();
+                        System.out.println("Schedule built...");
+                    } else {
+                        System.out.println("No active Tasks to schedule");
+                    }
                 } else {
                     throw new IllegalArgumentException("'build' has no args.");
                 }

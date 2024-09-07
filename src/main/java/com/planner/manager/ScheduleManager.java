@@ -372,8 +372,7 @@ public class ScheduleManager {
         return task;
     }
 
-    public Card modCard(int id, String name, Card.Color colorId)
-    {
+    public Card modCard(int id, String name, Card.Color colorId) {
         Card card;
 
         if (id >= 0 && id < cards.size()) {
@@ -392,9 +391,7 @@ public class ScheduleManager {
         return card;
     }
 
-    public Event modEvent(int id, String name, Card.Color color, Time.TimeStamp timeStamp,
-                          List<Calendar> dates)
-    {
+    public Event modEvent(int id, String name, Card.Color color, Time.TimeStamp timeStamp, List<Calendar> dates) {
         Event event = findEvent(id);
 
         if (event == null) {
@@ -522,6 +519,23 @@ public class ScheduleManager {
         return null;
     }
 
+    public int getNumActiveTasks() {
+        return taskManager.size();
+    }
+
+    /**
+     * Gets the Card by its ID
+     *
+     * @param id ID of Card
+     * @return Card with matching ID
+     */
+    public Card getCardById(int id) {
+        for (Card c : cards) {
+            if (c.getId() == id) return c;
+        }
+        return null;
+    }
+
     /**
      * Gets a Task from the schedule
      *
@@ -552,6 +566,7 @@ public class ScheduleManager {
         while (head != null && !Time.doDatesMatch(head.getDueDate(), scheduleTime)
                 && head.getDueDate().compareTo(scheduleTime) < 0) {
             archivedTasks.add(taskManager.remove());
+            head = taskManager.peek();
         }
 
         int eventIdx = 0;
