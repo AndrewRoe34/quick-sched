@@ -18,12 +18,10 @@ public class TUI {
 
     private void sessionStartUp() throws InterruptedException {
         // Welcome and basic info
-        System.out.println(
-                "#############################################################\n" +
-                        "#         Welcome to the Simple Script Environment!         #\n" +
-                        "#                  Scheduling Made Simple                   #\n" +
-                        "#############################################################\n"
-        );
+        System.out.println("#############################################################\n" +
+                "#             Welcome to Agile Planner 0.7.0!              #\n" +
+                "#                  Scheduling Made Simple                   #\n" +
+                "#############################################################\n");
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("Application Version: 0.6.0");
