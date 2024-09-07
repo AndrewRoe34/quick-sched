@@ -4,10 +4,7 @@ import com.planner.models.Card;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class Parser {
 
@@ -124,8 +121,74 @@ public class Parser {
 
     }
 
-    public static void parseDay(String[] args) {
+    public static DayInfo parseDay(String[] args) {
+        if (args.length == 0) {
+            throw new IllegalArgumentException("Error: Must at least have a date");
+        }
 
+        String dateString = args[0];
+
+        Calendar date = Time.getFormattedCalendarInstance(0);
+        Date due = null;
+        try {
+            due = DAY_MONTH_YEAR.parse(dateString);
+        } catch (ParseException e) {
+            try {
+                due = YEAR_MONTH_DAY.parse(dateString);
+            } catch (ParseException ex) {
+                throw new IllegalArgumentException("Invalid date format provided.");
+            }
+        }
+        date.setTime(due);
+
+        HashMap<Integer, Time.TimeStamp> taskTimeStampMap = new HashMap<>();
+
+        List<Integer> eventIds = new ArrayList<>();
+
+        for (int i = 1; i < args.length; i++) {
+            if (args[i].charAt(0) == 'T') {
+                int id = -1;
+                try {
+                    id = Integer.parseInt(args[i].split("T")[1]);
+                }
+                catch (Exception e) {
+                    throw new IllegalArgumentException("Error: T most be followed by task ID number");
+                }
+
+                Calendar[] parsedTimestamp = parseTimeStamp(args[i + 1]);
+
+                parsedTimestamp[0].set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+                parsedTimestamp[0].set(Calendar.MONTH, date.get(Calendar.MONTH));
+                parsedTimestamp[0].set(Calendar.YEAR, date.get(Calendar.YEAR));
+
+                parsedTimestamp[1].set(Calendar.DAY_OF_MONTH, date.get(Calendar.DAY_OF_MONTH));
+                parsedTimestamp[1].set(Calendar.MONTH, date.get(Calendar.MONTH));
+                parsedTimestamp[1].set(Calendar.YEAR, date.get(Calendar.YEAR));
+
+                Time.TimeStamp timestamp = new Time.TimeStamp(parsedTimestamp[0], parsedTimestamp[1]) ;
+
+                taskTimeStampMap.put(id, timestamp);
+                i++;
+            } else if (args[i].charAt(0) == 'E') {
+                if (i != args.length - 1 && !( args[i + 1].charAt(0) == 'T' || args[i + 1].charAt(0) == 'E' )) {
+                    throw new IllegalArgumentException("Error: Events most be followed by tasks or events");
+                }
+
+                int id = -1;
+                try {
+                    id = Integer.parseInt(args[i].split("E")[1]);
+                }
+                catch (Exception e) {
+                    throw new IllegalArgumentException("Error: E most be followed by event ID number");
+                }
+
+                eventIds.add(id);
+            } else {
+                throw new IllegalArgumentException("Error: Days can only include tasks and events");
+            }
+        }
+
+        return new DayInfo(date, taskTimeStampMap, eventIds);
     }
 
     public static void parseModTask(String[] args) {
@@ -443,9 +506,35 @@ public class Parser {
         }
     }
 
+    public static class DayInfo {
+        private final Calendar date;
+        private final HashMap<Integer, Time.TimeStamp> taskTimeStampsMap;
+        private final List<Integer> eventIds;
+
+        public DayInfo(Calendar date, HashMap<Integer, Time.TimeStamp> taskTimeStampsMap, List<Integer> eventIds) {
+            this.date = date;
+            this.taskTimeStampsMap = taskTimeStampsMap;
+            this.eventIds = eventIds;
+        }
+
+        public Calendar getDate() { return date; }
+        public HashMap<Integer, Time.TimeStamp> getTaskTimeStampsMap() { return taskTimeStampsMap; }
+        public List<Integer> getEventIds() { return eventIds; }
+    }
+
     public static void main(String[] args) {
         String[] arr = {"task", "@", "03-09-2024", "+C0", "4.0", "\"finish ch12\""};
         TaskInfo ti = parseTask(arr);
         System.out.println(ti.getDue().getTime());
+
+        Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "T1", "1-2am", "E1"});
+        Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "E2", "T1", "1-2am", "E1"});
+
+        // Error
+        // Parser.parseDay(new String[]{"10-09-2004", "T0", "T1", "E0", "T2", "1-2am", "E1"});
+        // Parser.parseDay(new String[]{"10-09-2004", "T0", "12--2am", "E0", "T2", "1-2am", "E1"});
+        // Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "10-12pm", "T1", "1-2am", "E1"});
+        // Parser.parseDay(new String[]{"T0", "10-12pm", "E0", "10-12pm", "T1", "1-2am", "E1"});
+        // Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "10-11pm", "E0", "T1", "1-2am", "E1"});
     }
 }
