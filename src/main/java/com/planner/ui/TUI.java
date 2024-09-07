@@ -52,13 +52,8 @@ public class TUI {
                             "    - Scheduling Algorithm: " + userConfig.getSchedulingAlgorithm() + "\n" +
                             "    - Minimum Task Duration: " + userConfig.getMinHours() + "\n"
             );
-            sleep(1000);
-            System.out.print(sysInfo);
-            System.out.println("Java Version:");
-            System.out.println(javaVersion.trim() + "\n"); // Trimming to remove extra spaces
-            sleep(1000);
         } catch (IOException | InterruptedException e) {
-            throw new IllegalArgumentException("Could not properly set up config and system info for session");
+            throw new IllegalArgumentException("Could not properly set up config for session");
         }
 //        sleep(500);
 
@@ -73,15 +68,8 @@ public class TUI {
         );
         sleep(1000);
 
-        // External dependencies
+        // Repo & License
         System.out.println(
-                "External Dependencies:\n" +
-                        "    - com.google.code.gson:gson:2.10.1\n" +
-                        "    - com.google.api-client:google-api-client:2.6.0\n" +
-                        "    - com.google.oauth-client:google-oauth-client-jetty:1.34.1\n" +
-                        "    - com.google.apis:google-api-services-calendar:v3-rev20220715-2.0.0\n" +
-                        "    - org.dhatim:fastexcel:0.18.0\n" +
-                        "\n" +
                         "GitHub Repo: https://github.com/AndrewRoe34/agile-planner\n" +
                         "\n" +
                         "License: MIT License\n" +
