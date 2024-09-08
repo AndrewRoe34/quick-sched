@@ -25,7 +25,7 @@ public class TUI {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         System.out.println("Application Version: 0.7.0");
-        sleep(3000);
+        sleep(1000);
         System.out.println("Current Date and Time: " + sdf.format(Calendar.getInstance().getTime()));
 
         // Config and System Info
@@ -59,7 +59,7 @@ public class TUI {
                         "Warnings or Alerts:\n" +
                         "    - No alerts at this time. Check logs/system.log for future warnings.\n"
         );
-        sleep(1500);
+        sleep(1000);
 
         // Repo & License
         System.out.println(
@@ -68,7 +68,7 @@ public class TUI {
                         "License: MIT License\n" +
                         "-------------------------------------------------------------"
         );
-        sleep(1500);
+        sleep(1000);
     }
 
 
