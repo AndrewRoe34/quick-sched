@@ -62,7 +62,7 @@ public class Parser {
 
         for (int i = 1; i < args.length; i++) {
             if (args[i].charAt(0) == '"' && name == null) {
-                name = args[i];
+                name = args[i].substring(1, args[i].length() - 1);
             } else if (args[i].charAt(0) == '+' && cardId == -1 && args[i].length() > 2
                     && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
                 try {
@@ -103,7 +103,7 @@ public class Parser {
                 if (name != null) {
                     throw new IllegalArgumentException("Cannot have multiple names for Card.");
                 }
-                name = args[i];
+                name = args[i].substring(1, args[i].length() - 1);
             } else {
                 if (color != null) {
                     throw new IllegalArgumentException("Cannot have multiple colors for Card.");
@@ -209,7 +209,7 @@ public class Parser {
 
         for (int i = 3; i < args.length; i++) {
             if (args[i].charAt(0) == '"' && name == null) {
-                name = args[i];
+                name = args[i].substring(1, args[i].length() - 1);
             } else if (args[i].charAt(0) == '+' && cardId == -1 && args[i].length() > 2
                     && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
                 try {
@@ -262,7 +262,7 @@ public class Parser {
                 if (name != null) {
                     throw new IllegalArgumentException("Cannot have multiple names for Card.");
                 }
-                name = args[i];
+                name = args[i].substring(1, args[i].length() - 1);
             } else {
                 if (color != null) {
                     throw new IllegalArgumentException("Cannot have multiple colors for Card.");
