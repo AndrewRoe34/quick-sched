@@ -71,12 +71,7 @@ public class CLI {
             case "task":
                 if (tokens.length > 1) {
                     Parser.TaskInfo ti = Parser.parseTask(tokens);
-                    Card c = null;
-                    if (ti.getCardId() != -1) {
-                        c = sm.getCardById(ti.getCardId());
-                        // todo not sure if we should cancel the task creation since card id could not be found?
-                    }
-                    sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), c);
+                    sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), ti.getCardId());
                 } else {
                     System.out.println(sm.buildTaskStr());
                 }
@@ -105,6 +100,24 @@ public class CLI {
                     System.out.println(sm.buildCardStr());
                 }
                 break;
+            case "mod":
+                if (tokens.length < 4) {
+                    throw new IllegalArgumentException("Invalid mod operation provided.");
+                }
+                switch (tokens[1]) {
+                    case "card":
+                        Parser.CardInfo ci = Parser.parseModCard(tokens);
+                        sm.modCard(ci.getId(), ci.getName(), ci.getColor());
+                        break;
+                    case "task":
+                        Parser.TaskInfo ti = Parser.parseModTask(tokens);
+                        sm.modTask(ti.getTaskId(), ti.getDesc(), ti.getHours(), ti.getDue(), ti.getCardId());
+                        break;
+                    case "event":
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid type provided for mod.");
+                }
             case "jbin":
                 if (tokens.length == 2) {
                     if (tokens[1].contains(".jbin")) {

@@ -275,7 +275,7 @@ public class Day {
             end.set(Calendar.HOUR_OF_DAY, event.getTimeStamp().getEndHour());
             end.set(Calendar.MINUTE, event.getTimeStamp().getEndMin());
 
-            event = new Event(event.getId(), event.getName(), event.getColor(), new TimeStamp(start, end), event.getDays());
+            event = new Event(event.getId(), event.getName(), event.getCard(), new TimeStamp(start, end), event.getDays());
         }
         int idx = 0;
         boolean idxFound = false;

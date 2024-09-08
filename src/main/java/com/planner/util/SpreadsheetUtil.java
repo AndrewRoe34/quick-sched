@@ -12,7 +12,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.PriorityQueue;
 
 /**
  * Class to handle utility functions for SpreadsheetIO.
@@ -140,7 +139,7 @@ public class SpreadsheetUtil {
 
                 int id = event.getId();
                 String name = event.getName();
-                String color = event.getColor().toString();
+                String color = event.getCard() != null ? event.getCard().getColor().toString() : "-";
                 String time = event.getTimeStamp().toString();
                 String date = event.isRecurring() ? "-" : event.getDateStamp();
                 String days = event.isRecurring() ? Arrays.toString(event.getDays()) : "-";
@@ -231,7 +230,7 @@ public class SpreadsheetUtil {
 
                     ts = event.getTimeStamp();
                     name = event.getName();
-                    color = event.getColor();
+                    color = event.getCard() != null ? event.getCard().getColor() : null;
                 }
 
                 output.append(ts).append(" - ").append(name);

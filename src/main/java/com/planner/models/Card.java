@@ -1,8 +1,5 @@
 package com.planner.models;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Holds Tasks for a specific grouping or category <p>
  * View this as the columns on Trello holding cards (but in our case,
@@ -28,7 +25,7 @@ public class Card {
     public Card(int id, String name, Color colorId) {
         this.id = id;
         setName(name);
-        setColorId(colorId);
+        setColor(colorId);
     }
 
     /**
@@ -67,7 +64,7 @@ public class Card {
      * @param colorId color id for Card
      * @throws IllegalArgumentException if color id is null
      */
-    public void setColorId(Color colorId) {
+    public void setColor(Color colorId) {
         if (colorId == null) throw new IllegalArgumentException("Card color cannot be null");
         this.colorId = colorId;
     }
@@ -95,7 +92,7 @@ public class Card {
      *
      * @return color id for Card
      */
-    public Color getColorId() {
+    public Color getColor() {
         return colorId;
     }
 
