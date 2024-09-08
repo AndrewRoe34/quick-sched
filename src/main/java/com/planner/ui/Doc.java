@@ -82,7 +82,8 @@ public class Doc {
                 "  event\n" +
                 "  event bool <name> [cardId] @ [date] <timestamp>\n\n" +
                 "Notes:\n" +
-                "  - Use '@' to signal the start of a time expression. It must be on its own, followed by the date/timestamp.\n\n" +
+                "  - Use '@' to signal the start of a time expression. It must be on its own, followed by the date/timestamp.\n" +
+                "  - Recurring Events allow multiple dates for 'days of the week'. However, individual Events allow only 1 date.\n\n" +
                 "Required:\n" +
                 "  - bool        Whether the event is recurring\n" +
                 "  - name        Name for created Event (whitespace only is not permitted, quotes required).\n" +
