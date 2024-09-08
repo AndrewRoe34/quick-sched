@@ -117,8 +117,68 @@ public class Parser {
         return new CardInfo(-1, name, color);
     }
 
-    public static void parseEvent(String[] args) {
+    public static EventInfo parseEvent(String[] args) {
+        if (args.length < 5) {
+            throw new IllegalArgumentException("Invalid number of arguments provided for Event.");
+        }
+        String name = null;
+        int cardId = -1;
+        boolean recurring = false;
+        List<Calendar> dates = null;
+        Calendar[] timestamp = null;
 
+        if ("true".equalsIgnoreCase(args[1])) {
+            recurring = true;
+        } else if (!"false".equalsIgnoreCase(args[1])) {
+            throw new IllegalArgumentException("Expected bool as second arg for Event.");
+        }
+
+        for (int i = 2; i < args.length; i++) {
+            if (args[i].charAt(0) == '"' && name == null) {
+                name = args[i];
+            } else if (args[i].charAt(0) == '+' && cardId == -1 && args[i].length() > 2
+                    && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
+                try {
+                    cardId = Integer.parseInt(args[i].substring(2));
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Invalid card id provided.");
+                }
+            } else if ("@".equals(args[i]) && timestamp == null) {
+                if (i + 1 >= args.length) {
+                    throw new IllegalArgumentException("No time arguments after '@'.");
+                }
+                for (i = i + 1; i < args.length; i++) {
+                    try {
+                        Calendar d = parseDate(args[i]);
+                        if (dates == null) {
+                            dates = new ArrayList<>();
+                        }
+                        dates.add(d);
+                    } catch (IllegalArgumentException e) {
+                        try {
+                            Calendar[] ts = parseTimeStamp(args[i]);
+                            if (timestamp != null) {
+                                throw new IllegalArgumentException("Cannot have duplicate timestamps.");
+                            }
+                            timestamp = ts;
+                        } catch (IllegalArgumentException f) {
+                            if ("Cannot have duplicate timestamps.".equals(f.getMessage())) {
+                                throw new IllegalArgumentException(f.getMessage());
+                            }
+                            i = i - 1;
+                            break;
+                        }
+                    }
+                }
+                if (timestamp == null) {
+                    throw new IllegalArgumentException("No timestamp was provided.");
+                }
+            } else {
+                throw new IllegalArgumentException("Invalid argument provided.");
+            }
+        }
+
+        return new EventInfo(-1, name, recurring, dates, timestamp, cardId);
     }
 
     public static DayInfo parseDay(String[] args) {
@@ -578,6 +638,48 @@ public class Parser {
 
         public double getHours() {
             return hours;
+        }
+
+        public int getCardId() {
+            return cardId;
+        }
+    }
+
+    public static class EventInfo {
+        private final int id;
+        private final String name;
+        private final boolean recurring;
+        private final List<Calendar> dates;
+        private final Calendar[] timestamp;
+        private final int cardId;
+
+        public EventInfo(int id, String name, boolean recurring, List<Calendar> dates, Calendar[] timestamp, int cardId) {
+            this.id = id;
+            this.name = name;
+            this.recurring = recurring;
+            this.dates = dates;
+            this.timestamp = timestamp;
+            this.cardId = cardId;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public boolean isRecurring() {
+            return recurring;
+        }
+
+        public List<Calendar> getDates() {
+            return dates;
+        }
+
+        public Calendar[] getTimestamp() {
+            return timestamp;
         }
 
         public int getCardId() {
