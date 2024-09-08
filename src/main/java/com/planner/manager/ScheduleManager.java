@@ -12,11 +12,8 @@ import com.planner.models.*;
 import com.planner.io.GoogleCalendarIO;
 import com.planner.schedule.Scheduler;
 import com.planner.schedule.day.Day;
-import com.planner.util.ReportLog;
+import com.planner.util.*;
 import com.planner.ui.tables.TableFormatter;
-import com.planner.util.EventLog;
-import com.planner.util.JsonHandler;
-import com.planner.util.Time;
 
 /**
  * Handles the generation and management of the overall schedule
@@ -732,6 +729,9 @@ public class ScheduleManager {
         dates.add(date2);
         Event.DayOfWeek[] eventDays = new Event.DayOfWeek[]{Event.DayOfWeek.FRI, Event.DayOfWeek.SUN};
 
+        Parser.parseEvent(new String[]{"event", "true", "\"supply chain class\"", "@", "mon", "wed", "fri", "10-2"});
+        Parser.parseEvent(new String[]{"event", "false", "+C4", "@", "3pm-5", "25-12-2024", "\"holiday meal\""});
+        Parser.parseEvent(new String[]{"event", "false", "+C4", "@", "3pm-5", "25-12-2024", "3-5", "\"holiday meal\""});
 
 //        sm.addEvent("holiday", Card.Color.BLUE, timeStamp, true, dates);
     }

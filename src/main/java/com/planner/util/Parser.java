@@ -127,17 +127,17 @@ public class Parser {
         List<Calendar> dates = null;
         Calendar[] timestamp = null;
 
-        try {
-            recurring = Boolean.parseBoolean(args[2]);
-        } catch (Exception e) {
-            throw new IllegalArgumentException("Third argument must be a bool.");
+        if ("true".equalsIgnoreCase(args[1])) {
+            recurring = true;
+        } else if (!"false".equalsIgnoreCase(args[1])) {
+            throw new IllegalArgumentException("Expected bool as second arg for Event.");
         }
 
         for (int i = 2; i < args.length; i++) {
             if (args[i].charAt(0) == '"' && name == null) {
                 name = args[i];
-            } else if (args[i].length() > 2 && cardId == -1 && args[i].charAt(0) == '+'
-                    && (args[i].charAt(1) == 'C') || args[i].charAt(1) == 'c') {
+            } else if (args[i].charAt(0) == '+' && cardId == -1 && args[i].length() > 2
+                    && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
                 try {
                     cardId = Integer.parseInt(args[i].substring(2));
                 } catch (NumberFormatException e) {
@@ -147,22 +147,25 @@ public class Parser {
                 if (i + 1 >= args.length) {
                     throw new IllegalArgumentException("No time arguments after '@'.");
                 }
-                for (int j = i + 1; j < args.length; j++) {
+                for (i = i + 1; i < args.length; i++) {
                     try {
-                        Calendar d = parseDate(args[j]);
+                        Calendar d = parseDate(args[i]);
                         if (dates == null) {
                             dates = new ArrayList<>();
                         }
                         dates.add(d);
                     } catch (IllegalArgumentException e) {
                         try {
-                            Calendar[] ts = parseTimeStamp(args[j]);
+                            Calendar[] ts = parseTimeStamp(args[i]);
                             if (timestamp != null) {
                                 throw new IllegalArgumentException("Cannot have duplicate timestamps.");
                             }
                             timestamp = ts;
                         } catch (IllegalArgumentException f) {
-                            i = j - 1;
+                            if ("Cannot have duplicate timestamps.".equals(f.getMessage())) {
+                                throw new IllegalArgumentException(f.getMessage());
+                            }
+                            i = i - 1;
                             break;
                         }
                     }
