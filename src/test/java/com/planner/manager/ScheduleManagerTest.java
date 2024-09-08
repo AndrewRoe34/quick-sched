@@ -16,27 +16,33 @@ class ScheduleManagerTest {
     void addEvent() {
         ScheduleManager sm = new ScheduleManager();
 
+        Card cloud = sm.addCard("Cloud", Card.Color.BLUE);
+        Card school = sm.addCard("Bus", Card.Color.YELLOW);
+        Card grass = sm.addCard("Grass", Card.Color.GREEN);
+        Card plate = sm.addCard("Fruit", Card.Color.ORANGE);
+
         Calendar start = Calendar.getInstance();
-        Calendar end = Calendar.getInstance();
+        start.set(Calendar.HOUR_OF_DAY, 0);
+        Calendar end = (Calendar) start.clone();
         end.set(Calendar.HOUR, end.get(Calendar.HOUR) + 1);
         Time.TimeStamp timestamp = new Time.TimeStamp(start, end);
 
-        sm.addEvent("IndivE1", Card.Color.BLUE, timestamp, false, null);
-        sm.addEvent("IndivE2", Card.Color.YELLOW, timestamp, false, null);
+        sm.addEvent("IndivE1", 0, timestamp, false, null);
+        sm.addEvent("IndivE2", 1, timestamp, false, null);
 
         List<Calendar> dates = new ArrayList<>();
 
         dates.add(Time.getFormattedCalendarInstance(0));
         dates.add(Time.getFormattedCalendarInstance(2));
 
-        sm.addEvent("RecurE1", Card.Color.GREEN, timestamp, true, dates);
+        sm.addEvent("RecurE1", 2, timestamp, true, dates);
 
         dates.add(Time.getFormattedCalendarInstance(4));
 
-        sm.addEvent("RecurE2", Card.Color.ORANGE, timestamp, true, dates);
+        sm.addEvent("RecurE2", 3, timestamp, true, dates);
 
         assertThrows(Exception.class,
-                () -> sm.addEvent("RecurE3", Card.Color.ORANGE, timestamp, true, null));
+                () -> sm.addEvent("RecurE3", 3, timestamp, true, null));
 
         List<Event> indivEvents = sm.getIndivEvents();
 
@@ -67,15 +73,18 @@ class ScheduleManagerTest {
     @Test
     void addTask() {
         ScheduleManager sm = new ScheduleManager();
+        sm.addCard("school", Card.Color.BLUE);
+        sm.addCard("work", Card.Color.BLUE);
+        sm.addCard("hobbies", Card.Color.BLUE);
 
         Calendar due = Calendar.getInstance();
 
         due.set(Calendar.HOUR, due.get(Calendar.HOUR) + 10);
-        sm.addTask("homework", 3, due, new Card(0,"school", Card.Color.BLUE));
+        sm.addTask("homework", 3, due, 0);
         due.set(Calendar.HOUR, due.get(Calendar.HOUR) + 15);
-        sm.addTask("meeting", 2, due, new Card(1,"work", Card.Color.BLUE));
+        sm.addTask("meeting", 2, due, 1);
         due.set(Calendar.HOUR, due.get(Calendar.HOUR) + 20);
-        sm.addTask("piano practice", 1, due, new Card(2,"hobbies", Card.Color.BLUE));
+        sm.addTask("piano practice", 1, due, 2);
 
         assertEquals(3, sm.getTaskManager().size());
         assertEquals("Task [name=homework, total=3.0]", sm.getTaskManager().peek().toString());
@@ -85,19 +94,20 @@ class ScheduleManagerTest {
     @Test
     void modTask() {
         ScheduleManager sm = new ScheduleManager();
+        sm.addCard("school", Card.Color.BLUE);
 
         Calendar due = Calendar.getInstance();
 
         due.set(Calendar.HOUR, due.get(Calendar.HOUR) + 10);
-        sm.addTask("homework", 3, due, new Card(0,"school", Card.Color.BLUE));
+        sm.addTask("homework", 3, due, 0);
 
-        sm.modTask(0, "project", -1, null, null);
+        sm.modTask(0, "project", -1, null, -1);
         assertEquals("Task [name=project, total=3.0]", sm.getTaskManager().peek().toString());
 
-        sm.modTask(0, null, 4, null, null);
+        sm.modTask(0, null, 4, null, -1);
         assertEquals("Task [name=project, total=4.0]", sm.getTaskManager().peek().toString());
 
-        assertNull(sm.modTask(10, "non-existent task", -1, null, null));
+        assertNull(sm.modTask(10, "non-existent task", -1, null, -1));
     }
 
     @Test
@@ -110,11 +120,11 @@ class ScheduleManagerTest {
 
         assertEquals("school work", sm.getCards().get(0).getName());
 
-        assertEquals(Card.Color.VIOLET, sm.getCards().get(0).getColorId());
+        assertEquals(Card.Color.VIOLET, sm.getCards().get(0).getColor());
 
         sm.modCard(0, null, Card.Color.INDIGO);
 
-        assertEquals(Card.Color.INDIGO, sm.getCards().get(0).getColorId());
+        assertEquals(Card.Color.INDIGO, sm.getCards().get(0).getColor());
 
         assertNull(sm.modCard(10, "non-existent card", null));
     }
@@ -123,42 +133,47 @@ class ScheduleManagerTest {
     void modEvent() {
         ScheduleManager sm = new ScheduleManager();
 
+        Card cloud = sm.addCard("Cloud", Card.Color.BLUE);
+        Card fire = sm.addCard("Fire", Card.Color.RED);
+
         Calendar start = Calendar.getInstance();
-        Calendar end = Calendar.getInstance();
+        start.set(Calendar.HOUR_OF_DAY, 0);
+        Calendar end = (Calendar) start.clone();
         end.set(Calendar.HOUR, end.get(Calendar.HOUR) + 1);
         Time.TimeStamp timestamp = new Time.TimeStamp(start, end);
 
-        sm.addEvent("IndivE1", Card.Color.BLUE, timestamp, false, null);
+        sm.addEvent("IndivE1", 0, timestamp, false, null);
 
         List<Calendar> dates = new ArrayList<>();
 
         dates.add(Time.getFormattedCalendarInstance(1));
         dates.add(Time.getFormattedCalendarInstance(2));
 
-        sm.addEvent("RecurE1", Card.Color.BLUE, timestamp, true, dates);
+        sm.addEvent("RecurE1", 0, timestamp, true, dates);
 
-        sm.modEvent(0, null, Card.Color.RED, timestamp, null);
+        sm.modEvent(0, null, 1, timestamp, null);
         assertEquals("IndivE1 RED " + timestamp + " false", eventToString(sm.getIndivEvents().get(0)));
 
-        assertThrows(IllegalArgumentException.class, () -> sm.modEvent(0, null, Card.Color.RED, timestamp, dates));
+        assertThrows(IllegalArgumentException.class, () -> sm.modEvent(0, null, 1, timestamp, dates));
 
         dates.add(Time.getFormattedCalendarInstance(3));
         dates.add(Time.getFormattedCalendarInstance(4));
 
-        sm.modEvent(1, null, null, timestamp, dates);
+        sm.modEvent(1, null, -1, timestamp, dates);
         assertEquals("RecurE1 BLUE " + timestamp + " true" + " reoccurs 4 days", eventToString(sm.getRecurEvents().get(dates.get(0).get(Calendar.DAY_OF_WEEK) - 1).get(0)));
 
-        assertNull(sm.modEvent(10, "non-existent event", null, null, null));
+        assertNull(sm.modEvent(10, "non-existent event", -1, null, null));
 
     }
 
     @Test
     void deleteTask() {
         ScheduleManager sm = new ScheduleManager();
+        sm.addCard("school", Card.Color.BLUE);
 
         Calendar due = Calendar.getInstance();
         due.set(Calendar.HOUR, due.get(Calendar.HOUR) + 10);
-        sm.addTask("homework", 3, due, new Card(0,"school", Card.Color.BLUE));
+        sm.addTask("homework", 3, due, 0);
 
         assertTrue(sm.deleteTask(0));
         assertFalse(sm.deleteTask(0));
@@ -173,7 +188,7 @@ class ScheduleManagerTest {
 
         Calendar due = Calendar.getInstance();
         due.set(Calendar.HOUR, due.get(Calendar.HOUR) + 10);
-        sm.addTask("homework", 3, due, sm.getCards().get(0));
+        sm.addTask("homework", 3, due, 0);
 
         assertTrue(sm.deleteCard(0));
         assertFalse(sm.deleteCard(0));
@@ -186,19 +201,22 @@ class ScheduleManagerTest {
     void deleteEvent() {
         ScheduleManager sm = new ScheduleManager();
 
+        Card cloud = sm.addCard("Cloud", Card.Color.BLUE);
+
         Calendar start = Calendar.getInstance();
-        Calendar end = Calendar.getInstance();
+        start.set(Calendar.HOUR_OF_DAY, 0);
+        Calendar end = (Calendar) start.clone();
         end.set(Calendar.HOUR, end.get(Calendar.HOUR) + 1);
         Time.TimeStamp timestamp = new Time.TimeStamp(start, end);
 
-        sm.addEvent("IndivE1", Card.Color.BLUE, timestamp, false, null);
+        sm.addEvent("IndivE1", 0, timestamp, false, null);
 
         List<Calendar> dates = new ArrayList<>();
 
         dates.add(Time.getFormattedCalendarInstance(1));
         dates.add(Time.getFormattedCalendarInstance(2));
 
-        sm.addEvent("RecurE1", Card.Color.BLUE, timestamp, true, dates);
+        sm.addEvent("RecurE1", 0, timestamp, true, dates);
 
         assertTrue(sm.deleteEvent(0));
         assertEquals(0, sm.getIndivEvents().size());
@@ -215,7 +233,7 @@ class ScheduleManagerTest {
         StringBuilder eventSb = new StringBuilder();
         eventSb.append(e.getName())
                 .append(" ")
-                .append(e.getColor())
+                .append(e.getCard().getColor())
                 .append(" ")
                 .append(e.getTimeStamp())
                 .append(" ")

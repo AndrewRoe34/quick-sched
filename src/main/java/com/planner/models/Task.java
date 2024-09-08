@@ -185,7 +185,7 @@ public class Task implements Comparable<Task> {
      * @return color of the Task's card
      */
     public Card.Color getColor() {
-        return card != null ? card.getColorId() : null;
+        return card != null ? card.getColor() : null;
     }
 
 

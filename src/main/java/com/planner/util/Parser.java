@@ -114,7 +114,7 @@ public class Parser {
                 }
             }
         }
-        return new CardInfo(name, color);
+        return new CardInfo(-1, name, color);
     }
 
     public static void parseEvent(String[] args) {
@@ -204,7 +204,7 @@ public class Parser {
         try {
             id = Integer.parseInt(args[2]);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Error: Third argument must be a task ID");
+            throw new IllegalArgumentException("Third argument must be a task ID");
         }
 
         for (int i = 3; i < args.length; i++) {
@@ -242,8 +242,38 @@ public class Parser {
 
     }
 
-    public static void parseModCard(String[] args) {
+    public static CardInfo parseModCard(String[] args) {
+        if (args.length < 4) {
+            throw new IllegalArgumentException("Invalid number of arguments provided for Card.");
+        }
 
+        int id = -1;
+        Card.Color color = null;
+        String name = null;
+
+        try {
+            id = Integer.parseInt(args[2]);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Third argument must be a Card ID");
+        }
+
+        for (int i = 3; i < args.length; i++) {
+            if (args[i].charAt(0) == '"') {
+                if (name != null) {
+                    throw new IllegalArgumentException("Cannot have multiple names for Card.");
+                }
+                name = args[i];
+            } else {
+                if (color != null) {
+                    throw new IllegalArgumentException("Cannot have multiple colors for Card.");
+                }
+                color = parseColor(args[i]);
+                if (color == null) {
+                    throw new IllegalArgumentException("Invalid color provided for Card.");
+                }
+            }
+        }
+        return new CardInfo(id, name, color);
     }
 
     public static void parseDelete(String[] args) {
@@ -502,12 +532,18 @@ public class Parser {
     }
 
     public static class CardInfo {
+        private final int id;
         private final String name;
         private final Card.Color color;
 
-        public CardInfo(String name, Card.Color color) {
+        public CardInfo(int id, String name, Card.Color color) {
+            this.id = id;
             this.name = name;
             this.color = color;
+        }
+
+        public int getId() {
+            return id;
         }
 
         public String getName() {

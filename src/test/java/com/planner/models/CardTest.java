@@ -3,9 +3,6 @@ package com.planner.models;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -44,13 +41,13 @@ class CardTest {
     }
 
     @Test
-    void getColorId() {
-        assertEquals(Card.Color.LIGHT_BLUE, c1.getColorId());
+    void getColor() {
+        assertEquals(Card.Color.LIGHT_BLUE, c1.getColor());
     }
 
     @Test
-    void setColorId() {
-        c1.setColorId(Card.Color.INDIGO);
-        assertEquals(Card.Color.INDIGO, c1.getColorId());
+    void setColor() {
+        c1.setColor(Card.Color.INDIGO);
+        assertEquals(Card.Color.INDIGO, c1.getColor());
     }
 }

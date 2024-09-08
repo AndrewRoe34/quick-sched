@@ -263,14 +263,13 @@ public class ScheduleManager {
      * Adds an event to the manager
      *
      * @param name name of event
-     * @param color color for event classification
+     * @param cardId id for card
      * @param timeStamp event duration
      * @param recurring whether the event occurs only once or not
      * @param dates days of event occurrence, if recurring
      * @return newly generated Event
      */
-    public Event addEvent(String name, Card.Color color, Time.TimeStamp timeStamp,
-                          boolean recurring, List<Calendar> dates) {
+    public Event addEvent(String name, int cardId, Time.TimeStamp timeStamp, boolean recurring, List<Calendar> dates) {
         Event e;
 
         if (recurring) {
@@ -281,7 +280,7 @@ public class ScheduleManager {
                 days[i] = dayOfWeekValues[dates.get(i).get(Calendar.DAY_OF_WEEK) - 1];
             }
 
-            e = new Event(eventId, name, color, timeStamp, days);
+            e = new Event(eventId, name, getCardById(cardId), timeStamp, days);
             Event.DayOfWeek[] eventDays = e.getDays();
 
             for (int i = 0; i < eventDays.length; i++) {
@@ -289,7 +288,7 @@ public class ScheduleManager {
             }
         } else {
             if (dates != null) throw new IllegalArgumentException("Event is non-recurring but has recurrent days");
-            e = new Event(eventId, name, color, timeStamp);
+            e = new Event(eventId, name, getCardById(cardId), timeStamp);
             indivEvents.add(e);
         }
 
@@ -324,13 +323,12 @@ public class ScheduleManager {
      * @param name Name of the task
      * @param hours Number of hours of the task
      * @param due Due date of the task
-     * @param card Card of the taks
+     * @param cardId ID for card
      * @return The new task added
      */
-    public Task addTask(String name, double hours, Calendar due, Card card) {
-        Task task = new Task(taskId, name, hours, due, card);
-        // todo check whether task is past due (if so, add to archive list)
-        //  will need to add to taskMap
+    public Task addTask(String name, double hours, Calendar due, int cardId) {
+        Task task = new Task(taskId, name, hours, due, getCardById(cardId));
+
         taskManager.add(task);
         taskMap.put(taskId, task);
         taskId++;
@@ -345,11 +343,10 @@ public class ScheduleManager {
      * @param name New name of the task
      * @param hours New number of hours
      * @param due New due date of the task
-     * @param card New Card of the task
+     * @param cardId ID for card
      * @return Task after it's modified
      */
-    public Task modTask(int id, String name, double hours, Calendar due, Card card) {
-        // todo will need error handling here
+    public Task modTask(int id, String name, double hours, Calendar due, int cardId) {
         Task task = taskMap.get(id);
 
         if (task == null) {
@@ -365,8 +362,8 @@ public class ScheduleManager {
         if (due != null) {
             task.setDueDate(due);
         }
-        if (card != null) {
-            task.setCard(card);
+        if (cardId != -1) {
+            task.setCard(getCardById(cardId));
         }
 
         return task;
@@ -385,13 +382,13 @@ public class ScheduleManager {
             card.setName(name);
         }
         if (colorId != null) {
-            card.setColorId(colorId);
+            card.setColor(colorId);
         }
 
         return card;
     }
 
-    public Event modEvent(int id, String name, Card.Color color, Time.TimeStamp timeStamp, List<Calendar> dates) {
+    public Event modEvent(int id, String name, int cardId, Time.TimeStamp timeStamp, List<Calendar> dates) {
         Event event = findEvent(id);
 
         if (event == null) {
@@ -405,8 +402,8 @@ public class ScheduleManager {
         if (name != null) {
             event.setName(name);
         }
-        if (color != null) {
-            event.setColor(color);
+        if (cardId != -1) {
+            event.setCard(getCardById(cardId));
         }
         if (timeStamp != null) {
             event.setTimeStamp(timeStamp);
@@ -736,6 +733,6 @@ public class ScheduleManager {
         Event.DayOfWeek[] eventDays = new Event.DayOfWeek[]{Event.DayOfWeek.FRI, Event.DayOfWeek.SUN};
 
 
-        sm.addEvent("holiday", Card.Color.BLUE, timeStamp, true, dates);
+//        sm.addEvent("holiday", Card.Color.BLUE, timeStamp, true, dates);
     }
 }

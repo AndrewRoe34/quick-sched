@@ -80,10 +80,10 @@ public class GoogleCalendarUtil {
         EventDateTime end = new EventDateTime().setDateTime(endDateTime);
         event.setEnd(end);
 
-        if (e.getColor() == null)
+        if (e.getCard() == null)
             return event;
 
-        event.setColorId(convertAnsiToGoogleColor(e.getColor()));
+        event.setColorId(convertAnsiToGoogleColor(e.getCard().getColor()));
 
         return event;
     }

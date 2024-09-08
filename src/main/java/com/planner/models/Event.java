@@ -19,10 +19,10 @@ public class Event implements Comparable<Event> {
     private int id;
     /** Name of the Event */
     private String name;
-    /** timestamp of the Event */
+    /** TimeStamp of the Event */
     private TimeStamp timeStamp;
-    /** Color of the Event's dard */
-    private Card.Color color;
+    /** Card for Event */
+    private Card card;
     /** Recurring status of the Event */
     private boolean recurring;
     /** Days of the Event */
@@ -35,13 +35,13 @@ public class Event implements Comparable<Event> {
      *
      * @param id ID of the Event
      * @param name Name of the Event
-     * @param color Color of the Event
+     * @param card Card for Event
      * @param timeStamp Timestamp of the Event
      */
-    public Event(int id, String name, Card.Color color, TimeStamp timeStamp) {
+    public Event(int id, String name, Card card, TimeStamp timeStamp) {
         setId(id);
         setName(name);
-        setColor(color);
+        setCard(card);
         setTimeStamp(timeStamp);
     }
 
@@ -50,12 +50,12 @@ public class Event implements Comparable<Event> {
      *
      * @param id ID of the Event
      * @param name Name of the Event
-     * @param color Color of the Event
+     * @param card Card for Event
      * @param timeStamp Timestamp of the Event
      * @param days Days of the Event
      */
-    public Event(int id, String name, Card.Color color, TimeStamp timeStamp, DayOfWeek[] days) {
-        this(id, name, color, timeStamp);
+    public Event(int id, String name, Card card, TimeStamp timeStamp, DayOfWeek[] days) {
+        this(id, name, card, timeStamp);
         this.recurring = true;
         setDays(days);
     }
@@ -109,21 +109,21 @@ public class Event implements Comparable<Event> {
     }
 
     /**
-     * Gets the color of the Event
+     * Gets the card for the Event
      *
-     * @return Event's card color
+     * @return card for Event
      */
-    public Card.Color getColor() {
-        return color;
+    public Card getCard() {
+        return card;
     }
 
     /**
-     * Sets the color of the Event
+     * Sets the card for the Event
      *
-     * @param color Color of the Event's card
+     * @param card for Event
      */
-    public void setColor(Card.Color color) {
-        this.color = color;
+    public void setCard(Card card) {
+        this.card = card;
     }
 
     /**
@@ -174,8 +174,7 @@ public class Event implements Comparable<Event> {
      * @param output StringBuilder storing the timestamp
      * @param time Number representing the time (hours, minutes, days)
      */
-    private void appendTime(StringBuilder output, int time)
-    {
+    private void appendTime(StringBuilder output, int time) {
         if (time < 10)
             output.append("0");
         output.append(time);
@@ -191,26 +190,11 @@ public class Event implements Comparable<Event> {
         Calendar start = timeStamp.getStart();
         Calendar end = timeStamp.getEnd();
 
-        if (areDatesDifferent(start, end)) {
+        if (!Time.doDatesMatch(start, end)) {
             throw new IllegalArgumentException("Start and end times for timestamp don't share same date");
         }
 
         this.timeStamp = timeStamp;
-    }
-
-    /**
-     * Checks if two dates are different
-     *
-     * @param start Start date
-     * @param end End date
-     * @return <code>true</code> if two dates are different;
-     * and <code>false</code> if they share the same date
-     */
-    private boolean areDatesDifferent(Calendar start, Calendar end)
-    {
-        return start.get(Calendar.YEAR) != end.get(Calendar.YEAR) ||
-                start.get(Calendar.MONTH) != end.get(Calendar.MONTH) ||
-                start.get(Calendar.DAY_OF_MONTH) != end.get(Calendar.DAY_OF_MONTH);
     }
 
     /**

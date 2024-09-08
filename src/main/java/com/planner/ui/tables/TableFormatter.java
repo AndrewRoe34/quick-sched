@@ -126,7 +126,7 @@ public class TableFormatter {
                                 day.getEventList().get(eventIdx).getTimeStamp().getStart())) {
                     Event event = day.getEvent(eventIdx);
 
-                    color = event.getColor();
+                    color = event.getCard() != null ? event.getCard().getColor() : null;
                     id = event.getId();
                     name = event.getName();
                     hours = Time.getTimeInterval(event.getTimeStamp().getStart(), event.getTimeStamp().getEnd());
@@ -250,12 +250,12 @@ public class TableFormatter {
         sb.append("---------------------------------------------\n");
 
         for (Card card : cards) {
-            String colors = card.getColorId() + "";
+            String colors = card.getColor() + "";
             int id = card.getId();
             String name = card.getName();
 
-            if (useColor && card.getColorId() != null) {
-                sb.append(getColorANSICode(card.getColorId()));
+            if (useColor && card.getColor() != null) {
+                sb.append(getColorANSICode(card.getColor()));
             }
 
             sb.append(id)
@@ -321,8 +321,10 @@ public class TableFormatter {
         }
 
         for (Event e : uniqueRecurringEvents) {
-            String colorANSICode = getColorANSICode((e.getColor()));
-            sb.append(colorANSICode);
+            if (e.getCard() != null) {
+                String colorANSICode = getColorANSICode((e.getCard().getColor()));
+                sb.append(colorANSICode);
+            }
 
             sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
 
@@ -331,7 +333,11 @@ public class TableFormatter {
             else
                 sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
 
-            sb.append(e.getColor()).append(" ".repeat(15 - String.valueOf(e.getColor()).length())).append("|");
+            if (e.getCard() == null) {
+                sb.append("     -").append(" ".repeat(15 - "     -".length())).append("|");
+            } else {
+                sb.append(e.getCard().getColor()).append(" ".repeat(15 - String.valueOf(e.getCard().getColor()).length())).append("|");
+            }
 
             sb.append(e.getTimeStamp().toString()).append(" ".repeat(
                     20 - e.getTimeStamp().toString().length())
@@ -366,8 +372,10 @@ public class TableFormatter {
         }
 
         for (Event e : indivEvents) {
-            String colorANSICode = getColorANSICode((e.getColor()));
-            sb.append(colorANSICode);
+            if (e.getCard() != null) {
+                String colorANSICode = getColorANSICode((e.getCard().getColor()));
+                sb.append(colorANSICode);
+            }
 
             sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
 
@@ -376,7 +384,14 @@ public class TableFormatter {
             else
                 sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
 
-            sb.append(e.getColor()).append(" ".repeat(15 - String.valueOf(e.getColor()).length())).append("|");
+
+            if (e.getCard() == null) {
+                sb.append("     -").append(" ".repeat(15 - "     -".length())).append("|");
+            } else {
+                sb.append(e.getCard().getColor()).append(" ".repeat(15 - String.valueOf(e.getCard().getColor()).length())).append("|");
+            }
+
+
             sb.append(e.getTimeStamp().toString()).append(" ".repeat(20 - e.getTimeStamp().toString().length())).append("|");
             sb.append(e.getDateStamp()).append(" ".repeat(12 - e.getDateStamp().length())).append("|");
 
