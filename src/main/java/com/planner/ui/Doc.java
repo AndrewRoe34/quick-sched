@@ -38,13 +38,15 @@ public class Doc {
         return "Creates a new Task to be stored by the system or displays all previously created Task data if no arguments are provided. Tasks are assignments that can be broken up over a series of days until their deadline.\n\n" +
                 "Usage:\n" +
                 "  task\n" +
-                "  task [args]\n\n" +
+                "  task <name> <hours> [cardId] @ <date>\n\n" +
+                "Notes:\n" +
+                "  - Use '@' to signal the start of a time expression. It must be on its own, followed by the date.\n\n" +
                 "Required:\n" +
                 "  - name    Name for the created Task (whitespace only is not permitted, quotes required).\n" +
                 "  - hours   Number of hours for a given Task (decimal is allowed, but only 0.5).\n" +
                 "  - date    Due date so the scheduling platform can assign it appropriate days.\n\n" +
                 "Optional:\n" +
-                "  - cardId  Id referencing a Card for its tag and color.\n\n" +
+                "  - cardId  Id referencing a Card for its tag and color. Must prefix with '+C'.\n\n" +
                 "Examples:\n" +
                 "  task\n" +
                 "  task \"finish hw3\" 3.5 @ eow\n" +
@@ -63,10 +65,10 @@ public class Doc {
         return "Creates a new Card to be stored by the system or displays all previously created Card data if no arguments are provided. Cards serve the role of both label and color for Tasks.\n\n" +
                 "Usage:\n" +
                 "  card\n" +
-                "  card [args]\n\n" +
+                "  card <name> <color>\n\n" +
                 "Required:\n" +
                 "  - name    Name for created Card (whitespace only is not permitted, quotes required).\n" +
-                "  - color   Color Id for Card.\n\n" +
+                "  - color   Color for Card.\n\n" +
                 "Examples:\n" +
                 "  card\n" +
                 "  card \"Supply Chain\" GREEN\n" +
@@ -78,14 +80,17 @@ public class Doc {
                 "Non-recurring Events can have only 1 date. Recurring Events can have up to 7 (which represent the days of the week, no duplicates allowed).\n\n" +
                 "Usage:\n" +
                 "  event\n" +
-                "  event [bool] [args]\n\n" +
+                "  event bool <name> [cardId] @ [date] <timestamp>\n\n" +
+                "Notes:\n" +
+                "  - Use '@' to signal the start of a time expression. It must be on its own, followed by the date/timestamp.\n" +
+                "  - Recurring Events allow multiple dates for 'days of the week'. However, individual Events allow only 1 date.\n\n" +
                 "Required:\n" +
                 "  - bool        Whether the event is recurring\n" +
                 "  - name        Name for created Event (whitespace only is not permitted, quotes required).\n" +
                 "  - timestamp   Timestamp for the Event that represents the start/end time for the day\n\n" +
                 "Optional:\n" +
                 "  - date        Days on which the Event is to be assigned\n" +
-                "  - cardId      Id referencing a Card for its tag and color.\n\n" +
+                "  - cardId      Id referencing a Card for its tag and color. Must prefix with '+C'.\n\n" +
                 "Examples:\n" +
                 "  event\n" +
                 "  event false \"study\" @ 9-4\n" +
@@ -184,7 +189,8 @@ public class Doc {
                 " - Colons (`:`) are only required when minutes are included.\n" +
                 " - If the end hour is less than the start, the end hour is assumed to be pm.\n" +
                 " - To mark the start hour as pm, \"pm\" must be included.\n" +
-                " - 24-hour time formats are not permitted.\n\n" +
+                " - 24-hour time formats are not permitted.\n" +
+                " - Timestamps cover a single day and must start and end within the same day.\n\n" +
                 "This allows for \"sloppy\" timestamp expressions with flexible formatting.";
     }
 
@@ -199,7 +205,7 @@ public class Doc {
     public static String getExcelDoc() {
         return "Exports all your schedule data to a .xlsx\n\n" +
                 "Usage:\n" +
-                "  excel [name]\n\n" +
+                "  excel <name>\n\n" +
                 "Required:\n" +
                 " - name   Name of the excel file being passed\n\n" +
                 "Examples:\n" +
@@ -209,7 +215,7 @@ public class Doc {
     public static String getJsonDoc() {
         return "Exports all your schedule data to a .json\n\n" +
                 "Usage:\n" +
-                "  json [name]\n\n" +
+                "  json <name>\n\n" +
                 "Required:\n" +
                 " - name   Name of the json file being passed\n\n" +
                 "Examples:\n" +
@@ -229,7 +235,7 @@ public class Doc {
                 "Reading in a new serialization file will result in fresh schedule data.\n\n" +
                 "Usage:\n" +
                 "  read\n" +
-                "  read [name]\n\n" +
+                "  read <name>\n\n" +
                 "Required:\n" +
                 "  - name   Name of the serialization file being read\n\n" +
                 "Examples:\n" +
@@ -239,7 +245,7 @@ public class Doc {
     public static String getSaveDoc() {
         return "Updates the serialization file with the current schedule data. If no file was read in, the user will be prompted for a filename.\n\n" +
                 "Usage:\n" +
-                "  save [name]\n\n" +
+                "  save <name>\n\n" +
                 "Required:\n" +
                 "  - name   Name of the serialization file being saved\n\n" +
                 "Examples:\n" +
@@ -249,9 +255,9 @@ public class Doc {
     public static String getModDoc() {
         return "Modifies an existing task, card, or event by index. The arguments are the same as the ones used for creating a task, card, or event.\n\n" +
                 "Usage:\n" +
-                "  mod [task] [idx] [args]\n" +
-                "  mod [card] [idx] [args]\n" +
-                "  mod [event] [idx] [args]\n\n" +
+                "  mod task <id> [args]\n" +
+                "  mod card <id> [args]\n" +
+                "  mod event <id> [args]\n\n" +
                 "Notes:\n" +
                 "  - For 'event', the user cannot modify whether it is recurring (no 'true' or 'false' allowed).\n\n" +
                 "Examples:\n" +
@@ -261,11 +267,13 @@ public class Doc {
     }
 
     public static String getDeleteDoc() {
-        return "Deletes one or more tasks, cards, or events by index.\n\n" +
+        return "Deletes one or more tasks, cards, or events by ID. More than one ID can be provided.\n\n" +
                 "Usage:\n" +
-                "  delete [task] [idx] [idx] ...\n" +
-                "  delete [card] [idx] [idx] ...\n" +
-                "  delete [event] [idx] [idx] ...\n\n" +
+                "  delete task <id>\n" +
+                "  delete card <id>\n" +
+                "  delete event <id>\n\n" +
+                "Required:\n" +
+                "  - id   ID referencing the specified type\n\n" +
                 "Examples:\n" +
                 "  delete task 1 2 3\n" +
                 "  delete card 4 5\n" +
