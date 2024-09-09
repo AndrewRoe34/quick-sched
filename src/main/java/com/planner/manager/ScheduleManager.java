@@ -267,8 +267,13 @@ public class ScheduleManager {
      * @param dates days of event occurrence, if recurring
      * @return newly generated Event
      */
-    public Event addEvent(String name, int cardId, Time.TimeStamp timeStamp, boolean recurring, List<Calendar> dates) {
+    public Event addEvent(String name, Integer cardId, Time.TimeStamp timeStamp, boolean recurring, List<Calendar> dates) {
         Event e;
+
+        Card card = null;
+        if (cardId != null) {
+            card = getCardById(cardId);
+        }
 
         if (recurring) {
             Event.DayOfWeek[] days = new Event.DayOfWeek[dates.size()];
@@ -278,7 +283,7 @@ public class ScheduleManager {
                 days[i] = dayOfWeekValues[dates.get(i).get(Calendar.DAY_OF_WEEK) - 1];
             }
 
-            e = new Event(eventId, name, getCardById(cardId), timeStamp, days);
+            e = new Event(eventId, name, card, timeStamp, days);
             Event.DayOfWeek[] eventDays = e.getDays();
 
             for (int i = 0; i < eventDays.length; i++) {
@@ -286,7 +291,7 @@ public class ScheduleManager {
             }
         } else {
             if (dates != null) throw new IllegalArgumentException("Event is non-recurring but has recurrent days");
-            e = new Event(eventId, name, getCardById(cardId), timeStamp);
+            e = new Event(eventId, name, card, timeStamp);
             indivEvents.add(e);
         }
 
@@ -391,7 +396,7 @@ public class ScheduleManager {
         return card;
     }
 
-    public Event modEvent(int id, String name, int cardId, Time.TimeStamp timeStamp, List<Calendar> dates) {
+    public Event modEvent(int id, String name, Integer cardId, Time.TimeStamp timeStamp, List<Calendar> dates) {
         Event event = findEvent(id);
 
         if (event == null) {
@@ -405,8 +410,11 @@ public class ScheduleManager {
         if (name != null) {
             event.setName(name);
         }
-        if (cardId != -1) {
-            event.setCard(getCardById(cardId));
+        if (cardId != null) {
+            Card card = getCardById(cardId);
+            if (card != null) {
+                event.setCard(card);
+            }
         }
         if (timeStamp != null) {
             event.setTimeStamp(timeStamp);
