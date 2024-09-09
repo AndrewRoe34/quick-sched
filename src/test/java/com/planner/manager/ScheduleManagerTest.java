@@ -101,13 +101,13 @@ class ScheduleManagerTest {
         due.set(Calendar.HOUR, due.get(Calendar.HOUR) + 10);
         sm.addTask("homework", 3, due, 0);
 
-        sm.modTask(0, "project", -1, null, -1);
+        sm.modTask(0, "project", null, null, null);
         assertEquals("Task [name=project, total=3.0]", sm.getTaskManager().peek().toString());
 
-        sm.modTask(0, null, 4, null, -1);
+        sm.modTask(0, null, 4.0, null, null);
         assertEquals("Task [name=project, total=4.0]", sm.getTaskManager().peek().toString());
 
-        assertNull(sm.modTask(10, "non-existent task", -1, null, -1));
+        assertThrows(IllegalArgumentException.class, () -> sm.modTask(10, "non-existent task", null, null, null));
     }
 
     @Test
@@ -126,7 +126,7 @@ class ScheduleManagerTest {
 
         assertEquals(Card.Color.INDIGO, sm.getCards().get(0).getColor());
 
-        assertNull(sm.modCard(10, "non-existent card", null));
+        assertThrows(IllegalArgumentException.class, () -> sm.modTask(10, "non-existent card", null, null, null));
     }
 
     @Test
