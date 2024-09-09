@@ -324,8 +324,12 @@ public class ScheduleManager {
      * @param cardId ID for card
      * @return The new task added
      */
-    public Task addTask(String name, double hours, Calendar due, int cardId) {
-        Task task = new Task(taskId, name, hours, due, getCardById(cardId));
+    public Task addTask(String name, double hours, Calendar due, Integer cardId) {
+        Card c = null;
+        if (cardId != null) {
+            c = getCardById(cardId);
+        }
+        Task task = new Task(taskId, name, hours, due, c);
 
         taskManager.add(task);
         taskMap.put(taskId, task);
@@ -344,43 +348,44 @@ public class ScheduleManager {
      * @param cardId ID for card
      * @return Task after it's modified
      */
-    public Task modTask(int id, String name, double hours, Calendar due, int cardId) {
+    public Task modTask(int id, String name, Double hours, Calendar due, Integer cardId) {
         Task task = taskMap.get(id);
 
         if (task == null) {
-            return null;
+            throw new IllegalArgumentException("Could not locate Task " + id + ".");
         }
 
         if (name != null) {
             task.setName(name);
         }
-        if (hours != -1) {
+        if (hours != null) {
             task.setTotalHours(hours);
         }
         if (due != null) {
             task.setDueDate(due);
         }
-        if (cardId != -1) {
-            task.setCard(getCardById(cardId));
+        if (cardId != null) {
+            Card c = getCardById(cardId);
+            if (c != null) {
+                task.setCard(c);
+            }
         }
 
         return task;
     }
 
-    public Card modCard(int id, String name, Card.Color colorId) {
-        Card card;
+    public Card modCard(int id, String name, Card.Color color) {
+        Card card = getCardById(id);
 
-        if (id >= 0 && id < cards.size()) {
-            card = cards.get(id);
-        } else {
-            return null;
+        if (card == null) {
+            throw new IllegalArgumentException("Could not locate Card " + id + ".");
         }
 
         if (name != null) {
             card.setName(name);
         }
-        if (colorId != null) {
-            card.setColor(colorId);
+        if (color != null) {
+            card.setColor(color);
         }
 
         return card;
