@@ -2,6 +2,7 @@ package com.planner.util;
 
 import com.planner.models.Card;
 
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -336,8 +337,18 @@ public class Parser {
         return new CardInfo(id, name, color);
     }
 
-    public static void parseDelete(String[] args) {
+    public static int[] parseIds(String[] args) {
+        int[] ids = new int[args.length - 2];
 
+        for (int i = 2; i < args.length; i++) {
+            try {
+                ids[i - 2] = Integer.parseInt(args[i]);
+            } catch (Exception e) {
+                throw new IllegalArgumentException("Error: ID must be a number");
+            }
+        }
+
+        return ids;
     }
 
     private static Card.Color parseColor(String s) {
@@ -678,8 +689,8 @@ public class Parser {
             return dates;
         }
 
-        public Calendar[] getTimestamp() {
-            return timestamp;
+        public Time.TimeStamp getTimestamp() {
+            return new Time.TimeStamp(timestamp[0], timestamp[1]);
         }
 
         public int getCardId() {
