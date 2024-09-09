@@ -12,6 +12,7 @@ import com.planner.models.*;
 import com.planner.io.GoogleCalendarIO;
 import com.planner.schedule.Scheduler;
 import com.planner.schedule.day.Day;
+import com.planner.ui.formatters.FormatType;
 import com.planner.util.*;
 import com.planner.ui.tables.TableFormatter;
 
@@ -673,6 +674,36 @@ public class ScheduleManager {
      */
     public String buildReportStr() {
         return ReportLog.buildReportLog(this);
+    }
+
+    public String buildFormatCard(int id) {
+        Card card = getCardById(id);
+
+        if (card == null) {
+            throw new IllegalArgumentException("Could not locate Card " + id + ".");
+        }
+
+        return FormatType.formatCard(card);
+    }
+
+    public String buildFormatTask(int id) {
+        Task task = taskMap.get(id);
+
+        if (task == null) {
+            throw new IllegalArgumentException("Could not locate Task " + id + ".");
+        }
+
+        return FormatType.formatTask(task);
+    }
+
+    public String buildFormatEvent(int id) {
+        Event event = findEvent(id);
+
+        if (event == null) {
+            throw new IllegalArgumentException("Could not locate Event " + id + ".");
+        }
+
+        return FormatType.formatEvent(event);
     }
 
     /**

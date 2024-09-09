@@ -2,9 +2,14 @@ package com.planner.ui;
 
 import com.planner.manager.ScheduleManager;
 import com.planner.models.Card;
+import com.planner.models.Event;
 import com.planner.util.Parser;
+import com.planner.util.Time;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 import java.util.Scanner;
 
 public class CLI {
@@ -86,7 +91,31 @@ public class CLI {
                 break;
             case "event":
                 if (tokens.length > 1) {
-                    // TODO
+                    Parser.EventInfo eventInfo = Parser.parseEvent(tokens);
+
+                    Calendar start = eventInfo.getTimestamp()[0];
+                    Calendar end = eventInfo.getTimestamp()[1];
+
+                    List<Calendar> dates = eventInfo.getDates();
+
+                    if (!eventInfo.isRecurring() && dates != null && dates.size() > 1) {
+                        dates = null;
+                    }
+
+                    if (!eventInfo.isRecurring() && dates != null) {
+                        start.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                        start.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                        start.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
+
+                        end.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                        end.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                        end.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
+                    }
+
+                    Time.TimeStamp timeStamp = new Time.TimeStamp(start, end);
+
+                    Event event = sm.addEvent(eventInfo.getName(), eventInfo.getCardId(), timeStamp, eventInfo.isRecurring(), dates);
+                    System.out.println("Added Event " + event.getId() + ".");
                 } else {
                     System.out.println(sm.buildEventStr());
                 }
@@ -119,6 +148,60 @@ public class CLI {
                     default:
                         throw new IllegalArgumentException("Invalid type provided for mod.");
                 }
+            case "get":
+                if (tokens.length < 3) {
+                    throw new IllegalArgumentException("Invalid number of arguments, must be 3 or more");
+                }
+                switch (tokens[1]) {
+                    case "card":
+                        int[] cardIds = Parser.parseIds(tokens);
+                        for (int id : cardIds) {
+                            System.out.println(sm.buildFormatCard(id));
+                        }
+                        break;
+                    case "task":
+                        int[] taskIds = Parser.parseIds(tokens);
+                        for (int id : taskIds) {
+                            System.out.println(sm.buildFormatTask(id));
+                        }
+                        break;
+                    case "event":
+                        int[] eventIds = Parser.parseIds(tokens);
+                        for (int id : eventIds) {
+                            System.out.println(sm.buildFormatEvent(id));
+                        }
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid type provided for get");
+                }
+                break;
+            case "delete":
+                if (tokens.length < 3) {
+                    throw new IllegalArgumentException("Invalid number of arguments, must be 3 or more");
+                }
+                switch (tokens[1]) {
+                    case "card":
+                        int[] cardIds = Parser.parseIds(tokens);
+                        for (int id : cardIds) {
+                            sm.deleteCard(id);
+                        }
+                        break;
+                    case "task":
+                        int[] taskIds = Parser.parseIds(tokens);
+                        for (int id : taskIds) {
+                            sm.deleteTask(id);
+                        }
+                        break;
+                    case "event":
+                        int[] eventIds = Parser.parseIds(tokens);
+                        for (int id : eventIds) {
+                            sm.deleteEvent(id);
+                        }
+                        break;
+                    default:
+                        throw new IllegalArgumentException("Invalid type provided for delete");
+                }
+                break;
             case "jbin":
                 if (tokens.length == 2) {
                     if (tokens[1].contains(".jbin")) {

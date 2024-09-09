@@ -457,7 +457,7 @@ public class TableFormatter {
         return sb.toString();
     }
 
-    private static String getColorANSICode(Card.Color color) {
+    public static String getColorANSICode(Card.Color color) {
         if (color == null) return "\u001B[38;2;3;155;229m";
         // Color Code - \001B[38;2;<r>;<g>;<b>m
         switch (color) {
