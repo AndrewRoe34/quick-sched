@@ -51,70 +51,66 @@ public class Parser {
         return tokens.toArray(new String[0]);
     }
 
+    // [DONE]
     public static TaskInfo parseTask(String[] args) {
-        if (args.length < 3) {
-            throw new IllegalArgumentException("Invalid number of arguments provided for Task.");
-        }
         String name = null;
         Calendar due = null;
-        double hours = -1;
-        int cardId = -1;
+        Double hours = null;
+        Integer cardId = null;
 
         for (int i = 1; i < args.length; i++) {
             if (args[i].charAt(0) == '"' && name == null) {
                 name = args[i].substring(1, args[i].length() - 1);
-            } else if (args[i].charAt(0) == '+' && cardId == -1 && args[i].length() > 2
+            } else if (args[i].charAt(0) == '+' && cardId == null && args[i].length() > 2
                     && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
                 try {
                     cardId = Integer.parseInt(args[i].substring(2));
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid card id provided.");
+                    throwAddTaskParsingError();
                 }
-                if (cardId < 0) {
-                    throw new IllegalArgumentException("Invalid card id provided, cannot be negative.");
-                }
-            } else if ("@".equals(args[i]) && due == null) {
-                if (i + 1 >= args.length) {
-                    throw new IllegalArgumentException("Due date not provided following '@'.");
-                }
+            } else if ("@".equals(args[i]) && due == null && i + 1 < args.length) {
                 i++;
                 due = parseDate(args[i]);
-            } else {
+            } else if (hours == null) {
                 try {
                     hours = Double.parseDouble(args[i]);
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid hours provided.");
+                    throwAddTaskParsingError();
                 }
+            } else {
+                throwAddTaskParsingError();
             }
+        }
+
+        if (name == null || hours == null || due == null) {
+            throwAddTaskParsingError();
         }
 
         return new TaskInfo(-1, name, due, hours, cardId);
     }
 
+    // [DONE]
     public static CardInfo parseCard(String[] args) {
-        if (args.length != 3) {
-            throw new IllegalArgumentException("Invalid number of arguments provided for Card.");
-        }
-
         Card.Color color = null;
         String name = null;
         for (int i = 1; i < args.length; i++) {
-            if (args[i].charAt(0) == '"') {
-                if (name != null) {
-                    throw new IllegalArgumentException("Cannot have multiple names for Card.");
-                }
+            if (args[i].charAt(0) == '"' && name == null) {
                 name = args[i].substring(1, args[i].length() - 1);
-            } else {
-                if (color != null) {
-                    throw new IllegalArgumentException("Cannot have multiple colors for Card.");
-                }
+            } else if (color == null) {
                 color = parseColor(args[i]);
                 if (color == null) {
-                    throw new IllegalArgumentException("Invalid color provided for Card.");
+                    throwAddCardParsingError();
                 }
+            } else {
+                throwAddCardParsingError();
             }
         }
-        return new CardInfo(-1, name, color);
+
+        if (name == null || color == null) {
+            throwAddCardParsingError();
+        }
+
+        return new CardInfo(null, name, color);
     }
 
     public static EventInfo parseEvent(String[] args) {
@@ -304,35 +300,32 @@ public class Parser {
 
     public static CardInfo parseModCard(String[] args) {
         if (args.length < 4) {
-            throw new IllegalArgumentException("Invalid number of arguments provided for Card.");
+            throwModCardParsingError();
         }
 
-        int id = -1;
+        Integer id = null;
         Card.Color color = null;
         String name = null;
 
         try {
             id = Integer.parseInt(args[2]);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Third argument must be a Card ID");
+            throwModCardParsingError();
         }
 
         for (int i = 3; i < args.length; i++) {
-            if (args[i].charAt(0) == '"') {
-                if (name != null) {
-                    throw new IllegalArgumentException("Cannot have multiple names for Card.");
-                }
+            if (args[i].charAt(0) == '"' && name == null) {
                 name = args[i].substring(1, args[i].length() - 1);
-            } else {
-                if (color != null) {
-                    throw new IllegalArgumentException("Cannot have multiple colors for Card.");
-                }
+            } else if (color == null) {
                 color = parseColor(args[i]);
                 if (color == null) {
-                    throw new IllegalArgumentException("Invalid color provided for Card.");
+                    throwAddCardParsingError();
                 }
+            } else {
+                throwAddCardParsingError();
             }
         }
+
         return new CardInfo(id, name, color);
     }
 
@@ -592,17 +585,17 @@ public class Parser {
     }
 
     public static class CardInfo {
-        private final int id;
+        private final Integer id;
         private final String name;
         private final Card.Color color;
 
-        public CardInfo(int id, String name, Card.Color color) {
+        public CardInfo(Integer id, String name, Card.Color color) {
             this.id = id;
             this.name = name;
             this.color = color;
         }
 
-        public int getId() {
+        public Integer getId() {
             return id;
         }
 
@@ -616,13 +609,13 @@ public class Parser {
     }
 
     public static class TaskInfo {
-        private final int taskId;
+        private final Integer taskId;
         private final String desc;
         private final Calendar due;
-        private final double hours;
-        private final int cardId;
+        private final Double hours;
+        private final Integer cardId;
 
-        public TaskInfo(int taskId, String desc, Calendar due, double hours, int cardId) {
+        public TaskInfo(Integer taskId, String desc, Calendar due, Double hours, Integer cardId) {
             this.taskId = taskId;
             this.desc = desc;
             this.due = due;
@@ -630,17 +623,17 @@ public class Parser {
             this.cardId = cardId;
         }
 
-        public int getTaskId() { return taskId; }
+        public Integer getTaskId() { return taskId; }
 
         public String getDesc() { return desc; }
 
         public Calendar getDue() { return due; }
 
-        public double getHours() {
+        public Double getHours() {
             return hours;
         }
 
-        public int getCardId() {
+        public Integer getCardId() {
             return cardId;
         }
     }
@@ -701,6 +694,21 @@ public class Parser {
         public Calendar getDate() { return date; }
         public HashMap<Integer, Time.TimeStamp> getTaskTimeStampsMap() { return taskTimeStampsMap; }
         public List<Integer> getEventIds() { return eventIds; }
+    }
+
+    private static void throwAddTaskParsingError() {
+        throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
+                "       task <name> <hours> [cardId] @ <date>");
+    }
+
+    private static void throwAddCardParsingError() {
+        throw new IllegalArgumentException("Error: Invalid input. Expected format is:\n" +
+                "       card <name> <color>");
+    }
+
+    private static void throwModCardParsingError() {
+        throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
+                "       mod card <id> [name] [color]");
     }
 
     public static void main(String[] args) {
