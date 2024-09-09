@@ -689,8 +689,8 @@ public class Parser {
             return dates;
         }
 
-        public Time.TimeStamp getTimestamp() {
-            return new Time.TimeStamp(timestamp[0], timestamp[1]);
+        public Calendar[] getTimestamp() {
+            return timestamp;
         }
 
         public int getCardId() {

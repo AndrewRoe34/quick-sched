@@ -4,6 +4,7 @@ import com.planner.manager.ScheduleManager;
 import com.planner.models.Card;
 import com.planner.models.Event;
 import com.planner.util.Parser;
+import com.planner.util.Time;
 
 import java.io.IOException;
 import java.util.Scanner;
@@ -88,7 +89,10 @@ public class CLI {
             case "event":
                 if (tokens.length > 1) {
                     Parser.EventInfo eventInfo = Parser.parseEvent(tokens);
-                    Event event = sm.addEvent(eventInfo.getName(), eventInfo.getCardId(), eventInfo.getTimestamp(), eventInfo.isRecurring(), eventInfo.getDates());
+
+                    Time.TimeStamp timeStamp = new Time.TimeStamp(eventInfo.getTimestamp()[0], eventInfo.getTimestamp()[1]);
+
+                    Event event = sm.addEvent(eventInfo.getName(), eventInfo.getCardId(), timeStamp, eventInfo.isRecurring(), eventInfo.getDates());
                     System.out.println("Added Event " + event.getId() + ".");
                 } else {
                     System.out.println(sm.buildEventStr());
