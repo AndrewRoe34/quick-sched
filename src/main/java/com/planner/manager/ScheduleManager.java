@@ -675,7 +675,7 @@ public class ScheduleManager {
         Card card = getCardById(id);
 
         if (card == null) {
-            throw new IllegalArgumentException("Card ID not found");
+            throw new IllegalArgumentException("Could not locate Card " + id + ".");
         }
 
         return FormatType.formatCard(card);
@@ -685,7 +685,7 @@ public class ScheduleManager {
         Task task = taskMap.get(id);
 
         if (task == null) {
-            throw new IllegalArgumentException("Task ID not found");
+            throw new IllegalArgumentException("Could not locate Task " + id + ".");
         }
 
         return FormatType.formatTask(task);
@@ -695,7 +695,7 @@ public class ScheduleManager {
         Event event = findEvent(id);
 
         if (event == null) {
-            throw new IllegalArgumentException("Event ID not found");
+            throw new IllegalArgumentException("Could not locate Event " + id + ".");
         }
 
         return FormatType.formatEvent(event);

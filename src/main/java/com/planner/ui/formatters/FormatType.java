@@ -4,6 +4,7 @@ import com.planner.models.Card;
 import com.planner.models.Event;
 import com.planner.models.Task;
 import com.planner.ui.tables.TableFormatter;
+import com.planner.util.Time;
 
 import java.util.Calendar;
 
@@ -30,7 +31,10 @@ public class FormatType {
     }
 
     public static String formatTask(Task task) {
-        return "Task Details: " +
+        Calendar scheduleTime = Calendar.getInstance();
+
+        return (( (!Time.doDatesMatch(task.getDueDate(), scheduleTime) && task.getDueDate().compareTo(scheduleTime) < 0) || task.getTotalHours() == 0)? "Archived " : "Active ") +
+                "Task Details: " +
                 '\n' +
                 "-------------------------------------------------------------" +
                 '\n' +

@@ -7,6 +7,7 @@ import com.planner.util.Parser;
 import com.planner.util.Time;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Scanner;
 
 public class CLI {
@@ -90,7 +91,21 @@ public class CLI {
                 if (tokens.length > 1) {
                     Parser.EventInfo eventInfo = Parser.parseEvent(tokens);
 
-                    Time.TimeStamp timeStamp = new Time.TimeStamp(eventInfo.getTimestamp()[0], eventInfo.getTimestamp()[1]);
+                    Calendar start = eventInfo.getTimestamp()[0];
+                    Calendar end = eventInfo.getTimestamp()[1];
+                    Calendar currDate = Calendar.getInstance();
+
+                    if (!eventInfo.isRecurring() && eventInfo.getDates() != null) {
+                        start.set(Calendar.DAY_OF_MONTH, currDate.get(Calendar.DAY_OF_MONTH));
+                        start.set(Calendar.MONTH, currDate.get(Calendar.MONTH));
+                        start.set(Calendar.YEAR, currDate.get(Calendar.YEAR));
+
+                        end.set(Calendar.DAY_OF_MONTH, currDate.get(Calendar.DAY_OF_MONTH));
+                        end.set(Calendar.MONTH, currDate.get(Calendar.MONTH));
+                        end.set(Calendar.YEAR, currDate.get(Calendar.YEAR));
+                    }
+
+                    Time.TimeStamp timeStamp = new Time.TimeStamp(start, end);
 
                     Event event = sm.addEvent(eventInfo.getName(), eventInfo.getCardId(), timeStamp, eventInfo.isRecurring(), eventInfo.getDates());
                     System.out.println("Added Event " + event.getId() + ".");
