@@ -115,10 +115,11 @@ public class Parser {
 
     public static EventInfo parseEvent(String[] args) {
         if (args.length < 5) {
-            throw new IllegalArgumentException("Invalid number of arguments provided for Event.");
+            throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
+                    "       event bool <name> [cardId] @ <date> <timestamp>");
         }
         String name = null;
-        int cardId = -1;
+        Integer cardId = null;
         boolean recurring = false;
         List<Calendar> dates = null;
         Calendar[] timestamp = null;
@@ -126,22 +127,23 @@ public class Parser {
         if ("true".equalsIgnoreCase(args[1])) {
             recurring = true;
         } else if (!"false".equalsIgnoreCase(args[1])) {
-            throw new IllegalArgumentException("Expected bool as second arg for Event.");
+            throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
+                    "       event bool <name> [cardId] @ <date> <timestamp>");
         }
 
         for (int i = 2; i < args.length; i++) {
             if (args[i].charAt(0) == '"' && name == null) {
                 name = args[i];
-            } else if (args[i].charAt(0) == '+' && cardId == -1 && args[i].length() > 2
+            } else if (args[i].charAt(0) == '+' && cardId == null && args[i].length() > 2
                     && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
                 try {
                     cardId = Integer.parseInt(args[i].substring(2));
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid card id provided.");
+                    throwAddEventParsingError(recurring);
                 }
             } else if ("@".equals(args[i]) && timestamp == null) {
                 if (i + 1 >= args.length) {
-                    throw new IllegalArgumentException("No time arguments after '@'.");
+                    throwAddEventParsingError(recurring);
                 }
                 for (i = i + 1; i < args.length; i++) {
                     try {
@@ -167,14 +169,14 @@ public class Parser {
                     }
                 }
                 if (timestamp == null) {
-                    throw new IllegalArgumentException("No timestamp was provided.");
+                    throwAddEventParsingError(recurring);
                 }
             } else {
-                throw new IllegalArgumentException("Invalid argument provided.");
+                throwAddEventParsingError(recurring);
             }
         }
 
-        return new EventInfo(-1, name, recurring, dates, timestamp, cardId);
+        return new EventInfo(null, name, recurring, dates, timestamp, cardId);
     }
 
     public static DayInfo parseDay(String[] args) {
@@ -290,7 +292,69 @@ public class Parser {
         return new TaskInfo(id, name, due, hours, cardId);
     }
 
-    public static void parseModEvent(String[] args) {
+    public static EventInfo parseModEvent(String[] args) {
+        if (args.length < 4) {
+            throwModEventParsingError();
+        }
+
+        Integer id = null;
+        String name = null;
+        Integer cardId = null;
+        List<Calendar> dates = null;
+        Calendar[] timestamp = null;
+
+        try {
+            id = Integer.parseInt(args[2]);
+        } catch (Exception e) {
+            throwModEventParsingError();
+        }
+
+        for (int i = 3; i < args.length; i++) {
+            if (args[i].charAt(0) == '"' && name == null) {
+                name = args[i];
+            } else if (args[i].charAt(0) == '+' && cardId == null && args[i].length() > 2
+                    && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
+                try {
+                    cardId = Integer.parseInt(args[i].substring(2));
+                } catch (NumberFormatException e) {
+                    throwModEventParsingError();
+                }
+            } else if ("@".equals(args[i]) && timestamp == null) {
+                if (i + 1 >= args.length) {
+                    throwModEventParsingError();
+                }
+                for (i = i + 1; i < args.length; i++) {
+                    try {
+                        Calendar d = parseDate(args[i]);
+                        if (dates == null) {
+                            dates = new ArrayList<>();
+                        }
+                        dates.add(d);
+                    } catch (IllegalArgumentException e) {
+                        try {
+                            Calendar[] ts = parseTimeStamp(args[i]);
+                            if (timestamp != null) {
+                                throw new IllegalArgumentException("Cannot have duplicate timestamps.");
+                            }
+                            timestamp = ts;
+                        } catch (IllegalArgumentException f) {
+                            if ("Cannot have duplicate timestamps.".equals(f.getMessage())) {
+                                throw new IllegalArgumentException(f.getMessage());
+                            }
+                            i = i - 1;
+                            break;
+                        }
+                    }
+                }
+                if (timestamp == null) {
+                    throwModEventParsingError();
+                }
+            } else {
+                throwModEventParsingError();
+            }
+        }
+
+        return new EventInfo(id, name, false, dates, timestamp, cardId);
 
     }
 
@@ -645,14 +709,14 @@ public class Parser {
     }
 
     public static class EventInfo {
-        private final int id;
+        private final Integer id;
         private final String name;
-        private final boolean recurring;
+        private final Boolean recurring;
         private final List<Calendar> dates;
         private final Calendar[] timestamp;
-        private final int cardId;
+        private final Integer cardId;
 
-        public EventInfo(int id, String name, boolean recurring, List<Calendar> dates, Calendar[] timestamp, int cardId) {
+        public EventInfo(Integer id, String name, boolean recurring, List<Calendar> dates, Calendar[] timestamp, Integer cardId) {
             this.id = id;
             this.name = name;
             this.recurring = recurring;
@@ -661,7 +725,7 @@ public class Parser {
             this.cardId = cardId;
         }
 
-        public int getId() {
+        public Integer getId() {
             return id;
         }
 
@@ -681,7 +745,7 @@ public class Parser {
             return timestamp;
         }
 
-        public int getCardId() {
+        public Integer getCardId() {
             return cardId;
         }
     }
@@ -712,6 +776,16 @@ public class Parser {
                 "       card <name> <color>");
     }
 
+    private static void throwAddEventParsingError(boolean isTruePath) {
+        if (isTruePath) {
+            throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
+                    "       event true <name> [cardId] @ <date> <timestamp>");
+        } else {
+            throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
+                    "       event false <name> [cardId] @ [date] <timestamp>");
+        }
+    }
+
     private static void throwModCardParsingError() {
         throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
                 "       mod card <id> [name] [color]");
@@ -720,6 +794,11 @@ public class Parser {
     private static void throwModTaskParsingError() {
         throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
                 "       mod task <id> [name] [hours] [cardId] @ [date]");
+    }
+
+    private static void throwModEventParsingError() {
+        throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
+                "       mod event <id> [name] [cardId] @ [date] [timestamp]");
     }
 
     private static void throwDateParsingError() {
@@ -738,15 +817,15 @@ public class Parser {
     }
 
     public static void main(String[] args) {
-        String[] arr = {"task", "@", "03-09-2024", "+C0", "4.0", "\"finish ch12\""};
-        TaskInfo ti = parseTask(arr);
-        System.out.println(ti.getDue().getTime());
-
-        Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "T1", "1-2am", "E1"});
-        Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "E2", "T1", "1-2am", "E1"});
-
-        Parser.parseTimeStamp("12:-4pm");
-        Parser.parseDate("tdy");
+//        String[] arr = {"task", "@", "03-09-2024", "+C0", "4.0", "\"finish ch12\""};
+//        TaskInfo ti = parseTask(arr);
+//        System.out.println(ti.getDue().getTime());
+//
+//        Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "T1", "1-2am", "E1"});
+//        Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "E2", "T1", "1-2am", "E1"});
+//
+//        Parser.parseTimeStamp("12:-4pm");
+//        Parser.parseDate("tdy");
 
 
         // Error

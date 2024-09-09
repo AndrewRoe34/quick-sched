@@ -159,10 +159,10 @@ class ScheduleManagerTest {
         dates.add(Time.getFormattedCalendarInstance(3));
         dates.add(Time.getFormattedCalendarInstance(4));
 
-        sm.modEvent(1, null, -1, timestamp, dates);
+        sm.modEvent(1, null, null, timestamp, dates);
         assertEquals("RecurE1 BLUE " + timestamp + " true" + " reoccurs 4 days", eventToString(sm.getRecurEvents().get(dates.get(0).get(Calendar.DAY_OF_WEEK) - 1).get(0)));
 
-        assertNull(sm.modEvent(10, "non-existent event", -1, null, null));
+        assertNull(sm.modEvent(10, "non-existent event", null, null, null));
 
     }
 

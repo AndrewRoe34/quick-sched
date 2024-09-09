@@ -144,10 +144,20 @@ public class CLI {
                         sm.modTask(ti.getTaskId(), ti.getDesc(), ti.getHours(), ti.getDue(), ti.getCardId());
                         break;
                     case "event":
+                        Parser.EventInfo eventInfo = Parser.parseModEvent(tokens);
+
+                        Time.TimeStamp timeStamp = null;
+
+                        if (eventInfo.getTimestamp() != null) {
+                            timeStamp = new Time.TimeStamp(eventInfo.getTimestamp()[0], eventInfo.getTimestamp()[1]);
+                        }
+
+                        sm.modEvent(eventInfo.getId(), eventInfo.getName(), eventInfo.getCardId(), timeStamp, eventInfo.getDates());
                         break;
                     default:
                         throw new IllegalArgumentException("Invalid type provided for mod.");
                 }
+                break;
             case "get":
                 if (tokens.length < 3) {
                     throw new IllegalArgumentException("Invalid number of arguments, must be 3 or more");
