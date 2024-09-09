@@ -263,7 +263,7 @@ public class Parser {
             throwModTaskParsingError();
         }
 
-        for (int i = 1; i < args.length; i++) {
+        for (int i = 3; i < args.length; i++) {
             if (args[i].charAt(0) == '"' && name == null) {
                 name = args[i].substring(1, args[i].length() - 1);
             } else if (args[i].charAt(0) == '+' && cardId == null && args[i].length() > 2
@@ -570,7 +570,7 @@ public class Parser {
         start.set(Calendar.HOUR, startHr);
         start.set(Calendar.MINUTE, startMin);
 
-        Calendar end = Calendar.getInstance();
+        Calendar end = (Calendar) start.clone();
         end.set(Calendar.HOUR, endHr);
         end.set(Calendar.MINUTE, endMin);
 
