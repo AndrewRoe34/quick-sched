@@ -148,8 +148,24 @@ public class CLI {
 
                         Time.TimeStamp timeStamp = null;
 
+                        List<Calendar> dates = eventInfo.getDates();
+
                         if (eventInfo.getTimestamp() != null) {
                             timeStamp = new Time.TimeStamp(eventInfo.getTimestamp()[0], eventInfo.getTimestamp()[1]);
+
+                            if (dates != null && dates.size() == 1) {
+                                Calendar start = eventInfo.getTimestamp()[0];
+                                Calendar end = eventInfo.getTimestamp()[1];
+
+                                start.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                                start.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                                start.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
+
+                                end.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                                end.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                                end.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
+                            }
+
                         }
 
                         sm.modEvent(eventInfo.getId(), eventInfo.getName(), eventInfo.getCardId(), timeStamp, eventInfo.getDates());

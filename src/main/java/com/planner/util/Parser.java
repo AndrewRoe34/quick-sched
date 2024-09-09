@@ -161,7 +161,7 @@ public class Parser {
                             timestamp = ts;
                         } catch (IllegalArgumentException f) {
                             if ("Cannot have duplicate timestamps.".equals(f.getMessage())) {
-                                throw new IllegalArgumentException(f.getMessage());
+                                throwAddEventParsingError(recurring);
                             }
                             i = i - 1;
                             break;
@@ -339,7 +339,7 @@ public class Parser {
                             timestamp = ts;
                         } catch (IllegalArgumentException f) {
                             if ("Cannot have duplicate timestamps.".equals(f.getMessage())) {
-                                throw new IllegalArgumentException(f.getMessage());
+                                throwModEventParsingError();
                             }
                             i = i - 1;
                             break;

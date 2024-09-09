@@ -411,7 +411,10 @@ public class ScheduleManager {
             event.setName(name);
         }
         if (cardId != null) {
-            event.setCard(getCardById(cardId));
+            Card card = getCardById(cardId);
+            if (card != null) {
+                event.setCard(card);
+            }
         }
         if (timeStamp != null) {
             event.setTimeStamp(timeStamp);
