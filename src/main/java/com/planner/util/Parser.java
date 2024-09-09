@@ -408,7 +408,7 @@ public class Parser {
                     try {
                         due = YEAR_MONTH_DAY.parse(s);
                     } catch (ParseException ex) {
-                        throw new IllegalArgumentException("Invalid date format provided.");
+                        throwDateParsingError();
                     }
                 }
                 curr.setTime(due);
@@ -711,6 +711,14 @@ public class Parser {
                 "       mod card <id> [name] [color]");
     }
 
+    private static void throwDateParsingError() {
+        throw new IllegalArgumentException("Invalid date format. Expected format:\n" +
+                "   dd-MM-yyyy (e.g., 05-09-2024)\n" +
+                "   yyyy-MM-dd (e.g., 2024-09-05)\n" +
+                "   Day abbreviations: sun, mon, tue, wed, thu, fri, sat\n" +
+                "   Special keywords: today, tmrw");
+    }
+
     private static void throwTimestampParsingError() {
         throw new IllegalArgumentException("Invalid timestamp format. Expected format:\n" +
                 "   HH[:mm]-HH[:mm] (e.g., 9-2, 9:30-2:15)\n" +
@@ -726,7 +734,9 @@ public class Parser {
         Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "T1", "1-2am", "E1"});
         Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "E2", "T1", "1-2am", "E1"});
 
-        Parser.parseTimeStamp("12pm:-4pm");
+        Parser.parseTimeStamp("12:-4pm");
+        Parser.parseDate("tdy");
+
 
         // Error
         // Parser.parseDay(new String[]{"10-09-2004", "T0", "T1", "E0", "T2", "1-2am", "E1"});
