@@ -44,6 +44,7 @@ public class CLI {
 
     public void loop() throws IOException {
         Scanner scanner = new Scanner(System.in);
+        System.out.println("Use 'ls' to list all available commands.");
         System.out.print("> ");
         while (scanner.hasNextLine()) {
             String s = scanner.nextLine();
@@ -249,22 +250,24 @@ public class CLI {
             case "excel":
             case "ls":
                 if (tokens.length == 1) {
-                    System.out.println("task\n" +
-                            "subtask\n" +
-                            "card\n" +
-                            "event\n" +
-                            "mod\n" +
-                            "delete\n" +
-                            "sched\n" +
+                    System.out.println("card\n" +
+                            "clear\n" +
                             "config\n" +
-                            "jbin\n" +
-                            "update\n" +
-                            "log\n" +
-                            "report\n" +
-                            "google\n" +
-                            "excel\n" +
+                            "delete\n" +
                             "doc\n" +
-                            "quit");
+                            "excel\n" +
+                            "google\n" +
+                            "log\n" +
+                            "ls\n" +
+                            "mod\n" +
+                            "quit\n" +
+                            "read\n" +
+                            "report\n" +
+                            "save\n" +
+                            "sched\n" +
+                            "subtask\n" +
+                            "task\n" +
+                            "event");
                 }
                 break;
             case "doc":

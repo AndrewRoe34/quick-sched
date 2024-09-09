@@ -385,7 +385,7 @@ public class Parser {
         int day =  curr.get(Calendar.DAY_OF_WEEK) - 1;
         int numDays = 0;
         switch (s.toUpperCase()) {
-            case "EOD":
+            case "TODAY":
                 return curr;
             case "TMRW":
                 return Time.getFormattedCalendarInstance(curr, 1);
