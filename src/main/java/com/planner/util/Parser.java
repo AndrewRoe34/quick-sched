@@ -433,18 +433,18 @@ public class Parser {
             switch (s.charAt(i)) {
                 case ':':
                     if (!hour || minute) {
-                        throw new IllegalArgumentException("Colon is expected after hour, not minute.");
+                        throwTimestampParsingError();
                     } else if (am) {
-                        throw new IllegalArgumentException("Colon can never occur after 'am' or 'pm'.");
+                        throwTimestampParsingError();
                     }
                     else if (colon) {
-                        throw new IllegalArgumentException("Colons cannot be duplicated for same hour, minute combination");
+                        throwTimestampParsingError();
                     }
                     colon = true;
                     break;
                 case '-':
                     if (!hour || dash) {
-                        throw new IllegalArgumentException("Dashes require an hour and cannot be duplicated");
+                        throwTimestampParsingError();
                     }
                     dash = true;
                     hour = false;
@@ -457,7 +457,7 @@ public class Parser {
                 case 'p':
                 case 'P':
                     if (!hour || am) {
-                        throw new IllegalArgumentException("'am'/'pm' cannot occur without an hour nor can there be duplicates");
+                        throwTimestampParsingError();
                     }
                     if (i + 1 < s.length() && (s.charAt(i+1) == 'm' || s.charAt(i+1) == 'M')) {
                         String temp = s.substring(i, i + 2);
@@ -467,7 +467,7 @@ public class Parser {
                             endFmt = temp;
                         }
                     } else {
-                        throw new IllegalArgumentException("Provided time format besides valid 'am'/'pm'");
+                        throwTimestampParsingError();
                     }
                     am = true;
                     i++;
@@ -483,17 +483,17 @@ public class Parser {
                 case '8':
                 case '9':
                     if (hour && !colon) {
-                        throw new IllegalArgumentException("Minutes must be separated by colon from hours");
+                        throwTimestampParsingError();
                     } else if (minute) {
-                        throw new IllegalArgumentException("Minutes cannot be duplicated");
+                        throwTimestampParsingError();
                     } else if (am) {
-                        throw new IllegalArgumentException("Hours and minutes cannot come after 'am'/'pm' signature");
+                        throwTimestampParsingError();
                     } else if (hour) {
                         minute = true;
                         if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
                             int x = Integer.parseInt(s.substring(i, i + 2));
                             if (x > 59) {
-                                throw new IllegalArgumentException("Minutes cannot be greater than 59");
+                                throwTimestampParsingError();
                             }
 
                             if (!dash) {
@@ -503,14 +503,14 @@ public class Parser {
                             }
                             i++;
                         } else {
-                            throw new IllegalArgumentException("Minutes require 2 digits");
+                            throwTimestampParsingError();
                         }
                     } else {
                         hour = true;
                         if (i+1 >= s.length() || s.charAt(i + 1) < '0' || s.charAt(i + 1) > '9') {
                             int x = Integer.parseInt(s.substring(i, i + 1));
                             if (x > 12) {
-                                throw new IllegalArgumentException("Hours cannot be greater than 12");
+                                throwTimestampParsingError();
                             }
 
                             if (!dash) {
@@ -521,7 +521,7 @@ public class Parser {
                         } else if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
                             int x = Integer.parseInt(s.substring(i, i + 2));
                             if (x > 12) {
-                                throw new IllegalArgumentException("Hours cannot be greater than 12");
+                                throwTimestampParsingError();
                             }
 
                             if (!dash) {
@@ -531,12 +531,12 @@ public class Parser {
                             }
                             i++;
                         } else {
-                            throw new IllegalArgumentException("Minutes require 2 digits");
+                            throwTimestampParsingError();
                         }
                     }
                     break;
                 default:
-                    throw new IllegalArgumentException("Invalid time format provided");
+                    throwTimestampParsingError();
             }
         }
 
@@ -711,6 +711,13 @@ public class Parser {
                 "       mod card <id> [name] [color]");
     }
 
+    private static void throwTimestampParsingError() {
+        throw new IllegalArgumentException("Invalid timestamp format. Expected format:\n" +
+                "   HH[:mm]-HH[:mm] (e.g., 9-2, 9:30-2:15)\n" +
+                "   Optional: AM/PM (e.g., 9AM-2PM, 9:30AM-2:15PM)\n" +
+                "   24-hour formats are not allowed.");
+    }
+
     public static void main(String[] args) {
         String[] arr = {"task", "@", "03-09-2024", "+C0", "4.0", "\"finish ch12\""};
         TaskInfo ti = parseTask(arr);
@@ -718,6 +725,8 @@ public class Parser {
 
         Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "T1", "1-2am", "E1"});
         Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "E2", "T1", "1-2am", "E1"});
+
+        Parser.parseTimeStamp("12pm:-4pm");
 
         // Error
         // Parser.parseDay(new String[]{"10-09-2004", "T0", "T1", "E0", "T2", "1-2am", "E1"});
