@@ -124,7 +124,7 @@ public class CLI {
                 }
                 break;
             case "mod":
-                if (tokens.length < 4) {
+                if (tokens.length < 2) {
                     throw new IllegalArgumentException("Invalid mod operation provided.");
                 }
                 switch (tokens[1]) {

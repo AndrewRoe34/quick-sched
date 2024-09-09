@@ -52,70 +52,66 @@ public class Parser {
         return tokens.toArray(new String[0]);
     }
 
+    // [DONE]
     public static TaskInfo parseTask(String[] args) {
-        if (args.length < 3) {
-            throw new IllegalArgumentException("Invalid number of arguments provided for Task.");
-        }
         String name = null;
         Calendar due = null;
-        double hours = -1;
-        int cardId = -1;
+        Double hours = null;
+        Integer cardId = null;
 
         for (int i = 1; i < args.length; i++) {
             if (args[i].charAt(0) == '"' && name == null) {
                 name = args[i].substring(1, args[i].length() - 1);
-            } else if (args[i].charAt(0) == '+' && cardId == -1 && args[i].length() > 2
+            } else if (args[i].charAt(0) == '+' && cardId == null && args[i].length() > 2
                     && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
                 try {
                     cardId = Integer.parseInt(args[i].substring(2));
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid card id provided.");
+                    throwAddTaskParsingError();
                 }
-                if (cardId < 0) {
-                    throw new IllegalArgumentException("Invalid card id provided, cannot be negative.");
-                }
-            } else if ("@".equals(args[i]) && due == null) {
-                if (i + 1 >= args.length) {
-                    throw new IllegalArgumentException("Due date not provided following '@'.");
-                }
+            } else if ("@".equals(args[i]) && due == null && i + 1 < args.length) {
                 i++;
                 due = parseDate(args[i]);
-            } else {
+            } else if (hours == null) {
                 try {
                     hours = Double.parseDouble(args[i]);
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid hours provided.");
+                    throwAddTaskParsingError();
                 }
+            } else {
+                throwAddTaskParsingError();
             }
+        }
+
+        if (name == null || hours == null || due == null) {
+            throwAddTaskParsingError();
         }
 
         return new TaskInfo(-1, name, due, hours, cardId);
     }
 
+    // [DONE]
     public static CardInfo parseCard(String[] args) {
-        if (args.length != 3) {
-            throw new IllegalArgumentException("Invalid number of arguments provided for Card.");
-        }
-
         Card.Color color = null;
         String name = null;
         for (int i = 1; i < args.length; i++) {
-            if (args[i].charAt(0) == '"') {
-                if (name != null) {
-                    throw new IllegalArgumentException("Cannot have multiple names for Card.");
-                }
+            if (args[i].charAt(0) == '"' && name == null) {
                 name = args[i].substring(1, args[i].length() - 1);
-            } else {
-                if (color != null) {
-                    throw new IllegalArgumentException("Cannot have multiple colors for Card.");
-                }
+            } else if (color == null) {
                 color = parseColor(args[i]);
                 if (color == null) {
-                    throw new IllegalArgumentException("Invalid color provided for Card.");
+                    throwAddCardParsingError();
                 }
+            } else {
+                throwAddCardParsingError();
             }
         }
-        return new CardInfo(-1, name, color);
+
+        if (name == null || color == null) {
+            throwAddCardParsingError();
+        }
+
+        return new CardInfo(null, name, color);
     }
 
     public static EventInfo parseEvent(String[] args) {
@@ -254,45 +250,41 @@ public class Parser {
 
     public static TaskInfo parseModTask(String[] args) {
         if (args.length < 4) {
-            throw new IllegalArgumentException("Invalid number of arguments provided for Task.");
+            throwModTaskParsingError();
         }
-        int id = -1;
+        Integer id = null;
         String name = null;
         Calendar due = null;
-        double hours = -1;
-        int cardId = -1;
+        Double hours = null;
+        Integer cardId = null;
 
         try {
             id = Integer.parseInt(args[2]);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Third argument must be a task ID");
+            throwModTaskParsingError();
         }
 
         for (int i = 3; i < args.length; i++) {
             if (args[i].charAt(0) == '"' && name == null) {
                 name = args[i].substring(1, args[i].length() - 1);
-            } else if (args[i].charAt(0) == '+' && cardId == -1 && args[i].length() > 2
+            } else if (args[i].charAt(0) == '+' && cardId == null && args[i].length() > 2
                     && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
                 try {
                     cardId = Integer.parseInt(args[i].substring(2));
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid card id provided.");
+                    throwModTaskParsingError();
                 }
-                if (cardId < 0) {
-                    throw new IllegalArgumentException("Invalid card id provided, cannot be negative.");
-                }
-            } else if ("@".equals(args[i]) && due == null) {
-                if (i + 1 >= args.length) {
-                    throw new IllegalArgumentException("Due date not provided following '@'.");
-                }
+            } else if ("@".equals(args[i]) && due == null && i + 1 < args.length) {
                 i++;
                 due = parseDate(args[i]);
-            } else {
+            } else if (hours == null) {
                 try {
                     hours = Double.parseDouble(args[i]);
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid hours provided.");
+                    throwModTaskParsingError();
                 }
+            } else {
+                throwModTaskParsingError();
             }
         }
 
@@ -305,35 +297,32 @@ public class Parser {
 
     public static CardInfo parseModCard(String[] args) {
         if (args.length < 4) {
-            throw new IllegalArgumentException("Invalid number of arguments provided for Card.");
+            throwModCardParsingError();
         }
 
-        int id = -1;
+        Integer id = null;
         Card.Color color = null;
         String name = null;
 
         try {
             id = Integer.parseInt(args[2]);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Third argument must be a Card ID");
+            throwModCardParsingError();
         }
 
         for (int i = 3; i < args.length; i++) {
-            if (args[i].charAt(0) == '"') {
-                if (name != null) {
-                    throw new IllegalArgumentException("Cannot have multiple names for Card.");
-                }
+            if (args[i].charAt(0) == '"' && name == null) {
                 name = args[i].substring(1, args[i].length() - 1);
-            } else {
-                if (color != null) {
-                    throw new IllegalArgumentException("Cannot have multiple colors for Card.");
-                }
+            } else if (color == null) {
                 color = parseColor(args[i]);
                 if (color == null) {
-                    throw new IllegalArgumentException("Invalid color provided for Card.");
+                    throwAddCardParsingError();
                 }
+            } else {
+                throwAddCardParsingError();
             }
         }
+
         return new CardInfo(id, name, color);
     }
 
@@ -426,7 +415,7 @@ public class Parser {
                     try {
                         due = YEAR_MONTH_DAY.parse(s);
                     } catch (ParseException ex) {
-                        throw new IllegalArgumentException("Invalid date format provided.");
+                        throwDateParsingError();
                     }
                 }
                 curr.setTime(due);
@@ -451,18 +440,18 @@ public class Parser {
             switch (s.charAt(i)) {
                 case ':':
                     if (!hour || minute) {
-                        throw new IllegalArgumentException("Colon is expected after hour, not minute.");
+                        throwTimestampParsingError();
                     } else if (am) {
-                        throw new IllegalArgumentException("Colon can never occur after 'am' or 'pm'.");
+                        throwTimestampParsingError();
                     }
                     else if (colon) {
-                        throw new IllegalArgumentException("Colons cannot be duplicated for same hour, minute combination");
+                        throwTimestampParsingError();
                     }
                     colon = true;
                     break;
                 case '-':
                     if (!hour || dash) {
-                        throw new IllegalArgumentException("Dashes require an hour and cannot be duplicated");
+                        throwTimestampParsingError();
                     }
                     dash = true;
                     hour = false;
@@ -475,7 +464,7 @@ public class Parser {
                 case 'p':
                 case 'P':
                     if (!hour || am) {
-                        throw new IllegalArgumentException("'am'/'pm' cannot occur without an hour nor can there be duplicates");
+                        throwTimestampParsingError();
                     }
                     if (i + 1 < s.length() && (s.charAt(i+1) == 'm' || s.charAt(i+1) == 'M')) {
                         String temp = s.substring(i, i + 2);
@@ -485,7 +474,7 @@ public class Parser {
                             endFmt = temp;
                         }
                     } else {
-                        throw new IllegalArgumentException("Provided time format besides valid 'am'/'pm'");
+                        throwTimestampParsingError();
                     }
                     am = true;
                     i++;
@@ -501,17 +490,17 @@ public class Parser {
                 case '8':
                 case '9':
                     if (hour && !colon) {
-                        throw new IllegalArgumentException("Minutes must be separated by colon from hours");
+                        throwTimestampParsingError();
                     } else if (minute) {
-                        throw new IllegalArgumentException("Minutes cannot be duplicated");
+                        throwTimestampParsingError();
                     } else if (am) {
-                        throw new IllegalArgumentException("Hours and minutes cannot come after 'am'/'pm' signature");
+                        throwTimestampParsingError();
                     } else if (hour) {
                         minute = true;
                         if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
                             int x = Integer.parseInt(s.substring(i, i + 2));
                             if (x > 59) {
-                                throw new IllegalArgumentException("Minutes cannot be greater than 59");
+                                throwTimestampParsingError();
                             }
 
                             if (!dash) {
@@ -521,14 +510,14 @@ public class Parser {
                             }
                             i++;
                         } else {
-                            throw new IllegalArgumentException("Minutes require 2 digits");
+                            throwTimestampParsingError();
                         }
                     } else {
                         hour = true;
                         if (i+1 >= s.length() || s.charAt(i + 1) < '0' || s.charAt(i + 1) > '9') {
                             int x = Integer.parseInt(s.substring(i, i + 1));
                             if (x > 12) {
-                                throw new IllegalArgumentException("Hours cannot be greater than 12");
+                                throwTimestampParsingError();
                             }
 
                             if (!dash) {
@@ -539,7 +528,7 @@ public class Parser {
                         } else if (i+1 < s.length() && s.charAt(i + 1) >= '0' && s.charAt(i + 1) <= '9') {
                             int x = Integer.parseInt(s.substring(i, i + 2));
                             if (x > 12) {
-                                throw new IllegalArgumentException("Hours cannot be greater than 12");
+                                throwTimestampParsingError();
                             }
 
                             if (!dash) {
@@ -549,12 +538,12 @@ public class Parser {
                             }
                             i++;
                         } else {
-                            throw new IllegalArgumentException("Minutes require 2 digits");
+                            throwTimestampParsingError();
                         }
                     }
                     break;
                 default:
-                    throw new IllegalArgumentException("Invalid time format provided");
+                    throwTimestampParsingError();
             }
         }
 
@@ -592,7 +581,7 @@ public class Parser {
         start.set(Calendar.HOUR, startHr);
         start.set(Calendar.MINUTE, startMin);
 
-        Calendar end = Calendar.getInstance();
+        Calendar end = (Calendar) start.clone();
         end.set(Calendar.HOUR, endHr);
         end.set(Calendar.MINUTE, endMin);
 
@@ -603,17 +592,17 @@ public class Parser {
     }
 
     public static class CardInfo {
-        private final int id;
+        private final Integer id;
         private final String name;
         private final Card.Color color;
 
-        public CardInfo(int id, String name, Card.Color color) {
+        public CardInfo(Integer id, String name, Card.Color color) {
             this.id = id;
             this.name = name;
             this.color = color;
         }
 
-        public int getId() {
+        public Integer getId() {
             return id;
         }
 
@@ -627,13 +616,13 @@ public class Parser {
     }
 
     public static class TaskInfo {
-        private final int taskId;
+        private final Integer taskId;
         private final String desc;
         private final Calendar due;
-        private final double hours;
-        private final int cardId;
+        private final Double hours;
+        private final Integer cardId;
 
-        public TaskInfo(int taskId, String desc, Calendar due, double hours, int cardId) {
+        public TaskInfo(Integer taskId, String desc, Calendar due, Double hours, Integer cardId) {
             this.taskId = taskId;
             this.desc = desc;
             this.due = due;
@@ -641,17 +630,17 @@ public class Parser {
             this.cardId = cardId;
         }
 
-        public int getTaskId() { return taskId; }
+        public Integer getTaskId() { return taskId; }
 
         public String getDesc() { return desc; }
 
         public Calendar getDue() { return due; }
 
-        public double getHours() {
+        public Double getHours() {
             return hours;
         }
 
-        public int getCardId() {
+        public Integer getCardId() {
             return cardId;
         }
     }
@@ -714,6 +703,41 @@ public class Parser {
         public List<Integer> getEventIds() { return eventIds; }
     }
 
+    private static void throwAddTaskParsingError() {
+        throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
+                "       task <name> <hours> [cardId] @ <date>");
+    }
+
+    private static void throwAddCardParsingError() {
+        throw new IllegalArgumentException("Error: Invalid input. Expected format is:\n" +
+                "       card <name> <color>");
+    }
+
+    private static void throwModCardParsingError() {
+        throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
+                "       mod card <id> [name] [color]");
+    }
+
+    private static void throwModTaskParsingError() {
+        throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
+                "       mod task <id> [name] [hours] [cardId] @ [date]");
+    }
+
+    private static void throwDateParsingError() {
+        throw new IllegalArgumentException("Invalid date format. Expected format:\n" +
+                "   dd-MM-yyyy (e.g., 05-09-2024)\n" +
+                "   yyyy-MM-dd (e.g., 2024-09-05)\n" +
+                "   Day abbreviations: sun, mon, tue, wed, thu, fri, sat\n" +
+                "   Special keywords: today, tmrw");
+    }
+
+    private static void throwTimestampParsingError() {
+        throw new IllegalArgumentException("Invalid timestamp format. Expected format:\n" +
+                "   HH[:mm]-HH[:mm] (e.g., 9-2, 9:30-2:15)\n" +
+                "   Optional: AM/PM (e.g., 9AM-2PM, 9:30AM-2:15PM)\n" +
+                "   24-hour formats are not allowed.");
+    }
+
     public static void main(String[] args) {
         String[] arr = {"task", "@", "03-09-2024", "+C0", "4.0", "\"finish ch12\""};
         TaskInfo ti = parseTask(arr);
@@ -721,6 +745,10 @@ public class Parser {
 
         Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "T1", "1-2am", "E1"});
         Parser.parseDay(new String[]{"10-09-2004", "T0", "10-12pm", "E0", "E2", "T1", "1-2am", "E1"});
+
+        Parser.parseTimeStamp("12:-4pm");
+        Parser.parseDate("tdy");
+
 
         // Error
         // Parser.parseDay(new String[]{"10-09-2004", "T0", "T1", "E0", "T2", "1-2am", "E1"});
