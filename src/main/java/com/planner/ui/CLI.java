@@ -7,7 +7,9 @@ import com.planner.util.Parser;
 import com.planner.util.Time;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Scanner;
 
 public class CLI {
@@ -93,21 +95,26 @@ public class CLI {
 
                     Calendar start = eventInfo.getTimestamp()[0];
                     Calendar end = eventInfo.getTimestamp()[1];
-                    Calendar currDate = Calendar.getInstance();
 
-                    if (!eventInfo.isRecurring() && eventInfo.getDates() != null) {
-                        start.set(Calendar.DAY_OF_MONTH, currDate.get(Calendar.DAY_OF_MONTH));
-                        start.set(Calendar.MONTH, currDate.get(Calendar.MONTH));
-                        start.set(Calendar.YEAR, currDate.get(Calendar.YEAR));
+                    List<Calendar> dates = eventInfo.getDates();
 
-                        end.set(Calendar.DAY_OF_MONTH, currDate.get(Calendar.DAY_OF_MONTH));
-                        end.set(Calendar.MONTH, currDate.get(Calendar.MONTH));
-                        end.set(Calendar.YEAR, currDate.get(Calendar.YEAR));
+                    if (!eventInfo.isRecurring() && dates != null && dates.size() > 1) {
+                        dates = null;
+                    }
+
+                    if (!eventInfo.isRecurring() && dates != null) {
+                        start.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                        start.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                        start.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
+
+                        end.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                        end.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                        end.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
                     }
 
                     Time.TimeStamp timeStamp = new Time.TimeStamp(start, end);
 
-                    Event event = sm.addEvent(eventInfo.getName(), eventInfo.getCardId(), timeStamp, eventInfo.isRecurring(), eventInfo.getDates());
+                    Event event = sm.addEvent(eventInfo.getName(), eventInfo.getCardId(), timeStamp, eventInfo.isRecurring(), dates);
                     System.out.println("Added Event " + event.getId() + ".");
                 } else {
                     System.out.println(sm.buildEventStr());
