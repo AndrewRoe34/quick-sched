@@ -347,24 +347,27 @@ public class ScheduleManager {
      * @param cardId ID for card
      * @return Task after it's modified
      */
-    public Task modTask(int id, String name, double hours, Calendar due, int cardId) {
+    public Task modTask(int id, String name, Double hours, Calendar due, Integer cardId) {
         Task task = taskMap.get(id);
 
         if (task == null) {
-            return null;
+            throw new IllegalArgumentException("Could not locate Task " + id + ".");
         }
 
         if (name != null) {
             task.setName(name);
         }
-        if (hours != -1) {
+        if (hours != null) {
             task.setTotalHours(hours);
         }
         if (due != null) {
             task.setDueDate(due);
         }
-        if (cardId != -1) {
-            task.setCard(getCardById(cardId));
+        if (cardId != null) {
+            Card c = getCardById(cardId);
+            if (c != null) {
+                task.setCard(c);
+            }
         }
 
         return task;

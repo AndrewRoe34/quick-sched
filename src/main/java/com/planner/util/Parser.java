@@ -249,45 +249,41 @@ public class Parser {
 
     public static TaskInfo parseModTask(String[] args) {
         if (args.length < 4) {
-            throw new IllegalArgumentException("Invalid number of arguments provided for Task.");
+            throwModTaskParsingError();
         }
-        int id = -1;
+        Integer id = null;
         String name = null;
         Calendar due = null;
-        double hours = -1;
-        int cardId = -1;
+        Double hours = null;
+        Integer cardId = null;
 
         try {
             id = Integer.parseInt(args[2]);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Third argument must be a task ID");
+            throwModTaskParsingError();
         }
 
-        for (int i = 3; i < args.length; i++) {
+        for (int i = 1; i < args.length; i++) {
             if (args[i].charAt(0) == '"' && name == null) {
                 name = args[i].substring(1, args[i].length() - 1);
-            } else if (args[i].charAt(0) == '+' && cardId == -1 && args[i].length() > 2
+            } else if (args[i].charAt(0) == '+' && cardId == null && args[i].length() > 2
                     && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
                 try {
                     cardId = Integer.parseInt(args[i].substring(2));
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid card id provided.");
+                    throwModTaskParsingError();
                 }
-                if (cardId < 0) {
-                    throw new IllegalArgumentException("Invalid card id provided, cannot be negative.");
-                }
-            } else if ("@".equals(args[i]) && due == null) {
-                if (i + 1 >= args.length) {
-                    throw new IllegalArgumentException("Due date not provided following '@'.");
-                }
+            } else if ("@".equals(args[i]) && due == null && i + 1 < args.length) {
                 i++;
                 due = parseDate(args[i]);
-            } else {
+            } else if (hours == null) {
                 try {
                     hours = Double.parseDouble(args[i]);
                 } catch (NumberFormatException e) {
-                    throw new IllegalArgumentException("Invalid hours provided.");
+                    throwModTaskParsingError();
                 }
+            } else {
+                throwModTaskParsingError();
             }
         }
 
@@ -709,6 +705,11 @@ public class Parser {
     private static void throwModCardParsingError() {
         throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
                 "       mod card <id> [name] [color]");
+    }
+
+    private static void throwModTaskParsingError() {
+        throw new IllegalArgumentException("Invalid input. Expected format is:\n" +
+                "       mod task <id> [name] [hours] [cardId] @ [date]");
     }
 
     private static void throwDateParsingError() {
