@@ -251,6 +251,7 @@ public class CLI {
                 if (tokens.length == 1) {
                     ConfigDialog configDialog = new ConfigDialog();
                     configDialog.setupAndDisplayPage();
+                    sm.setUserConfig(configDialog.getUserConfig());
                 } else {
                     throw new IllegalArgumentException("'config' has no args.");
                 }

@@ -21,7 +21,7 @@ public class ConfigDialog {
         try {
             userConfig = JsonHandler.readUserConfig(Files.readString(Paths.get("settings/profile.json")));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException("Could not locate settings/profile.json");
         }
         configTable = TableFormatter.formatPrettyUserConfigTable(userConfig);
         scanner = new Scanner(System.in);
@@ -43,11 +43,15 @@ public class ConfigDialog {
             try {
                 Files.write(path, JsonHandler.createUserConfig(userConfig).getBytes());
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new IllegalArgumentException("Could not write config data to settings/profile.json");
             }
             writeToFile = false;
             configTable = TableFormatter.formatPrettyUserConfigTable(userConfig);
         }
+    }
+
+    public UserConfig getUserConfig() {
+        return userConfig;
     }
 
     private void formatTablePrompt() {

@@ -248,6 +248,13 @@ public class ScheduleManager {
      */
     public PriorityQueue<Task> getArchivedTasks() { return archivedTasks; }
 
+    public void setUserConfig(UserConfig userConfig) {
+        if (userConfig == null) {
+            throw new IllegalArgumentException("UserConfig cannot be null");
+        }
+        this.userConfig = userConfig;
+    }
+
     /**
      * Gets last ID for Task
      *
@@ -617,6 +624,7 @@ public class ScheduleManager {
      * Resets all the tasks as well as the entire schedule for it to be regenerated
      */
     private void resetSchedule() {
+        scheduler.updateConfig(userConfig);
         schedule = new LinkedList<>();
         PriorityQueue<Task> copy = new PriorityQueue<>();
         while(!taskManager.isEmpty()) {
