@@ -160,23 +160,6 @@ public class ConfigDialog {
                 userConfig.setFitDay(promptBool("Fit schedule"));
                 break;
             case 7:
-                System.out.print("\n                                                 Scheduling algorithm (0-1)");
-                System.out.print("\n                                                       Input [#]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    if (hasInteger(input)) {
-                        int schedulingAlgorithm = Integer.parseInt(input);
-                        if (schedulingAlgorithm >= 0 && schedulingAlgorithm <= 4) {
-                            userConfig.setSchedulingAlgorithm(schedulingAlgorithm);
-                        } else {
-                            // Do nothing or provide feedback to the user regarding invalid input range
-                        }
-                    } else {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
-                }
-                break;
-            case 8:
                 System.out.print("\n                                                 Minimum hours for a given day");
                 System.out.print("\n                                                       Input [#.0]: ");
                 if (scanner.hasNextLine()) {
@@ -189,10 +172,10 @@ public class ConfigDialog {
                     }
                 }
                 break;
-            case 9:
+            case 8:
                 userConfig.setOptimizeDay(promptBool("Optimize day"));
                 break;
-            case 10:
+            case 9:
                 userConfig.setDefaultAtStart(promptBool("Default at start"));
                 break;
         }

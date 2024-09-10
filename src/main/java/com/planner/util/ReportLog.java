@@ -19,7 +19,6 @@ public class ReportLog {
                 .append("    - Priority Scheduling: ").append(userConfig.isPriority()).append("\n")
                 .append("    - Overflow Handling: ").append(userConfig.isOverflow()).append("\n")
                 .append("    - Fit Day Schedule: ").append(userConfig.isFitDay()).append("\n")
-                .append("    - Scheduling Algorithm: ").append(userConfig.getSchedulingAlgorithm()).append("\n")
                 .append("    - Minimum Task Duration: ").append(userConfig.getMinHours()).append("\n");
         if (!scheduleManager.getRecurEvents().isEmpty() || !scheduleManager.getIndivEvents().isEmpty()) {
             sb.append(TableFormatter.formatEventSetTables(scheduleManager.getRecurEvents(), scheduleManager.getIndivEvents(), userConfig));

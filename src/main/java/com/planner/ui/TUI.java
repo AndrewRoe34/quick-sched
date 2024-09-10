@@ -43,7 +43,6 @@ public class TUI {
                             "    - Priority Scheduling: " + userConfig.isPriority() + "\n" +
                             "    - Overflow Handling: " + userConfig.isOverflow() + "\n" +
                             "    - Fit Day Schedule: " + userConfig.isFitDay() + "\n" +
-                            "    - Scheduling Algorithm: " + userConfig.getSchedulingAlgorithm() + "\n" +
                             "    - Minimum Task Duration: " + userConfig.getMinHours() + "\n"
             );
         } catch (IOException e) {

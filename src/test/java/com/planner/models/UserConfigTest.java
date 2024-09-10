@@ -12,7 +12,7 @@ class UserConfigTest {
     @BeforeEach
     void setUp() {
         userConfig = new UserConfig(new int[]{8, 20}, new int[]{8, 8, 8, 8, 8, 8, 8}, 14, 5, false, true,
-                true, 0, 0.5, false, true, true);
+                true, 0.5, false, true, true);
     }
 
     @Test
@@ -76,15 +76,6 @@ class UserConfigTest {
         assertTrue(userConfig.isFitDay());
         userConfig.setFitDay(false);
         assertFalse(userConfig.isFitDay());
-    }
-
-    @Test
-    void setSchedulingAlgorithm() {
-        assertEquals(0, userConfig.getSchedulingAlgorithm());
-        userConfig.setSchedulingAlgorithm(1);
-        assertEquals(1, userConfig.getSchedulingAlgorithm());
-
-        // test for exception
     }
 
     @Test

@@ -22,8 +22,6 @@ public class UserConfig {
     private boolean overflow;
     /** Whether to fit schedule */
     private boolean fitDay;
-    /** Scheduling algorithm chosen */
-    private int schedulingAlgorithm;
     /** Minimum number of hours for a given day */
     private double minHours;
     /** Whether to maximize the positioning of tasks in relation to each other */
@@ -43,15 +41,14 @@ public class UserConfig {
      * @param priority            Whether to enable priority for tasks
      * @param overflow            Whether to display overflow
      * @param fitDay              Whether to fit schedule
-     * @param schedulingAlgorithm Scheduling algorithm chosen
      * @param minHours            Minimum number of hours for a given day
      * @param optimizeDay         Whether to maximize the positioning of tasks in relation to each other
      * @param defaultAtStart      Whether the scheduling begins at the start of day
      * @param formatPrettyTime    Whether to format pretty time
      */
     public UserConfig(int[] dailyHoursRange, int[] globalHr, int maxDays, int archiveDays, boolean priority,
-                      boolean overflow, boolean fitDay, int schedulingAlgorithm, double minHours,
-                      boolean optimizeDay, boolean defaultAtStart, boolean formatPrettyTime) {
+                      boolean overflow, boolean fitDay, double minHours, boolean optimizeDay, boolean defaultAtStart,
+                      boolean formatPrettyTime) {
         this.dailyHoursRange = dailyHoursRange;
         this.hoursPerDayOfWeek = globalHr;
         this.maxDays = maxDays;
@@ -59,7 +56,6 @@ public class UserConfig {
         this.priority = priority;
         this.overflow = overflow;
         this.fitDay = fitDay;
-        this.schedulingAlgorithm = schedulingAlgorithm;
         this.minHours = minHours;
         this.optimizeDay = optimizeDay;
         this.defaultAtStart = defaultAtStart;
@@ -72,7 +68,7 @@ public class UserConfig {
     public UserConfig() {
         this(new int[]{8, 20}, new int[]{8, 8, 8, 8, 8, 8, 8},
                 14, 5, false, true,
-                true, 1, 1.0, true,
+                true, 1.0, true,
                 true, true);
     }
 
@@ -215,25 +211,6 @@ public class UserConfig {
      */
     public void setFitDay(boolean fitDay) {
         this.fitDay = fitDay;
-    }
-
-    /**
-     * Gets scheduling algorithm option
-     *
-     * @return algorithm option
-     */
-    public int getSchedulingAlgorithm() {
-        return schedulingAlgorithm;
-    }
-
-    /**
-     * Sets scheduling algorithm option
-     *
-     * @param schedulingAlgorithm algorithm option
-     */
-    public void setSchedulingAlgorithm(int schedulingAlgorithm) {
-        validateRange(schedulingAlgorithm, 0, 1, "Scheduling algorithm option is out of index for UserConfig");
-        this.schedulingAlgorithm = schedulingAlgorithm;
     }
 
     /**
