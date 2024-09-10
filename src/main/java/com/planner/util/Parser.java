@@ -444,31 +444,31 @@ public class Parser {
             case "EOW":
             case "SAT":
             case "SATURDAY":
-                numDays = (Calendar.SATURDAY - day + 7) % 7;
+                numDays = (Calendar.SATURDAY - day + 6) % 7;
                 return Time.getFormattedCalendarInstance(curr, numDays);
             case "SUN":
             case "SUNDAY":
-                numDays = (Calendar.SUNDAY - day + 7) % 7;
+                numDays = (Calendar.SUNDAY - day + 6) % 7;
                 return Time.getFormattedCalendarInstance(curr, numDays);
             case "MON":
             case "MONDAY":
-                numDays = (Calendar.MONDAY - day + 7) % 7;
+                numDays = (Calendar.MONDAY - day + 6) % 7;
                 return Time.getFormattedCalendarInstance(curr, numDays);
             case "TUE":
             case "TUESDAY":
-                numDays = (Calendar.TUESDAY - day + 7) % 7;
+                numDays = (Calendar.TUESDAY - day + 6) % 7;
                 return Time.getFormattedCalendarInstance(curr, numDays);
             case "WED":
             case "WEDNESDAY":
-                numDays = (Calendar.WEDNESDAY - day + 7) % 7;
+                numDays = (Calendar.WEDNESDAY - day + 6) % 7;
                 return Time.getFormattedCalendarInstance(curr, numDays);
             case "THU":
             case "THURSDAY":
-                numDays = (Calendar.THURSDAY - day + 7) % 7;
+                numDays = (Calendar.THURSDAY - day + 6) % 7;
                 return Time.getFormattedCalendarInstance(curr, numDays);
             case "FRI":
             case "FRIDAY":
-                numDays = (Calendar.FRIDAY - day + 7) % 7;
+                numDays = (Calendar.FRIDAY - day + 6) % 7;
                 return Time.getFormattedCalendarInstance(curr, numDays);
             default:
                 Date due = null;
