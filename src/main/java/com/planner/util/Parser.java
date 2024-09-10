@@ -620,7 +620,7 @@ public class Parser {
 
         if (endHr == -1) {
             Calendar start = Calendar.getInstance();
-            start.set(Calendar.HOUR, startHr);
+            start.set(Calendar.HOUR_OF_DAY, startHr);
             start.set(Calendar.MINUTE, startMin);
 
             calendars[0] = start;
@@ -641,11 +641,11 @@ public class Parser {
         }
 
         Calendar start = Calendar.getInstance();
-        start.set(Calendar.HOUR, startHr);
+        start.set(Calendar.HOUR_OF_DAY, startHr);
         start.set(Calendar.MINUTE, startMin);
 
         Calendar end = (Calendar) start.clone();
-        end.set(Calendar.HOUR, endHr);
+        end.set(Calendar.HOUR_OF_DAY, endHr);
         end.set(Calendar.MINUTE, endMin);
 
         calendars[0] = start;
