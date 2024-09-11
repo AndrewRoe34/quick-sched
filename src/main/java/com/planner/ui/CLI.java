@@ -313,6 +313,7 @@ public class CLI {
                             "clear\n" +
                             "config\n" +
                             "delete\n" +
+                            "event\n" +
                             "doc\n" +
                             "excel\n" +
                             "google\n" +
@@ -325,8 +326,7 @@ public class CLI {
                             "save\n" +
                             "sched\n" +
                             "subtask\n" +
-                            "task\n" +
-                            "event");
+                            "task");
                 }
                 break;
             case "doc":
@@ -395,6 +395,9 @@ public class CLI {
                             break;
                         case "delete":
                             System.out.println("\n" + Doc.getDeleteDoc() + "\n");
+                            break;
+                        case "clear":
+                            System.out.println("\n" + Doc.getClearDoc() + "\n");
                             break;
                         default:
                             System.out.println("Unknown command. Use 'ls' to list all available commands.");

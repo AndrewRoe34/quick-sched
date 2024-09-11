@@ -3,7 +3,7 @@ package com.planner.ui;
 public class Doc {
 
     public static String getDoc() {
-        return "Agile Planner is a dynamic scheduling platform that automates the process of creating a comprehensive schedule.\n\n" +
+        return "Quick Sched is a dynamic scheduling platform that automates the process of creating a comprehensive schedule.\n\n" +
                 "Command Categories:\n\n" +
                 "Task Management:\n" +
                 "  - task      Create a new Task or display all Task data\n" +
@@ -31,7 +31,8 @@ public class Doc {
                 "References:\n" +
                 "  - date      List of all valid date formats\n" +
                 "  - ts        List of all valid timestamp formats\n" +
-                "  - color     List of all valid colors";
+                "  - color     List of all valid colors\n" +
+                "Use 'doc <topic>' to view detailed information.";
     }
 
     public static String getTaskDoc() {
@@ -77,7 +78,6 @@ public class Doc {
 
     public static String getEventDoc() {
         return "Creates a new Event to be stored by the system or displays all previously created Event data if no arguments are provided. Events serve the role of blocked timestamps.\n\n" +
-                "Non-recurring Events can have only 1 date. Recurring Events can have up to 7 (which represent the days of the week, no duplicates allowed).\n\n" +
                 "Usage:\n" +
                 "  event\n" +
                 "  event bool <name> [cardId] @ [date] <timestamp>\n\n" +
@@ -127,6 +127,14 @@ public class Doc {
                 "  log\n\n" +
                 "Examples:\n" +
                 "  log";
+    }
+
+    public static String getClearDoc() {
+        return "Clears the terminal of all text.\n\n" +
+                "Usage:\n" +
+                "  clear\n\n" +
+                "Examples:\n" +
+                "  clear";
     }
 
     public static String getQuitDoc() {
