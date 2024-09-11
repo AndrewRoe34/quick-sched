@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-group = 'agile.planner'
+group = 'quick-sched'
 version = '1.0.0-SNAPSHOT'
 
 repositories {
