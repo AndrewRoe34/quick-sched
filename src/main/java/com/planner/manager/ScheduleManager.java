@@ -297,7 +297,25 @@ public class ScheduleManager {
                 recurringEvents.get(eventDays[i].ordinal()).add(e);
             }
         } else {
-            if (dates != null) throw new IllegalArgumentException("Event is non-recurring but has recurrent days");
+            if (dates != null && dates.size() > 1) {
+                throw new IllegalArgumentException("Event is non-recurring but has recurrent days");
+            }
+
+            if (dates != null) {
+                Calendar start = timeStamp.getStart();
+                Calendar end = timeStamp.getEnd();
+
+                start.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                start.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                start.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
+
+                end.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                end.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                end.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
+
+                timeStamp = new Time.TimeStamp(start, end);
+            }
+
             e = new Event(eventId, name, card, timeStamp);
             indivEvents.add(e);
         }

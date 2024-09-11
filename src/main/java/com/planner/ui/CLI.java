@@ -99,7 +99,7 @@ public class CLI {
                     List<Calendar> dates = eventInfo.getDates();
 
                     if (!eventInfo.isRecurring() && dates != null && dates.size() > 1) {
-                        dates = null;
+                        throw new IllegalArgumentException("Event is non-recurring but has multiple days");
                     }
 
                     if (!eventInfo.isRecurring() && dates != null) {
