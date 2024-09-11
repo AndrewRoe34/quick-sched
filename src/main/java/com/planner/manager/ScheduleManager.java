@@ -343,9 +343,17 @@ public class ScheduleManager {
         }
         Task task = new Task(taskId, name, hours, due, c);
 
-        taskManager.add(task);
+        Calendar curr = Calendar.getInstance();
+        if (task.getTotalHours() == 0 || (!Time.doDatesMatch(curr, task.getDueDate()) && task.getDueDate().compareTo(curr) < 0)) {
+            archivedTasks.add(task);
+        } else {
+            taskManager.add(task);
+        }
+
         taskMap.put(taskId, task);
         taskId++;
+
+        eventLog.reportTaskAction(task, 0);
 
         return task;
     }
@@ -383,6 +391,22 @@ public class ScheduleManager {
             }
         }
 
+        Calendar curr = Calendar.getInstance();
+        boolean isActive = taskManager.remove(task);
+        if (task.getTotalHours() == 0 || (!Time.doDatesMatch(curr, task.getDueDate()) && task.getDueDate().compareTo(curr) < 0)) {
+            // check if it's in archived or active
+            if (isActive) {
+                archivedTasks.add(task);
+            }
+        } else {
+            if (!isActive) {
+                archivedTasks.remove(task);
+            }
+            taskManager.add(task);
+        }
+
+        eventLog.reportTaskAction(task, 2);
+
         return task;
     }
 
@@ -399,6 +423,8 @@ public class ScheduleManager {
         if (color != null) {
             card.setColor(color);
         }
+
+        eventLog.reportCardAction(card, 2);
 
         return card;
     }
@@ -437,6 +463,8 @@ public class ScheduleManager {
             event.setDays(days);
         }
 
+        eventLog.reportEventAction(event, 2);
+
         return event;
     }
 
@@ -456,6 +484,8 @@ public class ScheduleManager {
             taskRemoved = archivedTasks.remove(task);
         }
 
+        eventLog.reportTaskAction(task, 1);
+
         return taskRemoved;
     }
 
@@ -468,6 +498,8 @@ public class ScheduleManager {
 
                 removeTasksWithCard(card);
 
+                eventLog.reportCardAction(card, 1);
+
                 return true;
             }
         }
@@ -478,6 +510,7 @@ public class ScheduleManager {
     public boolean deleteEvent(int id) {
         for (int i = 0; i < indivEvents.size(); i++) {
             if (indivEvents.get(i).getId() == id) {
+                eventLog.reportEventAction(indivEvents.get(i), 2);
                 indivEvents.remove(i);
                 return true;
             }
@@ -485,14 +518,18 @@ public class ScheduleManager {
 
         boolean eventRemoved = false;
 
-        for (List<Event> events : recurringEvents)
-        {
+        Event event = null;
+        for (List<Event> events : recurringEvents) {
             for (int i = 0; i < events.size(); i++) {
                 if (events.get(i).getId() == id) {
-                    events.remove(i);
+                    event = events.remove(i);
                     eventRemoved = true;
                 }
             }
+        }
+
+        if (event != null) {
+            eventLog.reportEventAction(event, 1);
         }
 
         return eventRemoved;

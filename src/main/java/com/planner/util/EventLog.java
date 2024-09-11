@@ -48,27 +48,33 @@ public class EventLog {
      * Reports a given Task action
      *
      * @param task Task being reported
-     * @param type Action type (0=Add, 1=Remove, 2=EDIT, 3=ARCHIVE)
+     * @param type Action type (0=Add, 1=Remove, 2=EDIT)
      */
     public void reportTaskAction(Task task, int type) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         sb.append(sdf.format(Calendar.getInstance().getTime()));
         sb.append(" [INFO]");
         if(type == 0) {
-            sb.append(" ADD(TASK): ");
+            sb.append(" ADD(TASK):");
         } else if(type == 1) {
-            sb.append(" REMOVE(TASK): ");
+            sb.append(" REM(TASK):");
         } else if (type == 2) {
-            sb.append(" EDIT(TASK): ");
-        } else {
-            sb.append(" ARCHIVE(TASK): ");
+            sb.append(" MOD(TASK):");
         }
         sb.append(" ID=").append(task.getId());
         sb.append(", NAME=").append(task.getName());
+        sb.append(", TAG=").append(task.getTag());
         sb.append(", HOURS=").append(task.getTotalHours());
 
-        SimpleDateFormat sdf2 = new SimpleDateFormat("MM-dd-yyyy");
-        sb.append(", DUE_DATE=").append(sdf2.format(task.getDueDate().getTime())).append("\n");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
+        sb.append(", DUE=").append(sdf2.format(task.getDueDate().getTime()));
+        sb.append(", ARCHIVED=");
+        Calendar curr = Calendar.getInstance();
+        if (task.getTotalHours() == 0 || (!Time.doDatesMatch(curr, task.getDueDate()) && task.getDueDate().compareTo(curr) < 0)) {
+            sb.append("TRUE").append("\n");
+        } else {
+            sb.append("FALSE").append("\n");
+        }
     }
 
     /**
@@ -84,17 +90,18 @@ public class EventLog {
         sb.append(" [INFO]");
 
         if(type == 0)
-            sb.append(" ADD(EVENT): ");
+            sb.append(" ADD(EVENT):");
         else if(type == 1)
-            sb.append(" REMOVE(EVENT): ");
+            sb.append(" REM(EVENT):");
         else if (type == 2)
-            sb.append(" EDIT(EVENT): ");
+            sb.append(" MOD(EVENT):");
 
         sb.append(" ID=").append(event.getId());
         sb.append(", NAME=").append(event.getName());
-        sb.append(", TIME_SLOT=").append(event.getTimeStamp().toString());
+        sb.append(", TAG=").append(event.getCard() != null ? event.getCard().getName() : null);
+        sb.append(", TIMESTAMP=").append(event.getTimeStamp().toString());
 
-        SimpleDateFormat sdf2 = new SimpleDateFormat("MM-dd-yyyy");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("dd-MM-yyyy");
         sb.append(", DATE=").append(sdf2.format(event.getTimeStamp().getStart().getTime()));
 
         sb.append(", RECURRENCE=").append(event.isRecurring());
@@ -105,43 +112,23 @@ public class EventLog {
         sb.append("\n");
     }
 
-    /**
-     * Reports a given Card action
-     *
-     * @param card Card being reported
-     * @param type Action type (0=Card Created, 1=Task Added, 2=Task Removed)
-     */
     public void reportCardAction(Card card, int type) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         sb.append(sdf.format(Calendar.getInstance().getTime()));
         sb.append(" [INFO]");
 
         if(type == 0) {
-            sb.append(" CREATE(CARD): ");
+            sb.append(" ADD(CARD):");
         } else if(type == 1) {
-            sb.append(" ADD(TASK): ");
+            sb.append(" REM(CARD):");
         } else if(type == 2) {
-            sb.append(" REMOVE(TASK): ");
+            sb.append(" MOD(CARD):");
         }
 
-        sb.append(" ID=" + card.getId()); //TODO: need to finish getId()
+        sb.append(" ID=").append(card.getId());
         sb.append(", TITLE=").append(card.getName());
+        sb.append(", COLOR=").append(card.getColor());
         sb.append("\n");
-    }
-
-    /**
-     * Reports a given Day edit
-     *
-     * @param date Calendar date being reported
-     * @param hours number of hours assigned for the day
-     * @param global whether edit is standard or not
-     */
-    public void reportWeekEdit(Calendar date, int hours, boolean global) {
-        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        sb.append(sdf.format(Calendar.getInstance().getTime()));
-        sb.append(" [INFO]");
-        sb.append(" EDIT(DAY): GLOBAL=").append(global);
-        sb.append(", HOURS=").append(hours).append("\n");
     }
 
     /**
@@ -154,8 +141,8 @@ public class EventLog {
     public void reportDayAction(Day day, Task task, boolean nonOverflow) {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         sb.append(sdf.format(Calendar.getInstance().getTime()));
-        sb.append(" [INFO]");
-        sb.append(" DAY_ID=").append(day.getId());
+        sb.append(" [INFO] DAY:");
+        sb.append(" ID=").append(day.getId());
         sb.append(", CAPACITY=").append(day.getCapacity());
         sb.append(", HOURS_REMAINING=").append(day.getSpareHours());
         sb.append(", HOURS_FILLED=").append(day.getHoursFilled());
@@ -224,18 +211,6 @@ public class EventLog {
         SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
         sb.append(sdf.format(Calendar.getInstance().getTime()));
         sb.append(" [ERROR] ").append(e.getMessage()).append("\n");
-    }
-
-    /**
-     * Reports the processing of tasks from a file
-     *
-     * @param filename name of file that contains list of Tasks
-     */
-    public void reportProcessTasks(String filename) {
-        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        sb.append(sdf.format(Calendar.getInstance().getTime()));
-        sb.append(" [INFO]");
-        sb.append(" Reading Tasks: FILE=").append(filename).append("\n");
     }
 
 
@@ -409,21 +384,6 @@ public class EventLog {
         sb.append(", MIN_HOURS=").append(userConfig.getMinHours());
         sb.append(", OPTIMIZE_DAY=").append(userConfig.isOptimizeDay());
         sb.append(", DEFAULT_AT_START=").append(userConfig.isDefaultAtStart()).append("\n");
-    }
-
-    /**
-     * Reports an instance of the script interpreter
-     *
-     * @param filename name of script file
-     * @param isStartOfScript whether the script has begun or ended
-     */
-    public void reportScriptInstance(String filename, boolean isStartOfScript) {
-        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
-        sb.append(sdf.format(Calendar.getInstance().getTime()));
-        sb.append(" [INFO]");
-        sb.append(" SCRIPT_NAME=").append(filename);
-        if(isStartOfScript) sb.append(", SCRIPT INSTANCE HAS BEGUN...\n");
-        else sb.append(", SCRIPT INSTANCE HAS ENDED...\n");
     }
 
     public void reportJsonActions() {

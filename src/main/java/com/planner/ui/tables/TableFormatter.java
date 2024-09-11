@@ -128,6 +128,7 @@ public class TableFormatter {
                     color = event.getCard() != null ? event.getCard().getColor() : null;
                     id = event.getId();
                     name = event.getName();
+                    tag = event.getCard() != null ? event.getCard().getName() : tag;
                     hours = Time.getTimeInterval(event.getTimeStamp().getStart(), event.getTimeStamp().getEnd());
                     timeStamp = event.getTimeStamp().toString();
                     eventIdx++;
@@ -306,7 +307,7 @@ public class TableFormatter {
 
             sb.append("ID").append(" ".repeat(5)).append("|");
             sb.append("NAME").append(" ".repeat(16)).append("|");
-            sb.append("COLOR").append(" ".repeat(10)).append("|");
+            sb.append("TAG").append(" ".repeat(12)).append("|");
             sb.append("TIME").append(" ".repeat(16)).append("|");
             sb.append("DAYS").append(" ".repeat(29)).append("|\n");
 
@@ -335,7 +336,7 @@ public class TableFormatter {
             if (e.getCard() == null) {
                 sb.append("     -").append(" ".repeat(15 - "     -".length())).append("|");
             } else {
-                sb.append(e.getCard().getColor()).append(" ".repeat(15 - String.valueOf(e.getCard().getColor()).length())).append("|");
+                sb.append(e.getCard().getName()).append(" ".repeat(15 - String.valueOf(e.getCard().getName()).length())).append("|");
             }
 
             sb.append(e.getTimeStamp().toString()).append(" ".repeat(
@@ -362,7 +363,7 @@ public class TableFormatter {
 
             sb.append("ID").append(" ".repeat(5)).append("|")
                     .append("NAME").append(" ".repeat(16)).append("|")
-                    .append("COLOR").append(" ".repeat(10)).append("|")
+                    .append("TAG").append(" ".repeat(12)).append("|")
                     .append("TIME").append(" ".repeat(16)).append("|")
                     .append("DATE").append(" ".repeat(8)).append("|\n");
 
@@ -387,7 +388,7 @@ public class TableFormatter {
             if (e.getCard() == null) {
                 sb.append("     -").append(" ".repeat(15 - "     -".length())).append("|");
             } else {
-                sb.append(e.getCard().getColor()).append(" ".repeat(15 - String.valueOf(e.getCard().getColor()).length())).append("|");
+                sb.append(e.getCard().getName()).append(" ".repeat(15 - String.valueOf(e.getCard().getName()).length())).append("|");
             }
 
 

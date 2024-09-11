@@ -133,7 +133,7 @@ public class Parser {
 
         for (int i = 2; i < args.length; i++) {
             if (args[i].charAt(0) == '"' && name == null) {
-                name = args[i];
+                name = args[i].substring(1, args[i].length() - 1);
             } else if (args[i].charAt(0) == '+' && cardId == null && args[i].length() > 2
                     && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
                 try {
@@ -311,7 +311,7 @@ public class Parser {
 
         for (int i = 3; i < args.length; i++) {
             if (args[i].charAt(0) == '"' && name == null) {
-                name = args[i];
+                name = args[i].substring(1, args[i].length() - 1);
             } else if (args[i].charAt(0) == '+' && cardId == null && args[i].length() > 2
                     && (args[i].charAt(1) == 'c' || args[i].charAt(1) == 'C')) {
                 try {
@@ -610,34 +610,28 @@ public class Parser {
             }
         }
 
-        if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr != 12) {
+        if (startFmt.equalsIgnoreCase("pm") && startHr != 12) {
             startHr += 12;
-        } else if ((startFmt.equals("pm") || startFmt.equals("PM")) && startHr == 12) {
+        } else if (startFmt.equalsIgnoreCase("pm")) {
             startHr = 0;
         }
 
         Calendar[] calendars = new Calendar[2];
 
-        if (endHr == -1) {
-            Calendar start = Calendar.getInstance();
-            start.set(Calendar.HOUR_OF_DAY, startHr);
-            start.set(Calendar.MINUTE, startMin);
-
-            calendars[0] = start;
-
-            return calendars;
+        if (endHr == -1) { // need to throw an exception here
+            throwTimestampParsingError();
         }
 
-        if ((endFmt.equals("pm") || endFmt.equals("PM")) && endHr != 12) {
+        if (endFmt.equalsIgnoreCase("pm") && endHr != 12) {
             endHr += 12;
-        } else if ((endFmt.equals("am") || endFmt.equals("AM")) && endHr == 12) {
+        } else if (endFmt.equalsIgnoreCase("am") && endHr == 12) {
             endHr = 0;
         } else if (endFmt.isEmpty() && endHr < startHr) {
             endHr += 12;
         }
 
         if (startHr > endHr || (startHr == endHr && startMin >= endMin)) {
-            return calendars;
+            throwTimestampParsingError();
         }
 
         Calendar start = Calendar.getInstance();
