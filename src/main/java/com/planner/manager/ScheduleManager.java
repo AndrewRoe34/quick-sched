@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.util.*;
 
 import com.planner.io.IOProcessing;
@@ -79,13 +80,7 @@ public class ScheduleManager {
         processUserConfigFile();
 
         taskManager = new PriorityQueue<>();
-//        try {
-//            googleCalendarIO = new GoogleCalendarIO(eventLog);
-//            spreadsheetIO = new SpreadsheetIO(eventLog);
-//        }
-//        catch (GeneralSecurityException | IOException e) {
-//            throw new IllegalArgumentException();
-//        }
+//        spreadsheetIO = new SpreadsheetIO(eventLog);
 
         scheduler = Scheduler.getInstance(userConfig, eventLog, 1);
         // in situations where ScheduleManager is run multiple times after updates to config, this ensures options are set up properly
@@ -838,15 +833,29 @@ public class ScheduleManager {
         spreadsheetIO.exportScheduleToExcel(schedule, cards, archivedTasks, userConfig);
     }
 
+    private void setupGoogle() {
+        if (googleCalendarIO == null) {
+            try {
+                googleCalendarIO = new GoogleCalendarIO(eventLog);
+            }
+            catch (GeneralSecurityException | IOException e) {
+                throw new IllegalArgumentException();
+            }
+        }
+    }
+
     public void exportScheduleToGoogle() throws IOException {
+        setupGoogle();
         googleCalendarIO.exportScheduleToGoogle(userConfig, schedule);
     }
 
     public void cleanGoogleSchedule() throws IOException {
+        setupGoogle();
         googleCalendarIO.cleanGoogleSchedule();
     }
 
     public void importScheduleFromGoogle() throws IOException {
+        setupGoogle();
         googleCalendarIO.importScheduleFromGoogle();
     }
 

@@ -74,6 +74,15 @@ public class CLI {
                     throw new IllegalArgumentException("'clear' has no args.");
                 }
                 break;
+            case "google":
+                if (tokens.length == 1) {
+                    System.out.println("Cleaning scheduling...");
+                    sm.cleanGoogleSchedule();
+                    sm.exportScheduleToGoogle();
+                } else {
+                    throw new IllegalArgumentException("'google' has no args.");
+                }
+                break;
             case "task":
                 if (tokens.length > 1) {
                     Parser.TaskInfo ti = Parser.parseTask(tokens);
@@ -393,7 +402,6 @@ public class CLI {
                     }
                 }
                 break;
-            case "tutorial":
             case "quit":
                 // todo need to keep track of any changes (and if so, prompt user to update)
                 sm.quit();

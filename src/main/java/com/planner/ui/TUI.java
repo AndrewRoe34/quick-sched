@@ -62,7 +62,7 @@ public class TUI {
 
         // Repo & License
         System.out.println(
-                        "GitHub Repo: https://github.com/AndrewRoe34/agile-planner\n" +
+                        "GitHub Repo: https://github.com/AndrewRoe34/quick-sched\n" +
                         "\n" +
                         "License: MIT License\n" +
                         "-------------------------------------------------------------"
