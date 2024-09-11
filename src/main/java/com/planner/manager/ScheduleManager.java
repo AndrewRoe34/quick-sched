@@ -297,7 +297,25 @@ public class ScheduleManager {
                 recurringEvents.get(eventDays[i].ordinal()).add(e);
             }
         } else {
-            if (dates != null) throw new IllegalArgumentException("Event is non-recurring but has recurrent days");
+            if (dates != null && dates.size() > 1) {
+                throw new IllegalArgumentException("Event is non-recurring but has recurrent days");
+            }
+
+            if (dates != null) {
+                Calendar start = timeStamp.getStart();
+                Calendar end = timeStamp.getEnd();
+
+                start.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                start.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                start.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
+
+                end.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                end.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                end.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
+
+                timeStamp = new Time.TimeStamp(start, end);
+            }
+
             e = new Event(eventId, name, card, timeStamp);
             indivEvents.add(e);
         }
@@ -429,15 +447,28 @@ public class ScheduleManager {
         return card;
     }
 
-    public Event modEvent(int id, String name, Integer cardId, Time.TimeStamp timeStamp, List<Calendar> dates) {
+    public Event modEvent(int id, String name, Integer cardId, Calendar[] timeStamp, List<Calendar> dates) {
         Event event = findEvent(id);
 
         if (event == null) {
             return null;
         }
 
-        if (dates != null && !event.isRecurring()) {
-            throw new IllegalArgumentException("Error: Individual event can't be assigned to multiple days");
+        if (dates != null && dates.size() > 1 && !event.isRecurring()) {
+            throw new IllegalArgumentException("Individual event can't be assigned to multiple days");
+        }
+
+        if (dates != null && dates.size() == 1 && !event.isRecurring()) {
+            Calendar start = event.getTimeStamp().getStart();
+            Calendar end = event.getTimeStamp().getEnd();
+
+            start.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+            start.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+            start.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
+
+            end.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+            end.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+            end.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
         }
 
         if (name != null) {
@@ -450,7 +481,23 @@ public class ScheduleManager {
             }
         }
         if (timeStamp != null) {
-            event.setTimeStamp(timeStamp);
+            Calendar start = timeStamp[0];
+            Calendar end = timeStamp[1];
+
+            if (!event.isRecurring() && dates == null) {
+                Calendar prevStart = event.getTimeStamp().getStart();
+                Calendar prevEnd = event.getTimeStamp().getEnd();
+
+                start.set(Calendar.DAY_OF_MONTH, prevStart.get(Calendar.DAY_OF_MONTH));
+                start.set(Calendar.MONTH, prevStart.get(Calendar.MONTH));
+                start.set(Calendar.YEAR, prevStart.get(Calendar.YEAR));
+
+                end.set(Calendar.DAY_OF_MONTH, prevEnd.get(Calendar.DAY_OF_MONTH));
+                end.set(Calendar.MONTH, prevEnd.get(Calendar.MONTH));
+                end.set(Calendar.YEAR, prevEnd.get(Calendar.YEAR));
+            }
+
+            event.setTimeStamp(new Time.TimeStamp(start, end));
         }
         if (dates != null) {
             Event.DayOfWeek[] days = new Event.DayOfWeek[dates.size()];
