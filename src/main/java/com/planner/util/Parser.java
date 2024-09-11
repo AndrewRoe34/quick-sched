@@ -346,9 +346,6 @@ public class Parser {
                         }
                     }
                 }
-                if (timestamp == null) {
-                    throwModEventParsingError();
-                }
             } else {
                 throwModEventParsingError();
             }

@@ -146,26 +146,23 @@ public class CLI {
                     case "event":
                         Parser.EventInfo eventInfo = Parser.parseModEvent(tokens);
 
-                        Time.TimeStamp timeStamp = null;
+                        Calendar[] timeStamp = eventInfo.getTimestamp();
 
                         List<Calendar> dates = eventInfo.getDates();
 
-                        if (eventInfo.getTimestamp() != null) {
-                            timeStamp = new Time.TimeStamp(eventInfo.getTimestamp()[0], eventInfo.getTimestamp()[1]);
+                        if (timeStamp != null && dates != null && dates.size() == 1) {
+                            Calendar start = timeStamp[0];
+                            Calendar end = timeStamp[1];
 
-                            if (dates != null && dates.size() == 1) {
-                                Calendar start = eventInfo.getTimestamp()[0];
-                                Calendar end = eventInfo.getTimestamp()[1];
+                            start.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                            start.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                            start.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
 
-                                start.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
-                                start.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
-                                start.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
+                            end.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                            end.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                            end.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
 
-                                end.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
-                                end.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
-                                end.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
-                            }
-
+                            timeStamp = new Calendar[]{start, end};
                         }
 
                         sm.modEvent(eventInfo.getId(), eventInfo.getName(), eventInfo.getCardId(), timeStamp, eventInfo.getDates());
