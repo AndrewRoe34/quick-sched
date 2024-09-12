@@ -369,6 +369,40 @@ public class Task implements Comparable<Task> {
             return timeStamp;
         }
 
+        public String get24HourTimeStampString() {
+            StringBuilder output = new StringBuilder();
+
+            Calendar start = timeStamp.getStart();
+            Calendar end = timeStamp.getEnd();
+
+            int startHour = start.get(Calendar.HOUR_OF_DAY);
+            int startMinute = start.get(Calendar.MINUTE);
+            int endHour = end.get(Calendar.HOUR_OF_DAY);
+            int endMinute = end.get(Calendar.MINUTE);
+
+            appendTime(output, startHour);
+
+            output.append(":");
+
+            appendTime(output, startMinute);
+
+            output.append("-");
+
+            appendTime(output, endHour);
+
+            output.append(":");
+
+            appendTime(output, endMinute);
+
+            return output.toString();
+        }
+
+        private void appendTime(StringBuilder output, int time) {
+            if (time < 10)
+                output.append("0");
+            output.append(time);
+        }
+
         /**
          * Converts SubTask Object to String format, includes name, and hours
          *

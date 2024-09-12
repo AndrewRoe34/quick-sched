@@ -170,6 +170,15 @@ public class EventLog {
         sb.append(" SCHEDULING HAS FINISHED...\n");
     }
 
+    public void reportSerializingSchedule(String filename) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+
+        sb.append(" [INFO]");
+        sb.append(" SERIALIZING DATA TO ").append(filename).append(".sched");
+        sb.append('\n');
+    }
+
     /**
      * Reports the display of the schedule for the current day
      *
