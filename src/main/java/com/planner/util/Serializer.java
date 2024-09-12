@@ -6,6 +6,7 @@ import com.planner.models.Event;
 import com.planner.models.Task;
 import com.planner.schedule.day.Day;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -293,7 +294,7 @@ sm.modTask(taskId, null, hours, null, null); <-- this handles archiving the task
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         ScheduleManager sm = new ScheduleManager();
 
 //        String sched = "CARD {\n" +
