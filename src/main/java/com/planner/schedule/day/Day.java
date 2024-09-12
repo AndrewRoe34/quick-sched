@@ -116,6 +116,25 @@ public class Day {
         return date;
     }
 
+    public String getDateStamp() {
+        int day = date.get(Calendar.DAY_OF_MONTH);
+        int year = date.get(Calendar.YEAR);
+
+        // Calendar.MONTH is zero-indexed.
+        int month = date.get(Calendar.MONTH) + 1;
+
+        StringBuilder dateStamp = new StringBuilder();
+        if (day < 10) dateStamp.append("0");
+        dateStamp.append(day);
+        dateStamp.append("-");
+        if (month < 10) dateStamp.append("0");
+        dateStamp.append(month);
+        dateStamp.append("-");
+        dateStamp.append(year);
+
+        return dateStamp.toString();
+    }
+
     /**
      * Number of hours filled for a given Day
      *
