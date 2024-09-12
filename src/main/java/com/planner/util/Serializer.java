@@ -7,6 +7,7 @@ import com.planner.models.Task;
 import com.planner.schedule.day.Day;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class Serializer {
         if (days != null) {
             scheduleSb.append(getDaysSb(days));
         }
-
+      
         return scheduleSb.toString();
     }
 
@@ -160,46 +161,28 @@ public class Serializer {
 
         return daysSb;
     }
-
-    /*
-card "PY" orange
-card "FLJ" yellow
-event true "OS Class" +C0 @ tue thu 3pm-4:15
-task "study ch9" @ thu 6.5 +C1
-
-in order to fix indexing, we can quickly update the relevant index
-
-ex.
-
-if ScheduleManager has 4 cards and we're reading in a new one, we would automatically set this card index to '4'
-
-so, if we have a task referencing card '0', we would take that and add it to the number of cards from ScheduleManager
-	- ti.setCardId(id + sm.getNumCards());
-
-
-we need to do this process with the Event as well
-
-
-Day is going to be annoying
-     */
-    public static void deserializeSchedule(String filename, String data) {
-        // 1. append the relevant identifier to each line (followed by a space)
-        // 2. tokenize the line
-        // 3. parse the relevant type
-        // 4. call scheduleManager's method to create that type
-        // 5. return info object that relates:
-        //    - how many cards, tasks, events, days read in
-        //    - how many errors you encountered (remember, we skip past these)
-        Scanner lineScanner = new Scanner("sched/" + filename);
+  
+    public static void deserializeSchedule(String data, ScheduleManager sm) {
+        // todo currently not handling exceptions (so, it just cancels out if we run into an error)
+        Scanner lineScanner = new Scanner(data);
+        int cardCount = sm.getCards().size();
+        List<Event> events = null;
+        List<Task> tasks = null;
+        List<Day> days = new ArrayList<>();
         while (lineScanner.hasNextLine()) {
             switch (lineScanner.nextLine().trim()) {
                 case "CARD {":
-
+                    processCards(lineScanner, sm);
+                    break;
                 case "EVENT {":
+                    events = processEvents(lineScanner, cardCount, sm);
+                    break;
                 case "TASK {":
+                    tasks = processTasks(lineScanner, cardCount, sm);
+                    break;
                 case "DAY {":
-                default:
-                    // error
+                    processDays(lineScanner, events, tasks);
+                    break;
             }
         }
     }
@@ -213,5 +196,147 @@ Day is going to be annoying
             Parser.CardInfo ci = Parser.parseCard(Parser.tokenize("card " + line));
             sm.addCard(ci.getName(), ci.getColor());
         }
+    }
+
+    private static List<Event> processEvents(Scanner lineScanner, int cardCount, ScheduleManager sm) {
+        List<Event> events = new ArrayList<>();
+        while (lineScanner.hasNextLine()) {
+            String line = lineScanner.nextLine();
+            if ("}".equals(line.trim())) {
+                break;
+            }
+            Parser.EventInfo ei = Parser.parseEvent(Parser.tokenize("event " + line));
+
+            // todo all this here needs to be moved to sm.addEvent() --> START
+            Calendar start = ei.getTimestamp()[0];
+            Calendar end = ei.getTimestamp()[1];
+
+            List<Calendar> dates = ei.getDates();
+
+            if (!ei.isRecurring() && dates != null && dates.size() > 1) {
+                throw new IllegalArgumentException("Event is non-recurring but has multiple days");
+            }
+
+            if (!ei.isRecurring() && dates != null) {
+                start.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                start.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                start.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
+
+                end.set(Calendar.DAY_OF_MONTH, dates.get(0).get(Calendar.DAY_OF_MONTH));
+                end.set(Calendar.MONTH, dates.get(0).get(Calendar.MONTH));
+                end.set(Calendar.YEAR, dates.get(0).get(Calendar.YEAR));
+            }
+
+            Time.TimeStamp timeStamp = new Time.TimeStamp(start, end);
+            // todo <--- END
+
+
+            Event e = sm.addEvent(ei.getName(), ei.getCardId() == null ? null : cardCount + ei.getCardId(),  timeStamp, ei.isRecurring(), dates);
+
+            events.add(e);
+        }
+        return events;
+    }
+
+    private static List<Task> processTasks(Scanner lineScanner, int cardCount, ScheduleManager sm) {
+        List<Task> tasks = new ArrayList<>();
+        while (lineScanner.hasNextLine()) {
+            String line = lineScanner.nextLine();
+            if ("}".equals(line.trim())) {
+                break;
+            }
+            Parser.TaskInfo ti = Parser.parseTask(Parser.tokenize("task " + line));
+            Task t = sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), cardCount + ti.getCardId());
+
+            tasks.add(t);
+        }
+        return tasks;
+    }
+
+    /*
+    when going through Day, we'll need to modify the number of hours each task has
+
+ex.
+
+10-09-2024 T0 8-9:30
+...
+
+
+since this is the prior day, we would do: task.setTotalHours(task.getTotalHours() - used);
+
+
+since we are dealing with indexing Tasks and Events with scheduling, we should store a list of each
+
+
+List<Task> tasks
+List<Event> events
+
+
+Double hours = task.getTotalHours() - used;
+int taskId = tasks.get(id).getId();
+sm.modTask(taskId, null, hours, null, null); <-- this handles archiving the task automatically for us
+     */
+
+    private static void processDays(Scanner lineScanner, List<Event> events, List<Task> tasks) {
+        while (lineScanner.hasNextLine()) {
+            String line = lineScanner.nextLine();
+
+            Parser.DayInfo di = Parser.parseDay(Parser.tokenize(line));
+            Calendar d = di.getDate();
+            /*
+            todo
+              1. create day using di.getDate()
+              2. add events manually to Day
+              3. add subtasks to Day manually (make sure to follow steps from above about updating Task hours)
+              4. return list of days
+             */
+        }
+    }
+
+    public static void main(String[] args) {
+        ScheduleManager sm = new ScheduleManager();
+
+//        String sched = "CARD {\n" +
+//                "  \"CSC\" light_blue\n" +
+//                "  \"PY\" orange\n" +
+//                "  \"FLJ\" yellow\n" +
+//                "  \"PHI\" green\n" +
+//                "}\n" +
+//                "\n" +
+//                "EVENT {\n" +
+//                "  true \"OS Class\" +C0 @ tue thu 3pm-4:15\n" +
+//                "  true \"PY Class\" +C1 @ mon wed fri 1:55pm-2:45pm\n" +
+//                "  true \"PHI Class\" +C3 @ tue thu 8:30-9:45\n" +
+//                "  true \"FLJ Recit\" +C2 @ 10:15-11:05 tue\n" +
+//                "  true \"FLJ Class\" +C2 @ mon wed fri 10:40-11:30\n" +
+//                "  true \"Lunch\" @ mon tue wed thu fri 11:45-1:30\n" +
+//                "}\n" +
+//                "\n" +
+//                "TASK {\n" +
+//                "  \"study ch9\" @ thu 6.5 +C2\n" +
+//                "  \"do hw4\" @ fri 5 +C1\n" +
+//                "  \"read ch2\" @ sat 4 +C3\n" +
+//                "  \"project 2\" @ sun 15 +C0\n" +
+//                "}\n";
+
+        String sched = "CARD {\n" +
+                "  \"Supply Chain\" RED\n" +
+                "}\n" +
+                "\n" +
+                "TASK {\n" +
+                "  \"finish ch12\" 4.0 +C0 @ 13-09-2024\n" +
+                "}\n" +
+                "\n" +
+                "EVENT {\n" +
+                "  true \"class1\" +C0 @ mon wed fri 01:00pm-2:15pm\n" +
+                "}\n" +
+                "\n" +
+                "DAY {\n" +
+                "  11-09-2024 T0 08:00am-12:00pm E0\n" +
+                "}\n";
+
+        deserializeSchedule(sched, sm);
+        sm.buildSchedule();
+        System.out.println(sm.buildScheduleStr());
     }
 }
