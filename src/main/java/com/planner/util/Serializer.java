@@ -6,128 +6,160 @@ import com.planner.models.Event;
 import com.planner.models.Task;
 import com.planner.schedule.day.Day;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.Set;
 
 public class Serializer {
 
-    public static String serializeSchedule(List<Card> cards, List<Task> tasks, List<Event> events, List<Day> days) {
+    public static String serializeSchedule(List<Card> cards, List<Task> tasks, List<Event> indivEvents, List<Event> recurEvents, List<Day> days) {
         StringBuilder scheduleSb = new StringBuilder();
 
         if (cards != null) {
-            StringBuilder cardsSb = new StringBuilder();
-
-            cardsSb.append("CARD {").append('\n');
-
-            for (Card card : cards) {
-                cardsSb.append('\t')
-                        .append("\"").append(card.getName()).append("\"")
-                        .append(" ")
-                        .append(card.getColor())
-                        .append('\n');
-            }
-
-            cardsSb.append("}").append('\n');
-
-            scheduleSb.append(cardsSb).append('\n');
+            scheduleSb.append(getCardsSb(cards)).append('\n');
         }
 
         if (tasks != null) {
-            StringBuilder tasksSb = new StringBuilder();
-
-            tasksSb.append("TASK {").append('\n');
-
-            for (Task task : tasks) {
-                tasksSb.append('\t')
-                        .append("\"").append(task.getName()).append("\"")
-                        .append(" ")
-                        .append(task.getTotalHours())
-                        .append(" ");
-
-                if (task.getCard() != null) {
-                    tasksSb.append("+C")
-                            .append(task.getCard().getId())
-                            .append(" ");
-                }
-
-                tasksSb.append("@")
-                        .append(" ")
-                        .append(task.getDateStamp())
-                        .append('\n');
-            }
-
-            tasksSb.append("}").append('\n');
-
-            scheduleSb.append(tasksSb).append('\n');
+            scheduleSb.append(getTasksSb(tasks)).append('\n');
         }
 
-        if (events != null) {
-            StringBuilder eventsSb = new StringBuilder();
+        if (indivEvents != null || recurEvents != null) {
+            scheduleSb.append("EVENT {").append('\n');
 
-            eventsSb.append("EVENT {").append('\n');
-
-            for (Event event : events) {
-                eventsSb.append('\t')
-                        .append("\"").append(event.getName()).append("\"")
-                        .append(" ")
-                        .append(event.isRecurring())
-                        .append(" ");
-
-                if (event.getCard() != null) {
-                    eventsSb.append("+C")
-                            .append(event.getCard().getId())
-                            .append(" ");
-                }
-
-                eventsSb.append("@")
-                        .append(" ")
-                        .append(event.getDateStamp())
-                        .append(" ")
-                        .append(event.getDateStamp())
-                        .append('\n');
+            if (recurEvents == null) {
+                scheduleSb.append(getEventsSb(indivEvents));
+            } else if (indivEvents == null) {
+                scheduleSb.append(getEventsSb(recurEvents));
+            } else {
+                indivEvents.addAll(recurEvents);
+                scheduleSb.append(getEventsSb(indivEvents));
             }
 
-            eventsSb.append("}").append('\n');
-
-            scheduleSb.append(eventsSb).append('\n');
+            scheduleSb.append('\n');
         }
 
         if (days != null) {
-            StringBuilder daysSb = new StringBuilder();
-
-            daysSb.append("DAY {").append('\n');
-
-            for (Day day : days) {
-                daysSb.append('\t')
-                        .append(day.getDateStamp())
-                        .append(" ");
-
-                for (Task.SubTask subTask : day.getSubTaskList()) {
-                    daysSb.append("T")
-                            .append(subTask.getParentTask().getId())
-                            .append(" ")
-                            .append(subTask.get24HourTimeStampString())
-                            .append(" ");
-                }
-
-                for (Event event : day.getEventList()) {
-                    daysSb.append("E")
-                            .append(event.getId())
-                            .append(" ");
-                }
-
-                daysSb.append('\n');
-            }
-
-            daysSb.append("}").append('\n');
-
-            scheduleSb.append(daysSb).append('\n');
+            scheduleSb.append(getDaysSb(days));
         }
 
         return scheduleSb.toString();
     }
 
+    private static StringBuilder getCardsSb(List<Card> cards) {
+        StringBuilder cardsSb = new StringBuilder();
 
+        cardsSb.append("CARD {").append('\n');
+
+        for (Card card : cards) {
+            cardsSb.append('\t')
+                    .append("\"").append(card.getName()).append("\"")
+                    .append(" ")
+                    .append(card.getColor())
+                    .append('\n');
+        }
+
+        cardsSb.append("}").append('\n');
+
+        return cardsSb;
+    }
+
+    private static StringBuilder getTasksSb(List<Task> tasks) {
+        StringBuilder tasksSb = new StringBuilder();
+
+        tasksSb.append("TASK {").append('\n');
+
+        for (Task task : tasks) {
+            tasksSb.append('\t')
+                    .append("\"").append(task.getName()).append("\"")
+                    .append(" ")
+                    .append(task.getTotalHours())
+                    .append(" ");
+
+            if (task.getCard() != null) {
+                tasksSb.append("+C")
+                        .append(task.getCard().getId())
+                        .append(" ");
+            }
+
+            tasksSb.append("@")
+                    .append(" ")
+                    .append(task.getDateStamp())
+                    .append('\n');
+        }
+
+        tasksSb.append("}").append('\n');
+
+        return tasksSb;
+    }
+
+    private static StringBuilder getEventsSb(List<Event> events) {
+        StringBuilder eventsSb = new StringBuilder();
+
+        for (Event event : events) {
+            eventsSb.append('\t')
+                    .append("\"").append(event.getName()).append("\"")
+                    .append(" ")
+                    .append(event.isRecurring())
+                    .append(" ");
+
+            if (event.getCard() != null) {
+                eventsSb.append("+C")
+                        .append(event.getCard().getId())
+                        .append(" ");
+            }
+
+            eventsSb.append("@")
+                    .append(" ");
+
+            if (event.isRecurring()) {
+                eventsSb.append(event.getDaysString());
+            } else {
+                eventsSb.append(event.getDateStamp());
+            }
+
+            eventsSb.append(" ");
+
+            eventsSb.append(event.getTimeStamp().toString())
+                    .append('\n');
+        }
+
+        eventsSb.append("}").append('\n');
+
+        return eventsSb;
+    }
+
+    private static StringBuilder getDaysSb(List<Day> days) {
+        StringBuilder daysSb = new StringBuilder();
+
+        daysSb.append("DAY {").append('\n');
+
+        for (Day day : days) {
+            daysSb.append('\t')
+                    .append(day.getDateStamp())
+                    .append(" ");
+
+            for (Task.SubTask subTask : day.getSubTaskList()) {
+                daysSb.append("T")
+                        .append(subTask.getParentTask().getId())
+                        .append(" ")
+                        .append(subTask.get24HourTimeStampString())
+                        .append(" ");
+            }
+
+            for (Event event : day.getEventList()) {
+                daysSb.append("E")
+                        .append(event.getId())
+                        .append(" ");
+            }
+
+            daysSb.append('\n');
+        }
+
+        daysSb.append("}");
+
+        return daysSb;
+    }
 
     /*
 card "PY" orange

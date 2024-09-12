@@ -1,7 +1,6 @@
 package com.planner.manager;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
@@ -643,7 +642,7 @@ public class ScheduleManager {
     /**
      * Generates an entire schedule following a distributive approach
      */
-    public void buildSchedule() {
+    public void buildSchedule() throws IOException {
         eventLog.reportSchedulingStart();
         resetSchedule();
         //Tasks that are "finished scheduling" are added here
@@ -687,7 +686,34 @@ public class ScheduleManager {
             errorCount = scheduler.assignDay(currDay, errorCount, complete, taskManager, scheduleTime);
         }
         this.taskManager = complete;
+
+        serializeSchedule();
+
         eventLog.reportSchedulingFinish();
+    }
+
+    private void serializeSchedule() throws IOException {
+        File scheduleFile = new File("schedules\\schedule.sched");
+        scheduleFile.getParentFile().mkdir();
+        scheduleFile.createNewFile();
+
+        FileWriter fw = new FileWriter(scheduleFile.getAbsoluteFile());
+        BufferedWriter scheduleWriter = new BufferedWriter(fw);
+
+        scheduleWriter.write(Serializer.serializeSchedule(cards, new ArrayList<>(taskMap.values()), indivEvents, getRecurEventsList(recurringEvents), schedule));
+        scheduleWriter.close();
+
+        eventLog.reportSerializingSchedule("schedule");
+    }
+
+    private List<Event> getRecurEventsList(List<List<Event>> recurringEvents) {
+        Set<Event> recurEventsSet = new HashSet<Event>();
+
+        for (List<Event> dayEvents : recurringEvents) {
+            recurEventsSet.addAll(dayEvents);
+        }
+
+        return new ArrayList<>(recurEventsSet);
     }
 
     /**
