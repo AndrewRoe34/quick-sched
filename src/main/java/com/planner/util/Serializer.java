@@ -145,7 +145,7 @@ public class Serializer {
                 daysSb.append("T")
                         .append(subTask.getParentTask().getId())
                         .append(" ")
-                        .append(subTask.get24HourTimeStampString())
+                        .append(subTask.getTimeStamp().toString())
                         .append(" ");
             }
 
