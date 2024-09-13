@@ -95,93 +95,93 @@ public class TableFormatter {
      */
     public static String formatScheduleTable(List<Day> schedule, boolean useColor) {
         StringBuilder sb = new StringBuilder();
-        sb.append("SCHEDULE:\n");
-        sb.append("ID     |NAME                |TAG            |HOURS     |TIME                |DUE         |\n");
-        sb.append("------------------------------------------------------------------------------------------\n");
+        sb.append("------------------------------------------\n");
+        sb.append("SCHEDULE\n");
+        sb.append("------------------------------------------\n\n");
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         boolean flag = false;
+
         for (Day day : schedule) {
             if (flag) {
                 sb.append("\n");
-            } else flag = true;
+            } else {
+                flag = true;
+            }
 
             String date = sdf.format(day.getDate().getTime());
-            // print out day here
-            sb.append(date).append("\n");
+            // Print out the date
+            sb.append("DATE: ").append(date).append("\n");
+            sb.append("------------------------------------------\n");
 
             int taskIdx = 0;
             int eventIdx = 0;
+
+            // Iterate over tasks and events for the day
             while (taskIdx < day.getNumSubTasks() || eventIdx < day.getNumEvents()) {
                 Card.Color color = null;
-                int id = 0;
                 String name = "";
-                String tag = "       -       ";
+                String tag = "      -     "; // 12 characters wide (1 space before the tag name)
                 double hours = 0;
                 String timeStamp = "";
-                String due = "     -    ";
-                if (taskIdx >= day.getNumSubTasks() || eventIdx < day.getNumEvents() &&
-                        Time.isAfter(day.getSubTaskList().get(taskIdx).getTimeStamp().getStart(),
-                                day.getEventList().get(eventIdx).getTimeStamp().getStart())) {
-                    Event event = day.getEvent(eventIdx);
 
+                // Check whether to process an event or a task
+                if (taskIdx >= day.getNumSubTasks() || (eventIdx < day.getNumEvents() &&
+                        Time.isAfter(day.getSubTaskList().get(taskIdx).getTimeStamp().getStart(),
+                                day.getEventList().get(eventIdx).getTimeStamp().getStart()))) {
+                    // Handle event data
+                    Event event = day.getEvent(eventIdx);
                     color = event.getCard() != null ? event.getCard().getColor() : null;
-                    id = event.getId();
                     name = event.getName();
-                    tag = event.getCard() != null ? event.getCard().getName() : tag;
+                    tag = event.getCard() != null ? " " + event.getCard().getName() : tag;
                     hours = Time.getTimeInterval(event.getTimeStamp().getStart(), event.getTimeStamp().getEnd());
                     timeStamp = event.getTimeStamp().toString();
                     eventIdx++;
                 } else {
-                    // handle Task data
+                    // Handle task data
                     Task.SubTask subTask = day.getSubTask(taskIdx);
                     Task task = subTask.getParentTask();
-
                     color = task.getColor();
-                    id = task.getId();
                     name = task.getName();
-                    tag = task.getTag() != null ? task.getTag() : tag;
+                    tag = task.getTag() != null ? " " + task.getTag() : tag;
                     hours = subTask.getSubTaskHours();
                     timeStamp = subTask.getTimeStamp().toString();
-                    due = task.getDateStamp();
                     taskIdx++;
                 }
 
+                // Optionally apply color
                 if (useColor && color != null) {
                     sb.append(getColorANSICode(color));
                 }
 
-                sb.append(id)
-                        .append(" ".repeat(7 - String.valueOf(id).length()))
+                // Calculate padding for name and tag
+                int namePadding = Math.max(0, 20 - name.length());
+                int tagPadding = Math.max(0, 12 - tag.length());
+
+                // Format and append the task/event details without the ID
+                sb.append(name)
+                        .append(" ".repeat(namePadding))
+                        .append("|")
+                        .append(tag) // Adjusted for one less character in width
+                        .append(" ".repeat(tagPadding))  // Updated space for tag field
                         .append("|");
 
-                if (name.length() > 20) {
-                    sb.append(name, 0, 20).append("|");
-                } else {
-                    sb.append(name)
-                            .append(" ".repeat(20 - name.length()))
-                            .append("|");
-                }
-                sb.append(tag)
-                        .append(" ".repeat(15 - tag.length()))
-                        .append("|");
-                sb.append(hours)
-                        .append(" ".repeat(10 - String.valueOf(hours).length()))
-                        .append("|");
-                sb.append(timeStamp)
-                        .append("     |");
-                sb.append(due)
-                        .append("  |\n");
+                // Format the hours to ensure it fits with width like | 1.0 hrs  |
+                sb.append(String.format(" %4.1f hrs ", hours))
+                        .append("| ")
+                        .append(timeStamp)
+                        .append("\n");
+
                 if (useColor) {
-                    sb.append("\u001B[0m");
+                    sb.append("\u001B[0m"); // Reset color
                 }
             }
         }
 
         sb.append("\n");
-
         return sb.toString();
     }
+
 
     public static String formatTaskTable(PriorityQueue<Task> currTasks, PriorityQueue<Task> archiveTasks, boolean useColor) {
         StringBuilder sb = new StringBuilder();
