@@ -7,7 +7,9 @@ import com.planner.util.Parser;
 import com.planner.util.Serializer;
 import com.planner.util.Time;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
@@ -21,12 +23,14 @@ public class CLI {
     private boolean scheduleUpdated;
     private final String schedulesDirName;
     private String readFilename;
+    private String savedFilename;
 
     public CLI() {
         sm = new ScheduleManager();
         scheduleUpdated =  false;
         schedulesDirName = "schedules";
         readFilename = "";
+        savedFilename = "";
     }
     /*
     List of supported commands:
@@ -309,13 +313,13 @@ public class CLI {
                     }
                 }
                 break;
-            case "read":
+            case "read": {
                 if (tokens.length > 2) {
                     throw new IllegalArgumentException("Invalid number of arguments, must be 2 or 1");
                 }
 
                 File schedulesDir = new File(schedulesDirName);
-                File scheduleFile = new File(schedulesDirName, this.readFilename);
+                File scheduleFile;
 
                 if (tokens.length == 1 && !readFilename.isEmpty()) {
                     if (!schedulesDir.exists()) {
@@ -334,6 +338,7 @@ public class CLI {
                     } else {
                         System.out.println("Available schedule files:" + '\n' + scheduleFilesSb);
                     }
+
                     break;
                 } else if (tokens.length == 1) {
                     if (!schedulesDir.exists()) {
@@ -341,7 +346,7 @@ public class CLI {
                         throw new IllegalArgumentException("No available schedule files to read");
                     }
 
-                    Scanner scanner= new Scanner(System.in);
+                    Scanner scanner = new Scanner(System.in);
                     System.out.print("Enter a filename: ");
                     StringBuilder filenameSb = new StringBuilder(scanner.nextLine());
 
@@ -367,8 +372,36 @@ public class CLI {
                 sm = new ScheduleManager();
                 Serializer.deserializeSchedule(Files.readString(scheduleFile.toPath()), sm);
                 break;
-            case "save":
+            }
+            case "save": {
+                if (tokens.length > 2) {
+                    throw new IllegalArgumentException("Invalid number of arguments, must be 2 or 1");
+                }
+
+                StringBuilder filenameSb;
+
+                if (tokens.length == 1 && savedFilename.isEmpty()) {
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.print("Enter a filename: ");
+                    filenameSb = new StringBuilder(scanner.nextLine());
+
+                    validateFilename(filenameSb);
+
+                    this.savedFilename = filenameSb.toString();
+                } else if (tokens.length == 1) {
+                    filenameSb = new StringBuilder(savedFilename);
+                } else {
+                    filenameSb = new StringBuilder(tokens[1]);
+
+                    validateFilename(filenameSb);
+
+                    savedFilename = filenameSb.toString();
+                }
+
+                sm.serializeScheduleToFile(filenameSb.toString());
+
                 break;
+            }
             case "report":
                 if (tokens.length == 1) {
                     System.out.println(sm.buildReportStr());

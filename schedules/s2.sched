@@ -1,0 +1,14 @@
+CARD {
+	"c1" BLUE
+	"c2" RED
+	"c3" GREEN
+}
+
+TASK {
+}
+
+EVENT {
+}
+
+DAY {
+}
