@@ -97,7 +97,7 @@ public class TableFormatter {
         StringBuilder sb = new StringBuilder();
         sb.append("------------------------------------------\n");
         sb.append("SCHEDULE\n");
-        sb.append("------------------------------------------\n");
+        sb.append("------------------------------------------\n\n");
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         boolean flag = false;
@@ -110,18 +110,18 @@ public class TableFormatter {
             }
 
             String date = sdf.format(day.getDate().getTime());
-            // print out the date
+            // Print out the date
             sb.append("DATE: ").append(date).append("\n");
             sb.append("------------------------------------------\n");
 
             int taskIdx = 0;
             int eventIdx = 0;
 
-            // iterate over tasks and events for the day
+            // Iterate over tasks and events for the day
             while (taskIdx < day.getNumSubTasks() || eventIdx < day.getNumEvents()) {
                 Card.Color color = null;
                 String name = "";
-                String tag = "       -       ";
+                String tag = "      -     "; // 12 characters wide (1 space before the tag name)
                 double hours = 0;
                 String timeStamp = "";
 
@@ -133,7 +133,7 @@ public class TableFormatter {
                     Event event = day.getEvent(eventIdx);
                     color = event.getCard() != null ? event.getCard().getColor() : null;
                     name = event.getName();
-                    tag = event.getCard() != null ? event.getCard().getName() : tag;
+                    tag = event.getCard() != null ? " " + event.getCard().getName() : tag;
                     hours = Time.getTimeInterval(event.getTimeStamp().getStart(), event.getTimeStamp().getEnd());
                     timeStamp = event.getTimeStamp().toString();
                     eventIdx++;
@@ -143,7 +143,7 @@ public class TableFormatter {
                     Task task = subTask.getParentTask();
                     color = task.getColor();
                     name = task.getName();
-                    tag = task.getTag() != null ? task.getTag() : tag;
+                    tag = task.getTag() != null ? " " + task.getTag() : tag;
                     hours = subTask.getSubTaskHours();
                     timeStamp = subTask.getTimeStamp().toString();
                     taskIdx++;
@@ -154,16 +154,21 @@ public class TableFormatter {
                     sb.append(getColorANSICode(color));
                 }
 
+                // Calculate padding for name and tag
+                int namePadding = Math.max(0, 20 - name.length());
+                int tagPadding = Math.max(0, 12 - tag.length());
+
                 // Format and append the task/event details without the ID
                 sb.append(name)
-                        .append(" ".repeat(20 - name.length()))
+                        .append(" ".repeat(namePadding))
                         .append("|")
-                        .append(tag)
-                        .append(" ".repeat(15 - tag.length()))
+                        .append(tag) // Adjusted for one less character in width
+                        .append(" ".repeat(tagPadding))  // Updated space for tag field
                         .append("|");
 
-                // Format the hours, allowing for up to 3 digits (e.g., "100.0 hrs")
-                sb.append(String.format("%6.1f", hours)).append(" hrs  |")
+                // Format the hours to ensure it fits with width like | 1.0 hrs  |
+                sb.append(String.format(" %4.1f hrs ", hours))
+                        .append("| ")
                         .append(timeStamp)
                         .append("\n");
 
