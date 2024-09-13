@@ -4,9 +4,14 @@ import com.planner.manager.ScheduleManager;
 import com.planner.models.Card;
 import com.planner.models.Event;
 import com.planner.util.Parser;
+import com.planner.util.Serializer;
 import com.planner.util.Time;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -15,9 +20,17 @@ import java.util.Scanner;
 public class CLI {
     // this will hold the ScheduleManager instance
     private ScheduleManager sm;
+    private boolean scheduleUpdated;
+    private final String schedulesDirName;
+    private String readFilename;
+    private String savedFilename;
 
     public CLI() {
         sm = new ScheduleManager();
+        scheduleUpdated =  false;
+        schedulesDirName = "schedules";
+        readFilename = "";
+        savedFilename = "";
     }
     /*
     List of supported commands:
@@ -87,6 +100,8 @@ public class CLI {
                 if (tokens.length > 1) {
                     Parser.TaskInfo ti = Parser.parseTask(tokens);
                     sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), ti.getCardId());
+
+                    scheduleUpdated = true;
                 } else {
                     System.out.println(sm.buildTaskStr());
                 }
@@ -125,6 +140,8 @@ public class CLI {
 
                     Event event = sm.addEvent(eventInfo.getName(), eventInfo.getCardId(), timeStamp, eventInfo.isRecurring(), dates);
                     System.out.println("Added Event " + event.getId() + ".");
+
+                    scheduleUpdated = true;
                 } else {
                     System.out.println(sm.buildEventStr());
                 }
@@ -135,6 +152,8 @@ public class CLI {
                     Parser.CardInfo ci = Parser.parseCard(tokens);
                     Card c = sm.addCard(ci.getName(), ci.getColor());
                     System.out.println("Added Card " + c.getId() + ".");
+
+                    scheduleUpdated = true;
                 } else {
                     System.out.println(sm.buildCardStr());
                 }
@@ -142,6 +161,10 @@ public class CLI {
             case "mod":
                 if (tokens.length < 2) {
                     throw new IllegalArgumentException("Invalid mod operation provided.");
+                }
+
+                if (tokens[1].equals("card") || tokens[1].equals("task") || tokens[1].equals("event")) {
+                    scheduleUpdated = true;
                 }
                 switch (tokens[1]) {
                     case "card":
@@ -211,6 +234,10 @@ public class CLI {
                 if (tokens.length < 3) {
                     throw new IllegalArgumentException("Invalid number of arguments, must be 3 or more");
                 }
+
+                if (tokens[1].equals("card") || tokens[1].equals("task") || tokens[1].equals("event")) {
+                    scheduleUpdated = true;
+                }
                 switch (tokens[1]) {
                     case "card":
                         int[] cardIds = Parser.parseIds(tokens);
@@ -258,6 +285,8 @@ public class CLI {
                     ConfigDialog configDialog = new ConfigDialog();
                     configDialog.setupAndDisplayPage();
                     sm.setUserConfig(configDialog.getUserConfig());
+
+                    scheduleUpdated = true;
                 } else {
                     throw new IllegalArgumentException("'config' has no args.");
                 }
@@ -269,28 +298,111 @@ public class CLI {
                     throw new IllegalArgumentException("'log' has no args.");
                 }
                 break;
-            case "build":
-                if (tokens.length == 1) {
-                    // check the number of active tasks
-                    if (sm.getNumActiveTasks() > 0) {
-                        sm.buildSchedule();
-                        System.out.println("Schedule built...");
-                    } else {
-                        System.out.println("No active Tasks to schedule");
-                    }
-                } else {
-                    throw new IllegalArgumentException("'build' has no args.");
-                }
-                break;
             case "sched":
                 if (tokens.length != 1) {
                     throw new IllegalArgumentException("'sched' has no args.");
-                } else if (sm.scheduleIsEmpty()) {
-                    System.out.println("Schedule is empty...");
                 } else {
-                    System.out.println(sm.buildScheduleStr());
+                    if (!(sm.getNumActiveTasks() > 0)) {
+                        System.out.println("No active Tasks to schedule");
+                    } else if (scheduleUpdated) {
+                        sm.buildSchedule();
+                        System.out.println(sm.buildScheduleStr());
+                        scheduleUpdated = false;
+                    } else {
+                        System.out.println(sm.buildScheduleStr());
+                    }
                 }
                 break;
+            case "read": {
+                if (tokens.length > 2) {
+                    throw new IllegalArgumentException("Invalid number of arguments, must be 2 or 1");
+                }
+
+                File schedulesDir = new File(schedulesDirName);
+                File scheduleFile;
+
+                if (tokens.length == 1 && !readFilename.isEmpty()) {
+                    if (!schedulesDir.exists()) {
+                        schedulesDir.mkdir();
+                        throw new IllegalArgumentException("No available schedule files to read");
+                    }
+
+                    StringBuilder scheduleFilesSb = new StringBuilder();
+
+                    for (File file : schedulesDir.listFiles()) {
+                        scheduleFilesSb.append(file.getName()).append('\n');
+                    }
+
+                    if (scheduleFilesSb.equals("")) {
+                        System.out.println("No available schedule files to read");
+                    } else {
+                        System.out.println("Available schedule files:" + '\n' + scheduleFilesSb);
+                    }
+
+                    break;
+                } else if (tokens.length == 1) {
+                    if (!schedulesDir.exists()) {
+                        schedulesDir.mkdir();
+                        throw new IllegalArgumentException("No available schedule files to read");
+                    }
+
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.print("Enter a filename: ");
+                    StringBuilder filenameSb = new StringBuilder(scanner.nextLine());
+
+                    validateFilename(filenameSb);
+
+                    scheduleFile = new File(schedulesDirName, filenameSb.toString());
+
+                    checkFileAvailability(schedulesDir, scheduleFile);
+
+                    this.readFilename = filenameSb.toString();
+                } else {
+                    StringBuilder filenameSb = new StringBuilder(tokens[1]);
+
+                    validateFilename(filenameSb);
+
+                    scheduleFile = new File(schedulesDirName, filenameSb.toString());
+
+                    checkFileAvailability(schedulesDir, scheduleFile);
+
+                    this.readFilename = filenameSb.toString();
+                }
+
+                sm = new ScheduleManager();
+                Serializer.deserializeSchedule(Files.readString(scheduleFile.toPath()), sm);
+                break;
+            }
+            case "save": {
+                if (tokens.length > 2) {
+                    throw new IllegalArgumentException("Invalid number of arguments, must be 2 or 1");
+                }
+
+                StringBuilder filenameSb;
+
+                if (tokens.length == 1 && savedFilename.isEmpty()) {
+                    Scanner scanner = new Scanner(System.in);
+                    System.out.print("Enter a filename: ");
+                    filenameSb = new StringBuilder(scanner.nextLine());
+
+                    validateFilename(filenameSb);
+
+                    this.savedFilename = filenameSb.toString();
+                } else if (tokens.length == 1) {
+                    filenameSb = new StringBuilder(savedFilename);
+                } else {
+                    filenameSb = new StringBuilder(tokens[1]);
+
+                    validateFilename(filenameSb);
+
+                    savedFilename = filenameSb.toString();
+                }
+
+                sm.buildSchedule();
+                sm.serializeScheduleToFile(filenameSb.toString());
+
+                break;
+            }
             case "report":
                 if (tokens.length == 1) {
                     System.out.println(sm.buildReportStr());
@@ -406,10 +518,90 @@ public class CLI {
                 }
                 break;
             case "quit":
-                // todo need to keep track of any changes (and if so, prompt user to update)
+                Scanner scanner = new Scanner(System.in);
+                char answerC;
+
+                while (true) {
+                    System.out.print("Would you like to save the schedule? (y/n): ");
+                    String answer = scanner.nextLine();
+
+                    if (answer.length() == 1 && (Character.toLowerCase(answer.charAt(0)) == 'y' || Character.toLowerCase(answer.charAt(0)) == 'n'))
+                    {
+                        answerC = Character.toLowerCase(answer.charAt(0));
+                        break;
+                    } else {
+                        System.out.println("Please enter 'y' or 'n'");
+                    }
+                }
+
+                if (answerC == 'y') {
+                    StringBuilder filenameSb;
+
+                    if (savedFilename.isEmpty()) {
+                        System.out.print("Enter filename: ");
+                        filenameSb = new StringBuilder(scanner.nextLine());
+
+                        validateFilename(filenameSb);
+                    } else {
+                        filenameSb = new StringBuilder(savedFilename);
+                    }
+
+                    sm.buildSchedule();
+                    sm.serializeScheduleToFile(filenameSb.toString());
+
+                    System.out.println("Saved schedule to " + filenameSb.toString());
+                }
+
                 sm.quit();
             default:
                 throw new IllegalArgumentException("Unknown command entered.");
+        }
+    }
+
+    private void validateFilename(StringBuilder filename) {
+        boolean hasExtension = false;
+
+        for (int i = 0; i < filename.length(); i++) {
+            if (!(Character.isDigit(filename.charAt(i)) || Character.isLetter(filename.charAt(i)))) {
+                if (filename.charAt(i) == '.') {
+                    if (i == 0) {
+                        throw new IllegalArgumentException("Read file must start with letters or digits");
+                    }
+
+                    if (filename.substring(i + 1).equals("sched")) {
+                        hasExtension = true;
+                        break;
+                    } else {
+                        throw new IllegalArgumentException("Read file must have no extension or .sched extension");
+                    }
+                } else {
+                    throw new IllegalArgumentException("Read file can only include letters, digits and '.'");
+                }
+            }
+        }
+
+        if (!hasExtension) {
+            filename.append(".sched");
+        }
+    }
+
+    private void checkFileAvailability(File schedulesDir, File scheduleFile) {
+        if (!schedulesDir.exists()) {
+            schedulesDir.mkdir();
+            throw new IllegalArgumentException("File not found, no available schedule files to read");
+        }
+
+        if (!scheduleFile.exists()) {
+            StringBuilder scheduleFilesSb = new StringBuilder();
+
+            if (schedulesDir.listFiles().length > 0) {
+                for (File file : schedulesDir.listFiles()) {
+                    scheduleFilesSb.append(file.getName()).append('\n');
+                }
+                throw new IllegalArgumentException("File not found, available schedule files:" + '\n' + scheduleFilesSb);
+            } else {
+                throw new IllegalArgumentException("File not found, no available schedule files to read");
+            }
         }
     }
 }

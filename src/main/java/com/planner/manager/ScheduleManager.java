@@ -687,14 +687,14 @@ public class ScheduleManager {
         }
         this.taskManager = complete;
 
-        serializeSchedule();
-
         eventLog.reportSchedulingFinish();
     }
 
-    private void serializeSchedule() throws IOException {
-        File scheduleFile = new File("schedules\\schedule.sched");
-        scheduleFile.getParentFile().mkdir();
+    public void serializeScheduleToFile(String filename) throws IOException {
+        File scheduleFile = new File("schedules\\" + filename);
+        if (!scheduleFile.getParentFile().exists()) {
+            scheduleFile.getParentFile().mkdir();
+        }
         scheduleFile.createNewFile();
 
         FileWriter fw = new FileWriter(scheduleFile.getAbsoluteFile());
@@ -703,7 +703,7 @@ public class ScheduleManager {
         scheduleWriter.write(Serializer.serializeSchedule(cards, new ArrayList<>(taskMap.values()), indivEvents, getRecurEventsList(recurringEvents), schedule));
         scheduleWriter.close();
 
-        eventLog.reportSerializingSchedule("schedule");
+        eventLog.reportSerializingSchedule(filename);
     }
 
     private List<Event> getRecurEventsList(List<List<Event>> recurringEvents) {
