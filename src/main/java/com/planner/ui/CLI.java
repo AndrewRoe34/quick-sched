@@ -4,9 +4,12 @@ import com.planner.manager.ScheduleManager;
 import com.planner.models.Card;
 import com.planner.models.Event;
 import com.planner.util.Parser;
+import com.planner.util.Serializer;
 import com.planner.util.Time;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -16,10 +19,14 @@ public class CLI {
     // this will hold the ScheduleManager instance
     private ScheduleManager sm;
     private boolean scheduleUpdated;
+    private final String schedulesDirName;
+    private String readFilename;
 
     public CLI() {
         sm = new ScheduleManager();
         scheduleUpdated =  false;
+        schedulesDirName = "schedules";
+        readFilename = "";
     }
     /*
     List of supported commands:
@@ -302,6 +309,66 @@ public class CLI {
                     }
                 }
                 break;
+            case "read":
+                if (tokens.length > 2) {
+                    throw new IllegalArgumentException("Invalid number of arguments, must be 2 or 1");
+                }
+
+                File schedulesDir = new File(schedulesDirName);
+                File scheduleFile = new File(schedulesDirName, this.readFilename);
+
+                if (tokens.length == 1 && !readFilename.isEmpty()) {
+                    if (!schedulesDir.exists()) {
+                        schedulesDir.mkdir();
+                        throw new IllegalArgumentException("No available schedule files to read");
+                    }
+
+                    StringBuilder scheduleFilesSb = new StringBuilder();
+
+                    for (File file : schedulesDir.listFiles()) {
+                        scheduleFilesSb.append(file.getName()).append('\n');
+                    }
+
+                    if (scheduleFilesSb.equals("")) {
+                        System.out.println("No available schedule files to read");
+                    } else {
+                        System.out.println("Available schedule files:" + '\n' + scheduleFilesSb);
+                    }
+                    break;
+                } else if (tokens.length == 1) {
+                    if (!schedulesDir.exists()) {
+                        schedulesDir.mkdir();
+                        throw new IllegalArgumentException("No available schedule files to read");
+                    }
+
+                    Scanner scanner= new Scanner(System.in);
+                    System.out.print("Enter a filename: ");
+                    StringBuilder filenameSb = new StringBuilder(scanner.nextLine());
+
+                    validateFilename(filenameSb);
+
+                    scheduleFile = new File(schedulesDirName, filenameSb.toString());
+
+                    checkFileAvailability(schedulesDir, scheduleFile);
+
+                    this.readFilename = filenameSb.toString();
+                } else {
+                    StringBuilder filenameSb = new StringBuilder(tokens[1]);
+
+                    validateFilename(filenameSb);
+
+                    scheduleFile = new File(schedulesDirName, filenameSb.toString());
+
+                    checkFileAvailability(schedulesDir, scheduleFile);
+
+                    this.readFilename = filenameSb.toString();
+                }
+
+                sm = new ScheduleManager();
+                Serializer.deserializeSchedule(Files.readString(scheduleFile.toPath()), sm);
+                break;
+            case "save":
+                break;
             case "report":
                 if (tokens.length == 1) {
                     System.out.println(sm.buildReportStr());
@@ -421,6 +488,53 @@ public class CLI {
                 sm.quit();
             default:
                 throw new IllegalArgumentException("Unknown command entered.");
+        }
+    }
+
+    private void validateFilename(StringBuilder filename) {
+        boolean hasExtension = false;
+
+        for (int i = 0; i < filename.length(); i++) {
+            if (!(Character.isDigit(filename.charAt(i)) || Character.isLetter(filename.charAt(i)))) {
+                if (filename.charAt(i) == '.') {
+                    if (i == 0) {
+                        throw new IllegalArgumentException("Read file must start with letters or digits");
+                    }
+
+                    if (filename.substring(i + 1).equals("sched")) {
+                        hasExtension = true;
+                        break;
+                    } else {
+                        throw new IllegalArgumentException("Read file must have no extension or .sched extension");
+                    }
+                } else {
+                    throw new IllegalArgumentException("Read file can only include letters, digits and '.'");
+                }
+            }
+        }
+
+        if (!hasExtension) {
+            filename.append(".sched");
+        }
+    }
+
+    private void checkFileAvailability(File schedulesDir, File scheduleFile) {
+        if (!schedulesDir.exists()) {
+            schedulesDir.mkdir();
+            throw new IllegalArgumentException("File not found, no available schedule files to read");
+        }
+
+        if (!scheduleFile.exists()) {
+            StringBuilder scheduleFilesSb = new StringBuilder();
+
+            if (schedulesDir.listFiles().length > 0) {
+                for (File file : schedulesDir.listFiles()) {
+                    scheduleFilesSb.append(file.getName()).append('\n');
+                }
+                throw new IllegalArgumentException("File not found, available schedule files:" + '\n' + scheduleFilesSb);
+            } else {
+                throw new IllegalArgumentException("File not found, no available schedule files to read");
+            }
         }
     }
 }
