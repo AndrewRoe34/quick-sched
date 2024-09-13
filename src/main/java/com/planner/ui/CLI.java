@@ -398,6 +398,7 @@ public class CLI {
                     savedFilename = filenameSb.toString();
                 }
 
+                sm.buildSchedule();
                 sm.serializeScheduleToFile(filenameSb.toString());
 
                 break;
@@ -517,7 +518,40 @@ public class CLI {
                 }
                 break;
             case "quit":
-                // todo need to keep track of any changes (and if so, prompt user to update)
+                Scanner scanner = new Scanner(System.in);
+                char answerC;
+
+                while (true) {
+                    System.out.print("Would you like to save the schedule? (y/n): ");
+                    String answer = scanner.nextLine();
+
+                    if (answer.length() == 1 && (Character.toLowerCase(answer.charAt(0)) == 'y' || Character.toLowerCase(answer.charAt(0)) == 'n'))
+                    {
+                        answerC = Character.toLowerCase(answer.charAt(0));
+                        break;
+                    } else {
+                        System.out.println("Please enter 'y' or 'n'");
+                    }
+                }
+
+                if (answerC == 'y') {
+                    StringBuilder filenameSb;
+
+                    if (savedFilename.isEmpty()) {
+                        System.out.print("Enter filename: ");
+                        filenameSb = new StringBuilder(scanner.nextLine());
+
+                        validateFilename(filenameSb);
+                    } else {
+                        filenameSb = new StringBuilder(savedFilename);
+                    }
+
+                    sm.buildSchedule();
+                    sm.serializeScheduleToFile(filenameSb.toString());
+
+                    System.out.println("Saved schedule to " + filenameSb.toString());
+                }
+
                 sm.quit();
             default:
                 throw new IllegalArgumentException("Unknown command entered.");

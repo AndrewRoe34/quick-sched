@@ -1,14 +1,14 @@
 CARD {
 	"c1" BLUE
-	"c2" RED
-	"c3" GREEN
 }
 
 TASK {
+	"t1" 2.0 @ 13-09-2024
 }
 
 EVENT {
 }
 
 DAY {
+	13-09-2024 T0 08:00am-10:00am 
 }
