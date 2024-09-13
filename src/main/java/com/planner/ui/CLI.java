@@ -15,9 +15,11 @@ import java.util.Scanner;
 public class CLI {
     // this will hold the ScheduleManager instance
     private ScheduleManager sm;
+    private boolean scheduleUpdated;
 
     public CLI() {
         sm = new ScheduleManager();
+        scheduleUpdated =  false;
     }
     /*
     List of supported commands:
@@ -87,6 +89,8 @@ public class CLI {
                 if (tokens.length > 1) {
                     Parser.TaskInfo ti = Parser.parseTask(tokens);
                     sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), ti.getCardId());
+
+                    scheduleUpdated = true;
                 } else {
                     System.out.println(sm.buildTaskStr());
                 }
@@ -125,6 +129,8 @@ public class CLI {
 
                     Event event = sm.addEvent(eventInfo.getName(), eventInfo.getCardId(), timeStamp, eventInfo.isRecurring(), dates);
                     System.out.println("Added Event " + event.getId() + ".");
+
+                    scheduleUpdated = true;
                 } else {
                     System.out.println(sm.buildEventStr());
                 }
@@ -135,6 +141,8 @@ public class CLI {
                     Parser.CardInfo ci = Parser.parseCard(tokens);
                     Card c = sm.addCard(ci.getName(), ci.getColor());
                     System.out.println("Added Card " + c.getId() + ".");
+
+                    scheduleUpdated = true;
                 } else {
                     System.out.println(sm.buildCardStr());
                 }
@@ -142,6 +150,10 @@ public class CLI {
             case "mod":
                 if (tokens.length < 2) {
                     throw new IllegalArgumentException("Invalid mod operation provided.");
+                }
+
+                if (tokens[1].equals("card") || tokens[1].equals("task") || tokens[1].equals("event")) {
+                    scheduleUpdated = true;
                 }
                 switch (tokens[1]) {
                     case "card":
@@ -211,6 +223,10 @@ public class CLI {
                 if (tokens.length < 3) {
                     throw new IllegalArgumentException("Invalid number of arguments, must be 3 or more");
                 }
+
+                if (tokens[1].equals("card") || tokens[1].equals("task") || tokens[1].equals("event")) {
+                    scheduleUpdated = true;
+                }
                 switch (tokens[1]) {
                     case "card":
                         int[] cardIds = Parser.parseIds(tokens);
@@ -258,6 +274,8 @@ public class CLI {
                     ConfigDialog configDialog = new ConfigDialog();
                     configDialog.setupAndDisplayPage();
                     sm.setUserConfig(configDialog.getUserConfig());
+
+                    scheduleUpdated = true;
                 } else {
                     throw new IllegalArgumentException("'config' has no args.");
                 }
@@ -269,26 +287,19 @@ public class CLI {
                     throw new IllegalArgumentException("'log' has no args.");
                 }
                 break;
-            case "build":
-                if (tokens.length == 1) {
-                    // check the number of active tasks
-                    if (sm.getNumActiveTasks() > 0) {
-                        sm.buildSchedule();
-                        System.out.println("Schedule built...");
-                    } else {
-                        System.out.println("No active Tasks to schedule");
-                    }
-                } else {
-                    throw new IllegalArgumentException("'build' has no args.");
-                }
-                break;
             case "sched":
                 if (tokens.length != 1) {
                     throw new IllegalArgumentException("'sched' has no args.");
-                } else if (sm.scheduleIsEmpty()) {
-                    System.out.println("Schedule is empty...");
                 } else {
-                    System.out.println(sm.buildScheduleStr());
+                    if (!(sm.getNumActiveTasks() > 0)) {
+                        System.out.println("No active Tasks to schedule");
+                    } else if (scheduleUpdated) {
+                        sm.buildSchedule();
+                        System.out.println(sm.buildScheduleStr());
+                        scheduleUpdated = false;
+                    } else {
+                        System.out.println(sm.buildScheduleStr());
+                    }
                 }
                 break;
             case "report":
