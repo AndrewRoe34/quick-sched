@@ -3,6 +3,7 @@ package com.planner.ui;
 import com.planner.manager.ScheduleManager;
 import com.planner.models.Card;
 import com.planner.models.Event;
+import com.planner.models.Task;
 import com.planner.util.Parser;
 import com.planner.util.Serializer;
 import com.planner.util.Time;
@@ -99,9 +100,10 @@ public class CLI {
             case "task":
                 if (tokens.length > 1) {
                     Parser.TaskInfo ti = Parser.parseTask(tokens);
-                    sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), ti.getCardId());
+                    Task t = sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), ti.getCardId());
 
                     scheduleUpdated = true;
+                    System.out.println("Added Task " + t.getId() + ".");
                 } else {
                     System.out.println(sm.buildTaskStr());
                 }
