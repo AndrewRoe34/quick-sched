@@ -120,9 +120,6 @@ QuickSched offers multiple ways to view your upcoming schedule.
 ```
 Usage:
   sched
-
-Example:
-  sched
 ```
 This command tells QuickSched to both schedule/timetable all your scheduling data as well as generate a table for you to view.
 
@@ -132,14 +129,21 @@ However, another useful command to quickly view your scheduled Tasks is this com
 ```
 Usage:
   subtask
-
-Example:
-  subtask
 ```
 This displays all your scheduled/timetabled Tasks in an easy to follow chart.
 This command tells QuickSched to both schedule/timetable all your scheduling data as well as generate a table for you to view.
 
 ![SubTask](images/subtask.png)
+
+### Google Calendar
+A great benefit of QuickSched is that you can quickly export your generated schedule over to Google Calendar for easy access across all devices.
+```
+Usage:
+  google
+```
+![GoogleExport](images/google.png)
+
+![GoogleSched](images/google-sched.png)
 
 ### Logging
 One feature that greatly helps with bug reporting and seeing how the scheduler worked is our built-in EventLogger.
@@ -158,9 +162,6 @@ This generates a timestamped log from the start of the session till the current 
 User configurations is what drives the customizability and dynamic nature of QuickSched. We've designed the Config Dialog to be both straightforward and brief.
 ```
 Usage:
-  config
-
-Example:
   config
 ```
 Simply enter the id for whatever option you'd like to modify and then follow the provided format.
