@@ -171,11 +171,13 @@ public class CLI {
                 switch (tokens[1]) {
                     case "card":
                         Parser.CardInfo ci = Parser.parseModCard(tokens);
-                        sm.modCard(ci.getId(), ci.getName(), ci.getColor());
+                        Card c = sm.modCard(ci.getId(), ci.getName(), ci.getColor());
+                        System.out.println("Modified Card " + c.getId() + ".");
                         break;
                     case "task":
                         Parser.TaskInfo ti = Parser.parseModTask(tokens);
-                        sm.modTask(ti.getTaskId(), ti.getDesc(), ti.getHours(), ti.getDue(), ti.getCardId());
+                        Task t = sm.modTask(ti.getTaskId(), ti.getDesc(), ti.getHours(), ti.getDue(), ti.getCardId());
+                        System.out.println("Modified Task " + t.getId() + ".");
                         break;
                     case "event":
                         Parser.EventInfo eventInfo = Parser.parseModEvent(tokens);
@@ -199,7 +201,8 @@ public class CLI {
                             timeStamp = new Calendar[]{start, end};
                         }
 
-                        sm.modEvent(eventInfo.getId(), eventInfo.getName(), eventInfo.getCardId(), timeStamp, eventInfo.getDates());
+                        Event e = sm.modEvent(eventInfo.getId(), eventInfo.getName(), eventInfo.getCardId(), timeStamp, eventInfo.getDates());
+                        System.out.println("Modified Event " + e.getId() + ".");
                         break;
                     default:
                         throw new IllegalArgumentException("Invalid type provided for mod.");
@@ -244,19 +247,28 @@ public class CLI {
                     case "card":
                         int[] cardIds = Parser.parseIds(tokens);
                         for (int id : cardIds) {
-                            sm.deleteCard(id);
+                            boolean status = sm.deleteCard(id);
+                            if (status) {
+                                System.out.println("Deleted Card " + id + ".");
+                            }
                         }
                         break;
                     case "task":
                         int[] taskIds = Parser.parseIds(tokens);
                         for (int id : taskIds) {
-                            sm.deleteTask(id);
+                            boolean status = sm.deleteTask(id);
+                            if (status) {
+                                System.out.println("Deleted Task " + id + ".");
+                            }
                         }
                         break;
                     case "event":
                         int[] eventIds = Parser.parseIds(tokens);
                         for (int id : eventIds) {
-                            sm.deleteEvent(id);
+                            boolean status = sm.deleteEvent(id);
+                            if (status) {
+                                System.out.println("Deleted Event " + id + ".");
+                            }
                         }
                         break;
                     default:

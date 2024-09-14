@@ -250,7 +250,7 @@ public class TableFormatter {
             sb.append(due).append("  | ");
 
             // ARCHIVED
-            if (list.indexOf(task) < numArchived) {
+            if (list.indexOf(task) < numArchived) { // todo need to do a quick check instead of this index nonsense
                 sb.append("Yes\n");
             } else {
                 sb.append("No\n");
