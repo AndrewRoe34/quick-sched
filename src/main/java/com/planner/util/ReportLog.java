@@ -10,16 +10,20 @@ public class ReportLog {
 
     public static String buildReportLog(ScheduleManager scheduleManager) {
         StringBuilder sb = new StringBuilder();
+        sb.append("------------------------------------------\n" +
+                "SCRIPT INFORMATION\n" +
+                "------------------------------------------\n");
         UserConfig userConfig = scheduleManager.getUserConfig();
-        sb.append("Configuration Details:\n" + "    - Config File: profile.json\n" + "    - Mode: Production\n" + "    - Range: ")
-                .append(Arrays.toString(userConfig.getDailyHoursRange())).append("\n")
-                .append("    - Week Hours: ").append(Arrays.toString(userConfig.getHoursPerDayOfWeek()))
-                .append("\n").append("    - Max Days: ").append(userConfig.getMaxDays()).append("\n")
-                .append("    - Archive Days: ").append(userConfig.getArchiveDays()).append("\n")
-                .append("    - Priority Scheduling: ").append(userConfig.isPriority()).append("\n")
-                .append("    - Overflow Handling: ").append(userConfig.isOverflow()).append("\n")
-                .append("    - Fit Day Schedule: ").append(userConfig.isFitDay()).append("\n")
-                .append("    - Minimum Task Duration: ").append(userConfig.getMinHours()).append("\n");
+        sb.append("Configuration File:   profile.json\n")
+                .append("Mode:                 Production\n")
+                .append("Range:                ").append(Arrays.toString(userConfig.getDailyHoursRange())).append("\n")
+                .append("Week Hours:           ").append(Arrays.toString(userConfig.getHoursPerDayOfWeek())).append("\n")
+                .append("Max Days:             ").append(userConfig.getMaxDays()).append("\n")
+                .append("Archive Days:         ").append(userConfig.getArchiveDays()).append("\n")
+                .append("Priority Scheduling:  ").append(userConfig.isPriority() ? "Yes" : "No").append("\n")
+                .append("Overflow Handling:    ").append(userConfig.isOverflow() ? "Yes" : "No").append("\n")
+                .append("Fit Day Schedule:     ").append(userConfig.isFitDay() ? "Yes" : "No").append("\n")
+                .append("Min Task Duration:    ").append(userConfig.getMinHours()).append(" hours \n\n");
         if (!scheduleManager.getRecurEvents().isEmpty() || !scheduleManager.getIndivEvents().isEmpty()) {
             sb.append(TableFormatter.formatEventSetTables(scheduleManager.getRecurEvents(), scheduleManager.getIndivEvents(), userConfig));
             sb.append("\n\n");
