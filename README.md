@@ -64,6 +64,7 @@ Examples:
   task "finish hw3" 3.5 @ eow
   task +C2 @ 01-11-2024 6.0 "prep for exam"
 ```
+When no args are provided, a chart is displayed of all the previously created Tasks.
 
 ![Task](images/task.png)
 
@@ -83,6 +84,7 @@ Examples:
   card "Supply Chain" GREEN
   card blue "Business Law"
 ```
+When no args are provided, a chart is displayed of all the previously created Cards.
 
 ![Card](images/card.png)
 
@@ -112,6 +114,7 @@ Examples:
   event false "study" @ 9-4
   event true @ mon wed fri 11-12:45 +C2 "Class2"
 ```
+When no args are provided, a chart is displayed of all the previously created Events.
 
 ![Event](images/event.png)
 
