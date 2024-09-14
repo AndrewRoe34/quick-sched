@@ -1,4 +1,4 @@
-# Contributing to Agile Planner
+# Contributing to QuickSched
 
 This document provides guidelines for contributing to the project. Whether you're fixing a bug, adding a feature, or improving documentation, your help is appreciated.
 
@@ -19,14 +19,14 @@ Optional:
 GITHUB_USERNAME="your_username"
 
 # Step 3: Construct the clone URL for the forked repository
-CLONE_URL="https://github.com/$GITHUB_USERNAME/agile-planner.git"
+CLONE_URL="https://github.com/$GITHUB_USERNAME/quick-sched.git"
 
 # Step 4: Clone the forked repository
 git clone $CLONE_URL
 ```
 2. **Navigate to the project directory**:
 ```bash
-cd agile-planner
+cd quick-sched
 ```
 3. **Build the project using the Gradle Wrapper**:
 ```bash
@@ -51,7 +51,7 @@ After building the project, you can open it in IntelliJ IDEA:
 3. Choose ‘Open as Project’.
 4. IntelliJ IDEA will import the project and set everything up based on the Gradle configuration.
 
-Now, you’re ready to start developing with Agile Planner!
+Now, you’re ready to start developing with QuickSched!
 
 ## Making Contributions
 
@@ -159,12 +159,12 @@ Notice the camel case in the latter example and the absence of the underscore ch
 ### Vertical Spacing
 Similar to a well-formatted paper, code should also possess distinguishing structure to separate certain components from others. The general philosophy we adhere to here is that code that works towards a common goal should possess no vertical spacing, but code that is dissimilar in general goal should not. Below is an example.
 
-In this method, we see a formatting of an Agile Planner Event to a Google Calendar Event:
+In this method, we see a formatting of an QuickSched Event to a Google Calendar Event:
 ```java
 public static Event formatEventToGoogleEvent(com.planner.models.Event e) {
         Event event = new Event().setSummary(e.getName());
 
-        event.setDescription("Agile Planner\n\neb007aba6df2559a02ceb17ddba47c85b3e2b930");
+        event.setDescription("QuickSched\n\neb007aba6df2559a02ceb17ddba47c85b3e2b930");
 
         DateTime startDateTime = new DateTime(e.getTimeStamp().getStart().getTime());
         EventDateTime start = new EventDateTime().setDateTime(startDateTime);
@@ -182,16 +182,16 @@ public static Event formatEventToGoogleEvent(com.planner.models.Event e) {
 ```
 Let's break down each code snippet from above to visualize our thoughts:
 1. A new Google Calendar event is created
-2. An Agile Planner hash code is attached to the description
+2. A QuickSched hash code is attached to the description
 3. A start time is formatted
 4. An end time is formatted
-5. If the Agile Planner event has a color, attach it to the Google Calendar variant
+5. If the event has a color, attach it to the Google Calendar variant
 6. Return the event
 
 Each individual snippet is purposeful with what it's aiming to solve and serves a common purpose, thus improving readability for the user.
 
 ### Control Structures
-With Agile Planner, we require that all control structures maintain proper horizontal spacing in order to increase readability as demonstrated below:
+We require that all control structures maintain proper horizontal spacing in order to increase readability as demonstrated below:
 
 **Bad**
 ```java
