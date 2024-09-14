@@ -100,9 +100,9 @@ public class Serializer {
 
         for (Event event : events) {
             eventsSb.append('\t')
-                    .append("\"").append(event.getName()).append("\"")
-                    .append(" ")
                     .append(event.isRecurring())
+                    .append(" ")
+                    .append("\"").append(event.getName()).append("\"")
                     .append(" ");
 
             if (event.getCard() != null) {
