@@ -336,7 +336,7 @@ public class CLI {
                 if (tokens.length == 1) {
                     if (!schedulesDir.exists()) {
                         schedulesDir.mkdir();
-                        throw new IllegalArgumentException("Created schedules folder");
+                        System.out.println("Created schedules folder");
                     }
 
                     StringBuilder scheduleFilesSb = new StringBuilder();
@@ -516,7 +516,7 @@ public class CLI {
 
                 while (true) {
                     System.out.print("Would you like to save the schedule? (y/n): ");
-                    String answer = scanner.nextLine();
+                    String answer = scanner.nextLine().trim();
 
                     if (Character.toLowerCase(answer.charAt(0)) == 'y' || Character.toLowerCase(answer.charAt(0)) == 'n')
                     {
