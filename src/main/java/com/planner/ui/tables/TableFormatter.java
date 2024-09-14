@@ -189,8 +189,8 @@ public class TableFormatter {
         sb.append("TASKS\n");
         sb.append("------------------------------------------\n");
 
-        sb.append("ID   | NAME               | TAG            | HOURS     | DUE         | ARCHIVED\n");
-        sb.append("-----|--------------------|----------------|-----------|-------------|---------\n");
+        sb.append("ID   | NAME                | TAG            | HOURS     | DUE         | ARCHIVED\n");
+        sb.append("-----|---------------------|----------------|-----------|-------------|---------\n");
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -202,7 +202,7 @@ public class TableFormatter {
             Card.Color color = task.getColor();
             int id = task.getId();
             String name = task.getName();
-            String tag = task.getTag() != null ? task.getTag() : "       -        ";
+            String tag = task.getTag() != null ? task.getTag() : "       -       ";
             double hours = task.getTotalHours();
             String due = task.getDateStamp();
 
@@ -213,20 +213,23 @@ public class TableFormatter {
 
             // Dynamically adjust spacing after ID
             String idStr = String.valueOf(id);
-            sb.append(idStr).append(" ".repeat(5 - idStr.length())).append("| ");
+            sb.append(idStr).append(" ".repeat(Math.max(0, 5 - idStr.length()))).append("| ");
 
-            // NAME
-            if (name.length() > 18) {
-                sb.append(name, 0, 18).append(" | ");
+            // NAME - Ensure max 19 characters
+            if (name.length() > 19) {
+                sb.append(name, 0, 19).append(" | ");
             } else {
-                sb.append(name).append(" ".repeat(18 - name.length())).append(" | ");
+                sb.append(name).append(" ".repeat(Math.max(0, 19 - name.length()))).append(" | ");
             }
 
-            // TAG
-            sb.append(tag).append(" ".repeat(14 - tag.length())).append(" | ");
+            // TAG - Truncate to 14 characters if too long
+            if (tag.length() > 14) {
+                tag = tag.substring(0, 14);
+            }
+            sb.append(tag).append(" ".repeat(Math.max(0, 14 - tag.length()))).append(" | ");
 
             // HOURS
-            sb.append(String.format("%.1f", hours)).append(" ".repeat(9 - String.format("%.1f", hours).length())).append(" | ");
+            sb.append(String.format("%.1f", hours)).append(" ".repeat(Math.max(0, 9 - String.format("%.1f", hours).length()))).append(" | ");
 
             // DUE
             sb.append(due).append("  | ");
