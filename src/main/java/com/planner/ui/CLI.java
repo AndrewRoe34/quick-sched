@@ -23,14 +23,12 @@ public class CLI {
     private ScheduleManager sm;
     private boolean scheduleUpdated;
     private final String schedulesDirName;
-    private String readFilename;
     private String savedFilename;
 
     public CLI() {
         sm = new ScheduleManager();
         scheduleUpdated =  false;
         schedulesDirName = "schedules";
-        readFilename = "";
         savedFilename = "";
     }
     /*
@@ -335,10 +333,10 @@ public class CLI {
                 File schedulesDir = new File(schedulesDirName);
                 File scheduleFile;
 
-                if (tokens.length == 1 && !readFilename.isEmpty()) {
+                if (tokens.length == 1) {
                     if (!schedulesDir.exists()) {
                         schedulesDir.mkdir();
-                        throw new IllegalArgumentException("No available schedule files to read");
+                        System.out.println("Created schedules folder");
                     }
 
                     StringBuilder scheduleFilesSb = new StringBuilder();
@@ -354,23 +352,6 @@ public class CLI {
                     }
 
                     break;
-                } else if (tokens.length == 1) {
-                    if (!schedulesDir.exists()) {
-                        schedulesDir.mkdir();
-                        throw new IllegalArgumentException("No available schedule files to read");
-                    }
-
-                    Scanner scanner = new Scanner(System.in);
-                    System.out.print("Enter a filename: ");
-                    StringBuilder filenameSb = new StringBuilder(scanner.nextLine());
-
-                    validateFilename(filenameSb);
-
-                    scheduleFile = new File(schedulesDirName, filenameSb.toString());
-
-                    checkFileAvailability(schedulesDir, scheduleFile);
-
-                    this.readFilename = filenameSb.toString();
                 } else {
                     StringBuilder filenameSb = new StringBuilder(tokens[1]);
 
@@ -380,11 +361,9 @@ public class CLI {
 
                     checkFileAvailability(schedulesDir, scheduleFile);
 
-                    this.readFilename = filenameSb.toString();
+                    sm = new ScheduleManager();
+                    Serializer.deserializeSchedule(Files.readString(scheduleFile.toPath()), sm);
                 }
-
-                sm = new ScheduleManager();
-                Serializer.deserializeSchedule(Files.readString(scheduleFile.toPath()), sm);
                 break;
             }
             case "save": {
@@ -537,9 +516,9 @@ public class CLI {
 
                 while (true) {
                     System.out.print("Would you like to save the schedule? (y/n): ");
-                    String answer = scanner.nextLine();
+                    String answer = scanner.nextLine().trim();
 
-                    if (answer.length() == 1 && (Character.toLowerCase(answer.charAt(0)) == 'y' || Character.toLowerCase(answer.charAt(0)) == 'n'))
+                    if (Character.toLowerCase(answer.charAt(0)) == 'y' || Character.toLowerCase(answer.charAt(0)) == 'n')
                     {
                         answerC = Character.toLowerCase(answer.charAt(0));
                         break;
