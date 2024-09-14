@@ -236,9 +236,9 @@ public class TableFormatter {
 
             // ARCHIVED
             if (list.indexOf(task) < numArchived) {
-                sb.append("TRUE  \n");
+                sb.append("Yes\n");
             } else {
-                sb.append("FALSE \n");
+                sb.append("No\n");
             }
 
             if (useColor) {
@@ -251,43 +251,51 @@ public class TableFormatter {
 
     public static String formatCardTable(List<Card> cards, boolean useColor) {
         StringBuilder sb = new StringBuilder();
-        sb.append("CARDS:\n");
-        sb.append("ID     |NAME                |COLOR          |\n");
-        sb.append("---------------------------------------------\n");
 
+        // Header
+        sb.append("------------------------------------------\n");
+        sb.append("CARDS\n");
+        sb.append("------------------------------------------\n");
+        sb.append("ID   | NAME          | COLOR      \n");
+        sb.append("-----|---------------|------------\n");
+
+        // Card details
         for (Card card : cards) {
-            String colors = card.getColor() + "";
+            String colorStr = card.getColor().toString();  // Convert color to String
             int id = card.getId();
             String name = card.getName();
 
+            // Handle color if needed
             if (useColor && card.getColor() != null) {
                 sb.append(getColorANSICode(card.getColor()));
             }
 
+            // ID column (5 characters, padded)
             sb.append(id)
-                    .append(" ".repeat(7 - String.valueOf(id).length()))
-                    .append("|");
+                    .append(" ".repeat(Math.max(0, 5 - String.valueOf(id).length())))
+                    .append("| ");
 
-            if (name.length() > 20) {
-                sb.append(name, 0, 20).append("|");
+            // NAME column (15 characters, truncated or padded)
+            if (name.length() > 13) {
+                sb.append(name, 0, 13).append(" | ");
             } else {
-                sb.append(name)
-                        .append(" ".repeat(20 - name.length()))
-                        .append("|");
+                sb.append(name).append(" ".repeat(13 - name.length())).append(" | ");
             }
-            sb.append(colors)
-                    .append(" ".repeat(15 - colors.length()))
-                    .append("|\n");
 
+            // COLOR column (12 characters, truncated or padded)
+            sb.append(colorStr)
+                    .append(" ".repeat(Math.max(0, 12 - colorStr.length())))
+                    .append("\n");
+
+            // Reset color formatting (if using ANSI codes)
             if (useColor) {
                 sb.append("\u001B[0m");
             }
         }
 
-        sb.append("\n");
-
         return sb.toString();
     }
+
 
     /**
      * Creates an event table consisting of both recurring and individual {@link Event}, providing options for both dotted and pretty formats
