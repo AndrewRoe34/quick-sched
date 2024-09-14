@@ -182,12 +182,15 @@ public class TableFormatter {
         return sb.toString();
     }
 
-
     public static String formatTaskTable(PriorityQueue<Task> currTasks, PriorityQueue<Task> archiveTasks, boolean useColor) {
         StringBuilder sb = new StringBuilder();
-        sb.append("TASKS:\n");
-        sb.append("ID     |NAME                |TAG            |HOURS     |DUE         |ARCHIVED |\n");
-        sb.append("-------------------------------------------------------------------------------\n");
+
+        sb.append("------------------------------------------\n");
+        sb.append("TASKS\n");
+        sb.append("------------------------------------------\n");
+
+        sb.append("ID   | NAME               | TAG            | HOURS     | DUE         | ARCHIVED\n");
+        sb.append("-----|--------------------|----------------|-----------|-------------|---------\n");
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
@@ -195,50 +198,50 @@ public class TableFormatter {
         int numArchived = list.size();
         list.addAll(currTasks);
 
-        int idx = 0;
         for (Task task : list) {
             Card.Color color = task.getColor();
             int id = task.getId();
             String name = task.getName();
-            String tag = task.getTag() != null ? task.getTag() : "       -       ";
+            String tag = task.getTag() != null ? task.getTag() : "       -        ";
             double hours = task.getTotalHours();
             String due = task.getDateStamp();
 
+            // Handle color if needed
             if (useColor && color != null) {
                 sb.append(getColorANSICode(color));
             }
 
-            sb.append(id)
-                    .append(" ".repeat(7 - String.valueOf(id).length()))
-                    .append("|");
+            // Dynamically adjust spacing after ID
+            String idStr = String.valueOf(id);
+            sb.append(idStr).append(" ".repeat(5 - idStr.length())).append("| ");
 
-            if (name.length() > 20) {
-                sb.append(name, 0, 20).append("|");
+            // NAME
+            if (name.length() > 18) {
+                sb.append(name, 0, 18).append(" | ");
             } else {
-                sb.append(name)
-                        .append(" ".repeat(20 - name.length()))
-                        .append("|");
+                sb.append(name).append(" ".repeat(18 - name.length())).append(" | ");
             }
-            sb.append(tag)
-                    .append(" ".repeat(15 - tag.length()))
-                    .append("|");
-            sb.append(hours)
-                    .append(" ".repeat(10 - String.valueOf(hours).length()))
-                    .append("|");
-            sb.append(due)
-                    .append("  |");
-            if (idx < numArchived) {
-                sb.append("TRUE     |\n");
+
+            // TAG
+            sb.append(tag).append(" ".repeat(14 - tag.length())).append(" | ");
+
+            // HOURS
+            sb.append(String.format("%.1f", hours)).append(" ".repeat(9 - String.format("%.1f", hours).length())).append(" | ");
+
+            // DUE
+            sb.append(due).append("  | ");
+
+            // ARCHIVED
+            if (list.indexOf(task) < numArchived) {
+                sb.append("TRUE  \n");
             } else {
-                sb.append("FALSE    |\n");
+                sb.append("FALSE \n");
             }
+
             if (useColor) {
-                sb.append("\u001B[0m");
+                sb.append("\u001B[0m"); // Reset ANSI color
             }
-            idx++;
         }
-
-        sb.append("\n");
 
         return sb.toString();
     }
