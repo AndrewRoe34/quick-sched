@@ -121,7 +121,7 @@ public class TableFormatter {
             while (taskIdx < day.getNumSubTasks() || eventIdx < day.getNumEvents()) {
                 Card.Color color = null;
                 String name = "";
-                String tag = "      -     "; // 12 characters wide (1 space before the tag name)
+                String tag = "      -     "; // Default value with padding
                 double hours = 0;
                 String timeStamp = "";
 
@@ -133,7 +133,7 @@ public class TableFormatter {
                     Event event = day.getEvent(eventIdx);
                     color = event.getCard() != null ? event.getCard().getColor() : null;
                     name = event.getName();
-                    tag = event.getCard() != null ? " " + event.getCard().getName() : tag;
+                    tag = event.getCard() != null ? event.getCard().getName() : tag;
                     hours = Time.getTimeInterval(event.getTimeStamp().getStart(), event.getTimeStamp().getEnd());
                     timeStamp = event.getTimeStamp().toString();
                     eventIdx++;
@@ -143,7 +143,7 @@ public class TableFormatter {
                     Task task = subTask.getParentTask();
                     color = task.getColor();
                     name = task.getName();
-                    tag = task.getTag() != null ? " " + task.getTag() : tag;
+                    tag = task.getTag() != null ? task.getTag() : tag;
                     hours = subTask.getSubTaskHours();
                     timeStamp = subTask.getTimeStamp().toString();
                     taskIdx++;
@@ -154,15 +154,19 @@ public class TableFormatter {
                     sb.append(getColorANSICode(color));
                 }
 
-                // Calculate padding for name and tag
-                int namePadding = Math.max(0, 20 - name.length());
-                int tagPadding = Math.max(0, 12 - tag.length());
+                // Format the name with a maximum width of 20 characters
+                String formattedName = name.length() > 20 ? name.substring(0, 20) : name;
+                int namePadding = 20 - formattedName.length();
 
-                // Format and append the task/event details without the ID
-                sb.append(name)
+                // Format the tag with a maximum width of 12 characters
+                String formattedTag = tag.length() > 12 ? tag.substring(0, 12) : tag;
+                int tagPadding = 12 - formattedTag.length();
+
+                // Format and append the task/event details
+                sb.append(formattedName)
                         .append(" ".repeat(namePadding))
                         .append("|")
-                        .append(tag) // Adjusted for one less character in width
+                        .append(formattedTag) // Adjusted for tag field width
                         .append(" ".repeat(tagPadding))  // Updated space for tag field
                         .append("|");
 
@@ -181,6 +185,7 @@ public class TableFormatter {
         sb.append("\n");
         return sb.toString();
     }
+
 
     public static String formatTaskTable(PriorityQueue<Task> currTasks, PriorityQueue<Task> archiveTasks, boolean useColor) {
         StringBuilder sb = new StringBuilder();
