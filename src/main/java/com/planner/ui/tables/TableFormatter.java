@@ -124,6 +124,7 @@ public class TableFormatter {
                 String tag = "      -     "; // Default value with padding
                 double hours = 0;
                 String timeStamp = "";
+                String idPrefix = "";  // To differentiate between tasks and events
 
                 // Check whether to process an event or a task
                 if (taskIdx >= day.getNumSubTasks() || (eventIdx < day.getNumEvents() &&
@@ -136,6 +137,7 @@ public class TableFormatter {
                     tag = event.getCard() != null ? event.getCard().getName() : tag;
                     hours = Time.getTimeInterval(event.getTimeStamp().getStart(), event.getTimeStamp().getEnd());
                     timeStamp = event.getTimeStamp().toString();
+                    idPrefix = "E.ID:";  // Prefix for events
                     eventIdx++;
                 } else {
                     // Handle task data
@@ -146,6 +148,7 @@ public class TableFormatter {
                     tag = task.getTag() != null ? task.getTag() : tag;
                     hours = subTask.getSubTaskHours();
                     timeStamp = subTask.getTimeStamp().toString();
+                    idPrefix = "T.ID:";  // Prefix for tasks
                     taskIdx++;
                 }
 
@@ -154,24 +157,28 @@ public class TableFormatter {
                     sb.append(getColorANSICode(color));
                 }
 
-                // Format the name with a maximum width of 20 characters
-                String formattedName = name.length() > 20 ? name.substring(0, 20) : name;
-                int namePadding = 20 - formattedName.length();
+                // Format the ID prefix and value
+                sb.append(idPrefix).append(" ").append(String.format("%-5d", idPrefix.equals("E.ID:") ? day.getEvent(eventIdx - 1).getId() : day.getSubTask(taskIdx - 1).getParentTask().getId()))
+                        .append(" | ");
+
+                // Format the name with a maximum width of 19 characters
+                String formattedName = name.length() > 19 ? name.substring(0, 19) : name;
+                int namePadding = 19 - formattedName.length();
 
                 // Format the tag with a maximum width of 12 characters
-                String formattedTag = tag.length() > 12 ? tag.substring(0, 12) : tag;
-                int tagPadding = 12 - formattedTag.length();
+                String formattedTag = tag.length() > 14 ? tag.substring(0, 14) : tag;
+                int tagPadding = 14 - formattedTag.length();
 
                 // Format and append the task/event details
                 sb.append(formattedName)
                         .append(" ".repeat(namePadding))
-                        .append("|")
+                        .append("| ")
                         .append(formattedTag) // Adjusted for tag field width
                         .append(" ".repeat(tagPadding))  // Updated space for tag field
                         .append("|");
 
                 // Format the hours to ensure it fits with width like | 1.0 hrs  |
-                sb.append(String.format(" %4.1f hrs ", hours))
+                sb.append(String.format("%5.1f hrs ", hours))
                         .append("| ")
                         .append(timeStamp)
                         .append("\n");
@@ -185,6 +192,7 @@ public class TableFormatter {
         sb.append("\n");
         return sb.toString();
     }
+
 
 
     public static String formatTaskTable(PriorityQueue<Task> currTasks, PriorityQueue<Task> archiveTasks, boolean useColor) {
@@ -202,6 +210,8 @@ public class TableFormatter {
         List<Task> list = new ArrayList<>(archiveTasks);
         int numArchived = list.size();
         list.addAll(currTasks);
+
+        list.sort(Comparator.comparingInt(Task::getId));
 
         for (Task task : list) {
             Card.Color color = task.getColor();
