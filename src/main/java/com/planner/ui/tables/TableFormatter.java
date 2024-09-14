@@ -431,42 +431,55 @@ public class TableFormatter {
     public static String formatSubTaskTable(List<Day> schedule, UserConfig userConfig) {
         StringBuilder sb = new StringBuilder();
 
-        sb.append("SUBTASKS:\n");
+        // Header
+        sb.append("------------------------------------------\n");
+        sb.append("SUBTASKS\n");
+        sb.append("------------------------------------------\n");
+        sb.append("ID   | NAME                | TAG            | HOURS | TIME            | DATE       | DUE        \n");
+        sb.append("-----|---------------------|----------------|-------|-----------------|------------|------------\n");
 
-        sb.append("ID     |NAME                |TAG            |HOURS     |TIME                |DATE        |DUE         |\n");
+        // Format date
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
-        sb.append("-------------------------------------------------------------------------------------------------------\n");
-
+        // Iterate through the schedule and each subtask
         for (Day day : schedule) {
             for (Task.SubTask subTask : day.getSubTaskList()) {
-                String colorANSICode = getColorANSICode((subTask.getParentTask().getColor()));
+                // Get color if needed
+                String colorANSICode = getColorANSICode(subTask.getParentTask().getColor());
                 sb.append(colorANSICode);
 
-                sb.append(subTask.getParentTask().getId()).append(" ".repeat(7 - String.valueOf(subTask.getParentTask().getId()).length())).append("|");
+                // ID (5 characters, left-aligned)
+                int id = subTask.getParentTask().getId();
+                sb.append(String.format("%-5d", id)).append("| ");
 
-                if (subTask.getParentTask().getName().length() > 20)
-                    sb.append(subTask.getParentTask().getName(), 0, 20).append("|");
-                else
-                    sb.append(subTask.getParentTask().getName()).append(" ".repeat(20 - subTask.getParentTask().getName().length())).append("|");
+                // NAME (20 characters, left-aligned, truncated if longer)
+                String name = subTask.getParentTask().getName();
+                sb.append(String.format("%-20s", name.length() > 20 ? name.substring(0, 20) : name)).append("| ");
 
-                String tag = "       -       ";
-                tag = subTask.getParentTask().getTag() != null ? subTask.getParentTask().getTag() : tag;
-                sb.append(tag).append(" ".repeat(15 - tag.length())).append("|");
+                // TAG (15 characters, left-aligned, truncated if longer)
+                String tag = subTask.getParentTask().getTag() != null ? subTask.getParentTask().getTag() : "       -       ";
+                sb.append(String.format("%-15s", tag.length() > 15 ? tag.substring(0, 15) : tag)).append("| ");
 
-                sb.append(subTask.getSubTaskHours()).append(" ".repeat(10 - String.valueOf(subTask.getSubTaskHours()).length())).append("|");
-                sb.append(subTask.getTimeStamp().toString()).append(" ".repeat(20 - subTask.getTimeStamp().toString().length())).append("|");
+                // HOURS (5 characters, right-aligned)
+                String hours = String.format("%.1f", subTask.getSubTaskHours());
+                sb.append(String.format("%-6s", hours)).append("| ");
 
-                SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+                // TIME (17 characters, left-aligned, truncated if longer)
+                String time = subTask.getTimeStamp().toString(); // Adjust this to the desired time format
+                sb.append(String.format("%-16s", time)).append("| ");
+
+                // DATE (10 characters, left-aligned, formatted)
                 String date = sdf.format(subTask.getTimeStamp().getStart().getTime());
-                sb.append(date).append(" ".repeat(12 - date.length())).append("|");
-                sb.append(subTask.getParentTask().getDateStamp()).append(" ".repeat(12 - subTask.getParentTask().getDateStamp().length())).append("|");
+                sb.append(String.format("%-11s", date)).append("| ");
 
-                sb.append("\u001B[0m");
-                sb.append("\n");
+                // DUE (10 characters, left-aligned, formatted)
+                String due = subTask.getParentTask().getDateStamp();
+                sb.append(String.format("%-10s", due));
+
+                // Reset color formatting (if using ANSI codes)
+                sb.append("\u001B[0m").append("\n");
             }
         }
-
-        sb.append("\n");
 
         return sb.toString();
     }
