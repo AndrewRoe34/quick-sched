@@ -317,109 +317,85 @@ public class TableFormatter {
         }
 
         if (recurringEventsExist) {
-            sb.append("RECURRING EVENTS:\n");
+            sb.append("------------------------------------------\n");
+            sb.append("RECURRING EVENTS\n");
+            sb.append("------------------------------------------\n");
 
-            sb.append("ID").append(" ".repeat(5)).append("|");
-            sb.append("NAME").append(" ".repeat(16)).append("|");
-            sb.append("TAG").append(" ".repeat(12)).append("|");
-            sb.append("TIME").append(" ".repeat(16)).append("|");
-            sb.append("DAYS").append(" ".repeat(29)).append("|\n");
+            sb.append("ID   | NAME                | TAG            | TIME            | DAYS\n");
+            sb.append("-----|---------------------|----------------|-----------------|----------------\n");
 
-            sb.append("----------------------------------------------------------------------------------------------------");
-            sb.append("\n");
-        }
-
-        HashSet<Event> uniqueRecurringEvents = new HashSet<>();
-        for (List<Event> events : recurringEvents) {
-            uniqueRecurringEvents.addAll(events);
-        }
-
-        for (Event e : uniqueRecurringEvents) {
-            if (e.getCard() != null) {
-                String colorANSICode = getColorANSICode((e.getCard().getColor()));
-                sb.append(colorANSICode);
+            HashSet<Event> uniqueRecurringEvents = new HashSet<>();
+            for (List<Event> events : recurringEvents) {
+                uniqueRecurringEvents.addAll(events);
             }
 
-            sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
+            for (Event e : uniqueRecurringEvents) {
+                if (e.getCard() != null) {
+                    String colorANSICode = getColorANSICode(e.getCard().getColor());
+                    sb.append(colorANSICode);
+                }
 
-            if (e.getName().length() > 20)
-                sb.append(e.getName(), 0, 20).append("|");
-            else
-                sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
+                sb.append(String.format("%-4d", e.getId())).append(" | ");
 
-            if (e.getCard() == null) {
-                sb.append("     -").append(" ".repeat(15 - "     -".length())).append("|");
-            } else {
-                sb.append(e.getCard().getName()).append(" ".repeat(15 - String.valueOf(e.getCard().getName()).length())).append("|");
+                String name = e.getName();
+                sb.append(name.length() > 19 ? name.substring(0, 19) : String.format("%-19s", name)).append(" | ");
+
+                String tag = e.getCard() == null ? "       -       " : e.getCard().getName();
+                sb.append(tag.length() > 14 ? tag.substring(0, 14) : String.format("%-14s", tag)).append(" | ");
+
+                sb.append(e.getTimeStamp()).append(" | ");
+
+                sb.append(Arrays.toString(
+                                e.getDays()),
+                        1,
+                        Arrays.toString(e.getDays()).length() - 1
+                ).append("\n");
+
+                if (e.getCard() != null) {
+                    sb.append("\u001B[0m");
+                }
             }
-
-            sb.append(e.getTimeStamp().toString()).append(" ".repeat(
-                    20 - e.getTimeStamp().toString().length())
-            ).append("|");
-
-            sb.append(Arrays.toString(
-                            e.getDays()),
-                    1,
-                    Arrays.toString(e.getDays()).length() - 1
-            ).append(" ".repeat(33 - Arrays.toString(e.getDays()).length() + 2)).append("|");
-
-            sb.append("\u001B[0m");
-
-            sb.append("\n");
-        }
-
-        if (recurringEventsExist) {
-            sb.append("\n");
-        }
-
-        if (!indivEvents.isEmpty()) {
-            sb.append("INDIVIDUAL EVENTS:\n");
-
-            sb.append("ID").append(" ".repeat(5)).append("|")
-                    .append("NAME").append(" ".repeat(16)).append("|")
-                    .append("TAG").append(" ".repeat(12)).append("|")
-                    .append("TIME").append(" ".repeat(16)).append("|")
-                    .append("DATE").append(" ".repeat(8)).append("|\n");
-
-            sb.append("-".repeat(79));
-            sb.append("\n");
-        }
-
-        for (Event e : indivEvents) {
-            if (e.getCard() != null) {
-                String colorANSICode = getColorANSICode((e.getCard().getColor()));
-                sb.append(colorANSICode);
-            }
-
-            sb.append(e.getId()).append(" ".repeat(7 - String.valueOf(e.getId()).length())).append("|");
-
-            if (e.getName().length() > 20)
-                sb.append(e.getName(), 0, 20).append("|");
-            else
-                sb.append(e.getName()).append(" ".repeat(20 - e.getName().length())).append("|");
-
-
-            if (e.getCard() == null) {
-                sb.append("     -").append(" ".repeat(15 - "     -".length())).append("|");
-            } else {
-                sb.append(e.getCard().getName()).append(" ".repeat(15 - String.valueOf(e.getCard().getName()).length())).append("|");
-            }
-
-
-            sb.append(e.getTimeStamp().toString()).append(" ".repeat(20 - e.getTimeStamp().toString().length())).append("|");
-            sb.append(e.getDateStamp()).append(" ".repeat(12 - e.getDateStamp().length())).append("|");
-
-            sb.append("\u001B[0m");
 
             sb.append("\n");
         }
 
         if (!indivEvents.isEmpty()) {
+            sb.append("------------------------------------------\n");
+            sb.append("INDIVIDUAL EVENTS\n");
+            sb.append("------------------------------------------\n");
+
+            sb.append("ID   | NAME                | TAG            | TIME            | DATE\n");
+            sb.append("-----|---------------------|----------------|-----------------|------------\n");
+
+            for (Event e : indivEvents) {
+                if (e.getCard() != null) {
+                    String colorANSICode = getColorANSICode(e.getCard().getColor());
+                    sb.append(colorANSICode);
+                }
+
+                sb.append(String.format("%-4d", e.getId())).append(" | ");
+
+                String name = e.getName();
+                sb.append(name.length() > 19 ? name.substring(0, 19) : String.format("%-19s", name)).append(" | ");
+
+                String tag = e.getCard() == null ? "       -       " : e.getCard().getName();
+                sb.append(tag.length() > 14 ? tag.substring(0, 14) : String.format("%-14s", tag)).append(" | ");
+
+                sb.append(e.getTimeStamp()).append(" | ");
+
+                sb.append(String.format(e.getDateStamp())).append("\n");
+
+                if (e.getCard() != null) {
+                    sb.append("\u001B[0m");
+                }
+            }
+
             sb.append("\n");
         }
 
         return sb.toString();
     }
+
 
     /**
      * Creates a {@link com.planner.models.Task.SubTask} table, providing options for both dotted and pretty formats
