@@ -14,17 +14,15 @@ QuickSched is a robust, dynamic scheduling platform that provides unparalleled a
 
 ## Setup
 
-Head over to [link here] and download the latest release (pick the right package based on your OS). To run the application:
+Head over to [link here] and download the latest release. To run the application:
 ```
-# Linux
-<todo>
-
-# Mac OS
-<todo>
+# Mac, Linux
+sh run.sh
 
 # Windows
-qs.exe
+run.bat
 ```
+**Note: You need Java 17 (or newer) to run this application**
 
 ## Usage
 QuickSched makes it trivially simple to create a fully customizable schedule. Here we go over how to work with some of these core mechanics.
