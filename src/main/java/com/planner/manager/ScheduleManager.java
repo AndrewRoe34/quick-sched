@@ -287,8 +287,8 @@ public class ScheduleManager {
             e = new Event(eventId, name, card, timeStamp, days);
             Event.DayOfWeek[] eventDays = e.getDays();
 
-            for (int i = 0; i < eventDays.length; i++) {
-                recurringEvents.get(eventDays[i].ordinal()).add(e);
+            for (Event.DayOfWeek eventDay : eventDays) {
+                recurringEvents.get(eventDay.ordinal()).add(e);
             }
         } else {
             if (dates != null && dates.size() > 1) {
@@ -493,7 +493,7 @@ public class ScheduleManager {
 
             event.setTimeStamp(new Time.TimeStamp(start, end));
         }
-        if (dates != null) {
+        if (dates != null && event.isRecurring()) {
             Event.DayOfWeek[] days = new Event.DayOfWeek[dates.size()];
             Event.DayOfWeek[] dayOfWeekValues = Event.DayOfWeek.values();
 
@@ -502,6 +502,22 @@ public class ScheduleManager {
             }
 
             event.setDays(days);
+
+            for (List<Event> recurringEvent : recurringEvents) {
+                for (int i = 0; i < recurringEvent.size(); i++) {
+                    Event e = recurringEvent.get(i);
+                    if (e.getId() == event.getId()) {
+                        recurringEvent.remove(i);
+                        break;
+                    }
+                }
+            }
+
+            Event.DayOfWeek[] eventDays = event.getDays();
+
+            for (Event.DayOfWeek eventDay : eventDays) {
+                recurringEvents.get(eventDay.ordinal()).add(event);
+            }
         }
 
         eventLog.reportEventAction(event, 2);
