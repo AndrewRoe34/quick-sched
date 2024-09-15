@@ -63,12 +63,11 @@ public class TUI {
 
         // Repo & License
         System.out.println(
-                """
-                        GitHub Repo: https://github.com/AndrewRoe34/quick-sched
-
-                        License: MIT License
-                        -------------------------------------------------------------"""
+                "GitHub Repo: https://github.com/AndrewRoe34/quick-sched\n\n" +
+                        "License: MIT License\n" +
+                        "-------------------------------------------------------------"
         );
+
         sleep(1000);
     }
 
