@@ -317,10 +317,10 @@ public class TableFormatter {
      *
      * @param recurringEvents list of recurring events
      * @param indivEvents list of individual events
-     * @param userConfig user settings for table format
+     * @param useColor whether to display color or not
      * @return event table
      */
-    public static String formatEventSetTables(List<List<Event>> recurringEvents, List<Event> indivEvents, UserConfig userConfig) {
+    public static String formatEventSetTables(List<List<Event>> recurringEvents, List<Event> indivEvents, boolean useColor) {
         StringBuilder sb = new StringBuilder();
 
         boolean recurringEventsExist = false;
@@ -345,7 +345,7 @@ public class TableFormatter {
             }
 
             for (Event e : uniqueRecurringEvents) {
-                if (e.getCard() != null) {
+                if (e.getCard() != null && useColor) {
                     String colorANSICode = getColorANSICode(e.getCard().getColor());
                     sb.append(colorANSICode);
                 }
@@ -366,7 +366,7 @@ public class TableFormatter {
                         Arrays.toString(e.getDays()).length() - 1
                 ).append("\n");
 
-                if (e.getCard() != null) {
+                if (e.getCard() != null && useColor) {
                     sb.append("\u001B[0m");
                 }
             }
@@ -383,7 +383,7 @@ public class TableFormatter {
             sb.append("-----|---------------------|----------------|-----------------|------------\n");
 
             for (Event e : indivEvents) {
-                if (e.getCard() != null) {
+                if (e.getCard() != null && useColor) {
                     String colorANSICode = getColorANSICode(e.getCard().getColor());
                     sb.append(colorANSICode);
                 }
@@ -400,7 +400,7 @@ public class TableFormatter {
 
                 sb.append(String.format(e.getDateStamp())).append("\n");
 
-                if (e.getCard() != null) {
+                if (e.getCard() != null && useColor) {
                     sb.append("\u001B[0m");
                 }
             }
@@ -416,10 +416,10 @@ public class TableFormatter {
      * Creates a {@link com.planner.models.Task.SubTask} table, providing options for both dotted and pretty formats
      *
      * @param schedule list of days containing subtasks
-     * @param userConfig user settings for table format
+     * @param useColor whether to display color or not
      * @return subtask table
      */
-    public static String formatSubTaskTable(List<Day> schedule, UserConfig userConfig) {
+    public static String formatSubTaskTable(List<Day> schedule, boolean useColor) {
         StringBuilder sb = new StringBuilder();
 
         // Header
@@ -436,8 +436,10 @@ public class TableFormatter {
         for (Day day : schedule) {
             for (Task.SubTask subTask : day.getSubTaskList()) {
                 // Get color if needed
-                String colorANSICode = getColorANSICode(subTask.getParentTask().getColor());
-                sb.append(colorANSICode);
+                if (subTask.getParentTask().getCard() != null && useColor) {
+                    String colorANSICode = getColorANSICode(subTask.getParentTask().getColor());
+                    sb.append(colorANSICode);
+                }
 
                 // ID (5 characters, left-aligned)
                 int id = subTask.getParentTask().getId();
@@ -468,7 +470,11 @@ public class TableFormatter {
                 sb.append(String.format("%-10s", due));
 
                 // Reset color formatting (if using ANSI codes)
-                sb.append("\u001B[0m").append("\n");
+
+                if (subTask.getParentTask().getCard() != null && useColor) {
+                    sb.append("\u001B[0m");
+                }
+                sb.append("\n");
             }
         }
 

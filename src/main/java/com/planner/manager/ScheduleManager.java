@@ -774,7 +774,7 @@ public class ScheduleManager {
      * @return Events table as a String
      */
     public String buildEventStr() {
-        return TableFormatter.formatEventSetTables(recurringEvents, indivEvents, userConfig);
+        return TableFormatter.formatEventSetTables(recurringEvents, indivEvents, true);
     }
 
     /**
@@ -801,7 +801,7 @@ public class ScheduleManager {
      * @return Subtasks table as a String
      */
     public String buildSubTaskStr() {
-        return TableFormatter.formatSubTaskTable(schedule, userConfig);
+        return TableFormatter.formatSubTaskTable(schedule, true);
     }
 
     /**
