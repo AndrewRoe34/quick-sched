@@ -8,11 +8,7 @@ import com.planner.models.UserConfig;
 import com.planner.schedule.day.Day;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Scanner;
-import java.util.Set;
+import java.util.*;
 
 public class Serializer {
 
@@ -299,15 +295,18 @@ sm.modTask(taskId, null, hours, null, null); <-- this handles archiving the task
             for (int id : di.getEventIds()) {
                 day.forceAddEvent(events.get(id));
             }
+
             for (int id : di.getTaskTimeStampsMap().keySet()) {
                 Task t = tasks.get(id);
-                Time.TimeStamp ts = di.getTaskTimeStampsMap().get(id);
-                double hours = Time.getTimeInterval(ts.getStart(), ts.getEnd());
-                day.forceAddTask(t, hours, ts);
-                if (!Time.doDatesMatch(today, d) && d.compareTo(today) < 0) {
-                    // update Task here since the day is older than today
-                    double updatedHours = t.getTotalHours() - hours;
-                    sm.modTask(id, null, updatedHours, null, null);
+                List<Time.TimeStamp> timestamps = di.getTaskTimeStampsMap().get(id);
+                for (Time.TimeStamp ts : timestamps) {
+                    double hours = Time.getTimeInterval(ts.getStart(), ts.getEnd());
+                    day.forceAddTask(t, hours, ts);
+                    if (!Time.doDatesMatch(today, d) && d.compareTo(today) < 0) {
+                        // update Task here since the day is older than today
+                        double updatedHours = t.getTotalHours() - hours;
+                        sm.modTask(id, null, updatedHours, null, null);
+                    }
                 }
             }
             days.add(day);
