@@ -4,6 +4,7 @@ import com.planner.manager.ScheduleManager;
 import com.planner.models.Card;
 import com.planner.models.Event;
 import com.planner.models.Task;
+import com.planner.models.UserConfig;
 import com.planner.schedule.day.Day;
 
 import java.io.IOException;
@@ -169,7 +170,6 @@ public class Serializer {
         int cardCount = sm.getCards().size();
         List<Event> events = null;
         List<Task> tasks = null;
-        List<Day> days = new ArrayList<>();
         while (lineScanner.hasNextLine()) {
             switch (lineScanner.nextLine().trim()) {
                 case "CARD {":
@@ -182,7 +182,10 @@ public class Serializer {
                     tasks = processTasks(lineScanner, cardCount, sm);
                     break;
                 case "DAY {":
-                    processDays(lineScanner, events, tasks);
+                    List<Day> days = processDays(lineScanner, events, tasks, sm);
+                    if (!days.isEmpty()) {
+                        sm.setSched(days);
+                    }
                     break;
             }
         }
@@ -247,7 +250,8 @@ public class Serializer {
                 break;
             }
             Parser.TaskInfo ti = Parser.parseTask(Parser.tokenize("task " + line));
-            Task t = sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), cardCount + ti.getCardId());
+
+            Task t = sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), ti.getCardId() == null ? null : cardCount + ti.getCardId());
 
             tasks.add(t);
         }
@@ -278,66 +282,36 @@ int taskId = tasks.get(id).getId();
 sm.modTask(taskId, null, hours, null, null); <-- this handles archiving the task automatically for us
      */
 
-    private static void processDays(Scanner lineScanner, List<Event> events, List<Task> tasks) {
+    private static List<Day> processDays(Scanner lineScanner, List<Event> events, List<Task> tasks, ScheduleManager sm) {
+        List<Day> days = new ArrayList<>();
+        Calendar today = Time.getFormattedCalendarInstance(0);
+        UserConfig userConfig = sm.getUserConfig();
+        int dayId = 0;
         while (lineScanner.hasNextLine()) {
             String line = lineScanner.nextLine();
-
+            if ("}".equals(line.trim())) {
+                break;
+            }
             Parser.DayInfo di = Parser.parseDay(Parser.tokenize(line));
             Calendar d = di.getDate();
-            /*
-            todo
-              1. create day using di.getDate()
-              2. add events manually to Day
-              3. add subtasks to Day manually (make sure to follow steps from above about updating Task hours)
-              4. return list of days
-             */
+            int dayHrs = userConfig.getHoursPerDayOfWeek()[d.get(Calendar.DAY_OF_WEEK) - 1];
+            Day day = new Day(dayId++, dayHrs, d);
+            for (int id : di.getEventIds()) {
+                day.forceAddEvent(events.get(id));
+            }
+            for (int id : di.getTaskTimeStampsMap().keySet()) {
+                Task t = tasks.get(id);
+                Time.TimeStamp ts = di.getTaskTimeStampsMap().get(id);
+                double hours = Time.getTimeInterval(ts.getStart(), ts.getEnd());
+                day.forceAddTask(t, hours, ts);
+                if (!Time.doDatesMatch(today, d) && d.compareTo(today) < 0) {
+                    // update Task here since the day is older than today
+                    double updatedHours = t.getTotalHours() - hours;
+                    sm.modTask(id, null, updatedHours, null, null);
+                }
+            }
+            days.add(day);
         }
-    }
-
-    public static void main(String[] args) throws IOException {
-        ScheduleManager sm = new ScheduleManager();
-
-//        String sched = "CARD {\n" +
-//                "  \"CSC\" light_blue\n" +
-//                "  \"PY\" orange\n" +
-//                "  \"FLJ\" yellow\n" +
-//                "  \"PHI\" green\n" +
-//                "}\n" +
-//                "\n" +
-//                "EVENT {\n" +
-//                "  true \"OS Class\" +C0 @ tue thu 3pm-4:15\n" +
-//                "  true \"PY Class\" +C1 @ mon wed fri 1:55pm-2:45pm\n" +
-//                "  true \"PHI Class\" +C3 @ tue thu 8:30-9:45\n" +
-//                "  true \"FLJ Recit\" +C2 @ 10:15-11:05 tue\n" +
-//                "  true \"FLJ Class\" +C2 @ mon wed fri 10:40-11:30\n" +
-//                "  true \"Lunch\" @ mon tue wed thu fri 11:45-1:30\n" +
-//                "}\n" +
-//                "\n" +
-//                "TASK {\n" +
-//                "  \"study ch9\" @ thu 6.5 +C2\n" +
-//                "  \"do hw4\" @ fri 5 +C1\n" +
-//                "  \"read ch2\" @ sat 4 +C3\n" +
-//                "  \"project 2\" @ sun 15 +C0\n" +
-//                "}\n";
-
-        String sched = "CARD {\n" +
-                "  \"Supply Chain\" RED\n" +
-                "}\n" +
-                "\n" +
-                "TASK {\n" +
-                "  \"finish ch12\" 4.0 +C0 @ 13-09-2024\n" +
-                "}\n" +
-                "\n" +
-                "EVENT {\n" +
-                "  true \"class1\" +C0 @ mon wed fri 01:00pm-2:15pm\n" +
-                "}\n" +
-                "\n" +
-                "DAY {\n" +
-                "  11-09-2024 T0 08:00am-12:00pm E0\n" +
-                "}\n";
-
-        deserializeSchedule(sched, sm);
-        sm.buildSchedule();
-        System.out.println(sm.buildScheduleStr());
+        return days;
     }
 }

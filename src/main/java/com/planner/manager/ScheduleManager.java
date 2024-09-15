@@ -906,4 +906,8 @@ public class ScheduleManager {
 
 //        sm.addEvent("holiday", Card.Color.BLUE, timeStamp, true, dates);
     }
+
+    public void setSched(List<Day> days) {
+        this.schedule = days;
+    }
 }
