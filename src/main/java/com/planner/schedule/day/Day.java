@@ -434,4 +434,13 @@ public class Day {
         subTaskList.add(subTask);
         taskTimeStamps.add(ts);
     }
+
+    public void sortSubTasks() {
+        if (!subTaskList.isEmpty()) {
+            subTaskList.sort(Comparator.comparing(SubTask::getTimeStamp));
+        }
+        if (!taskTimeStamps.isEmpty()) {
+            Collections.sort(taskTimeStamps);
+        }
+    }
 }

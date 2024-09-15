@@ -309,6 +309,7 @@ sm.modTask(taskId, null, hours, null, null); <-- this handles archiving the task
                     }
                 }
             }
+            day.sortSubTasks();
             days.add(day);
         }
         return days;
