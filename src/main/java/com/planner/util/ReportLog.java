@@ -11,7 +11,7 @@ public class ReportLog {
     public static String buildReportLog(ScheduleManager scheduleManager) {
         StringBuilder sb = new StringBuilder();
         sb.append("------------------------------------------\n" +
-                "SCRIPT INFORMATION\n" +
+                "CONFIG INFORMATION\n" +
                 "------------------------------------------\n");
         UserConfig userConfig = scheduleManager.getUserConfig();
         sb.append("Configuration File:   profile.json\n")

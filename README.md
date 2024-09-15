@@ -12,21 +12,26 @@
 
 QuickSched is a robust, dynamic scheduling platform that provides unparalleled automation for generating timetabled daily/weekly schedules. This platform comes with its own scheduling, timetabling, serialization tooling, intelligent/flexible parser, integrated systems logging, and Google Calendar support.
 
-All of this is done purely from a command line interface.
-
-todo... (need something here)
-
 ## Setup
 
-todo...
+Head over to [link here] and download the latest release (pick the right package based on your OS). To run the application:
+```
+# Linux
+<todo>
 
+# Mac OS
+<todo>
+
+# Windows
+qs.exe
+```
 
 ## Usage
 QuickSched makes it trivially simple to create a fully customizable schedule. Here we go over how to work with some of these core mechanics.
 
-### Start up QuickSched
+### Features of QuickSched
 
-Begin by running `qs`. This platform supports the following:
+This platform supports the following:
 * Add/Mod/Delete/Get Tasks, Cards, & Events
 * Customizable scheduling preferences (e.g. number of hours, time of day, etc.)
 * Dynamic scheduling closely integrated with settings

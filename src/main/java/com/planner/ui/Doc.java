@@ -20,8 +20,8 @@ public class Doc {
                 "  - read      Display all serialization files or read in a file\n" +
                 "  - save      Update the stored db with new scheduling data\n" +
                 "  - google    Export schedule data to Google Calendar\n" +
-                "  - excel     Export schedule data to a .xlsx\n" +
-                "  - json      Export schedule data to a .json\n" +
+//                "  - excel     Export schedule data to a .xlsx\n" +
+//                "  - json      Export schedule data to a .json\n" +
                 "  - doc       Display documentation for a command\n" +
                 "  - ls        Display all available commands\n\n" +
                 "System and Configuration:\n" +
@@ -32,7 +32,7 @@ public class Doc {
                 "  - date      List of all valid date formats\n" +
                 "  - ts        List of all valid timestamp formats\n" +
                 "  - color     List of all valid colors\n" +
-                "Use 'doc <topic>' to view detailed information.";
+                "\nUse 'doc <topic>' to view detailed information.";
     }
 
     public static String getTaskDoc() {

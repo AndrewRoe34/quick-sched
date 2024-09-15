@@ -273,25 +273,6 @@ public class CLI {
                         throw new IllegalArgumentException("Invalid type provided for delete");
                 }
                 break;
-            case "jbin":
-                if (tokens.length == 2) {
-                    if (tokens[1].contains(".jbin")) {
-                        sm.importJBinFile("data/jbin/" + tokens[1]);
-                        System.out.println("Imported " + tokens[1] + ".");
-                    } else {
-                        throw new IllegalArgumentException("Argument must be a jbin file");
-                    }
-                } else if (tokens.length == 1) {
-//                    System.out.println(sm.buildBoardString());
-                }
-                break;
-            case "update":
-                if (tokens.length == 1) {
-                    // TODO
-                } else {
-                    throw new IllegalArgumentException("'update' has no args.");
-                }
-                break;
             case "config":
                 if (tokens.length == 1) {
                     ConfigDialog configDialog = new ConfigDialog();
@@ -411,7 +392,8 @@ public class CLI {
 //                    System.out.println("Error: 'google' has no args.");
 //                }
 //                break;
-            case "excel":
+//            case "excel":
+//                break;
             case "ls":
                 if (tokens.length == 1) {
                     System.out.println("card\n" +
@@ -421,6 +403,7 @@ public class CLI {
                             "event\n" +
                             "doc\n" +
                             "excel\n" +
+                            "get\n" +
                             "google\n" +
                             "log\n" +
                             "ls\n" +

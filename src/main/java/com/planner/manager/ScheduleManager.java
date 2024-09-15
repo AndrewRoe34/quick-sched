@@ -832,6 +832,7 @@ public class ScheduleManager {
      */
     public void quit() throws IOException {
         eventLog.reportExitSession();
+        IOProcessing.writeSesLogToFile(buildReportStr()); // todo this needs to use a bool to remove the coloring
         IOProcessing.writeSysLogToFile(eventLog.toString());
         System.exit(0);
     }
