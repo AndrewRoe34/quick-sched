@@ -609,7 +609,7 @@ public class Parser {
 
         if (startFmt.equalsIgnoreCase("pm") && startHr != 12) {
             startHr += 12;
-        } else if (startFmt.equalsIgnoreCase("pm")) {
+        } else if (startFmt.equalsIgnoreCase("am") && startHr == 12) {
             startHr = 0;
         }
 
