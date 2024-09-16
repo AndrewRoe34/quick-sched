@@ -489,6 +489,9 @@ public class CLI {
                         case "clear":
                             System.out.println("\n" + Doc.getClearDoc() + "\n");
                             break;
+                        case "get":
+                            System.out.println("\n" + Doc.getGetDoc() + "\n");
+                            break;
                         default:
                             System.out.println("Unknown command. Use 'ls' to list all available commands.");
                             break;

@@ -10,7 +10,8 @@ public class Doc {
                 "  - card      Create a new Card or display all Card data\n" +
                 "  - event     Create a new Event or display all Event data\n" +
                 "  - mod       Modify a scheduling item\n" +
-                "  - delete    Delete a scheduling item\n\n" +
+                "  - delete    Delete a scheduling item\n" +
+                "  - get       Retrieves Task, Events, or Cards to be displayed\n\n" +
                 "Scheduling Operations:\n" +
                 "  - build     Builds a fresh schedule\n" +
                 "  - sched     Display user schedule\n" +
@@ -251,14 +252,31 @@ public class Doc {
     }
 
     public static String getSaveDoc() {
-        return "Updates the serialization file with the current schedule data. If no file was read in, the user will be prompted for a filename.\n\n" +
+        return "Updates the serialization file with the current schedule data. If previously saved or read, there is no need to include the filename.\n\n" +
                 "Usage:\n" +
+                "  save\n" +
                 "  save <name>\n\n" +
                 "Required:\n" +
                 "  - name   Name of the serialization file being saved\n\n" +
                 "Examples:\n" +
+                "  save\n" +
                 "  save my_data";
     }
+
+    public static String getGetDoc() {
+        return "Retrieves details of tasks, cards, or events by their IDs. You can provide multiple IDs to get information for several items at once.\n\n" +
+                "Usage:\n" +
+                "  get task <id>\n" +
+                "  get event <id>\n" +
+                "  get card <id>\n\n" +
+                "Required:\n" +
+                "  - id     One or more IDs of the task, event, or card to retrieve\n\n" +
+                "Examples:\n" +
+                "  get task 2 4\n" +
+                "  get event 1\n" +
+                "  get card 0";
+    }
+
 
     public static String getModDoc() {
         return "Modifies an existing task, card, or event by index. The arguments are the same as the ones used for creating a task, card, or event.\n\n" +
