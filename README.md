@@ -176,6 +176,41 @@ Simply enter the id for whatever option you'd like to modify and then follow the
 
 ![Config](images/config.png)
 
+### Read & Save
+QuickSched makes it very convenient to quickly load up scheduling data from your serialization file.
+```
+usage:
+  read
+  read <filename>
+
+Required:
+  - name   Name of the serialization file being read
+
+Examples:
+  read
+  read fall
+```
+When no arguments are provided, it displays all the available serialization files. When a file is provided, it deserializes the file contents.
+
+![Read](images/read.png)
+
+As for saving, QuickSched makes the process quick and simple.
+```
+Usage:
+  save
+  save <name>
+
+Required:
+  - name   Name of the serialization file being saved
+
+Examples:
+  save
+  save my_data
+```
+When no arguments are provided, it saves to the last saved or read file location.
+
+![Save](images/save.png)
+
 ## Generate dummy data
 
 To quickly generate a dummy schedule, simply `read` the provided serialization file and afterwards build your schedule via `sched`. Enter the following:
@@ -198,6 +233,7 @@ Task Management:
   - event     Create a new Event or display all Event data
   - mod       Modify a scheduling item
   - delete    Delete a scheduling item
+  - get       Retrieves Task, Events, or Cards to be displayed
 
 Scheduling Operations:
   - build     Builds a fresh schedule
@@ -209,7 +245,6 @@ File Management:
   - read      Display all serialization files or read in a file
   - save      Update the stored db with new scheduling data
   - google    Export schedule data to Google Calendar
-  - excel     Export schedule data to a .xlsx
   - doc       Display documentation for a command
   - ls        Display all available commands
 
