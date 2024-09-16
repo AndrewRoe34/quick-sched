@@ -178,10 +178,10 @@ Simply enter the id for whatever option you'd like to modify and then follow the
 
 ## Generate dummy data
 
-To quickly generate a dummy schedule, simply `read` the provided serialization file. Enter the following:
+To quickly generate a dummy schedule, simply `read` the provided serialization file and afterwards build your schedule via `sched`. Enter the following:
 ```
 read fall
-schedu
+sched
 ```
 
 This will populate your Tasks, Cards, Events, as well as generate your Schedule and SubTasks.
