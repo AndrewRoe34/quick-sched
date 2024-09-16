@@ -20,26 +20,30 @@ public class Serializer {
         }
 
         if (tasks != null) {
-            scheduleSb.append(getTasksSb(tasks)).append('\n');
+            scheduleSb.append(getTasksSb(tasks, cards)).append('\n');
         }
 
         if (indivEvents != null || recurEvents != null) {
             scheduleSb.append("EVENT {").append('\n');
 
             if (recurEvents == null) {
-                scheduleSb.append(getEventsSb(indivEvents));
+                scheduleSb.append(getEventsSb(indivEvents, cards));
             } else if (indivEvents == null) {
-                scheduleSb.append(getEventsSb(recurEvents));
+                scheduleSb.append(getEventsSb(recurEvents, cards));
             } else {
                 indivEvents.addAll(recurEvents);
-                scheduleSb.append(getEventsSb(indivEvents));
+                scheduleSb.append(getEventsSb(indivEvents, cards));
             }
 
             scheduleSb.append('\n');
         }
 
         if (days != null) {
-            scheduleSb.append(getDaysSb(days));
+            if (indivEvents == null) {
+                scheduleSb.append(getDaysSb(days, tasks, recurEvents));
+            } else {
+                scheduleSb.append(getDaysSb(days, tasks, indivEvents));
+            }
         }
       
         return scheduleSb.toString();
@@ -63,7 +67,7 @@ public class Serializer {
         return cardsSb;
     }
 
-    private static StringBuilder getTasksSb(List<Task> tasks) {
+    private static StringBuilder getTasksSb(List<Task> tasks, List<Card> cards) {
         StringBuilder tasksSb = new StringBuilder();
 
         tasksSb.append("TASK {").append('\n');
@@ -76,9 +80,13 @@ public class Serializer {
                     .append(" ");
 
             if (task.getCard() != null) {
-                tasksSb.append("+C")
-                        .append(task.getCard().getId())
-                        .append(" ");
+                for (int i = 0; i < cards.size(); i++) {
+                    if (cards.get(i).getId() == task.getCard().getId()) {
+                        tasksSb.append("+C")
+                                .append(i)
+                                .append(" ");
+                    }
+                }
             }
 
             tasksSb.append("@")
@@ -92,7 +100,7 @@ public class Serializer {
         return tasksSb;
     }
 
-    private static StringBuilder getEventsSb(List<Event> events) {
+    private static StringBuilder getEventsSb(List<Event> events, List<Card> cards) {
         StringBuilder eventsSb = new StringBuilder();
 
         for (Event event : events) {
@@ -103,9 +111,13 @@ public class Serializer {
                     .append(" ");
 
             if (event.getCard() != null) {
-                eventsSb.append("+C")
-                        .append(event.getCard().getId())
-                        .append(" ");
+                for (int i = 0; i < cards.size(); i++) {
+                    if (cards.get(i).getId() == event.getCard().getId()) {
+                        eventsSb.append("+C")
+                                .append(i)
+                                .append(" ");
+                    }
+                }
             }
 
             eventsSb.append("@")
@@ -128,7 +140,7 @@ public class Serializer {
         return eventsSb;
     }
 
-    private static StringBuilder getDaysSb(List<Day> days) {
+    private static StringBuilder getDaysSb(List<Day> days, List<Task> tasks, List<Event> events) {
         StringBuilder daysSb = new StringBuilder();
 
         daysSb.append("DAY {").append('\n');
@@ -139,17 +151,25 @@ public class Serializer {
                     .append(" ");
 
             for (Task.SubTask subTask : day.getSubTaskList()) {
-                daysSb.append("T")
-                        .append(subTask.getParentTask().getId())
-                        .append(" ")
-                        .append(subTask.getTimeStamp().toString())
-                        .append(" ");
+                for (int i = 0; i < tasks.size(); i++) {
+                    if (tasks.get(i).getId() == subTask.getParentTask().getId()) {
+                        daysSb.append("T")
+                                .append(i)
+                                .append(" ")
+                                .append(subTask.getTimeStamp().toString())
+                                .append(" ");
+                    }
+                }
             }
 
             for (Event event : day.getEventList()) {
-                daysSb.append("E")
-                        .append(event.getId())
-                        .append(" ");
+                for (int i = 0; i < events.size(); i++) {
+                    if (events.get(i).getId() == event.getId()) {
+                        daysSb.append("E")
+                                .append(i)
+                                .append(" ");
+                    }
+                }
             }
 
             daysSb.append('\n');
@@ -253,30 +273,6 @@ public class Serializer {
         }
         return tasks;
     }
-
-    /*
-    when going through Day, we'll need to modify the number of hours each task has
-
-ex.
-
-10-09-2024 T0 8-9:30
-...
-
-
-since this is the prior day, we would do: task.setTotalHours(task.getTotalHours() - used);
-
-
-since we are dealing with indexing Tasks and Events with scheduling, we should store a list of each
-
-
-List<Task> tasks
-List<Event> events
-
-
-Double hours = task.getTotalHours() - used;
-int taskId = tasks.get(id).getId();
-sm.modTask(taskId, null, hours, null, null); <-- this handles archiving the task automatically for us
-     */
 
     private static List<Day> processDays(Scanner lineScanner, List<Event> events, List<Task> tasks, ScheduleManager sm) {
         List<Day> days = new ArrayList<>();
