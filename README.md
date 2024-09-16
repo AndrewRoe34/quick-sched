@@ -8,7 +8,8 @@
 ![Maven Central Version](https://img.shields.io/maven-central/v/com.google.apis/google-api-services-calendar?versionSuffix=v3-rev20220715-2.0.0&style=for-the-badge&label=google-api-services-calendar&labelColor=%23db4437&color=%23555555)
 
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/AndrewRoe34/quick-sched/gradle.yml?style=for-the-badge)](https://github.com/AndrewRoe34/quick-sched/actions)
-<!-- [![GitHub Release](https://img.shields.io/github/v/release/AndrewRoe34/quick-sched?include_prereleases&color=%23ffeb3b)](https://github.com/AndrewRoe34/quick-sched/releases) -->
+[![GitHub Release](https://img.shields.io/github/v/release/AndrewRoe34/quick-sched?include_prereleases&style=for-the-badge&color=orange)](https://github.com/AndrewRoe34/quick-sched/releases)
+
 
 QuickSched is a robust, dynamic scheduling platform that provides unparalleled automation for generating timetabled daily/weekly schedules. This platform comes with its own scheduling, timetabling, serialization tooling, intelligent/flexible parser, integrated systems logging, and Google Calendar support.
 
@@ -269,4 +270,4 @@ Before you start contributing, please make sure to read our [CONTRIBUTING.md](CO
 
 If you have any questions or want to discuss your ideas before diving in, be sure to join our Slack group:
 
-[![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)](https://join.slack.com/t/agileplannergroup/shared_invite/zt-2k0bmf49j-V6avYCrNJFFWVTpdER69tg)
+[![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)](https://join.slack.com/t/quicksched/shared_invite/zt-2k0bmf49j-V6avYCrNJFFWVTpdER69tg)
