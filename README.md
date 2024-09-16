@@ -15,7 +15,7 @@ QuickSched is a robust, dynamic scheduling platform that provides unparalleled a
 
 ## Setup
 
-Head over to [link here] and download the latest release. To run the application:
+Head over to [here](https://github.com/AndrewRoe34/quick-sched/releases) and download the latest release. To run the application:
 ```
 # Mac, Linux
 sh run.sh
