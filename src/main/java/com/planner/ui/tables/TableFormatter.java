@@ -208,10 +208,11 @@ public class TableFormatter {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
 
         List<Task> list = new ArrayList<>(archiveTasks);
-        int numArchived = list.size();
         list.addAll(currTasks);
 
         list.sort(Comparator.comparingInt(Task::getId));
+
+        Calendar curr = Time.getFormattedCalendarInstance(0);
 
         for (Task task : list) {
             Card.Color color = task.getColor();
@@ -250,7 +251,7 @@ public class TableFormatter {
             sb.append(due).append("  | ");
 
             // ARCHIVED
-            if (list.indexOf(task) < numArchived) { // todo need to do a quick check instead of this index nonsense
+            if ((!Time.doDatesMatch(task.getDueDate(), curr) && task.getDueDate().compareTo(curr) < 0) || task.getTotalHours() == 0) {
                 sb.append("Yes\n");
             } else {
                 sb.append("No\n");

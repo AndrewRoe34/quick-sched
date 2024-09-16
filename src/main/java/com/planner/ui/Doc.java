@@ -3,7 +3,7 @@ package com.planner.ui;
 public class Doc {
 
     public static String getDoc() {
-        return "Quick Sched is a dynamic scheduling platform that automates the process of creating a comprehensive schedule.\n\n" +
+        return "QuickSched is a dynamic scheduling platform that automates the process of creating a comprehensive schedule.\n\n" +
                 "Command Categories:\n\n" +
                 "Task Management:\n" +
                 "  - task      Create a new Task or display all Task data\n" +
@@ -147,7 +147,7 @@ public class Doc {
     }
 
     public static String getDateDoc() {
-        return "Here is a list of all valid date formats Agile Planner supports:\n\n" +
+        return "Here is a list of all valid date formats QuickSched supports:\n\n" +
                 "Date Formats:\n" +
                 " - dd-MM-yyyy\n" +
                 "   Example: 05-09-2024\n\n" +
@@ -167,7 +167,7 @@ public class Doc {
     }
 
     public static String getColorDoc() {
-        return "Here is a list of all valid colors Agile Planner supports:\n\n" +
+        return "Here is a list of all valid colors QuickSched supports:\n\n" +
                 "Colors:\n" +
                 " - \u001B[38;2;97;97;97mBLACK\u001B[0m\n" +
                 " - \u001B[38;2;244;81;30mORANGE\u001B[0m\n" +
@@ -183,7 +183,7 @@ public class Doc {
     }
 
     public static String getTimestampDoc() {
-        return "Here is a list of valid timestamp formats Agile Planner supports:\n\n" +
+        return "Here is a list of valid timestamp formats QuickSched supports:\n\n" +
                 "Timestamp Formats:\n" +
                 " - 9-2                 (9:00am-2:00pm)\n" +
                 " - 9-2:15              (9:00am-2:15pm)\n" +
