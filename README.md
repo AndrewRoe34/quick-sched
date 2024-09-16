@@ -25,6 +25,8 @@ run.bat
 **Note: You need Java 17 (or newer) to run this application**
 
 ## Usage
+> Newbie Tip: To see how `QuickSched` works without having to create the data yourself, you can have it generate dummy data for you. See [here](#generate-dummy-data) for more details.
+
 QuickSched makes it trivially simple to create a fully customizable schedule. Here we go over how to work with some of these core mechanics.
 
 ### Features of QuickSched
@@ -173,6 +175,16 @@ Usage:
 Simply enter the id for whatever option you'd like to modify and then follow the provided format.
 
 ![Config](images/config.png)
+
+## Generate dummy data
+
+To quickly generate a dummy schedule, simply `read` the provided serialization file. Enter the following:
+```
+read fall
+schedu
+```
+
+This will populate your Tasks, Cards, Events, as well as generate your Schedule and SubTasks.
 
 ## Reference Manual
 ```
