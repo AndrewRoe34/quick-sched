@@ -34,8 +34,8 @@ public class Serializer {
             } else if (indivEvents == null) {
                 scheduleSb.append(getEventsSb(recurEvents));
             } else {
-                indivEvents.addAll(recurEvents);
-                scheduleSb.append(getEventsSb(indivEvents));
+                recurEvents.addAll(indivEvents);
+                scheduleSb.append(getEventsSb(recurEvents));
             }
 
             scheduleSb.append('\n');
