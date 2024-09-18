@@ -206,6 +206,10 @@ public class Task implements Comparable<Task> {
         return subtask;
     }
 
+    public SubTask forceAddSubTask(double hours, boolean overflow, Time.TimeStamp timeStamp) {
+        return new SubTask(this, hours, overflow, timeStamp);
+    }
+
     /**
      * Resets the Task in all of its properties, resets <code>subTotalHours</code> to zero
      */
@@ -260,7 +264,7 @@ public class Task implements Comparable<Task> {
      * and when attempting to set the Task hours to numbers that have a decimal other than <code>0.5</code>
      */
     public void setTotalHours(double total) {
-        if (total <= 0) throw new IllegalArgumentException("Task hours cannot be zero or negative");
+        if (total < 0) throw new IllegalArgumentException("Task hours cannot be negative");
         double dec = total % 1;
         if (dec != 0 && dec != 0.5) throw new IllegalArgumentException("Task hours cannot have a decimal besides 0.5");
         this.totalHours = total;

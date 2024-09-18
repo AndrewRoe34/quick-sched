@@ -5,7 +5,7 @@ This document provides guidelines for contributing to the project. Whether you'r
 ## Prerequisites
 
 Before you begin, ensure you have the following installed:
-- **Java Development Kit (JDK)**: Version 11 (required to compile Java code).
+- **Java Development Kit (JDK)**: Version 17 (required to compile Java code).
 
 Optional:
 - **IntelliJ IDEA**: This project is developed using IntelliJ IDEA, which provides excellent support for Gradle projects. You can download it from the JetBrains website. The Community Edition is free, and the Ultimate Edition is available for a free trial.

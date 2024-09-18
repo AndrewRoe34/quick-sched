@@ -199,7 +199,7 @@ public class Parser {
         }
         date.setTime(due);
 
-        HashMap<Integer, Time.TimeStamp> taskTimeStampMap = new HashMap<>();
+        HashMap<Integer, List<Time.TimeStamp>> taskTimeStampMap = new HashMap<>();
 
         List<Integer> eventIds = new ArrayList<>();
 
@@ -225,7 +225,15 @@ public class Parser {
 
                 Time.TimeStamp timestamp = new Time.TimeStamp(parsedTimestamp[0], parsedTimestamp[1]) ;
 
-                taskTimeStampMap.put(id, timestamp);
+                if (taskTimeStampMap.containsKey(id)) {
+                    List<Time.TimeStamp> ts = taskTimeStampMap.get(id);
+                    ts.add(timestamp);
+                } else {
+                    List<Time.TimeStamp> ts = new ArrayList<>();
+                    ts.add(timestamp);
+                    taskTimeStampMap.put(id, ts);
+                }
+
                 i++;
             } else if (args[i].charAt(0) == 'E') {
                 if (i != args.length - 1 && !( args[i + 1].charAt(0) == 'T' || args[i + 1].charAt(0) == 'E' )) {
@@ -609,7 +617,7 @@ public class Parser {
 
         if (startFmt.equalsIgnoreCase("pm") && startHr != 12) {
             startHr += 12;
-        } else if (startFmt.equalsIgnoreCase("pm")) {
+        } else if (startFmt.equalsIgnoreCase("am") && startHr == 12) {
             startHr = 0;
         }
 
@@ -743,17 +751,17 @@ public class Parser {
 
     public static class DayInfo {
         private final Calendar date;
-        private final HashMap<Integer, Time.TimeStamp> taskTimeStampsMap;
+        private final HashMap<Integer, List<Time.TimeStamp>> taskTimeStampsMap;
         private final List<Integer> eventIds;
 
-        public DayInfo(Calendar date, HashMap<Integer, Time.TimeStamp> taskTimeStampsMap, List<Integer> eventIds) {
+        public DayInfo(Calendar date, HashMap<Integer, List<Time.TimeStamp>> taskTimeStampsMap, List<Integer> eventIds) {
             this.date = date;
             this.taskTimeStampsMap = taskTimeStampsMap;
             this.eventIds = eventIds;
         }
 
         public Calendar getDate() { return date; }
-        public HashMap<Integer, Time.TimeStamp> getTaskTimeStampsMap() { return taskTimeStampsMap; }
+        public HashMap<Integer, List<Time.TimeStamp>> getTaskTimeStampsMap() { return taskTimeStampsMap; }
         public List<Integer> getEventIds() { return eventIds; }
     }
 

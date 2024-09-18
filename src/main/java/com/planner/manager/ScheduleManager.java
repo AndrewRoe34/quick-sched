@@ -287,8 +287,8 @@ public class ScheduleManager {
             e = new Event(eventId, name, card, timeStamp, days);
             Event.DayOfWeek[] eventDays = e.getDays();
 
-            for (int i = 0; i < eventDays.length; i++) {
-                recurringEvents.get(eventDays[i].ordinal()).add(e);
+            for (Event.DayOfWeek eventDay : eventDays) {
+                recurringEvents.get(eventDay.ordinal()).add(e);
             }
         } else {
             if (dates != null && dates.size() > 1) {
@@ -493,7 +493,7 @@ public class ScheduleManager {
 
             event.setTimeStamp(new Time.TimeStamp(start, end));
         }
-        if (dates != null) {
+        if (dates != null && event.isRecurring()) {
             Event.DayOfWeek[] days = new Event.DayOfWeek[dates.size()];
             Event.DayOfWeek[] dayOfWeekValues = Event.DayOfWeek.values();
 
@@ -502,6 +502,22 @@ public class ScheduleManager {
             }
 
             event.setDays(days);
+
+            for (List<Event> recurringEvent : recurringEvents) {
+                for (int i = 0; i < recurringEvent.size(); i++) {
+                    Event e = recurringEvent.get(i);
+                    if (e.getId() == event.getId()) {
+                        recurringEvent.remove(i);
+                        break;
+                    }
+                }
+            }
+
+            Event.DayOfWeek[] eventDays = event.getDays();
+
+            for (Event.DayOfWeek eventDay : eventDays) {
+                recurringEvents.get(eventDay.ordinal()).add(event);
+            }
         }
 
         eventLog.reportEventAction(event, 2);
@@ -758,7 +774,7 @@ public class ScheduleManager {
      * @return Events table as a String
      */
     public String buildEventStr() {
-        return TableFormatter.formatEventSetTables(recurringEvents, indivEvents, userConfig);
+        return TableFormatter.formatEventSetTables(recurringEvents, indivEvents, true);
     }
 
     /**
@@ -785,7 +801,7 @@ public class ScheduleManager {
      * @return Subtasks table as a String
      */
     public String buildSubTaskStr() {
-        return TableFormatter.formatSubTaskTable(schedule, userConfig);
+        return TableFormatter.formatSubTaskTable(schedule, true);
     }
 
     /**
@@ -832,6 +848,7 @@ public class ScheduleManager {
      */
     public void quit() throws IOException {
         eventLog.reportExitSession();
+        IOProcessing.writeSesLogToFile(buildReportStr()); // todo this needs to use a bool to remove the coloring
         IOProcessing.writeSysLogToFile(eventLog.toString());
         System.exit(0);
     }
@@ -905,5 +922,9 @@ public class ScheduleManager {
         Parser.parseEvent(new String[]{"event", "false", "+C4", "@", "3pm-5", "25-12-2024", "3-5", "\"holiday meal\""});
 
 //        sm.addEvent("holiday", Card.Color.BLUE, timeStamp, true, dates);
+    }
+
+    public void setSched(List<Day> days) {
+        this.schedule = days;
     }
 }
