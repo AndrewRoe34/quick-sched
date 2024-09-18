@@ -7,7 +7,6 @@ import com.planner.models.Task;
 import com.planner.models.UserConfig;
 import com.planner.schedule.day.Day;
 
-import java.io.IOException;
 import java.util.*;
 
 public class Serializer {
@@ -31,8 +30,8 @@ public class Serializer {
             } else if (indivEvents == null) {
                 scheduleSb.append(getEventsSb(recurEvents, cards));
             } else {
-                indivEvents.addAll(recurEvents);
-                scheduleSb.append(getEventsSb(indivEvents, cards));
+                recurEvents.addAll(indivEvents);
+                scheduleSb.append(getEventsSb(recurEvents, cards));
             }
 
             scheduleSb.append('\n');
