@@ -54,19 +54,20 @@ public class TUI {
                 "Logs:\n" +
                         "    - System Log: logs/system.log\n" +
                         "    - Session Log: logs/session.log\n" +
-                        "" +
                         "Warnings or Alerts:\n" +
-                        "    - No alerts at this time. Check logs/system.log for future warnings.\n"
+                        "    - Google Calendar is available only to test participants. To request, contact: aproe@ncsu.edu\n" +
+                        "    - fitDay should be kept at 'true' (setting to 'false' results in untested behaviors)\n" +
+                        "    - defaultAtStart should be kept at 'true' (only an issue when there are Events present)\n"
         );
         sleep(1000);
 
         // Repo & License
         System.out.println(
-                        "GitHub Repo: https://github.com/AndrewRoe34/quick-sched\n" +
-                        "\n" +
+                "GitHub Repo: https://github.com/AndrewRoe34/quick-sched\n\n" +
                         "License: MIT License\n" +
                         "-------------------------------------------------------------"
         );
+
         sleep(1000);
     }
 

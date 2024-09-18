@@ -11,7 +11,7 @@ public class ReportLog {
     public static String buildReportLog(ScheduleManager scheduleManager) {
         StringBuilder sb = new StringBuilder();
         sb.append("------------------------------------------\n" +
-                "SCRIPT INFORMATION\n" +
+                "CONFIG INFORMATION\n" +
                 "------------------------------------------\n");
         UserConfig userConfig = scheduleManager.getUserConfig();
         sb.append("Configuration File:   profile.json\n")
@@ -25,7 +25,7 @@ public class ReportLog {
                 .append("Fit Day Schedule:     ").append(userConfig.isFitDay() ? "Yes" : "No").append("\n")
                 .append("Min Task Duration:    ").append(userConfig.getMinHours()).append(" hours \n\n");
         if (!scheduleManager.getRecurEvents().isEmpty() || !scheduleManager.getIndivEvents().isEmpty()) {
-            sb.append(TableFormatter.formatEventSetTables(scheduleManager.getRecurEvents(), scheduleManager.getIndivEvents(), userConfig));
+            sb.append(TableFormatter.formatEventSetTables(scheduleManager.getRecurEvents(), scheduleManager.getIndivEvents(), false));
             sb.append("\n\n");
         }
 
@@ -40,7 +40,7 @@ public class ReportLog {
         }
 
         if (!scheduleManager.getSchedule().isEmpty()) {
-            sb.append(TableFormatter.formatSubTaskTable(scheduleManager.getSchedule(), userConfig));
+            sb.append(TableFormatter.formatSubTaskTable(scheduleManager.getSchedule(), false));
             sb.append("\n\n");
             sb.append(TableFormatter.formatScheduleTable(scheduleManager.getSchedule(), false));
             sb.append("\n");

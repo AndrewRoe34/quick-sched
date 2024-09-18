@@ -411,4 +411,36 @@ public class Day {
         SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
         return "Day [" + sdf.format(this.date.getTime()) + "]";
     }
+
+    public void forceAddEvent(Event event) {
+        if (event.isRecurring()) { // this fixes issue for recurring events since they can happen on any day
+            Calendar start = (Calendar) date.clone();
+            start.set(Calendar.HOUR_OF_DAY, event.getTimeStamp().getStartHour());
+            start.set(Calendar.MINUTE, event.getTimeStamp().getStartMin());
+
+            Calendar end = (Calendar) start.clone();
+            end.set(Calendar.HOUR_OF_DAY, event.getTimeStamp().getEndHour());
+            end.set(Calendar.MINUTE, event.getTimeStamp().getEndMin());
+
+            event = new Event(event.getId(), event.getName(), event.getCard(), new TimeStamp(start, end), event.getDays());
+        }
+        eventList.add(event);
+        eventTimeStamps.add(event.getTimeStamp());
+    }
+
+    public void forceAddTask(Task t, double hours, TimeStamp ts) {
+        this.size += hours;
+        SubTask subTask = t.forceAddSubTask(hours, size > capacity, ts);
+        subTaskList.add(subTask);
+        taskTimeStamps.add(ts);
+    }
+
+    public void sortSubTasks() {
+        if (!subTaskList.isEmpty()) {
+            subTaskList.sort(Comparator.comparing(SubTask::getTimeStamp));
+        }
+        if (!taskTimeStamps.isEmpty()) {
+            Collections.sort(taskTimeStamps);
+        }
+    }
 }

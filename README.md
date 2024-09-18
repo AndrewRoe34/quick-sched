@@ -8,25 +8,31 @@
 ![Maven Central Version](https://img.shields.io/maven-central/v/com.google.apis/google-api-services-calendar?versionSuffix=v3-rev20220715-2.0.0&style=for-the-badge&label=google-api-services-calendar&labelColor=%23db4437&color=%23555555)
 
 [![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/AndrewRoe34/quick-sched/gradle.yml?style=for-the-badge)](https://github.com/AndrewRoe34/quick-sched/actions)
-<!-- [![GitHub Release](https://img.shields.io/github/v/release/AndrewRoe34/quick-sched?include_prereleases&color=%23ffeb3b)](https://github.com/AndrewRoe34/quick-sched/releases) -->
+[![GitHub Release](https://img.shields.io/github/v/release/AndrewRoe34/quick-sched?include_prereleases&style=for-the-badge&color=orange)](https://github.com/AndrewRoe34/quick-sched/releases)
+
 
 QuickSched is a robust, dynamic scheduling platform that provides unparalleled automation for generating timetabled daily/weekly schedules. This platform comes with its own scheduling, timetabling, serialization tooling, intelligent/flexible parser, integrated systems logging, and Google Calendar support.
 
-All of this is done purely from a command line interface.
-
-todo... (need something here)
-
 ## Setup
 
-todo...
+Head over to [here](https://github.com/AndrewRoe34/quick-sched/releases) and download the latest release. To run the application:
+```
+# Mac, Linux
+sh run.sh
 
+# Windows
+run.bat
+```
+**Note: You need Java 17 (or newer) to run this application**
 
 ## Usage
+> Newbie Tip: To see how `QuickSched` works without having to create the data yourself, you can have it generate dummy data for you. See [here](#generate-dummy-data) for more details.
+
 QuickSched makes it trivially simple to create a fully customizable schedule. Here we go over how to work with some of these core mechanics.
 
-### Start up QuickSched
+### Features of QuickSched
 
-Begin by running `qs`. This platform supports the following:
+This platform supports the following:
 * Add/Mod/Delete/Get Tasks, Cards, & Events
 * Customizable scheduling preferences (e.g. number of hours, time of day, etc.)
 * Dynamic scheduling closely integrated with settings
@@ -37,7 +43,7 @@ Begin by running `qs`. This platform supports the following:
 * Generate detailed reports with the 'report' command
 * Bespoke log tooling
 
-![QuickSched](images/sched.png)
+![QuickSched](images/qs.png)
 
 We'll be taking a closer look at what each command involves below.
 
@@ -171,6 +177,51 @@ Simply enter the id for whatever option you'd like to modify and then follow the
 
 ![Config](images/config.png)
 
+### Read & Save
+QuickSched makes it very convenient to quickly load up scheduling data from your serialization file.
+```
+usage:
+  read
+  read <filename>
+
+Required:
+  - name   Name of the serialization file being read
+
+Examples:
+  read
+  read fall
+```
+When no arguments are provided, it displays all the available serialization files. When a file is provided, it deserializes the file contents.
+
+![Read](images/read.png)
+
+As for saving, QuickSched makes the process quick and simple.
+```
+Usage:
+  save
+  save <name>
+
+Required:
+  - name   Name of the serialization file being saved
+
+Examples:
+  save
+  save my_data
+```
+When no arguments are provided, it saves to the last saved or read file location.
+
+![Save](images/save.png)
+
+## Generate dummy data
+
+To quickly generate a dummy schedule, simply `read` the provided serialization file and afterwards build your schedule via `sched`. Enter the following:
+```
+read fall
+sched
+```
+
+This will populate your Tasks, Cards, Events, as well as generate your Schedule and SubTasks.
+
 ## Reference Manual
 ```
 Quick Sched is a dynamic scheduling platform that automates the process of creating a comprehensive schedule.
@@ -183,6 +234,7 @@ Task Management:
   - event     Create a new Event or display all Event data
   - mod       Modify a scheduling item
   - delete    Delete a scheduling item
+  - get       Retrieves Task, Events, or Cards to be displayed
 
 Scheduling Operations:
   - build     Builds a fresh schedule
@@ -194,7 +246,6 @@ File Management:
   - read      Display all serialization files or read in a file
   - save      Update the stored db with new scheduling data
   - google    Export schedule data to Google Calendar
-  - excel     Export schedule data to a .xlsx
   - doc       Display documentation for a command
   - ls        Display all available commands
 
@@ -219,4 +270,4 @@ Before you start contributing, please make sure to read our [CONTRIBUTING.md](CO
 
 If you have any questions or want to discuss your ideas before diving in, be sure to join our Slack group:
 
-[![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)](https://join.slack.com/t/agileplannergroup/shared_invite/zt-2k0bmf49j-V6avYCrNJFFWVTpdER69tg)
+[![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)](https://join.slack.com/t/quicksched/shared_invite/zt-2k0bmf49j-V6avYCrNJFFWVTpdER69tg)

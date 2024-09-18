@@ -97,12 +97,12 @@ public class CompactScheduler implements Scheduler {
         double maxHours = 0.0;
         if (Time.doDatesMatch(task.getDueDate(), day.getDate())) {
             if (userConfig.isFitDay()) {
-                double remainingHours = 24.0 - (startingHour + day.getHoursFilled());
+                double remainingHours = 23.5 - (startingHour + day.getHoursFilled());
                 maxHours = Math.min(remainingHours, task.getSubTotalHoursRemaining());
                 // this chops off 30 minutes at the end of the day when it's past midnight
-                if (remainingHours - maxHours == 0.0 && date.get(Calendar.MINUTE) >= 30) {
-                    maxHours -= 0.5;
-                }
+//                if (remainingHours - maxHours == 0.0 && date.get(Calendar.MINUTE) >= 30) {
+//                    maxHours -= 0.5;
+//                }
             } else {
                 maxHours = task.getSubTotalHoursRemaining();
             }

@@ -13,10 +13,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class CLI {
     // this will hold the ScheduleManager instance
@@ -29,7 +26,6 @@ public class CLI {
         sm = new ScheduleManager();
         scheduleUpdated =  false;
         schedulesDirName = "schedules";
-        savedFilename = "";
     }
     /*
     List of supported commands:
@@ -273,25 +269,6 @@ public class CLI {
                         throw new IllegalArgumentException("Invalid type provided for delete");
                 }
                 break;
-            case "jbin":
-                if (tokens.length == 2) {
-                    if (tokens[1].contains(".jbin")) {
-                        sm.importJBinFile("data/jbin/" + tokens[1]);
-                        System.out.println("Imported " + tokens[1] + ".");
-                    } else {
-                        throw new IllegalArgumentException("Argument must be a jbin file");
-                    }
-                } else if (tokens.length == 1) {
-//                    System.out.println(sm.buildBoardString());
-                }
-                break;
-            case "update":
-                if (tokens.length == 1) {
-                    // TODO
-                } else {
-                    throw new IllegalArgumentException("'update' has no args.");
-                }
-                break;
             case "config":
                 if (tokens.length == 1) {
                     ConfigDialog configDialog = new ConfigDialog();
@@ -314,12 +291,12 @@ public class CLI {
                 if (tokens.length != 1) {
                     throw new IllegalArgumentException("'sched' has no args.");
                 } else {
-                    if (!(sm.getNumActiveTasks() > 0)) {
+                    if (sm.getNumActiveTasks() <= 0) {
                         System.out.println("No active Tasks to schedule");
-                    } else if (scheduleUpdated) {
+                    } else if (sm.getSchedule() == null || sm.getSchedule().isEmpty() || scheduleUpdated) {
                         sm.buildSchedule();
                         System.out.println(sm.buildScheduleStr());
-                        scheduleUpdated = false;
+                        scheduleUpdated = true;
                     } else {
                         System.out.println(sm.buildScheduleStr());
                     }
@@ -341,11 +318,11 @@ public class CLI {
 
                     StringBuilder scheduleFilesSb = new StringBuilder();
 
-                    for (File file : schedulesDir.listFiles()) {
+                    for (File file : Objects.requireNonNull(schedulesDir.listFiles())) {
                         scheduleFilesSb.append(file.getName()).append('\n');
                     }
 
-                    if (scheduleFilesSb.equals("")) {
+                    if (scheduleFilesSb.toString().isEmpty()) {
                         System.out.println("No available schedule files to read");
                     } else {
                         System.out.println("Available schedule files:" + '\n' + scheduleFilesSb);
@@ -361,8 +338,13 @@ public class CLI {
 
                     checkFileAvailability(schedulesDir, scheduleFile);
 
-                    sm = new ScheduleManager();
+                    if (savedFilename != null) {
+                        sm = new ScheduleManager();
+                    }
+
                     Serializer.deserializeSchedule(Files.readString(scheduleFile.toPath()), sm);
+
+                    savedFilename = scheduleFile.getName();
                 }
                 break;
             }
@@ -373,7 +355,7 @@ public class CLI {
 
                 StringBuilder filenameSb;
 
-                if (tokens.length == 1 && savedFilename.isEmpty()) {
+                if (tokens.length == 1 && savedFilename == null) {
                     Scanner scanner = new Scanner(System.in);
                     System.out.print("Enter a filename: ");
                     filenameSb = new StringBuilder(scanner.nextLine());
@@ -391,9 +373,10 @@ public class CLI {
                     savedFilename = filenameSb.toString();
                 }
 
-                sm.buildSchedule();
+//                sm.buildSchedule();
                 sm.serializeScheduleToFile(filenameSb.toString());
 
+                scheduleUpdated = false;
                 break;
             }
             case "report":
@@ -411,7 +394,8 @@ public class CLI {
 //                    System.out.println("Error: 'google' has no args.");
 //                }
 //                break;
-            case "excel":
+//            case "excel":
+//                break;
             case "ls":
                 if (tokens.length == 1) {
                     System.out.println("card\n" +
@@ -421,6 +405,7 @@ public class CLI {
                             "event\n" +
                             "doc\n" +
                             "excel\n" +
+                            "get\n" +
                             "google\n" +
                             "log\n" +
                             "ls\n" +
@@ -504,6 +489,9 @@ public class CLI {
                         case "clear":
                             System.out.println("\n" + Doc.getClearDoc() + "\n");
                             break;
+                        case "get":
+                            System.out.println("\n" + Doc.getGetDoc() + "\n");
+                            break;
                         default:
                             System.out.println("Unknown command. Use 'ls' to list all available commands.");
                             break;
@@ -511,38 +499,40 @@ public class CLI {
                 }
                 break;
             case "quit":
-                Scanner scanner = new Scanner(System.in);
-                char answerC;
+                if (scheduleUpdated) {
+                    Scanner scanner = new Scanner(System.in);
+                    char answerC;
 
-                while (true) {
-                    System.out.print("Would you like to save the schedule? (y/n): ");
-                    String answer = scanner.nextLine().trim();
+                    while (true) {
+                        System.out.print("Would you like to save the schedule? (y/n): ");
+                        String answer = scanner.nextLine().trim();
 
-                    if (Character.toLowerCase(answer.charAt(0)) == 'y' || Character.toLowerCase(answer.charAt(0)) == 'n')
-                    {
-                        answerC = Character.toLowerCase(answer.charAt(0));
-                        break;
-                    } else {
-                        System.out.println("Please enter 'y' or 'n'");
-                    }
-                }
-
-                if (answerC == 'y') {
-                    StringBuilder filenameSb;
-
-                    if (savedFilename.isEmpty()) {
-                        System.out.print("Enter filename: ");
-                        filenameSb = new StringBuilder(scanner.nextLine());
-
-                        validateFilename(filenameSb);
-                    } else {
-                        filenameSb = new StringBuilder(savedFilename);
+                        if (Character.toLowerCase(answer.charAt(0)) == 'y' || Character.toLowerCase(answer.charAt(0)) == 'n')
+                        {
+                            answerC = Character.toLowerCase(answer.charAt(0));
+                            break;
+                        } else {
+                            System.out.println("Please enter 'y' or 'n'");
+                        }
                     }
 
-                    sm.buildSchedule();
-                    sm.serializeScheduleToFile(filenameSb.toString());
+                    if (answerC == 'y') {
+                        StringBuilder filenameSb;
 
-                    System.out.println("Saved schedule to " + filenameSb.toString());
+                        if (savedFilename.isEmpty()) {
+                            System.out.print("Enter filename: ");
+                            filenameSb = new StringBuilder(scanner.nextLine());
+
+                            validateFilename(filenameSb);
+                        } else {
+                            filenameSb = new StringBuilder(savedFilename);
+                        }
+
+                        sm.buildSchedule();
+                        sm.serializeScheduleToFile(filenameSb.toString());
+
+                        System.out.println("Saved schedule to " + filenameSb.toString());
+                    }
                 }
 
                 sm.quit();
@@ -587,8 +577,8 @@ public class CLI {
         if (!scheduleFile.exists()) {
             StringBuilder scheduleFilesSb = new StringBuilder();
 
-            if (schedulesDir.listFiles().length > 0) {
-                for (File file : schedulesDir.listFiles()) {
+            if (Objects.requireNonNull(schedulesDir.listFiles()).length > 0) {
+                for (File file : Objects.requireNonNull(schedulesDir.listFiles())) {
                     scheduleFilesSb.append(file.getName()).append('\n');
                 }
                 throw new IllegalArgumentException("File not found, available schedule files:" + '\n' + scheduleFilesSb);
