@@ -5,8 +5,8 @@ TASK {
 }
 
 EVENT {
-	true "e1" @ WED 02:00am-03:00am
-	true "e2" @ THU 02:00am-03:00am
+	false "e1" @ 18-09-2024 02:00am-03:00am
+	false "e2" @ 18-09-2024 02:00am-03:00am
 }
 
 DAY {
