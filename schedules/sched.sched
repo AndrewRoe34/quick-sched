@@ -1,38 +1,37 @@
 CARD {
 	"MA" LIGHT_BLUE
-	"CSC" GREEN
-	"PHI" VIOLET
-	"LIT" LIGHT_CORAL
+	"LIT" LIGHT_GREEN
+	"CS" LIGHT_CORAL
+	"PHI" ORANGE
 }
 
 TASK {
 	"Finish Math Homework" 4.0 +C0 @ 20-09-2024
-	"Read assigned chapters for Literature" 3.0 +C3 @ 21-09-2024
-	"Complete Coding Assignment" 6.0 +C1 @ 22-09-2024
-	"Write Philosophy Essay" 5.0 +C2 @ 23-09-2024
+	"Read assigned chapters for Literature" 3.0 +C1 @ 21-09-2024
+	"Complete Coding Assignment" 6.0 +C2 @ 22-09-2024
+	"Write Philosophy Essay" 5.0 +C3 @ 23-09-2024
 	"Prepare for Math Quiz" 2.5 +C0 @ 24-09-2024
-	"Start Final Literature Project" 8.0 +C3 @ 27-09-2024
-	"Work on Group Coding Project" 7.0 +C1 @ 28-09-2024
-	"Study for Philosophy Midterm" 5.0 +C2 @ 29-09-2024
+	"Start Final Literature Project" 8.0 +C1 @ 27-09-2024
+	"Work on Group Coding Project" 7.0 +C2 @ 28-09-2024
+	"Study for Philosophy Midterm" 5.0 +C3 @ 29-09-2024
 	"Complete Math Extra Credit" 3.0 +C0 @ 30-09-2024
-	"Submit Final Philosophy Essay" 6.0 +C2 @ 01-10-2024
+	"Submit Final Philosophy Essay" 6.0 +C3 @ 01-10-2024
 }
 
 EVENT {
-	true "Lunch Break" @ MON TUE WED THU FRI 12:00pm-01:00pm
-	true "PHI Class" +C2 @ TUE THU 01:00pm-02:30pm
-	true "LIT Class" +C3 @ TUE THU 10:30am-12:00pm
-	true "CS Class" +C1 @ MON WED FRI 02:00pm-03:30pm
-	true "MA Class" +C0 @ MON WED FRI 09:00am-10:15am
+	true "Computer Science" +C2 @ MON WED FRI 02:00pm-03:30pm
+	true "Literature Class" +C1 @ TUE THU 10:30am-12:00pm
+	true "Philosophy Class" +C3 @ TUE THU 01:00pm-02:30pm
+	true "Math Class" +C0 @ MON WED FRI 09:00am-10:15am
+	true "Lunch" @ MON TUE WED THU FRI 12:00pm-01:00pm
 }
 
 DAY {
-	18-09-2024 T0 07:00am-09:00am T0 10:15am-11:45am T0 01:00pm-01:30pm T1 01:30pm-02:00pm T1 03:30pm-06:00pm T2 06:00pm-07:00pm E4 E0 E3 
-	19-09-2024 T2 07:00am-10:30am T2 02:30pm-04:00pm T3 04:00pm-07:00pm E2 E0 E1 
-	20-09-2024 T3 07:00am-09:00am T4 10:15am-11:45am T4 01:00pm-02:00pm T5 03:30pm-07:00pm E4 E0 E3 
-	21-09-2024 T5 07:00am-11:30am 
-	22-09-2024 T6 07:00am-09:00am 
-	23-09-2024 T6 07:00am-09:00am T6 10:15am-11:45am T6 01:00pm-02:00pm T6 03:30pm-04:00pm T7 04:00pm-07:00pm E4 E0 E3 
-	24-09-2024 T7 07:00am-09:00am T8 09:00am-10:30am T8 02:30pm-04:00pm T9 04:00pm-07:00pm E2 E0 E1 
-	25-09-2024 T9 07:00am-09:00am T9 10:15am-11:15am E4 E0 E3 
+	18-09-2024 T0 08:00am-09:00am T0 10:15am-11:45am T0 01:00pm-02:00pm T0 03:30pm-04:00pm T1 04:00pm-07:00pm T2 07:00pm-08:00pm E3 E4 E0 
+	19-09-2024 T2 08:00am-10:30am T2 02:30pm-05:00pm T3 05:00pm-08:00pm E1 E4 E2 
+	20-09-2024 T3 08:00am-09:00am T3 10:15am-11:15am T4 11:15am-11:45am T4 01:00pm-02:00pm T4 03:30pm-04:30pm T5 04:30pm-08:00pm E3 E4 E0 
+	21-09-2024 T5 08:00am-12:30pm T6 12:30pm-04:00pm 
+	22-09-2024 T6 08:00am-11:30am T7 11:30am-04:00pm 
+	23-09-2024 T7 08:00am-08:30am T8 08:30am-09:00am T8 10:15am-11:45am T8 01:00pm-02:00pm T9 03:30pm-08:00pm E3 E4 E0 
+	24-09-2024 T9 08:00am-09:30am E1 E4 E2 
 }

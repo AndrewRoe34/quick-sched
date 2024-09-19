@@ -14,6 +14,8 @@ public class Serializer {
     public static String serializeSchedule(List<Card> cards, List<Task> tasks, List<Event> indivEvents, List<Event> recurEvents, List<Day> days) {
         StringBuilder scheduleSb = new StringBuilder();
 
+        List<Event> totalEvent = new ArrayList<>();
+
         if (cards != null) {
             scheduleSb.append(getCardsSb(cards)).append('\n');
         }
@@ -26,25 +28,26 @@ public class Serializer {
             scheduleSb.append("EVENT {").append('\n');
 
             if (recurEvents == null) {
-                scheduleSb.append(getEventsSb(indivEvents, cards));
+                totalEvent.addAll(indivEvents);
+                scheduleSb.append(getEventsSb(totalEvent, cards));
             } else if (indivEvents == null) {
-                scheduleSb.append(getEventsSb(recurEvents, cards));
+                totalEvent.addAll(recurEvents);
+                scheduleSb.append(getEventsSb(totalEvent, cards));
             } else {
-                recurEvents.addAll(indivEvents);
-                scheduleSb.append(getEventsSb(recurEvents, cards));
+                totalEvent.addAll(indivEvents);
+                totalEvent.addAll(recurEvents);
+                scheduleSb.append(getEventsSb(totalEvent, cards));
             }
 
             scheduleSb.append('\n');
         }
 
         if (days != null) {
-            if (indivEvents == null) {
-                scheduleSb.append(getDaysSb(days, tasks, recurEvents));
-            } else {
-                scheduleSb.append(getDaysSb(days, tasks, indivEvents));
+            if (!totalEvent.isEmpty()) {
+                scheduleSb.append(getDaysSb(days, tasks, totalEvent));
             }
         }
-      
+
         return scheduleSb.toString();
     }
 
