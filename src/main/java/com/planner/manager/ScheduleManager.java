@@ -555,6 +555,7 @@ public class ScheduleManager {
                 cards.remove(i);
 
                 removeTasksWithCard(card);
+                removeEventsWithCard(card);
 
                 eventLog.reportCardAction(card, 1);
 
@@ -603,6 +604,22 @@ public class ScheduleManager {
         for (Task task : archivedTasks) {
             if (task.getCard() != null && task.getCard().getId() == card.getId()) {
                 task.setCard(null);
+            }
+        }
+    }
+
+    private void removeEventsWithCard(Card card) {
+        for (List<Event> dayEvents : recurringEvents) {
+            for (Event e : dayEvents) {
+                if (e.getCard() != null && e.getCard().getId() == card.getId()) {
+                    e.setCard(null);
+                }
+            }
+        }
+
+        for (Event e : indivEvents) {
+            if (e.getCard() != null && e.getCard().getId() == card.getId()) {
+                e.setCard(null);
             }
         }
     }
