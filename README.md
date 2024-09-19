@@ -212,6 +212,53 @@ When no arguments are provided, it saves to the last saved or read file location
 
 ![Save](images/save.png)
 
+And here is a sample serialization file:
+```
+CARD {
+	"MA" LIGHT_BLUE
+	"LIT" LIGHT_GREEN
+	"CS" LIGHT_CORAL
+	"PHI" YELLOW
+	"Food" BLUE
+}
+
+TASK {
+	"Finish Math Homework" 4.0 +C0 @ 20-09-2024
+	"Read assigned chapters for Literature" 3.0 +C1 @ 21-09-2024
+	"Complete Coding Assignment" 6.0 +C2 @ 22-09-2024
+	"Write Philosophy Essay" 5.0 +C3 @ 23-09-2024
+	"Prepare for Math Quiz" 2.5 +C0 @ 24-09-2024
+	"Start Final Literature Project" 8.0 +C1 @ 27-09-2024
+	"Work on Group Coding Project" 7.0 +C2 @ 28-09-2024
+	"Study for Philosophy Midterm" 5.0 +C3 @ 29-09-2024
+	"Complete Math Extra Credit" 3.0 +C0 @ 30-09-2024
+	"Submit Final Philosophy Essay" 6.0 +C3 @ 01-10-2024
+	"work" 4.0 @ 05-10-2024
+}
+
+EVENT {
+	true "MA Class" +C0 @ MON WED FRI 09:00am-10:15am
+	true "PHI Class" +C3 @ TUE THU 01:00pm-02:30pm
+	true "Lunch" +C4 @ MON TUE WED THU FRI 12:00pm-01:00pm
+	true "LIT Class" +C1 @ TUE THU 10:30am-12:00pm
+	true "CS Class" +C2 @ MON WED FRI 02:00pm-03:30pm
+}
+
+DAY {
+	18-09-2024 T0 07:00am-09:00am T0 10:15am-11:45am T0 01:00pm-01:30pm T1 01:30pm-02:00pm T1 03:30pm-06:00pm T2 06:00pm-07:00pm E0 E2 E4 
+	19-09-2024 T2 07:00am-10:30am T2 02:30pm-04:00pm T3 04:00pm-06:00pm E3 E2 E1 
+	20-09-2024 T3 07:00am-09:00am T3 10:15am-11:15am T4 11:15am-11:45am T4 01:00pm-02:00pm T4 03:30pm-04:00pm E0 E2 E4 
+	21-09-2024 T4 07:00am-07:30am T5 07:30am-09:00am 
+	22-09-2024 
+	23-09-2024 T5 07:00am-09:00am T5 10:15am-11:45am T5 01:00pm-01:30pm E0 E2 E4 
+	24-09-2024 T5 07:00am-09:30am T6 09:30am-10:30am T6 02:30pm-05:00pm E3 E2 E1 
+	25-09-2024 T6 07:00am-09:00am T6 10:15am-11:45am T7 01:00pm-02:00pm T7 03:30pm-07:00pm E0 E2 E4 
+	26-09-2024 T7 07:00am-07:30am T8 07:30am-10:30am T9 02:30pm-06:00pm E3 E2 E1 
+	27-09-2024 T9 07:00am-09:00am T9 10:15am-10:45am T10 10:45am-11:45am T10 01:00pm-02:00pm T10 03:30pm-04:00pm E0 E2 E4 
+	28-09-2024 T10 07:00am-08:30am 
+}
+```
+
 ## Generate dummy data
 
 To quickly generate a dummy schedule, simply `read` the provided serialization file and afterwards build your schedule via `sched`. Enter the following:
