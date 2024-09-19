@@ -342,7 +342,8 @@ public class CLI {
                         sm = new ScheduleManager();
                     }
 
-                    Serializer.deserializeSchedule(Files.readString(scheduleFile.toPath()), sm);
+//                    Serializer.deserializeSchedule(Files.readString(scheduleFile.toPath()), sm);
+                    sm.deserializeScheduleFromFile(scheduleFile.toPath());
 
                     savedFilename = scheduleFile.getName();
                 }

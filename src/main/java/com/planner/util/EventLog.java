@@ -175,7 +175,16 @@ public class EventLog {
         sb.append(sdf.format(Calendar.getInstance().getTime()));
 
         sb.append(" [INFO]");
-        sb.append(" SERIALIZING DATA TO ").append(filename).append(".sched");
+        sb.append(" SERIALIZING DATA TO ").append(filename);
+        sb.append('\n');
+    }
+
+    public void reportDeserializingSchedule(String filename) {
+        SimpleDateFormat sdf = new SimpleDateFormat("[HH:mm:ss]");
+        sb.append(sdf.format(Calendar.getInstance().getTime()));
+
+        sb.append(" [INFO]");
+        sb.append(" DESERIALIZING DATA FROM ").append(filename);
         sb.append('\n');
     }
 

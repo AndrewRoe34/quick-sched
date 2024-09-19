@@ -6,9 +6,9 @@ CARD {
 }
 
 TASK {
-	"Finish Math Homework" 4.0 +C0 @ 20-09-2024
-	"Read assigned chapters for Literature" 3.0 +C1 @ 21-09-2024
-	"Complete Coding Assignment" 6.0 +C2 @ 22-09-2024
+	"Finish Math Homework" 0.0 +C0 @ 20-09-2024
+	"Read assigned chapters for Literature" 0.0 +C1 @ 21-09-2024
+	"Complete Coding Assignment" 5.0 +C2 @ 22-09-2024
 	"Write Philosophy Essay" 5.0 +C3 @ 23-09-2024
 	"Prepare for Math Quiz" 2.5 +C0 @ 24-09-2024
 	"Start Final Literature Project" 8.0 +C1 @ 27-09-2024
@@ -16,22 +16,22 @@ TASK {
 	"Study for Philosophy Midterm" 5.0 +C3 @ 29-09-2024
 	"Complete Math Extra Credit" 3.0 +C0 @ 30-09-2024
 	"Submit Final Philosophy Essay" 6.0 +C3 @ 01-10-2024
+	"stuff" 2.0 @ 23-09-2024
 }
 
 EVENT {
 	true "Computer Science" +C2 @ MON WED FRI 02:00pm-03:30pm
-	true "Literature Class" +C1 @ TUE THU 10:30am-12:00pm
-	true "Philosophy Class" +C3 @ TUE THU 01:00pm-02:30pm
 	true "Math Class" +C0 @ MON WED FRI 09:00am-10:15am
+	true "Literature Class" +C1 @ TUE THU 10:30am-12:00pm
 	true "Lunch" @ MON TUE WED THU FRI 12:00pm-01:00pm
+	true "Philosophy Class" +C3 @ TUE THU 01:00pm-02:30pm
 }
 
 DAY {
-	18-09-2024 T0 08:00am-09:00am T0 10:15am-11:45am T0 01:00pm-02:00pm T0 03:30pm-04:00pm T1 04:00pm-07:00pm T2 07:00pm-08:00pm E3 E4 E0 
-	19-09-2024 T2 08:00am-10:30am T2 02:30pm-05:00pm T3 05:00pm-08:00pm E1 E4 E2 
-	20-09-2024 T3 08:00am-09:00am T3 10:15am-11:15am T4 11:15am-11:45am T4 01:00pm-02:00pm T4 03:30pm-04:30pm T5 04:30pm-08:00pm E3 E4 E0 
-	21-09-2024 T5 08:00am-12:30pm T6 12:30pm-04:00pm 
-	22-09-2024 T6 08:00am-11:30am T7 11:30am-04:00pm 
-	23-09-2024 T7 08:00am-08:30am T8 08:30am-09:00am T8 10:15am-11:45am T8 01:00pm-02:00pm T9 03:30pm-08:00pm E3 E4 E0 
-	24-09-2024 T9 08:00am-09:30am E1 E4 E2 
+	19-09-2024 T2 08:00am-10:30am T2 02:30pm-05:00pm T3 05:00pm-08:00pm E2 E3 E4 
+	20-09-2024 T10 08:00am-09:00am T10 10:15am-11:15am T3 11:15am-11:45am T3 01:00pm-02:00pm T3 03:30pm-04:00pm T4 04:00pm-06:30pm T5 06:30pm-08:00pm E1 E3 E0 
+	21-09-2024 T5 08:00am-02:30pm T6 02:30pm-04:00pm 
+	22-09-2024 T6 08:00am-01:30pm T7 01:30pm-04:00pm 
+	23-09-2024 T7 08:00am-09:00am T7 10:15am-11:45am T8 01:00pm-02:00pm T8 03:30pm-05:30pm T9 05:30pm-08:00pm E1 E3 E0 
+	24-09-2024 T9 08:00am-10:30am T9 02:30pm-03:30pm E2 E3 E4 
 }

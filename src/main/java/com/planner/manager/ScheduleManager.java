@@ -2,6 +2,7 @@ package com.planner.manager;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.util.*;
@@ -707,19 +708,17 @@ public class ScheduleManager {
     }
 
     public void serializeScheduleToFile(String filename) throws IOException {
-        File scheduleFile = new File("schedules\\" + filename);
-        if (!scheduleFile.getParentFile().exists()) {
-            scheduleFile.getParentFile().mkdir();
-        }
-        scheduleFile.createNewFile();
+        String data = Serializer.serializeSchedule(cards, new ArrayList<>(taskMap.values()), indivEvents, getRecurEventsList(recurringEvents), schedule);
 
-        FileWriter fw = new FileWriter(scheduleFile.getAbsoluteFile());
-        BufferedWriter scheduleWriter = new BufferedWriter(fw);
-
-        scheduleWriter.write(Serializer.serializeSchedule(cards, new ArrayList<>(taskMap.values()), indivEvents, getRecurEventsList(recurringEvents), schedule));
-        scheduleWriter.close();
+        IOProcessing.writeSerializationFile(filename, data);
 
         eventLog.reportSerializingSchedule(filename);
+    }
+
+    public void deserializeScheduleFromFile(Path path) throws IOException {
+        Serializer.deserializeSchedule(Files.readString(path), this);
+
+        eventLog.reportDeserializingSchedule(String.valueOf(path.getFileName()));
     }
 
     private List<Event> getRecurEventsList(List<List<Event>> recurringEvents) {
