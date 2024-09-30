@@ -20,8 +20,6 @@ public class UserConfig {
     private boolean priority;
     /** Whether to display overflow */
     private boolean overflow;
-    /** Whether to fit schedule */
-    private boolean fitDay;
     /** Minimum number of hours for a given day */
     private double minHours;
     /** Whether to maximize the positioning of tasks in relation to each other */
@@ -40,14 +38,13 @@ public class UserConfig {
      * @param archiveDays         Maximum number of past days to display
      * @param priority            Whether to enable priority for tasks
      * @param overflow            Whether to display overflow
-     * @param fitDay              Whether to fit schedule
      * @param minHours            Minimum number of hours for a given day
      * @param optimizeDay         Whether to maximize the positioning of tasks in relation to each other
      * @param defaultAtStart      Whether the scheduling begins at the start of day
      * @param formatPrettyTime    Whether to format pretty time
      */
     public UserConfig(int[] dailyHoursRange, int[] globalHr, int maxDays, int archiveDays, boolean priority,
-                      boolean overflow, boolean fitDay, double minHours, boolean optimizeDay, boolean defaultAtStart,
+                      boolean overflow, double minHours, boolean optimizeDay, boolean defaultAtStart,
                       boolean formatPrettyTime) {
         this.dailyHoursRange = dailyHoursRange;
         this.hoursPerDayOfWeek = globalHr;
@@ -55,7 +52,6 @@ public class UserConfig {
         this.archiveDays = archiveDays;
         this.priority = priority;
         this.overflow = overflow;
-        this.fitDay = fitDay;
         this.minHours = minHours;
         this.optimizeDay = optimizeDay;
         this.defaultAtStart = defaultAtStart;
@@ -68,7 +64,7 @@ public class UserConfig {
     public UserConfig() {
         this(new int[]{8, 20}, new int[]{8, 8, 8, 8, 8, 8, 8},
                 14, 5, false, true,
-                true, 1.0, true,
+                1.0, true,
                 true, true);
     }
 
@@ -193,24 +189,6 @@ public class UserConfig {
      */
     public void setOverflow(boolean overflow) {
         this.overflow = overflow;
-    }
-
-    /**
-     * Gets fitted status for scheduler
-     *
-     * @return fitted status for scheduler
-     */
-    public boolean isFitDay() {
-        return fitDay;
-    }
-
-    /**
-     * Sets fitted status for scheduler
-     *
-     * @param fitDay fitted status for scheduler
-     */
-    public void setFitDay(boolean fitDay) {
-        this.fitDay = fitDay;
     }
 
     /**

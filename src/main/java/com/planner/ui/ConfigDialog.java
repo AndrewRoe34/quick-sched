@@ -157,9 +157,6 @@ public class ConfigDialog {
                 userConfig.setOverflow(promptBool("Display overflow"));
                 break;
             case 6:
-                userConfig.setFitDay(promptBool("Fit schedule"));
-                break;
-            case 7:
                 System.out.print("\n                                                 Minimum hours for a given day");
                 System.out.print("\n                                                       Input [#.0]: ");
                 if (scanner.hasNextLine()) {
@@ -172,10 +169,10 @@ public class ConfigDialog {
                     }
                 }
                 break;
-            case 8:
+            case 7:
                 userConfig.setOptimizeDay(promptBool("Optimize day"));
                 break;
-            case 9:
+            case 8:
                 userConfig.setDefaultAtStart(promptBool("Default at start"));
                 break;
         }

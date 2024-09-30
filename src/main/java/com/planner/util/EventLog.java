@@ -398,7 +398,6 @@ public class EventLog {
         sb.append(", ARCHIVE_DAYS=").append(userConfig.getArchiveDays());
         sb.append(", PRIORITY=").append(userConfig.isPriority());
         sb.append(", OVERFLOW=").append(userConfig.isOverflow());
-        sb.append(", FIT_SCHEDULE=").append(userConfig.isFitDay());
         sb.append(", MIN_HOURS=").append(userConfig.getMinHours());
         sb.append(", OPTIMIZE_DAY=").append(userConfig.isOptimizeDay());
         sb.append(", DEFAULT_AT_START=").append(userConfig.isDefaultAtStart()).append("\n");

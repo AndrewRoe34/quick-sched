@@ -42,7 +42,6 @@ public class TUI {
                             "    - Archive Days: " + userConfig.getArchiveDays() + "\n" +
                             "    - Priority Scheduling: " + userConfig.isPriority() + "\n" +
                             "    - Overflow Handling: " + userConfig.isOverflow() + "\n" +
-                            "    - Fit Day Schedule: " + userConfig.isFitDay() + "\n" +
                             "    - Minimum Task Duration: " + userConfig.getMinHours() + "\n"
             );
         } catch (IOException e) {
@@ -56,7 +55,6 @@ public class TUI {
                         "    - Session Log: logs/session.log\n" +
                         "Warnings or Alerts:\n" +
                         "    - Google Calendar is available only to test participants. To request, contact: aproe@ncsu.edu\n" +
-                        "    - fitDay should be kept at 'true' (setting to 'false' results in untested behaviors)\n" +
                         "    - defaultAtStart should be kept at 'true' (only an issue when there are Events present)\n"
         );
         sleep(1000);

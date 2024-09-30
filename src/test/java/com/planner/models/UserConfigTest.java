@@ -12,7 +12,7 @@ class UserConfigTest {
     @BeforeEach
     void setUp() {
         userConfig = new UserConfig(new int[]{8, 20}, new int[]{8, 8, 8, 8, 8, 8, 8}, 14, 5, false, true,
-                true, 0.5, false, true, true);
+                0.5, false, true, true);
     }
 
     @Test
@@ -69,13 +69,6 @@ class UserConfigTest {
         assertTrue(userConfig.isOverflow());
         userConfig.setOverflow(false);
         assertFalse(userConfig.isOverflow());
-    }
-
-    @Test
-    void setFitDay() {
-        assertTrue(userConfig.isFitDay());
-        userConfig.setFitDay(false);
-        assertFalse(userConfig.isFitDay());
     }
 
     @Test

@@ -25,7 +25,7 @@ public class TableFormatter {
      * @return pretty config table
      */
     public static String formatPrettyUserConfigTable(UserConfig userConfig) {
-        String[] optionNames = {"RANGE", "WEEK", "MAX_DAYS", "ARCHIVE_DAYS", "PRIORITY", "OVERFLOW", "FIT_DAY",
+        String[] optionNames = {"RANGE", "WEEK", "MAX_DAYS", "ARCHIVE_DAYS", "PRIORITY", "OVERFLOW",
                 "MIN_HOURS", "OPTIMIZE_DAY", "DEFAULT_AT_START"};
 
         StringBuilder sb = new StringBuilder();
@@ -43,10 +43,9 @@ public class TableFormatter {
                 case 3: optionValue = String.valueOf(userConfig.getArchiveDays()); break;
                 case 4: optionValue = String.valueOf(userConfig.isPriority()); break;
                 case 5: optionValue = String.valueOf(userConfig.isOverflow()); break;
-                case 6: optionValue = String.valueOf(userConfig.isFitDay()); break;
-                case 7: optionValue = String.valueOf(userConfig.getMinHours()); break;
-                case 8: optionValue = String.valueOf(userConfig.isOptimizeDay()); break;
-                case 9: optionValue = String.valueOf(userConfig.isDefaultAtStart()); break;
+                case 6: optionValue = String.valueOf(userConfig.getMinHours()); break;
+                case 7: optionValue = String.valueOf(userConfig.isOptimizeDay()); break;
+                case 8: optionValue = String.valueOf(userConfig.isDefaultAtStart()); break;
             }
             String formattedOptionValue = String.format(" %-25s|", optionValue);
             sb.append(String.format("                                         |%-6d|%-19s|", i, optionNames[i]));

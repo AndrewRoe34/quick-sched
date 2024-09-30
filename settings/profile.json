@@ -16,7 +16,6 @@
   "archiveDays": 5,
   "priority": false,
   "overflow": true,
-  "fitDay": true,
   "minHours": 0.5,
   "optimizeDay": false,
   "defaultAtStart": true,
