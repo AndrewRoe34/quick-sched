@@ -13,16 +13,13 @@ public class Doc {
                 "  - delete    Delete a scheduling item\n" +
                 "  - get       Retrieves Task, Events, or Cards to be displayed\n\n" +
                 "Scheduling Operations:\n" +
-                "  - build     Builds a fresh schedule\n" +
-                "  - sched     Display user schedule\n" +
+                "  - sched     Builds and displays user schedule\n" +
                 "  - subtask   Displays all scheduled SubTasks\n" +
                 "  - report    Produce a report of all schedule data\n\n" +
                 "File Management:\n" +
                 "  - read      Display all serialization files or read in a file\n" +
                 "  - save      Update the stored db with new scheduling data\n" +
                 "  - google    Export schedule data to Google Calendar\n" +
-//                "  - excel     Export schedule data to a .xlsx\n" +
-//                "  - json      Export schedule data to a .json\n" +
                 "  - doc       Display documentation for a command\n" +
                 "  - ls        Display all available commands\n\n" +
                 "System and Configuration:\n" +
@@ -98,16 +95,8 @@ public class Doc {
                 "  event true @ mon wed fri 11-12:45 +C2 \"Class2\"";
     }
 
-    public static String getBuildDoc() {
-        return "Builds a fresh schedule that is ready to be displayed, exported, or saved via serialization.\n\n" +
-                "Usage:\n" +
-                "  build\n\n" +
-                "Examples:\n" +
-                "  build";
-    }
-
     public static String getSchedDoc() {
-        return "Displays a schedule chart of all scheduled SubTasks and Events throughout the upcoming weeks.\n\n" +
+        return "Builds and displays a schedule chart of all scheduled SubTasks and Events throughout the upcoming weeks.\n\n" +
                 "Usage:\n" +
                 "  sched\n\n" +
                 "Examples:\n" +
@@ -209,26 +198,6 @@ public class Doc {
                 "  google\n\n" +
                 "Examples:\n" +
                 "  google";
-    }
-
-    public static String getExcelDoc() {
-        return "Exports all your schedule data to a .xlsx\n\n" +
-                "Usage:\n" +
-                "  excel <name>\n\n" +
-                "Required:\n" +
-                " - name   Name of the excel file being passed\n\n" +
-                "Examples:\n" +
-                "  excel my_schedule";
-    }
-
-    public static String getJsonDoc() {
-        return "Exports all your schedule data to a .json\n\n" +
-                "Usage:\n" +
-                "  json <name>\n\n" +
-                "Required:\n" +
-                " - name   Name of the json file being passed\n\n" +
-                "Examples:\n" +
-                "  json my_schedule";
     }
 
     public static String getLsDoc() {

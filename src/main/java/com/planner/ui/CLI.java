@@ -439,9 +439,6 @@ public class CLI {
                         case "subtask":
                             System.out.println("\n" + Doc.getSubtaskDoc() + "\n");
                             break;
-                        case "build":
-                            System.out.println("\n" + Doc.getBuildDoc() + "\n");
-                            break;
                         case "sched":
                             System.out.println("\n" + Doc.getSchedDoc() + "\n");
                             break;
@@ -465,12 +462,6 @@ public class CLI {
                             break;
                         case "google":
                             System.out.println("\n" + Doc.getGoogleDoc() + "\n");
-                            break;
-                        case "excel":
-                            System.out.println("\n" + Doc.getExcelDoc() + "\n");
-                            break;
-                        case "json":
-                            System.out.println("\n" + Doc.getJsonDoc() + "\n");
                             break;
                         case "ls":
                             System.out.println("\n" + Doc.getLsDoc() + "\n");
