@@ -1,0 +1,33 @@
+CARD {
+	"MA" LIGHT_BLUE
+	"LIT" LIGHT_GREEN
+	"CS" LIGHT_CORAL
+	"PHI" YELLOW
+	"Food" BLUE
+}
+
+TASK {
+	"Start Final Literature Project" 5.5 +C1 @ 27-09-2024
+	"Work on Group Coding Project" 7.0 +C2 @ 28-09-2024
+	"Study for Philosophy Midterm" 5.0 +C3 @ 29-09-2024
+	"Complete Math Extra Credit" 3.0 +C0 @ 30-09-2024
+	"Submit Final Philosophy Essay" 6.0 +C3 @ 01-10-2024
+	"work" 4.0 @ 05-10-2024
+}
+
+EVENT {
+	true "CS Class" +C2 @ MON WED FRI 02:00pm-03:30pm
+	true "LIT Class" +C1 @ TUE THU 10:30am-12:00pm
+	true "PHI Class" +C3 @ TUE THU 01:00pm-02:30pm
+	true "MA Class" +C0 @ MON WED FRI 09:00am-10:15am
+	true "Lunch" +C4 @ MON TUE WED THU FRI 12:00pm-01:00pm
+}
+
+DAY {
+	21-09-2024 
+	22-09-2024 
+	23-09-2024 T0 10:15am-11:45am T0 01:00pm-02:00pm T0 03:30pm-06:30pm T1 06:30pm-09:00pm E3 E4 E0 
+	24-09-2024 T1 09:00am-10:30am T1 02:30pm-05:30pm T2 05:30pm-09:00pm E1 E4 E2 
+	25-09-2024 T2 10:15am-11:45am T3 01:00pm-02:00pm T3 03:30pm-05:30pm T4 05:30pm-09:00pm E3 E4 E0 
+	26-09-2024 T4 09:00am-10:30am T4 02:30pm-03:30pm T5 03:30pm-07:30pm E1 E4 E2 
+}

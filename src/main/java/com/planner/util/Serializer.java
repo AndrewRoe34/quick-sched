@@ -43,9 +43,7 @@ public class Serializer {
         }
 
         if (days != null) {
-            if (!totalEvent.isEmpty()) {
-                scheduleSb.append(getDaysSb(days, tasks, totalEvent));
-            }
+            scheduleSb.append(getDaysSb(days, tasks, totalEvent));
         }
 
         return scheduleSb.toString();
