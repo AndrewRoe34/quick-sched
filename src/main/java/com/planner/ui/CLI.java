@@ -288,18 +288,25 @@ public class CLI {
                 }
                 break;
             case "sched":
-                if (tokens.length != 1) {
-                    throw new IllegalArgumentException("'sched' has no args.");
-                } else {
-                    if (sm.getNumActiveTasks() <= 0) {
-                        System.out.println("No active Tasks to schedule");
-                    } else if (sm.getSchedule() == null || sm.getSchedule().isEmpty() || scheduleUpdated) {
-                        sm.buildSchedule();
+                if (sm.getSchedule().isEmpty() || scheduleUpdated) {
+                    sm.buildSchedule();
+                    scheduleUpdated = true;
+                }
+                if (tokens.length == 1) {
+                    System.out.println(sm.buildCurrentScheduleStr());
+                } else if (tokens.length == 2) {
+                    if ("-f".equalsIgnoreCase(tokens[1])) {
                         System.out.println(sm.buildScheduleStr());
-                        scheduleUpdated = true;
+                    } else if ("-a".equalsIgnoreCase(tokens[1])) {
+                        System.out.println(sm.buildArchivedScheduleStr());
                     } else {
-                        System.out.println(sm.buildScheduleStr());
+                        throw new IllegalArgumentException("Expected '-f' or '-a' for full or archived flag options.");
                     }
+                } else {
+                    throw new IllegalArgumentException("Invalid input. Expected formats:\n" +
+                            "       sched\n" +
+                            "       sched -f\n" +
+                            "       sched -a");
                 }
                 break;
             case "read": {

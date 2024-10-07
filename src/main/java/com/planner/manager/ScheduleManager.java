@@ -784,6 +784,30 @@ public class ScheduleManager {
         return TableFormatter.formatScheduleTable(schedule, true);
     }
 
+    public String buildCurrentScheduleStr() {
+        List<Day> days = new ArrayList<>();
+        Calendar curr = Time.getFormattedCalendarInstance(0);
+        for (Day d : schedule) {
+            if (!Time.doDatesMatch(d.getDate(), curr) && d.getDate().compareTo(curr) < 0) {
+                // don't add
+            } else {
+                days.add(d);
+            }
+        }
+        return TableFormatter.formatScheduleTable(days, true);
+    }
+
+    public String buildArchivedScheduleStr() {
+        List<Day> days = new ArrayList<>();
+        Calendar curr = Time.getFormattedCalendarInstance(0);
+        for (Day d : schedule) {
+            if (!Time.doDatesMatch(d.getDate(), curr) && d.getDate().compareTo(curr) < 0) {
+                days.add(d);
+            }
+        }
+        return TableFormatter.formatScheduleTable(days, true);
+    }
+
     /**
      * Builds events in String format
      *

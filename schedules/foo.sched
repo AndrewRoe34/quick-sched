@@ -1,0 +1,14 @@
+CARD {
+}
+
+TASK {
+	"finish hw3" 3.0 @ 10-10-2024
+}
+
+EVENT {
+	true "Class1" @ MON WED FRI 09:00am-11:15am
+}
+
+DAY {
+	06-10-2024 T0 11:15am-02:15pm E0 
+}
