@@ -298,7 +298,7 @@ public class Serializer {
                 for (Time.TimeStamp ts : timestamps) {
                     double hours = Time.getTimeInterval(ts.getStart(), ts.getEnd());
                     day.forceAddTask(t, hours, ts);
-                    if (!Time.doDatesMatch(today, d) && d.compareTo(today) < 0) {
+                    if (!Time.doDatesMatch(today, d) && d.compareTo(today) < 0 && t.getTotalHours() > 0) {
                         // update Task here since the day is older than today
                         double updatedHours = t.getTotalHours() - hours;
                         sm.modTask(id, null, updatedHours, null, null);
