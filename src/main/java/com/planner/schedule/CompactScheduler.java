@@ -7,6 +7,7 @@ import com.planner.models.UserConfig;
 import com.planner.util.EventLog;
 import com.planner.util.Time;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -102,11 +103,11 @@ public class CompactScheduler implements Scheduler {
         if (!userConfig.isDefaultAtStart() && startingHour >= userConfig.getDailyHoursRange()[1]) {
             return 0.0;
         }
-        Calendar time = (Calendar) day.getDate().clone();
+
+        Calendar time = (Calendar) date.clone();
         time.set(Calendar.HOUR_OF_DAY, startingHour);
         time.set(Calendar.SECOND, 0);
         time.set(Calendar.MILLISECOND, 0);
-
 
         Calendar start = Time.getFirstAvailableTimeInDay(new ArrayList<>(), day.getEventTimeStamps(), userConfig, time, Time.doDatesMatch(time, date));
         Calendar end = (Calendar) time.clone();
