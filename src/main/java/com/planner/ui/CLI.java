@@ -19,6 +19,7 @@ public class CLI {
     // this will hold the ScheduleManager instance
     private ScheduleManager sm;
     private boolean scheduleUpdated;
+    private boolean changesMade;
     private final String schedulesDirName;
     private String savedFilename;
 
@@ -96,6 +97,7 @@ public class CLI {
                     Parser.TaskInfo ti = Parser.parseTask(tokens);
                     Task t = sm.addTask(ti.getDesc(), ti.getHours(), ti.getDue(), ti.getCardId());
 
+                    changesMade = true;
                     scheduleUpdated = true;
                     System.out.println("Added Task " + t.getId() + ".");
                 } else {
@@ -137,6 +139,7 @@ public class CLI {
                     Event event = sm.addEvent(eventInfo.getName(), eventInfo.getCardId(), timeStamp, eventInfo.isRecurring(), dates);
                     System.out.println("Added Event " + event.getId() + ".");
 
+                    changesMade = true;
                     scheduleUpdated = true;
                 } else {
                     System.out.println(sm.buildEventStr());
@@ -149,6 +152,7 @@ public class CLI {
                     Card c = sm.addCard(ci.getName(), ci.getColor());
                     System.out.println("Added Card " + c.getId() + ".");
 
+                    changesMade = true;
                     scheduleUpdated = true;
                 } else {
                     System.out.println(sm.buildCardStr());
@@ -160,6 +164,7 @@ public class CLI {
                 }
 
                 if (tokens[1].equals("card") || tokens[1].equals("task") || tokens[1].equals("event")) {
+                    changesMade = true;
                     scheduleUpdated = true;
                 }
                 switch (tokens[1]) {
@@ -235,6 +240,7 @@ public class CLI {
                 }
 
                 if (tokens[1].equals("card") || tokens[1].equals("task") || tokens[1].equals("event")) {
+                    changesMade = true;
                     scheduleUpdated = true;
                 }
                 switch (tokens[1]) {
@@ -275,6 +281,7 @@ public class CLI {
                     configDialog.setupAndDisplayPage();
                     sm.setUserConfig(configDialog.getUserConfig());
 
+                    changesMade = true;
                     scheduleUpdated = true;
                 } else {
                     throw new IllegalArgumentException("'config' has no args.");
@@ -288,7 +295,7 @@ public class CLI {
                 }
                 break;
             case "sched":
-                if (sm.getSchedule().isEmpty() || scheduleUpdated) {
+                if ((sm.getSchedule().isEmpty() || changesMade) && scheduleUpdated) {
                     sm.buildSchedule();
                     scheduleUpdated = false;
                 }
@@ -384,7 +391,7 @@ public class CLI {
 //                sm.buildSchedule();
                 sm.serializeScheduleToFile(filenameSb.toString());
 
-                scheduleUpdated = false;
+                changesMade = false;
                 break;
             }
             case "report":
@@ -498,7 +505,7 @@ public class CLI {
                 }
                 break;
             case "quit":
-                if (scheduleUpdated || savedFilename == null) {
+                if (changesMade) {
                     Scanner scanner = new Scanner(System.in);
 
                     System.out.print("Would you like to save the schedule? (y/n): ");
@@ -520,8 +527,8 @@ public class CLI {
 
                         System.out.println("Saved schedule to " + filenameSb.toString());
                     }
-                    sm.quit();
                 }
+                sm.quit();
             default:
                 throw new IllegalArgumentException("Unknown command entered.");
         }
