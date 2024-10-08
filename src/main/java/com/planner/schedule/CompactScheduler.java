@@ -7,7 +7,6 @@ import com.planner.models.UserConfig;
 import com.planner.util.EventLog;
 import com.planner.util.Time;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;

@@ -498,27 +498,15 @@ public class CLI {
                 }
                 break;
             case "quit":
-                if (scheduleUpdated) {
+                if (scheduleUpdated || savedFilename == null) {
                     Scanner scanner = new Scanner(System.in);
-                    char answerC;
 
-                    while (true) {
-                        System.out.print("Would you like to save the schedule? (y/n): ");
-                        String answer = scanner.nextLine().trim();
+                    System.out.print("Would you like to save the schedule? (y/n): ");
+                    String answer = scanner.nextLine().trim();
 
-                        if (Character.toLowerCase(answer.charAt(0)) == 'y' || Character.toLowerCase(answer.charAt(0)) == 'n')
-                        {
-                            answerC = Character.toLowerCase(answer.charAt(0));
-                            break;
-                        } else {
-                            System.out.println("Please enter 'y' or 'n'");
-                        }
-                    }
-
-                    if (answerC == 'y') {
+                    if (answer.charAt(0) == 'y' || answer.charAt(0) == 'Y') {
                         StringBuilder filenameSb;
-
-                        if (savedFilename.isEmpty()) {
+                        if (savedFilename == null) {
                             System.out.print("Enter filename: ");
                             filenameSb = new StringBuilder(scanner.nextLine());
 
@@ -532,9 +520,8 @@ public class CLI {
 
                         System.out.println("Saved schedule to " + filenameSb.toString());
                     }
+                    sm.quit();
                 }
-
-                sm.quit();
             default:
                 throw new IllegalArgumentException("Unknown command entered.");
         }
