@@ -290,7 +290,7 @@ public class CLI {
             case "sched":
                 if (sm.getSchedule().isEmpty() || scheduleUpdated) {
                     sm.buildSchedule();
-                    scheduleUpdated = true;
+                    scheduleUpdated = false;
                 }
                 if (tokens.length == 1) {
                     System.out.println(sm.buildCurrentScheduleStr());
