@@ -18,6 +18,6 @@
   "overflow": true,
   "minHours": 0.5,
   "optimizeDay": false,
-  "defaultAtStart": true,
+  "defaultAtStart": false,
   "formatPrettyTime": true
 }

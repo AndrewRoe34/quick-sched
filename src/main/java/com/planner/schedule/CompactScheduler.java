@@ -97,6 +97,9 @@ public class CompactScheduler implements Scheduler {
 
     private double getMaxHours(Day day, Calendar date) {
         int startingHour = getStartingHour(day, date);
+        if (startingHour >= userConfig.getDailyHoursRange()[1]) {
+            return 0.0;
+        }
         Calendar time = (Calendar) day.getDate().clone();
         time.set(Calendar.HOUR_OF_DAY, startingHour);
         time.set(Calendar.SECOND, 0);
