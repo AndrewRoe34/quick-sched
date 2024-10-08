@@ -1,11 +1,13 @@
 package com.planner.schedule;
 
+import com.planner.models.Event;
 import com.planner.schedule.day.Day;
 import com.planner.models.Task;
 import com.planner.models.UserConfig;
 import com.planner.util.EventLog;
 import com.planner.util.Time;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -59,15 +61,21 @@ public class CompactScheduler implements Scheduler {
 
     @Override
     public int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager, Calendar date) {
+        double maxHours = getMaxHours(day, date);
+
         PriorityQueue<Task> incomplete = new PriorityQueue<>();
         int numErrors = errorCount;
+
         while ((!taskManager.isEmpty() && day.hasSpareHours()) ||
                 (!taskManager.isEmpty() && Time.doDatesMatch(taskManager.peek().getDueDate(), day.getDate()))) {
             // gets first task from heap and finds max possible hours available
             Task task = taskManager.remove();
-            double maxHours = getMaxHours(day, task, date);
+
+            double hours = Math.min(task.getSubTotalHoursRemaining(), maxHours);
+            maxHours -= hours;
+
             // status of task creation
-            boolean validTaskStatus = day.addPlainSubTask(task, maxHours, userConfig, date, isToday);
+            boolean validTaskStatus = day.addSubTask(task, hours, userConfig, date, isToday);
             // adds task to relevant completion heap
             if (Time.doDatesMatch(task.getDueDate(), day.getDate()) || task.getSubTotalHoursRemaining() == 0) complete.add(task);
             else incomplete.add(task);
@@ -87,31 +95,37 @@ public class CompactScheduler implements Scheduler {
         return numErrors;
     }
 
-    private double getMaxHours(Day day, Task task, Calendar date) {
-        // sets up the starting hour for the day based on the given time from 'date'
+    private double getMaxHours(Day day, Calendar date) {
         int startingHour = getStartingHour(day, date);
+        Calendar time = (Calendar) day.getDate().clone();
+        time.set(Calendar.HOUR_OF_DAY, startingHour);
+        time.set(Calendar.SECOND, 0);
+        time.set(Calendar.MILLISECOND, 0);
 
-        // resets startingHour to beginning of day
-        if (userConfig.isDefaultAtStart()) startingHour = userConfig.getDailyHoursRange()[0];
 
-        double maxHours = 0.0;
-        if (Time.doDatesMatch(task.getDueDate(), day.getDate())) {
-            double remainingHours = 23.5 - (startingHour + day.getHoursFilled());
-            maxHours = Math.min(remainingHours, task.getSubTotalHoursRemaining());
-        } else if (isToday) { // we need to deal with UseCases C & D [DONE]
-            double remainingHours = userConfig.getDailyHoursRange()[1] - (startingHour + day.getHoursFilled());
-            if (remainingHours > 0 && day.getSpareHours() > 0) {
-                maxHours = Math.min(remainingHours, task.getSubTotalHoursRemaining());
-                maxHours = Math.min(day.getSpareHours(), maxHours);
+        Calendar start = Time.getFirstAvailableTimeInDay(new ArrayList<>(), day.getEventTimeStamps(), userConfig, time, Time.doDatesMatch(time, date));
+        Calendar end = (Calendar) time.clone();
+        end.set(Calendar.HOUR_OF_DAY, userConfig.getDailyHoursRange()[1]);
+
+        double hours = 0.0;
+        for (Event e : day.getEventList()) {
+            if (start.compareTo(e.getTimeStamp().getStart()) < 0) {
+                if (e.getTimeStamp().getStart().compareTo(end) < 0) {
+                    hours += Time.getTimeInterval(start, e.getTimeStamp().getStart());
+                    start = e.getTimeStamp().getEnd();
+                } else {
+                    // compute time until end of day
+                    hours += Time.getTimeInterval(start, end);
+                    return hours;
+                }
+            } else {
+                start = e.getTimeStamp().getEnd();
             }
-        } else {
-            maxHours = Math.min(day.getSpareHours(), task.getSubTotalHoursRemaining());
         }
-        // this only works with compact scheduler since it clumps tasks together when assigning them
-        // logic: if our 'maxHours' for the task is less than 'minHours' from config
-        //          AND there are more possible hours you could have utilized, then we disregard it until a later time
-        if (maxHours < userConfig.getMinHours() && task.getSubTotalHoursRemaining() > maxHours) maxHours = 0.0;
-        return maxHours;
+
+        hours += Time.getTimeInterval(start, end);
+
+        return Math.min(hours, userConfig.getHoursPerDayOfWeek()[date.get(Calendar.DAY_OF_WEEK) - 1]);
     }
 
     private int getStartingHour(Day day, Calendar date) {

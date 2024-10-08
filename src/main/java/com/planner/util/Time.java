@@ -171,10 +171,7 @@ public class Time {
             }
         }
 
-        // todo need to think about whether we should have startTime configured with getNearestQuarterOfHour() (at most, we're losing 14 minutes, but that could theoretically cost us 30 min due to formatting)
-        // todo might need another config option to allow tasks to be scheduled with 'unclean' times around events (not an issue without events, at most you'd be losing is 14 minutes)
-        // todo would need to update line 162
-        return startTime;
+        return Time.getNearestQuarterOfHour(startTime, true);
     }
 
     // [COMPLETE]

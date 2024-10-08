@@ -82,7 +82,7 @@ public class ScheduleManager {
         taskManager = new PriorityQueue<>();
 //        spreadsheetIO = new SpreadsheetIO(eventLog);
 
-        scheduler = Scheduler.getInstance(userConfig, eventLog, 1);
+        scheduler = Scheduler.getInstance(userConfig, eventLog);
         // in situations where ScheduleManager is run multiple times after updates to config, this ensures options are set up properly
         scheduler.updateConfig(userConfig);
 

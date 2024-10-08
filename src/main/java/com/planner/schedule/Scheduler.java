@@ -17,8 +17,7 @@ import java.util.PriorityQueue;
  */
 public interface Scheduler {
 
-    static Scheduler getInstance(UserConfig userConfig, EventLog eventLog, int idx) {
-        if (idx == 0) return DynamicScheduler.getSingleton(userConfig, eventLog);
+    static Scheduler getInstance(UserConfig userConfig, EventLog eventLog) {
         return CompactScheduler.getSingleton(userConfig, eventLog);
     }
 

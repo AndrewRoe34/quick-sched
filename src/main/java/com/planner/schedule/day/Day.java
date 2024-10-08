@@ -145,26 +145,13 @@ public class Day {
     }
 
     /**
-     * Adds a pre-formatted SubTask to the Day
-     *
-     * @param task  Task to be added
-     * @param hours number of hours for the SubTask
-     * @param overflow boolean status for success of adding SubTask
-     */
-    public void addFormattedSubTask(Task task, double hours, boolean overflow) {
-        Task.SubTask subtask = task.addSubTask(hours, overflow, null);
-        subTaskList.add(subtask);
-        this.size += hours;
-    }
-
-    /**
      * Adds a SubTask manually to the Day
      *
      * @param task  Task to be added
      * @param hours number of hours for the SubTask
      * @return boolean status for success of adding SubTask manually
      */
-    public boolean addPlainSubTask(Task task, double hours, UserConfig userConfig, Calendar time, boolean isToday) {
+    public boolean addSubTask(Task task, double hours, UserConfig userConfig, Calendar time, boolean isToday) {
         if (hours <= 0) return false;
         boolean overflow = this.size + hours > this.capacity;
 //        SubTask subtask = task.addSubTask(hours, overflow); // todo need to rearrange this here
