@@ -30,8 +30,10 @@ public class Day {
     private final List<TimeStamp> taskTimeStamps;
     /** Map by starting hour and the associated event */
     private final List<Event> eventList;
-
+    /** List of time stamps for all events */
     private final List<TimeStamp> eventTimeStamps;
+    /** List of overflow errors for the Day */
+    private final List<String> overflowErrors;
     /** ID for the specific Day */
     private int id;
 
@@ -50,6 +52,7 @@ public class Day {
         taskTimeStamps = new ArrayList<>();
         eventList = new ArrayList<>();
         eventTimeStamps = new ArrayList<>();
+        overflowErrors = new ArrayList<>();
     }
 
     /**
@@ -67,6 +70,7 @@ public class Day {
         taskTimeStamps = new ArrayList<>();
         eventList = new ArrayList<>();
         eventTimeStamps = new ArrayList<>();
+        overflowErrors = new ArrayList<>();
     }
 
     private void setId(int id) {
@@ -142,6 +146,18 @@ public class Day {
      */
     public double getSize() {
         return size;
+    }
+
+    public void addOverflowError(int id, double hours, boolean added) {
+        String err = "                [ERROR] Task " + id + " is short by " + hours;
+        if (!added) {
+            err += " (Entire task lost)";
+        }
+        overflowErrors.add(err);
+    }
+
+    public List<String> getOverflowErrors() {
+        return overflowErrors;
     }
 
     /**

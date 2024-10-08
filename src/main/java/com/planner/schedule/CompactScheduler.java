@@ -78,6 +78,12 @@ public class CompactScheduler implements Scheduler {
             // status of task creation
             boolean validTaskStatus = day.addSubTask(task, hours, userConfig, date, isToday);
 
+            if (hours == 0) {
+                day.addOverflowError(task.getId(), task.getSubTotalHoursRemaining(), false);
+            } else if (Time.doDatesMatch(task.getDueDate(), day.getDate()) && task.getSubTotalHoursRemaining() > 0) {
+                day.addOverflowError(task.getId(), task.getSubTotalHoursRemaining(), true);
+            }
+
             // adds task to relevant completion heap
             if (Time.doDatesMatch(task.getDueDate(), day.getDate()) || task.getSubTotalHoursRemaining() == 0) complete.add(task);
             else incomplete.add(task);

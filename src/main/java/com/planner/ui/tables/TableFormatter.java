@@ -186,6 +186,10 @@ public class TableFormatter {
                     sb.append("\u001B[0m"); // Reset color
                 }
             }
+
+            for (String s : day.getOverflowErrors()) {
+                sb.append(s).append("\n");
+            }
         }
 
         sb.append("\n");
