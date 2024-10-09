@@ -1,22 +1,22 @@
 {
   "dailyHoursRange": [
-    9,
+    11,
     20
   ],
   "hoursPerDayOfWeek": [
-    8,
-    8,
-    8,
-    8,
-    8,
-    8,
-    8
+    0,
+    4,
+    6,
+    7,
+    5,
+    4,
+    2
   ],
   "maxDays": 14,
-  "archiveDays": 5,
+  "archiveDays": 7,
   "priority": false,
   "overflow": true,
-  "minHours": 0.5,
+  "minHours": 1.0,
   "optimizeDay": false,
   "defaultAtStart": false,
   "formatPrettyTime": true

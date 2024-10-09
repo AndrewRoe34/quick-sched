@@ -295,7 +295,7 @@ public class CLI {
                 }
                 break;
             case "sched":
-                if ((sm.getSchedule().isEmpty() || changesMade) && scheduleUpdated) {
+                if (sm.getSchedule().isEmpty() || scheduleUpdated) {
                     sm.buildSchedule();
                     scheduleUpdated = false;
                 }

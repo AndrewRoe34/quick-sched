@@ -30,8 +30,6 @@ public class CompactScheduler implements Scheduler {
     private UserConfig userConfig;
     /** EventLog for logging data on Day actions */
     private final EventLog eventLog;
-    /** Boolean value for whether we are scheduling a Day that is in fact today */
-    private boolean isToday;
 
     /**
      * Constructs a new {@code CompactScheduler} with a given {@link UserConfig} and {@link EventLog}
@@ -61,7 +59,12 @@ public class CompactScheduler implements Scheduler {
 
     @Override
     public int assignDay(Day day, int errorCount, PriorityQueue<Task> complete, PriorityQueue<Task> taskManager, Calendar date) {
-        double maxHours = getMaxHours(day, date);
+        double maxHours = 0.0;
+        if (!Time.doDatesMatch(day.getDate(), date)) {
+            maxHours = getMaxHours(day, day.getDate(), false);
+        } else {
+            maxHours = getMaxHours(day, date, true);
+        }
 
         PriorityQueue<Task> incomplete = new PriorityQueue<>();
         int numErrors = errorCount;
@@ -75,7 +78,7 @@ public class CompactScheduler implements Scheduler {
             maxHours -= hours;
 
             // status of task creation
-            boolean validTaskStatus = day.addSubTask(task, hours, userConfig, date, isToday);
+            boolean validTaskStatus = day.addSubTask(task, hours, userConfig, date, Time.doDatesMatch(day.getDate(), date));
 
             if (userConfig.isOverflow() && Time.doDatesMatch(task.getDueDate(), day.getDate()) && task.getSubTotalHoursRemaining() > 0) {
                 if (task.getTotalHours() == task.getSubTotalHoursRemaining()) {
@@ -104,8 +107,8 @@ public class CompactScheduler implements Scheduler {
         return numErrors;
     }
 
-    private double getMaxHours(Day day, Calendar date) {
-        int startingHour = getStartingHour(day, date);
+    private double getMaxHours(Day day, Calendar date, boolean isToday) {
+        int startingHour = getStartingHour(date, isToday);
 
         if (!userConfig.isDefaultAtStart() && startingHour >= userConfig.getDailyHoursRange()[1]) {
             return 0.0;
@@ -116,7 +119,7 @@ public class CompactScheduler implements Scheduler {
         time.set(Calendar.SECOND, 0);
         time.set(Calendar.MILLISECOND, 0);
 
-        Calendar start = Time.getFirstAvailableTimeInDay(new ArrayList<>(), day.getEventTimeStamps(), userConfig, time, Time.doDatesMatch(time, date));
+        Calendar start = Time.getFirstAvailableTimeInDay(new ArrayList<>(), day.getEventTimeStamps(), userConfig, time, isToday);
         Calendar end = (Calendar) time.clone();
         end.set(Calendar.HOUR_OF_DAY, userConfig.getDailyHoursRange()[1]);
 
@@ -141,12 +144,10 @@ public class CompactScheduler implements Scheduler {
         return Math.min(hours, userConfig.getHoursPerDayOfWeek()[date.get(Calendar.DAY_OF_WEEK) - 1]);
     }
 
-    private int getStartingHour(Day day, Calendar date) {
+    private int getStartingHour(Calendar date, boolean isToday) {
         int startingHour = date.get(Calendar.HOUR_OF_DAY);
-        isToday = false;
-        if (Time.doDatesMatch(date, day.getDate())) {
+        if (isToday) {
             startingHour = Math.max(userConfig.getDailyHoursRange()[0], startingHour);
-            isToday = true;
         } else {
             startingHour = userConfig.getDailyHoursRange()[0];
         }
