@@ -19,12 +19,12 @@ public class TUI {
     private void sessionStartUp() throws InterruptedException {
         // Welcome and basic info
         System.out.println("#########################################################\n" +
-                "#             Welcome to Quick Sched 1.0.0!             #\n" +
+                "#             Welcome to Quick Sched 1.2.0!             #\n" +
                 "#                 Scheduling Made Simple                #\n" +
                 "#########################################################\n");
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        System.out.println("Application Version: 1.0.0");
+        System.out.println("Application Version: 1.2.0");
         sleep(1000);
         System.out.println("Current Date and Time: " + sdf.format(Calendar.getInstance().getTime()));
 
@@ -54,8 +54,7 @@ public class TUI {
                         "    - System Log: logs/system.log\n" +
                         "    - Session Log: logs/session.log\n" +
                         "Warnings or Alerts:\n" +
-                        "    - Google Calendar is available only to test participants. To request, contact: aproe@ncsu.edu\n" +
-                        "    - defaultAtStart should be kept at 'true' (only an issue when there are Events present)\n"
+                        "    - Google Calendar is available only to test participants. To request, contact: aproe343@gmail.com\n"
         );
         sleep(1000);
 
