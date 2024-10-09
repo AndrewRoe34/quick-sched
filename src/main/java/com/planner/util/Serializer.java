@@ -172,6 +172,10 @@ public class Serializer {
                 }
             }
 
+            for (String err : day.getOverflowErrors()) {
+                daysSb.append("\"").append(err).append("\" ");
+            }
+
             daysSb.append('\n');
         }
 
@@ -306,6 +310,11 @@ public class Serializer {
                 }
             }
             day.sortSubTasks();
+
+            for (String err : di.getErrors()) {
+                day.addOverflowError(err);
+            }
+
             days.add(day);
         }
         return days;

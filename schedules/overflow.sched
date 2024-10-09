@@ -1,0 +1,13 @@
+CARD {
+}
+
+TASK {
+	"A" 10.0 @ 09-10-2024
+}
+
+EVENT {
+}
+
+DAY {
+	09-10-2024 T0 04:45pm-08:15pm "                [ERROR] Task 0 is short by 6.5" 
+}

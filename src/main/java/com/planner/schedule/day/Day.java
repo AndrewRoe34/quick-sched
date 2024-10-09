@@ -156,6 +156,10 @@ public class Day {
         overflowErrors.add(err);
     }
 
+    public void addOverflowError(String err) {
+        overflowErrors.add(err);
+    }
+
     public List<String> getOverflowErrors() {
         return overflowErrors;
     }

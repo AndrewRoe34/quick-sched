@@ -203,6 +203,8 @@ public class Parser {
 
         List<Integer> eventIds = new ArrayList<>();
 
+        List<String> overflowErrors = new ArrayList<>();
+
         for (int i = 1; i < args.length; i++) {
             if (args[i].charAt(0) == 'T') {
                 int id = -1;
@@ -249,12 +251,15 @@ public class Parser {
                 }
 
                 eventIds.add(id);
-            } else {
+            } else if (args[i].charAt(0) == '"' && args[i].charAt(args[i].length() - 1) == '"') {
+                overflowErrors.add(args[i].substring(1, args[i].length() - 1));
+            }
+            else {
                 throw new IllegalArgumentException("Error: Days can only include tasks and events");
             }
         }
 
-        return new DayInfo(date, taskTimeStampMap, eventIds);
+        return new DayInfo(date, taskTimeStampMap, eventIds, overflowErrors);
     }
 
     public static TaskInfo parseModTask(String[] args) {
@@ -753,16 +758,21 @@ public class Parser {
         private final Calendar date;
         private final HashMap<Integer, List<Time.TimeStamp>> taskTimeStampsMap;
         private final List<Integer> eventIds;
+        private final List<String> overflowErrors;
 
-        public DayInfo(Calendar date, HashMap<Integer, List<Time.TimeStamp>> taskTimeStampsMap, List<Integer> eventIds) {
+        public DayInfo(Calendar date, HashMap<Integer, List<Time.TimeStamp>> taskTimeStampsMap, List<Integer> eventIds, List<String> overflowErrors) {
             this.date = date;
             this.taskTimeStampsMap = taskTimeStampsMap;
             this.eventIds = eventIds;
+            this.overflowErrors = overflowErrors;
         }
 
         public Calendar getDate() { return date; }
         public HashMap<Integer, List<Time.TimeStamp>> getTaskTimeStampsMap() { return taskTimeStampsMap; }
         public List<Integer> getEventIds() { return eventIds; }
+        public List<String> getErrors() {
+            return overflowErrors;
+        }
     }
 
     private static void throwAddTaskParsingError() {
