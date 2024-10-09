@@ -25,7 +25,7 @@ run.bat
 ```
 **Note1: You need Java 17 (or newer) to run this application**
 
-**Note2: To get access to Google Calendar features, join the slack link below or email me at: aproe@ncsu.edu**
+**Note2: To get access to Google Calendar features, join the slack link below or email me at: aproe343@gmail.com**
 
 ## Usage
 > Newbie Tip: To see how `QuickSched` works without having to create the data yourself, you can have it generate dummy data for you. See [here](#generate-dummy-data) for more details.
