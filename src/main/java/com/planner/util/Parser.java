@@ -238,9 +238,9 @@ public class Parser {
 
                 i++;
             } else if (args[i].charAt(0) == 'E') {
-                if (i != args.length - 1 && !( args[i + 1].charAt(0) == 'T' || args[i + 1].charAt(0) == 'E' )) {
-                    throw new IllegalArgumentException("Error: Events most be followed by tasks or events");
-                }
+//                if (i != args.length - 1 && !( args[i + 1].charAt(0) == 'T' || args[i + 1].charAt(0) == 'E' )) {
+//                    throw new IllegalArgumentException("Error: Events most be followed by tasks or events");
+//                }
 
                 int id = -1;
                 try {
@@ -255,7 +255,7 @@ public class Parser {
                 overflowErrors.add(args[i].substring(1, args[i].length() - 1));
             }
             else {
-                throw new IllegalArgumentException("Error: Days can only include tasks and events");
+                throw new IllegalArgumentException("Error: Days can only include tasks, events, and overflow messages");
             }
         }
 
