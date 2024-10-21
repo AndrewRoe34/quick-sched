@@ -45,7 +45,7 @@ This platform supports the following:
 * Generate detailed reports with the 'report' command
 * Bespoke log tooling
 
-![QuickSched](images/qs.png)
+![QuickSched](images/bootup.png)
 
 We'll be taking a closer look at what each command involves below.
 

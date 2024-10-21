@@ -317,7 +317,7 @@ Here’s what happens after you submit a pull request:
 4. **Merge:**
     - After approval, your changes will be merged into the main branch.
 
-For reference, you can check out a [Sample Pull Request](https://github.com/AndrewRoe34/agile-planner/pull/45) to see an example of a successful review process.
+For reference, you can check out a [Sample Pull Request](https://github.com/AndrewRoe34/quick-sched/pull/80) to see an example of a successful review process.
 
 We appreciate your contribution and look forward to collaborating with you!
 
