@@ -205,7 +205,7 @@ public class TableFormatter {
         sb.append("TASKS\n");
         sb.append("------------------------------------------\n");
 
-        sb.append("ID   | NAME                | TAG            | HOURS     | DUE         | ARCHIVED\n");
+        sb.append("ID   | NAME                | CARD           | HOURS     | DUE         | ARCHIVED\n");
         sb.append("-----|---------------------|----------------|-----------|-------------|---------\n");
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
@@ -340,7 +340,7 @@ public class TableFormatter {
             sb.append("RECURRING EVENTS\n");
             sb.append("------------------------------------------\n");
 
-            sb.append("ID   | NAME                | TAG            | TIME            | DAYS\n");
+            sb.append("ID   | NAME                | CARD           | TIME            | DAYS\n");
             sb.append("-----|---------------------|----------------|-----------------|----------------\n");
 
             HashSet<Event> uniqueRecurringEvents = new HashSet<>();
@@ -383,7 +383,7 @@ public class TableFormatter {
             sb.append("INDIVIDUAL EVENTS\n");
             sb.append("------------------------------------------\n");
 
-            sb.append("ID   | NAME                | TAG            | TIME            | DATE\n");
+            sb.append("ID   | NAME                | CARD           | TIME            | DATE\n");
             sb.append("-----|---------------------|----------------|-----------------|------------\n");
 
             for (Event e : indivEvents) {
@@ -430,7 +430,7 @@ public class TableFormatter {
         sb.append("------------------------------------------\n");
         sb.append("SUBTASKS\n");
         sb.append("------------------------------------------\n");
-        sb.append("ID   | NAME                | TAG            | HOURS | TIME            | DATE       | DUE        \n");
+        sb.append("ID   | NAME                | CARD           | HOURS | TIME            | DATE       | DUE        \n");
         sb.append("-----|---------------------|----------------|-------|-----------------|------------|------------\n");
 
         // Format date

@@ -44,8 +44,8 @@ public class FormatType {
                 "Name        \t" +
                 task.getName() +
                 '\n' +
-                "Tag         \t" +
-                (task.getCard() == null? "No Associated Tag" : TableFormatter.getColorANSICode(task.getCard().getColor()) + task.getTag()) +
+                "Card        \t" +
+                (task.getCard() == null? "-" : TableFormatter.getColorANSICode(task.getCard().getColor()) + task.getTag()) +
                 resetColor +
                 '\n' +
                 "Total Hours \t" +
@@ -69,8 +69,8 @@ public class FormatType {
                 "Name            \t" +
                 event.getName() +
                 '\n' +
-                "Tag             \t" +
-                (event.getCard() == null? "No Associated Tag" : TableFormatter.getColorANSICode(event.getCard().getColor()) + event.getCard().getName()) +
+                "Card            \t" +
+                (event.getCard() == null? "-" : TableFormatter.getColorANSICode(event.getCard().getColor()) + event.getCard().getName()) +
                 resetColor +
                 '\n' +
                 "Timestamp       \t" +
