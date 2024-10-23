@@ -122,6 +122,7 @@ public class CompactScheduler implements Scheduler {
         Calendar start = Time.getFirstAvailableTimeInDay(new ArrayList<>(), day.getEventTimeStamps(), userConfig, time, isToday);
         Calendar end = (Calendar) time.clone();
         end.set(Calendar.HOUR_OF_DAY, userConfig.getDailyHoursRange()[1]);
+        end.set(Calendar.MINUTE, 0);
 
         double hours = 0.0;
         for (Event e : day.getEventList()) {
