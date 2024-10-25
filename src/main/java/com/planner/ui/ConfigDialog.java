@@ -129,14 +129,14 @@ public class ConfigDialog {
                 System.out.print("\n                                                       Input [#.0 #.0]: ");
                 if (scanner.hasNextLine()) {
                     String[] tokens = scanner.nextLine().split(" ");
-                    if (tokens.length == 2 && hasInteger(tokens[0]) && hasInteger(tokens[1])) {
+                    if (tokens.length == 2 && hasDouble(tokens[0]) && hasDouble(tokens[1])) {
                         double start = Double.parseDouble(tokens[0]);
                         double end = Double.parseDouble(tokens[1]);
                         double[] range = userConfig.getSubtaskRange();
                         range[0] = start;
                         range[1] = end;
                         userConfig.setSubtaskRange(range);
-                    } else throw new IllegalArgumentException("Invalid inputs provided for config option Range");
+                    } else throw new IllegalArgumentException("Invalid inputs provided for config option Subtask Range");
                 }
                 break;
             case 3:
@@ -186,6 +186,15 @@ public class ConfigDialog {
     private boolean hasInteger(String s) {
         try {
             Integer.parseInt(s.trim());
+        } catch (NumberFormatException e) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean hasDouble(String s) {
+        try {
+            Double.parseDouble(s.trim());
         } catch (NumberFormatException e) {
             return false;
         }
