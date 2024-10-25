@@ -78,7 +78,8 @@ public class CompactScheduler implements Scheduler {
             if (!Time.doDatesMatch(task.getDueDate(), day.getDate())) {
                 if (task.getSubTotalHoursRemaining() > maxHours && maxHours < userConfig.getSubtaskRange()[0]) {
                     incomplete.add(task);
-                    break;
+                    continue;
+//                    break;
                 }
                 if (task.getSubTotalHoursRemaining() > userConfig.getSubtaskRange()[1]) {
                     upperRangeHours = userConfig.getSubtaskRange()[1];
