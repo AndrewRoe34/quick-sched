@@ -3,9 +3,7 @@ package com.planner.ui;
 import com.planner.models.UserConfig;
 import com.planner.util.JsonHandler;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
@@ -38,11 +36,14 @@ public class TUI {
                             "    - Mode: Production\n" +
                             "    - Range: " + Arrays.toString(userConfig.getDailyHoursRange()) + "\n" +
                             "    - Week Hours: " + Arrays.toString(userConfig.getHoursPerDayOfWeek()) + "\n" +
+                            "    - Subtask Range: " + Arrays.toString(userConfig.getSubtaskRange()) + "\n" +
                             "    - Max Days: " + userConfig.getMaxDays() + "\n" +
                             "    - Archive Days: " + userConfig.getArchiveDays() + "\n" +
                             "    - Priority Scheduling: " + userConfig.isPriority() + "\n" +
                             "    - Overflow Handling: " + userConfig.isOverflow() + "\n" +
-                            "    - Minimum Task Duration: " + userConfig.getMinHours() + "\n"
+                            "    - Optimize Day: " + userConfig.isOptimizeDay() + "\n" +
+                            "    - Default at Start: " + userConfig.isDefaultAtStart() + "\n" +
+                            "    - Pretty Time: " + userConfig.isFormatPrettyTime() + "\n"
             );
         } catch (IOException e) {
             throw new IllegalArgumentException("Could not properly set up config for session");

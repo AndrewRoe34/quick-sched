@@ -25,8 +25,8 @@ public class TableFormatter {
      * @return pretty config table
      */
     public static String formatPrettyUserConfigTable(UserConfig userConfig) {
-        String[] optionNames = {"RANGE", "WEEK", "MAX_DAYS", "ARCHIVE_DAYS", "PRIORITY", "OVERFLOW",
-                "MIN_HOURS", "OPTIMIZE_DAY", "DEFAULT_AT_START"};
+        String[] optionNames = {"RANGE", "WEEK", "SUBTASK_RANGE", "MAX_DAYS", "ARCHIVE_DAYS", "PRIORITY",
+                "OVERFLOW", "OPTIMIZE_DAY", "DEFAULT_AT_START", "PRETTY_TIME"};
 
         StringBuilder sb = new StringBuilder();
         sb.append("                                                            Settings Options\n");
@@ -39,13 +39,14 @@ public class TableFormatter {
             switch (i) {
                 case 0: optionValue = Arrays.toString(userConfig.getDailyHoursRange()); break;
                 case 1: optionValue = Arrays.toString(userConfig.getHoursPerDayOfWeek()); break;
-                case 2: optionValue = String.valueOf(userConfig.getMaxDays()); break;
-                case 3: optionValue = String.valueOf(userConfig.getArchiveDays()); break;
-                case 4: optionValue = String.valueOf(userConfig.isPriority()); break;
-                case 5: optionValue = String.valueOf(userConfig.isOverflow()); break;
-                case 6: optionValue = String.valueOf(userConfig.getMinHours()); break;
+                case 2: optionValue = Arrays.toString(userConfig.getSubtaskRange()); break;
+                case 3: optionValue = String.valueOf(userConfig.getMaxDays()); break;
+                case 4: optionValue = String.valueOf(userConfig.getArchiveDays()); break;
+                case 5: optionValue = String.valueOf(userConfig.isPriority()); break;
+                case 6: optionValue = String.valueOf(userConfig.isOverflow()); break;
                 case 7: optionValue = String.valueOf(userConfig.isOptimizeDay()); break;
                 case 8: optionValue = String.valueOf(userConfig.isDefaultAtStart()); break;
+                case 9: optionValue = String.valueOf(userConfig.isFormatPrettyTime()); break;
             }
             String formattedOptionValue = String.format(" %-25s|", optionValue);
             sb.append(String.format("                                         |%-6d|%-19s|", i, optionNames[i]));

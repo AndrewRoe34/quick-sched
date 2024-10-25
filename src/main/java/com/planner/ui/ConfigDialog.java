@@ -125,6 +125,21 @@ public class ConfigDialog {
                 }
                 break;
             case 2:
+                System.out.print("\n                                                 Minimum hours for a given day");
+                System.out.print("\n                                                       Input [#.0 #.0]: ");
+                if (scanner.hasNextLine()) {
+                    String[] tokens = scanner.nextLine().split(" ");
+                    if (tokens.length == 2 && hasInteger(tokens[0]) && hasInteger(tokens[1])) {
+                        double start = Double.parseDouble(tokens[0]);
+                        double end = Double.parseDouble(tokens[1]);
+                        double[] range = userConfig.getSubtaskRange();
+                        range[0] = start;
+                        range[1] = end;
+                        userConfig.setSubtaskRange(range);
+                    } else throw new IllegalArgumentException("Invalid inputs provided for config option Range");
+                }
+                break;
+            case 3:
                 System.out.print("\n                                                 Maximum number of days to display");
                 System.out.print("\n                                                       Input [#]: ");
                 if (scanner.hasNextLine()) {
@@ -137,7 +152,7 @@ public class ConfigDialog {
                     }
                 }
                 break;
-            case 3:
+            case 4:
                 System.out.print("\n                                                 Maximum number of past days");
                 System.out.print("\n                                                       Input [#]: ");
                 if (scanner.hasNextLine()) {
@@ -150,30 +165,20 @@ public class ConfigDialog {
                     }
                 }
                 break;
-            case 4:
+            case 5:
                 userConfig.setPriority(promptBool("Enable priority for tasks"));
                 break;
-            case 5:
-                userConfig.setOverflow(promptBool("Display overflow"));
-                break;
             case 6:
-                System.out.print("\n                                                 Minimum hours for a given day");
-                System.out.print("\n                                                       Input [#.0]: ");
-                if (scanner.hasNextLine()) {
-                    String input = scanner.nextLine();
-                    try {
-                        double minHours = Double.parseDouble(input);
-                        userConfig.setMinHours(minHours);
-                    } catch (NumberFormatException e) {
-                        // Do nothing or provide feedback to the user regarding invalid input
-                    }
-                }
+                userConfig.setOverflow(promptBool("Display overflow"));
                 break;
             case 7:
                 userConfig.setOptimizeDay(promptBool("Optimize day"));
                 break;
             case 8:
                 userConfig.setDefaultAtStart(promptBool("Default at start"));
+                break;
+            case 9:
+                userConfig.setFormatPrettyTime(promptBool("Format pretty time"));
                 break;
         }
     }

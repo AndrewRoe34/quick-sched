@@ -12,6 +12,8 @@ public class UserConfig {
     private int[] dailyHoursRange;
     /** Global data for hours per day of week */
     private int[] hoursPerDayOfWeek;
+    /** Minimum number of hours for a given day */
+    private double[] subtaskRange;
     /** Maximum number of days to display */
     private int maxDays;
     /** Maximum number of past days to display */
@@ -20,8 +22,6 @@ public class UserConfig {
     private boolean priority;
     /** Whether to display overflow */
     private boolean overflow;
-    /** Minimum number of hours for a given day */
-    private double minHours;
     /** Whether to maximize the positioning of tasks in relation to each other */
     private boolean optimizeDay;
     /** Whether the scheduling begins at the start of day */
@@ -34,28 +34,29 @@ public class UserConfig {
      *
      * @param dailyHoursRange     Daily range of hours for day
      * @param globalHr            Global data for week
+     * @param subtaskRange        Minimum number of hours for a given day
      * @param maxDays             Maximum number of days to display
      * @param archiveDays         Maximum number of past days to display
      * @param priority            Whether to enable priority for tasks
      * @param overflow            Whether to display overflow
-     * @param minHours            Minimum number of hours for a given day
      * @param optimizeDay         Whether to maximize the positioning of tasks in relation to each other
      * @param defaultAtStart      Whether the scheduling begins at the start of day
      * @param formatPrettyTime    Whether to format pretty time
      */
-    public UserConfig(int[] dailyHoursRange, int[] globalHr, int maxDays, int archiveDays, boolean priority,
-                      boolean overflow, double minHours, boolean optimizeDay, boolean defaultAtStart,
+    public UserConfig(int[] dailyHoursRange, int[] globalHr, double[] subtaskRange, int maxDays, int archiveDays, boolean priority,
+                      boolean overflow, boolean optimizeDay, boolean defaultAtStart,
                       boolean formatPrettyTime) {
-        this.dailyHoursRange = dailyHoursRange;
-        this.hoursPerDayOfWeek = globalHr;
-        this.maxDays = maxDays;
-        this.archiveDays = archiveDays;
-        this.priority = priority;
-        this.overflow = overflow;
-        this.minHours = minHours;
-        this.optimizeDay = optimizeDay;
-        this.defaultAtStart = defaultAtStart;
-        this.formatPrettyTime = formatPrettyTime;
+        setDailyHoursRange(dailyHoursRange);
+        setHoursPerDayOfWeek(globalHr);
+        setSubtaskRange(subtaskRange);
+        setMaxDays(maxDays);
+        setArchiveDays(archiveDays);
+        setPriority(priority);
+        setOverflow(overflow);
+        setOverflow(overflow);
+        setOptimizeDay(optimizeDay);
+        setDefaultAtStart(defaultAtStart);
+        setFormatPrettyTime(formatPrettyTime);
     }
 
     /**
@@ -63,8 +64,8 @@ public class UserConfig {
      */
     public UserConfig() {
         this(new int[]{8, 20}, new int[]{8, 8, 8, 8, 8, 8, 8},
-                14, 5, false, true,
-                1.0, true,
+                new double[]{1.0}, 14, 5,
+                false, true, true,
                 true, true);
     }
 
@@ -196,19 +197,25 @@ public class UserConfig {
      *
      * @return minimum number of hours
      */
-    public double getMinHours() {
-        return minHours;
+    public double[] getSubtaskRange() {
+        return subtaskRange;
     }
 
     /**
      * Sets minimum number of hours per given day
      *
-     * @param minHours minimum number of hours
+     * @param subtaskRange minimum number of hours
      */
-    public void setMinHours(double minHours) {
-        double decimal = minHours % 1;
-        if (decimal != 0.0 && decimal != 0.5) throw new IllegalArgumentException("Invalid min hour was provided for UserConfig");
-        this.minHours = minHours;
+    public void setSubtaskRange(double[] subtaskRange) {
+        if (subtaskRange.length > 2) {
+            throw new IllegalArgumentException("Subtask Range must contain 2 values");
+        }
+        for (double v : subtaskRange) {
+            double decimal = v % 1;
+            if (decimal != 0.0 && decimal != 0.5) throw new IllegalArgumentException("Invalid min hour was provided for UserConfig");
+
+        }
+        this.subtaskRange = subtaskRange;
     }
 
     /**

@@ -12,12 +12,15 @@
     8,
     8
   ],
+  "subtaskRange": [
+    0.0,
+    4.0
+  ],
   "maxDays": 14,
   "archiveDays": 7,
   "priority": false,
   "overflow": true,
-  "minHours": 0.0,
   "optimizeDay": false,
-  "defaultAtStart": false,
+  "defaultAtStart": true,
   "formatPrettyTime": true
 }
