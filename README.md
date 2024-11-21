@@ -316,7 +316,3 @@ Use 'doc <topic>' to view detailed information.
 We welcome contributions from everyone who is interested in improving QuickSched and expanding its capabilities. Whether you're fixing bugs, adding new features, or improving documentation, your help is appreciated!
 
 Before you start contributing, please make sure to read our [CONTRIBUTING.md](CONTRIBUTING.md) file. It contains all the information you need to get started, including how to submit pull requests, our coding standards, and the process for reporting bugs.
-
-If you have any questions or want to discuss your ideas before diving in, be sure to join our Slack group:
-
-[![Slack](https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white)](https://join.slack.com/t/quicksched/shared_invite/zt-2k0bmf49j-V6avYCrNJFFWVTpdER69tg)
