@@ -13,7 +13,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-2019, windows-2022] # Windows 2019 = Windows 10, Windows 2022 = Windows 11
+        os: [ubuntu-latest, macos-latest, windows-2022] # Windows 2019 = Windows 10, Windows 2022 = Windows 11
     permissions:
       contents: read
 
